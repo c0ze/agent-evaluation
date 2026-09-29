@@ -1,30 +1,153 @@
+name: apistack
+
+# Single-host deployment. Compose restarts crashed containers but does not
+# reschedule, scale, or fail over; see RUNBOOK.md for what that means in practice.
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   proxy:
-    image: nginx:latest
+    image: nginx:1.28-alpine
+    restart: unless-stopped
     ports:
-      - "80:80"
+      # The only published port in the stack. Loopback by default (see .env.example).
+      - "${PROXY_BIND:-127.0.0.1}:${PROXY_PORT:-8080}:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks: [edge]
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      # End to end: nginx -> gunicorn -> app. 127.0.0.1 because busybox wget
+      # resolves "localhost" to ::1 first and nginx only listens on IPv4.
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:80/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+    cap_drop: [ALL]
+    cap_add: [CHOWN, SETGID, SETUID, NET_BIND_SERVICE]
+    security_opt: ["no-new-privileges:true"]
+    logging: *default-logging
+    deploy:
+      resources:
+        limits: { cpus: "0.50", memory: 128M }
+
   api:
     build: .
+    image: apistack/api:${API_TAG:-local}
+    restart: unless-stopped
     environment:
-      DATABASE_URL: postgres://admin:password@db:5432/app
-      REDIS_URL: redis://cache:6379
-    ports:
-      - "5000:5000"
+      # postgresql:// (not postgres://) is accepted by libpq, psycopg2 and SQLAlchemy.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@db:5432/${POSTGRES_DB:-app}
+      REDIS_URL: redis://:${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}@cache:6379/0
+      APP_MODULE: ${APP_MODULE:-app:app}
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-2}
+      # Trust X-Forwarded-* from nginx. Safe because this service is not
+      # published and only nginx shares a network with it besides the backend.
+      FORWARDED_ALLOW_IPS: "*"
+    # No `ports:`. Reached only by nginx over the edge network.
+    networks: [edge, backend]
     depends_on:
-      - db
-      - cache
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app
-    ports:
-      - "5432:5432"
-  cache:
-    image: redis:latest
-    ports:
-      - "6379:6379"
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    healthcheck:
+      # Requires the app to serve GET /healthz -> 2xx (urlopen raises on 4xx/5xx).
+      # Ideally that handler runs SELECT 1 and a Redis PING with short timeouts.
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    stop_grace_period: 35s  # > gunicorn --graceful-timeout 30
+    logging: *default-logging
+    deploy:
+      resources:
+        limits: { cpus: "1.00", memory: 512M }
 
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [backend]
+    healthcheck:
+      # -h 127.0.0.1 forces TCP. During first-run init the entrypoint runs a
+      # temporary server on the unix socket only; a socket check would report
+      # "ready" before the real server (and the init scripts) are done.
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    stop_grace_period: 30s
+    logging: *default-logging
+    deploy:
+      resources:
+        limits: { cpus: "1.00", memory: 1G }
+
+  cache:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    # Treated as a disposable cache: no persistence, bounded memory, LRU eviction.
+    # If the app keeps sessions or queues here, switch to noeviction + appendonly
+    # yes and add a volume. Password is passed as an argument (not `sh -c`) so the
+    # image entrypoint still drops privileges to the redis user.
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+      - --maxmemory
+      - 128mb
+      - --maxmemory-policy
+      - allkeys-lru
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}  # lets redis-cli auth without -a
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    logging: *default-logging
+    deploy:
+      resources:
+        limits: { cpus: "0.50", memory: 192M }
+
+networks:
+  edge: {}
+  backend:
+    # No route to or from the outside world. Only api, db and cache attach here.
+    internal: true
+
+volumes:
+  pgdata: {}
