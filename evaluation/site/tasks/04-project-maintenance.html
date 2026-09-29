@@ -24,12 +24,12 @@ and the next three prioritized maintenance items.</li>
 risks, and exact verification results. Work only in this directory.</p>
 </div>
       <p class="muted">Inputs given: <a href="../../../_templates/04-project-maintenance/ci.yml" target="_blank" rel="noopener" class="mono">ci.yml</a>, <a href="../../../_templates/04-project-maintenance/pyproject.toml" target="_blank" rel="noopener" class="mono">pyproject.toml</a>, <a href="../../../_templates/04-project-maintenance/RELEASE_NOTES.txt" target="_blank" rel="noopener" class="mono">RELEASE_NOTES.txt</a>, <a href="../../../_templates/04-project-maintenance/slugkit.py" target="_blank" rel="noopener" class="mono">slugkit.py</a>, <a href="../../../_templates/04-project-maintenance/test_slugkit.py" target="_blank" rel="noopener" class="mono">test_slugkit.py</a></p></details>
-    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">Sonnet 5.5</th><th scope="col">mimo</th><th scope="col">GPT-6 Luna</th><th scope="col">muse</th></tr>
-    <tr><th scope="row">compatibility/release correctness <span class="muted">(4)</span></th><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.17">2</td><td class="num heat" style="--h:0.38">2.5</td><td class="num heat" style="--h:0.00">1.25</td></tr><tr><th scope="row">CI/tests <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.03">1.25</td><td class="num heat" style="--h:0.00">1</td><td class="num heat" style="--h:0.00">1</td></tr><tr><th scope="row">release and maintenance communication <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat" style="--h:0.17">1.5</td></tr>
-    <tr class="total"><th scope="row">Total (10)</th><td class="num">9.25</td><td class="num">9.25</td><td class="num">9</td><td class="num">5.5</td><td class="num">5.25</td><td class="num">3.75</td></tr></table></div>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">Sonnet 5.5</th><th scope="col">mimo</th><th scope="col">GPT-6 Luna</th><th scope="col">muse</th><th scope="col">GPT-6.1 Sol</th></tr>
+    <tr><th scope="row">compatibility/release correctness <span class="muted">(4)</span></th><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.17">2</td><td class="num heat" style="--h:0.38">2.5</td><td class="num heat" style="--h:0.00">1.25</td><td class="num heat">–</td></tr><tr><th scope="row">CI/tests <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.03">1.25</td><td class="num heat" style="--h:0.00">1</td><td class="num heat" style="--h:0.00">1</td><td class="num heat">–</td></tr><tr><th scope="row">release and maintenance communication <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat" style="--h:0.17">1.5</td><td class="num heat">–</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">9.25</td><td class="num">9.25</td><td class="num">9</td><td class="num">5.5</td><td class="num">5.25</td><td class="num">3.75</td><td class="num">–</td></tr></table></div>
     <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = GPT-6 Luna, B = Fable 5.1, C = Opus 5.5, D = Sonnet 5.5, E = muse, F = mimo.</p><div class="prose"><p>B and C are tied at 9.25 and are near-equivalent. B is ranked first by a hair for its more comprehensive tests (a fresh-interpreter sys.modules check plus a differential check) and its exhaustive verification, including a wheel installed into a setuptools-free venv. D is close behind. F and A are close; F edges ahead on a complete changelog and a split CI. Every submission&#39;s build check was run offline with setuptools 84.0.0 from the uv cache. ruff was unavailable offline, so lint claims could not be re-verified. E&#39;s own tests need the &#39;packaging&#39; package, which was not installed in the system interpreters.</p>
 </div></details></section>
-    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Fable 5.1 <span class="pill">9.25</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9.25</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Sonnet 5.5 <span class="pill">9</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">5.5</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">5.25</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">muse <span class="pill">3.75</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Fable 5.1 <span class="pill">9.25</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9.25</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Sonnet 5.5 <span class="pill">9</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">5.5</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">5.25</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">muse <span class="pill">3.75</span></button><button role="tab" id="tab-6" aria-controls="panel-6" aria-selected="false" tabindex="-1">GPT-6.1 Sol</button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
         <h3>Evaluation <span class="pill big">9.25 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
         <p>Strong, carefully verified release. normalize_version is a validated pass-through identical to LooseVersion for all non-empty strings, with no new dependencies, and py-modules fixes the flat-layout build. CI is split into lint and test jobs and runs least-privileged. Tests are extensive and guard the change. Changelog, maintenance guide and response are accurate and thorough.</p>
         <div class="two"><div><h4>Strengths</h4><ul><li>Identity semantics preserved for ordinary and non-canonical versions; the only change is ValueError/TypeError for &#39;&#39;/None, which is documented</li><li>py-modules = [&#39;slugkit&#39;] makes the wheel build (wheel contains only slugkit.py); classifiers 3.10-3.13; ruff py310</li><li>CI: contents: read, persist-credentials: false, separate lint job with ruff check plus format --check, pinned ruff through a dev extra, 3.10-3.13 matrix with fail-fast: false</li><li>11 tests, including a differential check against LooseVersion and a fresh-interpreter -W error check that distutils is never imported</li><li>CHANGELOG covers every RELEASE_NOTES line, keeps the Unicode limitation, and separates Internal; MAINTENANCE has clear policy and prioritized items; RESPONSE gives exact multi-interpreter results and found the build defect</li></ul></div><div><h4>Weaknesses</h4><ul><li>Changelog files the pre-existing slugify behavior under &#39;Fixed&#39;, though it says the behavior was already present</li><li>ruff==0.15.8 pin could not be resolved offline (acknowledged)</li><li>Empty-string exception type changes (AttributeError to ValueError), a minor edge-case behavior change (documented)</li></ul></div></div>
@@ -2010,6 +2010,379 @@ class SlugkitTests(unittest.TestCase):
     def test_no_distutils_import(self):
         source = pathlib.Path(__file__).with_name(&quot;slugkit.py&quot;).read_text()
         self.assertNotIn(&quot;distutils&quot;, source)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre></div></section></div><div role="tabpanel" id="panel-6" aria-labelledby="tab-6" hidden><section class="card eval"><p class="muted">Not graded yet.</p></section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="6-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="6-1" aria-selected="false">CHANGELOG.md</button><button role="tab" data-file="6-2" aria-selected="false">MAINTENANCE.md</button><button role="tab" data-file="6-3" aria-selected="false">README.md</button><button role="tab" data-file="6-4" aria-selected="false">TASK.md</button><button role="tab" data-file="6-5" aria-selected="false">ci.yml</button><button role="tab" data-file="6-6" aria-selected="false">MANIFEST.in</button><button role="tab" data-file="6-7" aria-selected="false">pyproject.toml</button><button role="tab" data-file="6-8" aria-selected="false">RELEASE_NOTES.txt</button><button role="tab" data-file="6-9" aria-selected="false">slugkit.py</button><button role="tab" data-file="6-10" aria-selected="false">test_slugkit.py</button></div>
+        <div class="file" id="file-6-0" ><p class="path mono">gpt-6.1-sol/04-project-maintenance/RESPONSE.md</p><div class="prose"><h1>Release maintenance response</h1>
+<p>All requested file deliverables are complete for the 0.4.0 release preparation.
+All feasible local checks were run without network access. Source tests,
+configuration checks, offline artifact builds, sdist tests, and clean-wheel
+installation tests passed. Ruff and Python 3.10–3.12 runtime validation remain
+unverified locally because the required tools/interpreters are unavailable.</p>
+<h2>Changed files</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pyproject.toml</code></td>
+<td>Set version 0.4.0, Python <code>&gt;=3.10,&lt;3.14</code>, matching classifiers, Ruff target <code>py310</code>, a <code>dev</code> extra for Ruff, README metadata, and explicit packaging of the <code>slugkit</code> module.</td>
+</tr>
+<tr>
+<td><code>slugkit.py</code></td>
+<td>Removed <code>distutils</code>; preserve ordinary version strings directly, matching the old string-conversion result without adding a runtime dependency.</td>
+</tr>
+<tr>
+<td><code>test_slugkit.py</code></td>
+<td>Added 12 version cases covering dotted components, leading/trailing zeros, pre-release case/suffixes, development/post-release suffixes, and local labels; added three repeated-punctuation cases.</td>
+</tr>
+<tr>
+<td><code>ci.yml</code></td>
+<td>Test Python 3.10–3.13, run lint once on 3.13, use interpreter-bound pip, read-only repository permissions, and disable persisted credentials. Keep checkout v4 and setup-python v5.</td>
+</tr>
+<tr>
+<td><code>CHANGELOG.md</code></td>
+<td>Separate user-visible changes, internal maintenance, and the known Unicode limitation, using the supplied release notes without inventing a release date or Unicode fix.</td>
+</tr>
+<tr>
+<td><code>MAINTENANCE.md</code></td>
+<td>Add the release checklist, compatibility policy, and three ordered follow-up items.</td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>Describe the existing helpers and development commands; eliminate the missing-README sdist warning.</td>
+</tr>
+<tr>
+<td><code>MANIFEST.in</code></td>
+<td>Include tests, CI configuration, and release/maintenance documentation in the sdist.</td>
+</tr>
+<tr>
+<td><code>RESPONSE.md</code></td>
+<td>Record deliverables, verification, and remaining risks.</td>
+</tr>
+</tbody></table>
+<h2>Exact verification results</h2>
+<p>The supported local interpreter was Python <strong>3.13.7</strong>. The default <code>python3</code>
+was <strong>3.14.7</strong>, outside the supported range. Configuration validation used
+standard-library <code>tomllib</code>/<code>ast</code> and the already-installed PyYAML <strong>6.0.3</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Check or command</th>
+<th>Exit/result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Baseline <code>python3 -m unittest -v</code> on Python 3.14.7</td>
+<td>Exit 1: one failed test-module import, <code>ModuleNotFoundError: No module named &#39;distutils&#39;</code>.</td>
+</tr>
+<tr>
+<td>Updated <code>python3.13 -W error -m unittest discover -v</code></td>
+<td>Exit 0: <code>Ran 3 tests in 0.000s</code>, <code>OK</code>; 12 version subtests and three punctuation subtests passed.</td>
+</tr>
+<tr>
+<td>Final <code>python3.13 -B -W error -m unittest discover -v</code> after cleanup</td>
+<td>Exit 0: <code>Ran 3 tests in 0.000s</code>, <code>OK</code>.</td>
+</tr>
+<tr>
+<td>Inline <code>python3.13 -B -</code> configuration/syntax assertions</td>
+<td>Exit 0: TOML/YAML parsed; verified version, Python bounds/classifiers, README, explicit module packaging, dev extra, Ruff target, CI matrix, permissions, checkout credentials, action majors, test/lint commands, and manifest. Both Python files parsed with each of the 3.10–3.13 grammars: <strong>8 successful syntax parses</strong>. This is not runtime validation of those interpreters.</td>
+</tr>
+<tr>
+<td>Offline inline <code>PYTHONPATH=.checks/tools python3.13 -</code> build/backend assertions</td>
+<td>Exit 0: built <code>slugkit-0.4.0.tar.gz</code> and <code>slugkit-0.4.0-py3-none-any.whl</code> using <code>setuptools.build_meta.build_sdist</code> and <code>build_wheel</code>. Final builds had no missing-README warning.</td>
+</tr>
+<tr>
+<td>Artifact assertions in that build script</td>
+<td>Exit 0: verified wheel contains only <code>slugkit.py</code> plus four dist-info files, metadata version/bounds/classifiers/dev extra/README, and sdist inclusion of the tests and docs. Confirmed build-tool copies and task/report files were excluded. Python-boundary checks accepted 3.10.0, 3.11.0, 3.12.0, 3.13.0, and 3.13.99; rejected 3.9.99 and 3.14.0: <strong>7 passed checks</strong>.</td>
+</tr>
+<tr>
+<td>Extracted-sdist <code>python3.13 -W error -m unittest discover -v</code>, followed by <code>build_wheel</code> from the extracted source</td>
+<td>Exit 0: <strong>3 tests passed</strong>; rebuilt wheel&#39;s <code>slugkit.py</code> matched the original wheel&#39;s module byte-for-byte.</td>
+</tr>
+<tr>
+<td><code>python3.13 -m venv .checks/venv</code></td>
+<td>Exit 0: created an isolated Python 3.13 environment.</td>
+</tr>
+<tr>
+<td><code>.checks/venv/bin/python -m pip --isolated --disable-pip-version-check install --no-index --no-cache-dir --no-deps .checks/dist/slugkit-0.4.0-py3-none-any.whl</code></td>
+<td>Exit 0: <code>Successfully installed slugkit-0.4.0</code>.</td>
+</tr>
+<tr>
+<td>Inline <code>.checks/venv/bin/python -I -W error -</code> wheel regression script</td>
+<td>Exit 0: confirmed import came from the clean venv and installed version was 0.4.0; ran all <strong>3 regression tests successfully</strong>, using the installed wheel rather than the source module.</td>
+</tr>
+<tr>
+<td><code>python3 -m pip --isolated --disable-pip-version-check install --no-index --no-cache-dir --no-deps --target .checks/unsupported-python .checks/dist/slugkit-0.4.0-py3-none-any.whl</code></td>
+<td>Expected exit 1: <code>Package &#39;slugkit&#39; requires a different Python: 3.14.7 not in &#39;&lt;3.14,&gt;=3.10&#39;</code>. Confirms installer enforcement of the upper bound.</td>
+</tr>
+<tr>
+<td><code>python3.13 -m ruff check .</code></td>
+<td>Exit 1: <code>No module named ruff</code>; lint was <strong>not verified</strong>.</td>
+</tr>
+<tr>
+<td><code>python3.13 -m build --no-isolation</code></td>
+<td>Exit 1: <code>No module named build</code>; the standard build frontend was <strong>not verified</strong>. Actual sdist/wheel builds and installation succeeded through the backend as described above.</td>
+</tr>
+<tr>
+<td>Final inline <code>python3.13 -B -</code> deliverable audit</td>
+<td>Exit 0: exactly <strong>11 expected files</strong> present, all nonempty; temporary build files removed; Python source lines fit the configured 100-character limit. This line-length check is not a substitute for Ruff.</td>
+</tr>
+</tbody></table>
+<p>Offline build tools were copied from an existing external uv cache into
+temporary <code>.checks/tools</code>: setuptools <strong>84.0.0</strong>, wheel <strong>0.46.3</strong>, and
+packaging <strong>26.3</strong>. Nothing was downloaded. A pip cache-list probe exited 1
+because the external cache was not writable; a uv tool-list probe exited 2
+because cache initialization was denied. The cached packages were then read
+directly and copied into this task directory for use.</p>
+<p>All project changes and generated verification files stayed inside this task
+directory. Temporary <code>.checks</code>, <code>build</code>, <code>slugkit.egg-info</code>, and <code>__pycache__</code>
+directories were removed after verification; generated artifacts are not
+retained as source deliverables.</p>
+<h2>Remaining risks and release gates</h2>
+<ul>
+<li>Run the configured CI before publishing. Python 3.10, 3.11, and 3.12 were
+unavailable locally; syntax parsing cannot replace their runtime tests.
+GitHub Actions execution and Ruff lint remain unverified.</li>
+<li>This fixture supplies the workflow as root-level <code>ci.yml</code>. GitHub requires
+<code>.github/workflows/ci.yml</code> in the release repository; the maintenance
+checklist includes placing it there before releasing.</li>
+<li>Builds were verified with the cached tool versions above, without an
+isolated build frontend. The existing build requirements and new Ruff extra
+are not fully pinned; minimum-version and future-tool compatibility remain
+release concerns. Reproducible tooling is a prioritized maintenance item.</li>
+<li>Unicode transliteration remains limited. <code>normalize_version</code> preserves
+ordinary string outputs but does not validate input. Empty strings now pass
+through instead of reproducing the old incidental <code>AttributeError</code>;
+non-string inputs are outside the documented compatibility promise.</li>
+</ul>
+<p>This prepares the release; it does not publish artifacts or create a release
+tag. Exact model ID: <code>gpt-6.1-sol</code>.</p>
+</div></div><div class="file" id="file-6-1" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/CHANGELOG.md</p><div class="prose"><h1>Changelog</h1>
+<h2>0.4.0 — Unreleased</h2>
+<h3>User-visible changes</h3>
+<ul>
+<li>Repeated punctuation in <code>slugify</code> consistently collapses to one separator.
+This behavior was already implemented in the supplied code.</li>
+<li>Supported Python versions are now 3.10 through 3.13; Python 3.9 support ends.</li>
+<li>Version handling no longer depends on deprecated <code>distutils</code> internals.
+Ordinary version strings retain their original text, including pre-release
+suffixes and leading or trailing zeros.</li>
+</ul>
+<h3>Internal maintenance</h3>
+<ul>
+<li>CI covers Python 3.10, 3.11, 3.12, and 3.13, with a separate lint job.</li>
+<li>CI uses read-only repository permissions and disables persisted checkout
+credentials. Actions remain <code>actions/checkout@v4</code> and
+<code>actions/setup-python@v5</code>.</li>
+<li>Package metadata, Ruff&#39;s Python target, and regression tests match the
+supported compatibility range.</li>
+</ul>
+<h3>Known limitation</h3>
+<ul>
+<li>Unicode letters are still transliterated poorly by <code>slugify</code>; this release
+does not fix Unicode handling.</li>
+</ul>
+</div></div><div class="file" id="file-6-2" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/MAINTENANCE.md</p><div class="prose"><h1>Maintenance</h1>
+<h2>Release checklist</h2>
+<ul>
+<li>Confirm <code>pyproject.toml</code> declares version <code>0.4.0</code> and Python <code>&gt;=3.10,&lt;3.14</code>.
+Review the changelog against <code>RELEASE_NOTES.txt</code>; add the release date only
+when releasing.</li>
+<li>Place the supplied <code>ci.yml</code> at <code>.github/workflows/ci.yml</code> in the release
+repository. Require its tests on Python 3.10–3.13 and its single lint job to
+pass before publishing.</li>
+<li>Install development tools with <code>python -m pip install -e &#39;.[dev]&#39;</code>, then run
+<code>python -W error -m unittest discover -v</code> and <code>python -m ruff check .</code>.</li>
+<li>Build an sdist and wheel with <code>python -m build</code> (install <code>build</code> separately).
+Install the wheel in a clean supported-Python environment and smoke-test
+both public helpers; confirm artifact metadata and contents.</li>
+<li>After these checks pass, publish the reviewed artifacts and tag <code>0.4.0</code>
+through the project&#39;s release process. This task does not publish or tag.</li>
+</ul>
+<h2>Compatibility policy</h2>
+<ul>
+<li>Release 0.4.0 supports Python 3.10, 3.11, 3.12, and 3.13. Metadata excludes
+Python 3.9 and 3.14; CI tests every supported minor version. New Python
+versions require validation and coordinated metadata/CI updates.</li>
+<li><code>normalize_version</code> preserves ordinary string inputs verbatim, including
+dotted components, zeros, and suffixes. It does not validate version syntax
+or promise legacy exception behavior for empty or non-string inputs.</li>
+<li><code>slugify</code> remains an ASCII-based helper. Unicode transliteration is a known
+limitation. Document deliberate public behavior changes in the changelog
+and accompany them with regression tests.</li>
+</ul>
+<h2>Next three maintenance items, in priority order</h2>
+<ol>
+<li>Define the desired Unicode behavior and add non-ASCII regression cases
+before changing <code>slugify</code>&#39;s transliteration policy.</li>
+<li>Define <code>normalize_version</code>&#39;s contract for empty, malformed, and non-string
+inputs, then test the chosen behavior without silently canonicalizing
+existing ordinary versions.</li>
+<li>Automate sdist/wheel builds and clean-environment installation checks in
+CI, and record tested build/lint tool versions for reproducible releases.</li>
+</ol>
+</div></div><div class="file" id="file-6-3" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/README.md</p><div class="prose"><h1>slugkit</h1>
+<p>Small slug and version helpers for Python 3.10 through 3.13.</p>
+<pre><code class="language-python">from slugkit import normalize_version, slugify
+
+slugify(&quot;  Hello, World! &quot;)  # &quot;hello-world&quot;
+normalize_version(&quot;2.0rc1&quot;)  # &quot;2.0rc1&quot;
+</code></pre>
+<p><code>slugify</code> lowercases text, replaces runs of characters outside ASCII letters
+and digits with a hyphen, and removes leading and trailing hyphens. Unicode
+transliteration remains a known limitation.</p>
+<p><code>normalize_version</code> preserves ordinary version strings verbatim, including
+suffixes and leading or trailing zeros; it does not validate version syntax.</p>
+<p>For local development:</p>
+<pre><code class="language-sh">python -m pip install -e &#39;.[dev]&#39;
+python -W error -m unittest discover -v
+python -m ruff check .
+</code></pre>
+<p>See <code>CHANGELOG.md</code> for release changes and <code>MAINTENANCE.md</code> for the release
+checklist and compatibility policy.</p>
+</div></div><div class="file" id="file-6-4" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/TASK.md</p><div class="prose"><h1>Task 04 — Project maintenance: prepare a Python library release</h1>
+<p>Prepare this small library for a <code>0.4.0</code> release. Work from the supplied files
+and do not use the network.</p>
+<p>Requirements:</p>
+<ul>
+<li>The supported Python range is 3.10 through 3.13. Align metadata and CI.</li>
+<li>Replace deprecated <code>distutils</code> usage without changing <code>normalize_version</code>&#39;s
+observable behavior for ordinary versions.</li>
+<li>Make the test/lint workflow coherent and least-privileged; pin GitHub Actions
+to the major versions already named in the fixture notes.</li>
+<li>Create <code>CHANGELOG.md</code> from <code>RELEASE_NOTES.txt</code>, separating user-visible changes
+from internal maintenance and avoiding invented claims.</li>
+<li>Create <code>MAINTENANCE.md</code> with a short release checklist, compatibility policy,
+and the next three prioritized maintenance items.</li>
+<li>Add or improve tests where the compatibility change warrants it.</li>
+</ul>
+<p>Run all feasible local checks. Write <code>RESPONSE.md</code> with changed files, remaining
+risks, and exact verification results. Work only in this directory.</p>
+</div></div><div class="file" id="file-6-5" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/ci.yml</p><pre><code>name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [&quot;3.10&quot;, &quot;3.11&quot;, &quot;3.12&quot;, &quot;3.13&quot;]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -e .
+      - run: python -W error -m unittest discover -v
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: &quot;3.13&quot;
+      - run: python -m pip install -e &#39;.[dev]&#39;
+      - run: python -m ruff check .
+</code></pre></div><div class="file" id="file-6-6" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/MANIFEST.in</p><p class="muted">Binary file, not shown.</p></div><div class="file" id="file-6-7" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/pyproject.toml</p><pre><code>[build-system]
+requires = [&quot;setuptools&gt;=68&quot;, &quot;wheel&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+name = &quot;slugkit&quot;
+version = &quot;0.4.0&quot;
+description = &quot;Small slug and version helpers&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.10,&lt;3.14&quot;
+classifiers = [
+    &quot;Programming Language :: Python :: 3.10&quot;,
+    &quot;Programming Language :: Python :: 3.11&quot;,
+    &quot;Programming Language :: Python :: 3.12&quot;,
+    &quot;Programming Language :: Python :: 3.13&quot;,
+]
+
+[project.optional-dependencies]
+dev = [&quot;ruff&quot;]
+
+[tool.setuptools]
+py-modules = [&quot;slugkit&quot;]
+
+[tool.ruff]
+target-version = &quot;py310&quot;
+line-length = 100
+</code></pre></div><div class="file" id="file-6-8" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/RELEASE_NOTES.txt</p><pre><code>Target: 0.4.0
+
+- slugify now handles repeated punctuation consistently (already implemented).
+- remove Python 3.9 support; add validation on Python 3.13.
+- replace deprecated version parsing internals while retaining common output.
+- internal: CI actions should remain checkout v4 and setup-python v5.
+- known limitation: Unicode letters are transliterated poorly; do not claim this
+  is fixed in 0.4.0.
+
+</code></pre></div><div class="file" id="file-6-9" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/slugkit.py</p><pre><code>import re
+
+
+def slugify(value: str) -&gt; str:
+    value = value.strip().lower()
+    return re.sub(r&quot;[^a-z0-9]+&quot;, &quot;-&quot;, value).strip(&quot;-&quot;)
+
+
+def normalize_version(value: str) -&gt; str:
+    &quot;&quot;&quot;Preserve version text, including zeros and suffixes, without validating it.
+
+    LooseVersion&#39;s string conversion returned the original version text;
+    no parsing is needed to retain that behavior for ordinary versions.
+    &quot;&quot;&quot;
+    return value
+</code></pre></div><div class="file" id="file-6-10" hidden><p class="path mono">gpt-6.1-sol/04-project-maintenance/test_slugkit.py</p><pre><code>import unittest
+
+from slugkit import normalize_version, slugify
+
+
+class SlugkitTests(unittest.TestCase):
+    def test_slugify(self):
+        self.assertEqual(slugify(&quot;  Hello, World! &quot;), &quot;hello-world&quot;)
+
+    def test_normalize_version(self):
+        versions = (
+            &quot;1&quot;,
+            &quot;1.2&quot;,
+            &quot;1.2.0&quot;,
+            &quot;1.2.0.0&quot;,
+            &quot;01.002.0003&quot;,
+            &quot;1.0a1&quot;,
+            &quot;1.0b2&quot;,
+            &quot;2.0rc1&quot;,
+            &quot;2.0RC1&quot;,
+            &quot;1.0.dev3&quot;,
+            &quot;1.0.post4&quot;,
+            &quot;1.0+local.2&quot;,
+        )
+        for version in versions:
+            with self.subTest(version=version):
+                self.assertEqual(normalize_version(version), version)
+
+    def test_slugify_repeated_punctuation(self):
+        values = {
+            &quot;Hello...,,, World!!!&quot;: &quot;hello-world&quot;,
+            &quot;---hello___world---&quot;: &quot;hello-world&quot;,
+            &quot;!!!&quot;: &quot;&quot;,
+        }
+        for value, expected in values.items():
+            with self.subTest(value=value):
+                self.assertEqual(slugify(value), expected)
 
 
 if __name__ == &quot;__main__&quot;:

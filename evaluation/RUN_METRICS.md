@@ -17,6 +17,7 @@ for each one is as Arda identified it.
 | Opus 5.5 | high | A | ~01:48 | 02:09:37 | ~21 min | $79 (01:44 reading) | $65 | **$14** | 13 / 13 | `claude/focused-hopper-vexle5` in `c0ze/agent-eval-opus-5.5` |
 | muse (muse-spark-1.3) | max | local (tincan on the Mac) | 02:12:21 | 02:32:49 | 20 min 28 s | n/a | n/a | not measurable; see tokens | 13 / 13 | `muse-run` in `c0ze/agent-eval-muse` |
 | GPT-6 Luna (`gpt-6-luna`) | max | Codex CLI, gand-business | 03:06:18 | 03:40:28 | 34 min 10 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-luna` |
+| GPT-6.1 Sol (`gpt-6.1-sol`) | xhigh | Codex CLI, gand-business | 04:06:46 | 04:54:38 | 47 min 52 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6.1-sol` |
 | GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business | 03:06:18 | paused at 9 / 13 | 15 min 32 s so far | n/a | n/a | quota, see below | 9 / 13 so far | `run` in `c0ze/agent-eval-gpt-6-astra` |
 
 Durations are as Arda timed them. The push times agree with them.
@@ -88,3 +89,14 @@ On tasks 01-09 the two used about the same number of tokens (Luna about 2.00M in
 but Astra's used up a full 5-hour window and 16% of the weekly quota, against about 3% and 1% for
 Luna. Astra costs far more quota per token. Timing and the interruption are in
 `run-logs/gpt-orchestration/ASTRA_TIMING.md`.
+
+### GPT-6.1 Sol (xhigh, gand-business)
+
+| Tasks | Wall-clock | Input tokens (cached) | Output tokens (reasoning) | 5-hour quota | Weekly quota |
+|---|---|---|---|---|---|
+| 13 / 13 | 47 min 52 s | 5,847,898 (5,275,520) | 242,799 (75,183) | 81% -> 33% left | 73% -> 66% left |
+
+Codex was updated to 0.159.0 for this run. A duplicate launch at 04:02 ran two copies on the
+same repository for about four minutes before both were stopped; the repository was reset and
+the clean run above started at 04:06:46. The false start used quota too (94% -> 81% of the
+5-hour window). Its output is kept outside the repositories.

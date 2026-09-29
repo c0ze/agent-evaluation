@@ -24,7 +24,7 @@ run_task() {
   local t=$1 body="Your task directory is $R/$1. Read TASK.md there and complete it. Work only inside that directory; do not read or change anything else in the repository. Do not use the network. When you finish, reply with a one-paragraph summary, whether you completed every deliverable, and your exact model ID."
   local s=$(date +%s); echo "astra $t start $(date '+%F %T') [resumed]" >> $O/times.log
   CODEX_HOME=$H "$CODEX" exec --ignore-user-config --ephemeral --skip-git-repo-check -s workspace-write \
-    -m gpt-6-astra -c model_reasoning_effort=xhigh -C "$R" --json -o "$O/astra/$t.reply.md" "$body" \
+    -m gpt-6-astra -c model_reasoning_effort=xhigh -C "$R" --json -o "$O/astra/$t.reply.md" "$body" </dev/null \
     > "$O/astra/$t.events.jsonl" 2> "$O/astra/$t.stderr"
   local rc=$? e=$(date +%s); echo "astra $t end $(date '+%F %T') rc=$rc secs=$((e-s)) [resumed]" >> $O/times.log
 }

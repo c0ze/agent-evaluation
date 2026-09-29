@@ -26,12 +26,12 @@ health verification, backup/restore, secret handling, and rollback. Write
 performed. Work only in this directory; do not actually start containers.</p>
 </div>
       <p class="muted">Inputs given: <a href="../../../_templates/03-infra-management/.env.example" target="_blank" rel="noopener" class="mono">.env.example</a>, <a href="../../../_templates/03-infra-management/compose.yaml" target="_blank" rel="noopener" class="mono">compose.yaml</a>, <a href="../../../_templates/03-infra-management/Dockerfile" target="_blank" rel="noopener" class="mono">Dockerfile</a>, <a href="../../../_templates/03-infra-management/nginx.conf" target="_blank" rel="noopener" class="mono">nginx.conf</a>, <a href="../../../_templates/03-infra-management/requirements.txt" target="_blank" rel="noopener" class="mono">requirements.txt</a></p></details>
-    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">mimo</th><th scope="col">GPT-6 Luna</th><th scope="col">muse</th></tr>
-    <tr><th scope="row">security/correctness <span class="muted">(4)</span></th><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.69">3.25</td><td class="num heat" style="--h:0.69">3.25</td><td class="num heat" style="--h:0.58">3</td><td class="num heat" style="--h:0.48">2.75</td></tr><tr><th scope="row">operability <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.44">2</td></tr><tr><th scope="row">runbook and judgment <span class="muted">(3)</span></th><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.44">2</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat" style="--h:0.31">1.75</td></tr>
-    <tr class="total"><th scope="row">Total (10)</th><td class="num">9.5</td><td class="num">9.25</td><td class="num">8.25</td><td class="num">7.5</td><td class="num">7</td><td class="num">6.5</td></tr></table></div>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">mimo</th><th scope="col">GPT-6 Luna</th><th scope="col">muse</th><th scope="col">GPT-6.1 Sol</th></tr>
+    <tr><th scope="row">security/correctness <span class="muted">(4)</span></th><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.69">3.25</td><td class="num heat" style="--h:0.69">3.25</td><td class="num heat" style="--h:0.58">3</td><td class="num heat" style="--h:0.48">2.75</td><td class="num heat">–</td></tr><tr><th scope="row">operability <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.44">2</td><td class="num heat">–</td></tr><tr><th scope="row">runbook and judgment <span class="muted">(3)</span></th><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.44">2</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat">–</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">9.5</td><td class="num">9.25</td><td class="num">8.25</td><td class="num">7.5</td><td class="num">7</td><td class="num">6.5</td><td class="num">–</td></tr></table></div>
     <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = Fable 5.1, B = Sonnet 5.5, C = Opus 5.5, D = GPT-6 Luna, E = muse, F = mimo.</p><div class="prose"><p>A and B are close. B wins on runbook accuracy (restore rehearsal, bind-mount reload subtlety, loopback default); A wins on actually implementing a dependency-aware /healthz. C, D, E and F all ship placeholder passwords that pass the ${VAR:?} guard (checked with docker compose --env-file .env.example config). F has the strongest container hardening, but its own scram local-auth setting breaks its backup/restore runbook, which pulls it below C. D and F are near-tied (F&#39;s configs are much stronger, D&#39;s runbook commands actually work). No containers were started; nginx -t was not available.</p>
 </div></details></section>
-    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">9.5</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9.25</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">8.25</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">7.5</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">7</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">muse <span class="pill">6.5</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">9.5</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9.25</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">8.25</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">7.5</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">7</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">muse <span class="pill">6.5</span></button><button role="tab" id="tab-6" aria-controls="panel-6" aria-selected="false" tabindex="-1">GPT-6.1 Sol</button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
         <h3>Evaluation <span class="pill big">9.5 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
         <p>Correct and careful hardening with the most accurate, practical runbook. Passwords are blank so the guard works, nginx is published on loopback by default and hardened (read_only, reduced caps), nginx re-resolves the api, and Redis requires a password. The /healthz endpoint is assumed rather than implemented, and that dependency is stated clearly.</p>
         <div class="two"><div><h4>Strengths</h4><ul><li>Blank passwords in .env.example plus ${VAR:?} (confirmed: config fails on the shipped template); the runbook generates them with openssl and sed</li><li>Only the proxy is published, on 127.0.0.1:8080 by default; backend is internal; X-Forwarded-For is overwritten to prevent spoofing</li><li>Resolver plus variable proxy_pass for re-resolution; JSON 503 on upstream failure; proxy_next_upstream off</li><li>Runbook: backup sanity check with pg_restore --list, restore rehearsal into a scratch DB, --single-transaction restore, rollback with --no-deps --no-build, and a correct note that a git checkout of a single-file bind mount needs a restart rather than a reload</li><li>RESPONSE ranking and verification are thorough and honest, including what was not verified and the risk from read_only/cap_drop on the proxy</li></ul></div><div><h4>Weaknesses</h4><ul><li>No /healthz is implemented; if the app lacks it, api never becomes healthy and the proxy never starts (documented)</li><li>read_only plus cap_drop on the nginx proxy is untested and could need adjustment (flagged by the author)</li><li>The Redis password is visible on the command line</li></ul></div></div>
@@ -3866,4 +3866,576 @@ gunicorn==23.0.0
 psycopg2-binary==2.9.10
 redis==6.4.0
 
+</code></pre></div></section></div><div role="tabpanel" id="panel-6" aria-labelledby="tab-6" hidden><section class="card eval"><p class="muted">Not graded yet.</p></section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="6-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="6-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="6-2" aria-selected="false">TASK.md</button><button role="tab" data-file="6-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="6-4" aria-selected="false">.env.example</button><button role="tab" data-file="6-5" aria-selected="false">.gitignore</button><button role="tab" data-file="6-6" aria-selected="false">app.py</button><button role="tab" data-file="6-7" aria-selected="false">compose.yaml</button><button role="tab" data-file="6-8" aria-selected="false">Dockerfile</button><button role="tab" data-file="6-9" aria-selected="false">nginx.conf</button><button role="tab" data-file="6-10" aria-selected="false">requirements.txt</button></div>
+        <div class="file" id="file-6-0" ><p class="path mono">gpt-6.1-sol/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Infrastructure hardening response</h1>
+<p>All requested deliverables are present: corrected <code>Dockerfile</code>, <code>compose.yaml</code>,
+and <code>nginx.conf</code>; updated <code>.env.example</code>; and <code>RUNBOOK.md</code> covering startup,
+health verification, backup/restore, secrets, and rollback. Added the minimal
+<code>app.py</code> because no application module was supplied, pinned the complete Python
+runtime dependency set, and added Git/build exclusions for secrets and backups.
+No unrelated services were added.</p>
+<h2>Highest-risk original problems</h2>
+<ol>
+<li><strong>Public data services and embedded credentials.</strong> Postgres and Redis published
+host ports; Postgres used <code>admin/password</code>, and Redis had no authentication.
+The API&#39;s public port bypassed nginx. Only nginx now publishes a port, bound
+to loopback by default. Postgres/Redis share an internal backend network,
+both require externally supplied passwords, and Redis checks password format.</li>
+<li><strong>Unsafe and non-repeatable API runtime.</strong> The Dockerfile ran as root using
+Flask&#39;s development server, ignored <code>requirements.txt</code>, installed unpinned
+packages, and copied the entire directory into the image. It now runs
+Gunicorn as uid 10001, copies only required files, installs exact direct and
+transitive versions with <code>--no-deps</code>, and checks dependency consistency at
+build time. No actual application source had been supplied initially.</li>
+<li><strong>Data loss and uncontrolled version changes.</strong> No explicit named Postgres
+volume existed; image recreation could orphan an implicit anonymous volume.
+<code>latest</code> could also introduce incompatible database major versions. Data now
+uses a named volume and images specify patch tags, with digest overrides and
+database upgrade limitations documented.</li>
+<li><strong>Startup races and no operational bounds.</strong> Ordering alone did not verify
+dependency readiness. Authenticated database/cache probes now gate API
+startup, and API readiness gates nginx. Each service has restart policy,
+rotating logs, CPU/memory/PID limits, and a shutdown grace period. Compose&#39;s
+limitations after startup are documented explicitly.</li>
+<li><strong>Incomplete proxy behavior.</strong> nginx lacked client/protocol forwarding policy
+and explicit timeouts. It now overwrites untrusted forwarding headers, bounds
+request sizes and timeouts, avoids automatic upstream retries, logs to the
+container streams, and refreshes Docker DNS after API replacement. Its config
+is mounted read-only and it runs without root.</li>
+</ol>
+<h2>Verification performed</h2>
+<ul>
+<li>Docker Compose v5.1.4 parsed and rendered the configuration offline using
+<code>.env.example</code> plus dummy password fixtures. Assertions checked the exact four
+services, sole loopback proxy publication, network membership/internal flag,
+named data volume, health-based dependencies, read-only mounts, capability
+drops, restart/logging settings, and CPU/memory/PID limits.</li>
+<li>Independently emptied each password fixture; Compose rejected both missing
+password cases with the expected variable named in its error.</li>
+<li>Parsed/compiled <code>app.py</code> without generating bytecode and checked all 11 runtime
+packages have exact version pins. Reviewed the non-root Gunicorn command,
+Dockerfile readiness probe, explicit copies, and build exclusions.</li>
+<li>Executed the actual readiness/liveness functions with stubbed Flask and mocked
+database/cache clients: healthy dependencies succeed; database errors, Redis
+errors, false <code>PING</code>, unexpected SQL results, invalid port configuration, and
+missing configuration return 503. Checked resource cleanup, bounded timeouts,
+disabled Redis retries, and responses containing no exception/secret details.
+These are logic checks, not real Flask/driver integration tests.</li>
+<li>Parsed Redis startup and database/cache healthcheck shell scripts with
+<code>sh -n</code>. Executed only Redis password validation/config generation, replacing
+its final server launch with an exit: two valid hexadecimal fixtures passed,
+four invalid fixtures failed, and the generated config had mode 0600. Temporary
+files were created and removed inside this directory.</li>
+<li>Parsed all eight runbook shell blocks with <code>sh -n</code> and checked nginx&#39;s block
+structure, forwarding directives, DNS resolver, writable paths, and timeouts.
+Confirmed no real <code>.env</code> file was created.</li>
+</ul>
+<p>No network access, package downloads, image pulls/builds, container starts, HTTP
+requests, or live database/cache probes were performed. A host nginx executable
+is unavailable, so <code>nginx -t</code> was not run. Image availability, actual wheel
+installation, current vulnerabilities, and runtime integration remain
+unverified; the runbook supplies the deployment checks. Patch tags are not
+immutable digests, environment secrets remain visible to Docker administrators,
+and the example&#39;s bootstrap database role is a superuser; these limits and their
+production follow-ups are documented.</p>
+</div></div><div class="file" id="file-6-1" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/RUNBOOK.md</p><div class="prose"><h1>Small API operations</h1>
+<p>Run all commands from this directory. Use Docker Engine with the Docker Compose
+v2 plugin (2.20+ or compatible newer versions), not legacy <code>docker-compose</code> or
+Swarm. This is one host with four services; it provides neither high availability
+nor automatic rolling deployment. No containers were started during this task.</p>
+<h2>Startup</h2>
+<pre><code class="language-sh">umask 077
+cp .env.example .env
+chmod 600 .env
+python3 -c &#39;import secrets; print(secrets.token_hex(32))&#39;
+python3 -c &#39;import secrets; print(secrets.token_hex(32))&#39;
+</code></pre>
+<p>Put the independently generated values in <code>POSTGRES_PASSWORD</code> and
+<code>REDIS_PASSWORD</code> in <code>.env</code>. Redis requires at least 32 hexadecimal characters.
+Blank passwords cause configuration validation to fail. The API uses separate
+connection fields, so database passwords do not require URL escaping. Set
+<code>API_IMAGE</code> to a new release tag, such as <code>small-api:release-001</code>, before building.</p>
+<pre><code class="language-sh">docker compose config --quiet
+docker compose up --detach --build --wait --wait-timeout 120
+</code></pre>
+<p>The supplied <code>app.py</code> makes this otherwise source-less example runnable: <code>/</code>
+returns JSON, <code>/health/live</code> checks the application process, and <code>/health/ready</code>
+performs an authenticated <code>SELECT 1</code> and Redis <code>PING</code> with bounded timeouts and
+no retries. Extend this module for the real API and retain these health routes.
+Gunicorn runs as uid 10001. nginx and Redis also run without root or capabilities;
+their writable temporary files live on tmpfs. Postgres uses its official
+entrypoint to initialize volume ownership and drop privileges.</p>
+<p>Only nginx publishes a host port, at <code>127.0.0.1:8080</code> by default. The API reaches
+<code>db:5432</code> and <code>cache:6379</code> by Docker DNS on an internal backend network. Redis is
+an authenticated, disposable cache with a 128 MiB limit and LRU eviction;
+recreation loses its contents. Do not use it for durable jobs or primary data.
+Postgres data lives in the named <code>small-api_postgres_data</code> volume. Keep the
+Compose project name stable. <code>docker compose down</code> preserves that volume;
+<strong>do not use <code>down --volumes</code> or prune it</strong> when data must survive.</p>
+<p>These defaults serve HTTP locally. Before public exposure, provide HTTPS at the
+existing ingress and deliberately configure the bind address and firewall.
+nginx overwrites incoming forwarding headers because it is the direct edge.
+If another proxy is introduced, configure explicit trusted proxy addresses and
+scheme handling before relying on forwarded client information.</p>
+<h2>Health verification and diagnosis</h2>
+<pre><code class="language-sh">docker compose ps
+curl --fail --show-error http://127.0.0.1:8080/health/live
+curl --fail --show-error http://127.0.0.1:8080/health/ready
+docker compose exec -T proxy nginx -t
+docker compose exec -T api id
+docker compose logs --tail 100 proxy api db cache
+</code></pre>
+<p>Both HTTP checks should return <code>{&quot;status&quot;:&quot;ok&quot;}</code>. Readiness returns HTTP 503
+when either dependency fails; nginx&#39;s healthcheck exercises that same route
+through the proxy. If <code>HTTP_PORT</code> changed, adjust the URLs. <code>docker compose ps</code>
+should show only the proxy port published, all services healthy, and <code>id</code> should
+show uid 10001. To inspect a particular probe failure locally:</p>
+<pre><code class="language-sh">docker inspect --format &#39;{{json .State.Health}}&#39; &quot;$(docker compose ps --quiet api)&quot;
+</code></pre>
+<p>API startup waits for healthy Postgres and Redis; proxy startup waits for a
+healthy API. These conditions apply during startup. A later unhealthy status
+does not restart a container or stop its dependants. <code>unless-stopped</code> restarts
+exited processes, not merely unhealthy processes. Investigate logs, credentials,
+memory limits, and dependencies, then recreate/restart the affected service.
+DNS is re-resolved by nginx after API replacement. Logs rotate at 10 MiB with
+three files per service; CPU, memory, and PID limits are starting budgets to tune
+against real load, not capacity guarantees.</p>
+<h2>Backup and restore</h2>
+<p>Back up before upgrades or migrations. These commands authenticate inside the
+database container without printing the password; never copy a live data
+directory as a logical backup.</p>
+<pre><code class="language-sh">umask 077
+mkdir -p backups
+backup=&quot;backups/app-$(date -u +%Y%m%dT%H%M%SZ).dump&quot;
+docker compose exec -T db sh -ec &#39;PGPASSWORD=&quot;$POSTGRES_PASSWORD&quot; exec pg_dump --host=127.0.0.1 --username=&quot;$POSTGRES_USER&quot; --dbname=&quot;$POSTGRES_DB&quot; --no-password --format=custom&#39; &gt; &quot;$backup.tmp&quot; &amp;&amp; mv &quot;$backup.tmp&quot; &quot;$backup&quot;
+docker compose exec -T db pg_restore --list &lt; &quot;$backup&quot;
+</code></pre>
+<p>Only a successful dump is renamed to <code>.dump</code>; remove a failed <code>.tmp</code> and retry.
+Archive listing is a preliminary integrity check. Copy successful backups to
+encrypted storage outside this host, apply a retention policy, and periodically
+test a restore to a separate database before trusting them. The dump contains
+the database, not cluster roles or <code>.env</code>; retain those settings securely too.</p>
+<p>The following restore <strong>destroys the current application database</strong>. Select and
+verify the intended backup, take a fresh pre-restore backup, and stop all writers
+(including external clients). Use the recorded compatible Postgres image.</p>
+<pre><code class="language-sh">backup=backups/app-REPLACE_WITH_TIMESTAMP.dump
+test -s &quot;$backup&quot; &amp;&amp; \
+docker compose exec -T db pg_restore --list &lt; &quot;$backup&quot; &amp;&amp; \
+docker compose stop proxy api cache &amp;&amp; \
+docker compose exec -T db sh -ec &#39;export PGPASSWORD=&quot;$POSTGRES_PASSWORD&quot;; dropdb --host=127.0.0.1 --username=&quot;$POSTGRES_USER&quot; --no-password --if-exists --force &quot;$POSTGRES_DB&quot;; createdb --host=127.0.0.1 --username=&quot;$POSTGRES_USER&quot; --no-password --owner=&quot;$POSTGRES_USER&quot; --template=template0 &quot;$POSTGRES_DB&quot;&#39; &amp;&amp; \
+docker compose exec -T db sh -ec &#39;PGPASSWORD=&quot;$POSTGRES_PASSWORD&quot; exec pg_restore --host=127.0.0.1 --username=&quot;$POSTGRES_USER&quot; --dbname=&quot;$POSTGRES_DB&quot; --no-password --exit-on-error --single-transaction --no-owner --no-privileges&#39; &lt; &quot;$backup&quot;
+</code></pre>
+<p>The <code>&amp;&amp;</code> chain stops on failure, including a missing or unreadable archive.
+Proceed only if every restore command succeeds. Stopping Redis clears stale
+cached data. Dropping/recreating the database also removes objects absent from
+the backup. On failure keep writers stopped,
+investigate, and repeat the restore. On success:</p>
+<pre><code class="language-sh">docker compose up --detach --no-build --wait --wait-timeout 120
+curl --fail --show-error http://127.0.0.1:8080/health/ready
+</code></pre>
+<h2>Secrets and versions</h2>
+<p><code>.env</code> is a local convenience, not a secret manager. It and <code>backups/</code> are ignored
+by Git, and the build context admits only the Dockerfile, requirements, and API
+source. Do not commit real secrets, paste resolved Compose output into tickets,
+or expose container inspection output: environment secrets are visible to
+Docker administrators. Redis&#39;s private startup config avoids passwords in
+process arguments. Use a managed secret source or mounted secret files for a
+production deployment and adapt the clients accordingly.</p>
+<p>Postgres initialization variables apply only when the data volume is empty.
+Changing <code>.env</code> alone does not rotate an existing database password. Use an
+interactive <code>psql</code> session (<code>docker compose exec db psql -U app -d app</code>, adjusting
+the names) and <code>\password app</code>; then update <code>.env</code> and recreate <code>db</code> and <code>api</code> so
+their probes and clients use the new value. Expect downtime and do not delete the
+volume. To rotate Redis&#39;s password, update <code>.env</code> and recreate <code>cache</code> and <code>api</code>;
+its cache contents will be lost. Re-run health verification afterward.</p>
+<p>The official image makes <code>POSTGRES_USER</code> the bootstrap superuser. This minimal
+example uses that role for its read-only readiness query; provision a separate
+least-privilege application role before adding business database operations.</p>
+<p>All Python runtime dependencies, including transitive dependencies, have exact
+versions. Installation uses binary wheels with <code>--no-deps</code> and <code>pip check</code>.
+Image tags specify patch versions but tags can be republished. For immutable
+releases, replace the image variables with approved <code>repository@sha256:...</code>
+references and retain built API images, dependency wheels/hashes, and config
+snapshots. Artifact availability and current vulnerability status have not been
+checked offline; review and update the pinned baseline before deployment.</p>
+<h2>Rollback</h2>
+<p>Before each release, retain the previous API image under a distinct tag/digest,
+record all image references, save <code>compose.yaml</code> and <code>nginx.conf</code> securely in
+<code>backups/</code>, and take a database backup. Never overwrite or prune the sole copy of
+the previous image. Expect a brief interruption while Compose replaces services.</p>
+<p>Restore the previous Compose/nginx files and set the image variables in <code>.env</code>
+to the recorded versions while retaining current valid secrets. Then:</p>
+<pre><code class="language-sh">docker compose config --quiet
+docker compose up --detach --no-build --pull never --wait --wait-timeout 120
+curl --fail --show-error http://127.0.0.1:8080/health/ready
+</code></pre>
+<p><code>--no-build --pull never</code> reuses the retained release instead of rebuilding or
+fetching a different image. Prefer backward-compatible schema changes. If a
+migration prevents application rollback, keep writers stopped and use the
+pre-release restore procedure; that loses writes since the backup. Never run an
+older Postgres major version against a newer major&#39;s data directory. Major
+database upgrades require a separate upgrade/restore plan, not a tag rollback.</p>
+</div></div><div class="file" id="file-6-2" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/TASK.md</p><div class="prose"><h1>Task 03 — Infrastructure management: harden a small deployment</h1>
+<p>Review and improve the supplied <code>Dockerfile</code>, <code>compose.yaml</code>, and <code>nginx.conf</code>
+for a small Python API behind nginx with Postgres and Redis. Do not add
+Kubernetes or unrelated services.</p>
+<p>Goals:</p>
+<ul>
+<li>No embedded credentials or public database/cache ports.</li>
+<li>The API runs as a non-root user with a production server and reproducible
+dependency installation.</li>
+<li>Add meaningful health checks and startup dependencies based on health.</li>
+<li>Persist Postgres data, make internal service communication explicit, and add
+sensible restart/logging/resource settings without pretending Compose is a
+full orchestrator.</li>
+<li>Proxy headers and timeouts should be appropriate for a JSON API.</li>
+<li>Keep local operation straightforward through <code>.env.example</code>.</li>
+</ul>
+<p>Deliver corrected configuration and a concise <code>RUNBOOK.md</code> covering startup,
+health verification, backup/restore, secret handling, and rollback. Write
+<code>RESPONSE.md</code> listing the highest-risk original problems and verification you
+performed. Work only in this directory; do not actually start containers.</p>
+</div></div><div class="file" id="file-6-3" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/.dockerignore</p><pre><code># Allow only the files needed by the API build; secrets/backups never enter it.
+**
+!Dockerfile
+!requirements.txt
+!app.py
+</code></pre></div><div class="file" id="file-6-4" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/.env.example</p><pre><code># Copy to .env, chmod 600, and fill both passwords before running Compose.
+# Generate each independently with: python3 -c &#39;import secrets; print(secrets.token_hex(32))&#39;
+POSTGRES_USER=app
+POSTGRES_PASSWORD=
+POSTGRES_DB=app
+REDIS_PASSWORD=
+
+# Local HTTP only. See RUNBOOK.md before exposing this beyond the host.
+PROXY_BIND=127.0.0.1
+HTTP_PORT=8080
+
+# Use a distinct API_IMAGE tag for each release; retain the previous image.
+API_IMAGE=small-api:local
+# These can also be set to approved repository@sha256:... references.
+PYTHON_IMAGE=python:3.13.7-slim-bookworm
+NGINX_IMAGE=nginx:1.28.0-alpine
+POSTGRES_IMAGE=postgres:17.6-bookworm
+REDIS_IMAGE=redis:7.4.5-bookworm
+</code></pre></div><div class="file" id="file-6-5" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/.gitignore</p><pre><code>.env
+.env.*
+!.env.example
+backups/
+__pycache__/
+.venv/
+</code></pre></div><div class="file" id="file-6-6" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/app.py</p><pre><code>&quot;&quot;&quot;Minimal runnable JSON API; replace/extend routes with the real application.&quot;&quot;&quot;
+
+import os
+
+import psycopg2
+import redis
+from flask import Flask, jsonify
+from redis.backoff import NoBackoff
+from redis.retry import Retry
+
+
+app = Flask(__name__)
+app.config[&quot;MAX_CONTENT_LENGTH&quot;] = 1024 * 1024
+
+
+@app.get(&quot;/&quot;)
+def index():
+    return jsonify(service=&quot;small-api&quot;)
+
+
+@app.get(&quot;/health/live&quot;)
+def live():
+    return jsonify(status=&quot;ok&quot;)
+
+
+@app.get(&quot;/health/ready&quot;)
+def ready():
+    &quot;&quot;&quot;Verify authenticated access without writing application data.&quot;&quot;&quot;
+    connection = None
+    cache = None
+    try:
+        connection = psycopg2.connect(
+            host=os.environ[&quot;POSTGRES_HOST&quot;],
+            port=int(os.environ.get(&quot;POSTGRES_PORT&quot;, &quot;5432&quot;)),
+            user=os.environ[&quot;POSTGRES_USER&quot;],
+            password=os.environ[&quot;POSTGRES_PASSWORD&quot;],
+            dbname=os.environ[&quot;POSTGRES_DB&quot;],
+            connect_timeout=2,
+            options=&quot;-c statement_timeout=2000&quot;,
+        )
+        with connection.cursor() as cursor:
+            cursor.execute(&quot;SELECT 1&quot;)
+            if cursor.fetchone() != (1,):
+                raise RuntimeError(&quot;Unexpected database health result&quot;)
+        cache = redis.Redis(
+            host=os.environ[&quot;REDIS_HOST&quot;],
+            port=int(os.environ.get(&quot;REDIS_PORT&quot;, &quot;6379&quot;)),
+            password=os.environ[&quot;REDIS_PASSWORD&quot;],
+            socket_connect_timeout=1,
+            socket_timeout=1,
+            retry=Retry(NoBackoff(), 0),
+        )
+        if not cache.ping():
+            raise RuntimeError(&quot;Unexpected cache health result&quot;)
+    except (psycopg2.Error, redis.exceptions.RedisError, KeyError, ValueError, RuntimeError):
+        # Do not expose connection strings, credentials, or exception messages.
+        return jsonify(status=&quot;unavailable&quot;), 503
+    finally:
+        if connection is not None:
+            connection.close()
+        if cache is not None:
+            cache.close()
+    return jsonify(status=&quot;ok&quot;)
+</code></pre></div><div class="file" id="file-6-7" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/compose.yaml</p><pre><code>name: small-api
+
+x-service-defaults: &amp;service-defaults
+  restart: unless-stopped
+  init: true
+  security_opt:
+    - no-new-privileges:true
+  logging:
+    driver: json-file
+    options:
+      max-size: &quot;10m&quot;
+      max-file: &quot;3&quot;
+
+services:
+  proxy:
+    &lt;&lt;: *service-defaults
+    image: ${NGINX_IMAGE:-nginx:1.28.0-alpine}
+    user: &quot;101:101&quot;
+    ports:
+      - &quot;${PROXY_BIND:-127.0.0.1}:${HTTP_PORT:-8080}:8080&quot;
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop:
+      - ALL
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - frontend
+    healthcheck:
+      test: [&quot;CMD&quot;, &quot;wget&quot;, &quot;-q&quot;, &quot;-O&quot;, &quot;/dev/null&quot;, &quot;http://127.0.0.1:8080/health/ready&quot;]
+      interval: 15s
+      timeout: 8s
+      start_period: 10s
+      retries: 3
+    cpus: &quot;0.50&quot;
+    mem_limit: 64m
+    pids_limit: 64
+    stop_grace_period: 35s
+
+  api:
+    &lt;&lt;: *service-defaults
+    image: ${API_IMAGE:-small-api:local}
+    build:
+      context: .
+      args:
+        PYTHON_IMAGE: ${PYTHON_IMAGE:-python:3.13.7-slim-bookworm}
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: &quot;5432&quot;
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      REDIS_HOST: cache
+      REDIS_PORT: &quot;6379&quot;
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+    expose:
+      - &quot;5000&quot;
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop:
+      - ALL
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    networks:
+      - frontend
+      - backend
+    # The readiness healthcheck is defined in the Dockerfile.
+    cpus: &quot;1.0&quot;
+    mem_limit: 256m
+    pids_limit: 128
+    stop_grace_period: 35s
+
+  db:
+    &lt;&lt;: *service-defaults
+    image: ${POSTGRES_IMAGE:-postgres:17.6-bookworm}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      # TCP plus an authenticated query verifies initialization and credentials.
+      test:
+        - CMD-SHELL
+        - &#39;PGPASSWORD=&quot;$$POSTGRES_PASSWORD&quot; PGCONNECT_TIMEOUT=2 PGOPTIONS=&quot;-c statement_timeout=2000&quot; psql --host=127.0.0.1 --username=&quot;$$POSTGRES_USER&quot; --dbname=&quot;$$POSTGRES_DB&quot; --no-password --no-psqlrc --set=ON_ERROR_STOP=1 --tuples-only --command=&quot;SELECT 1&quot; &gt;/dev/null&#39;
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+    cpus: &quot;1.0&quot;
+    mem_limit: 512m
+    pids_limit: 256
+    shm_size: 128m
+    stop_grace_period: 60s
+
+  cache:
+    &lt;&lt;: *service-defaults
+    image: ${REDIS_IMAGE:-redis:7.4.5-bookworm}
+    user: &quot;999:999&quot;
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+    # Generate a private config instead of putting the password in argv.
+    # Hex secrets avoid Redis config quoting ambiguity.
+    entrypoint: [&quot;/bin/sh&quot;, &quot;-ec&quot;]
+    command:
+      - |
+        case &quot;$$REDIS_PASSWORD&quot; in
+          *[!0-9a-fA-F]*) echo &#39;REDIS_PASSWORD must be hexadecimal&#39; &gt;&amp;2; exit 1 ;;
+        esac
+        if [ &quot;$${#REDIS_PASSWORD}&quot; -lt 32 ]; then
+          echo &#39;REDIS_PASSWORD must contain at least 32 hexadecimal characters&#39; &gt;&amp;2
+          exit 1
+        fi
+        umask 077
+        printf &#39;requirepass %s\n&#39; &quot;$$REDIS_PASSWORD&quot; &gt; /tmp/redis-auth.conf
+        exec redis-server /tmp/redis-auth.conf --bind 0.0.0.0 --protected-mode yes --save &#39;&#39; --appendonly no --maxmemory 128mb --maxmemory-policy allkeys-lru
+    read_only: true
+    tmpfs:
+      - /tmp:size=8m,uid=999,gid=999,mode=0700
+      - /data:size=8m,uid=999,gid=999,mode=0700
+    cap_drop:
+      - ALL
+    networks:
+      - backend
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &#39;test &quot;$$(REDISCLI_AUTH=&quot;$$REDIS_PASSWORD&quot; redis-cli --host 127.0.0.1 --no-auth-warning ping)&quot; = PONG&#39;]
+      interval: 10s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    cpus: &quot;0.50&quot;
+    mem_limit: 192m
+    pids_limit: 64
+    stop_grace_period: 15s
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true
+
+volumes:
+  postgres_data:
+</code></pre></div><div class="file" id="file-6-8" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/Dockerfile</p><pre><code>ARG PYTHON_IMAGE=python:3.13.7-slim-bookworm
+FROM ${PYTHON_IMAGE}
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+# Every runtime dependency, including transitive dependencies, is pinned.
+# --no-deps prevents the installer from silently adding unlocked packages.
+COPY requirements.txt ./requirements.txt
+RUN python -m pip install --no-cache-dir --only-binary=:all: --no-deps -r requirements.txt \
+    &amp;&amp; python -m pip check \
+    &amp;&amp; groupadd --gid 10001 app \
+    &amp;&amp; useradd --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app
+
+COPY --chown=10001:10001 app.py ./app.py
+USER 10001:10001
+
+EXPOSE 5000
+HEALTHCHECK --interval=15s --timeout=8s --start-period=20s --retries=3 \
+    CMD [&quot;python&quot;, &quot;-c&quot;, &quot;import urllib.request; urllib.request.urlopen(&#39;http://127.0.0.1:5000/health/ready&#39;, timeout=6).close()&quot;]
+
+CMD [&quot;gunicorn&quot;, &quot;--bind=0.0.0.0:5000&quot;, &quot;--workers=2&quot;, &quot;--worker-class=gthread&quot;, &quot;--threads=4&quot;, &quot;--timeout=30&quot;, &quot;--graceful-timeout=30&quot;, &quot;--keep-alive=5&quot;, &quot;--worker-tmp-dir=/tmp&quot;, &quot;--access-logfile=-&quot;, &quot;--error-logfile=-&quot;, &quot;app:app&quot;]
+</code></pre></div><div class="file" id="file-6-9" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/nginx.conf</p><pre><code># The image runs as uid 101 and listens on an unprivileged port.
+worker_processes 1;
+pid /tmp/nginx.pid;
+error_log /dev/stderr warn;
+
+events {
+    worker_connections 512;
+}
+
+http {
+    default_type application/json;
+    server_tokens off;
+    access_log /dev/stdout;
+
+    client_body_temp_path /tmp/client_body;
+    proxy_temp_path /tmp/proxy;
+    client_max_body_size 1m;
+    client_header_timeout 10s;
+    client_body_timeout 10s;
+    send_timeout 30s;
+    keepalive_timeout 15s;
+
+    # Docker&#39;s DNS: re-resolve after an API container is replaced.
+    resolver 127.0.0.11 valid=10s ipv6=off;
+    resolver_timeout 3s;
+
+    server {
+        listen 8080;
+        server_name _;
+
+        location / {
+            set $api_upstream api:5000;
+            proxy_pass http://$api_upstream;
+            proxy_http_version 1.1;
+            proxy_set_header Connection &quot;&quot;;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            # nginx is the directly exposed edge; discard untrusted client headers.
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Port &quot;&quot;;
+            proxy_set_header Forwarded &quot;&quot;;
+
+            proxy_connect_timeout 3s;
+            proxy_send_timeout 30s;
+            proxy_read_timeout 30s;
+            proxy_request_buffering on;
+            proxy_buffering on;
+            proxy_next_upstream off;
+        }
+    }
+}
+</code></pre></div><div class="file" id="file-6-10" hidden><p class="path mono">gpt-6.1-sol/03-infra-management/requirements.txt</p><pre><code># Complete runtime dependency set for Python 3.13, installed with --no-deps.
+blinker==1.9.0
+click==8.2.1
+Flask==3.1.2
+gunicorn==23.0.0
+itsdangerous==2.2.0
+Jinja2==3.1.6
+MarkupSafe==3.0.2
+packaging==25.0
+psycopg2-binary==2.9.10
+redis==6.4.0
+Werkzeug==3.1.3
 </code></pre></div></section></div></section></main><script src="../app.js"></script></body></html>

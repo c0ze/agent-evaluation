@@ -24,12 +24,12 @@ in the diagnostic when practical.</li>
 and the exact verification command/result. Keep all work inside this directory.</p>
 </div>
       <p class="muted">Inputs given: <a href="../../../_templates/01-feature-building/jobqueue.py" target="_blank" rel="noopener" class="mono">jobqueue.py</a>, <a href="../../../_templates/01-feature-building/test_jobqueue.py" target="_blank" rel="noopener" class="mono">test_jobqueue.py</a></p></details>
-    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Fable 5.1</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">muse</th><th scope="col">GPT-6 Luna</th><th scope="col">mimo</th></tr>
-    <tr><th scope="row">contract correctness <span class="muted">(6)</span></th><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:0.93">5.75</td><td class="num heat" style="--h:0.86">5.5</td><td class="num heat" style="--h:0.58">4.5</td></tr><tr><th scope="row">implementation quality <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.38">1.25</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:0.17">1</td></tr><tr><th scope="row">tests and verification <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.38">1.25</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.00">0.75</td></tr>
-    <tr class="total"><th scope="row">Total (10)</th><td class="num">10</td><td class="num">9.75</td><td class="num">9.5</td><td class="num">8.25</td><td class="num">8</td><td class="num">6.25</td></tr></table></div>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Fable 5.1</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">muse</th><th scope="col">GPT-6 Luna</th><th scope="col">mimo</th><th scope="col">GPT-6.1 Sol</th></tr>
+    <tr><th scope="row">contract correctness <span class="muted">(6)</span></th><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:0.93">5.75</td><td class="num heat" style="--h:0.86">5.5</td><td class="num heat" style="--h:0.58">4.5</td><td class="num heat">–</td></tr><tr><th scope="row">implementation quality <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.38">1.25</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:0.17">1</td><td class="num heat">–</td></tr><tr><th scope="row">tests and verification <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.38">1.25</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.00">0.75</td><td class="num heat">–</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">10</td><td class="num">9.75</td><td class="num">9.5</td><td class="num">8.25</td><td class="num">8</td><td class="num">6.25</td><td class="num">–</td></tr></table></div>
     <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = muse, B = GPT-6 Luna, C = Sonnet 5.5, D = mimo, E = Opus 5.5, F = Fable 5.1.</p><div class="prose"><p>All six pass the hidden suite and match my brute-force reference on 4,000 random graphs (a quarter of them cyclic), including input-order tie-breaks among currently ready jobs. Most cross-test failures come from stricter-than-contract expectations: message wording or regex format, repr quoting, rejecting bare-string/None depends_on, non-Job items, priority type checks. I did not count those as contract violations. The one cross-test failure that exposes a real contract bug is D&#39;s RecursionError on large cycles (C&#39;s and F&#39;s long-cycle tests), which I confirmed independently. For mutation testing I wrapped each submission&#39;s own implementation in 27 behavioral mutants, so each suite&#39;s own message expectations still hold. Kills: C/E/F 26, A 21, B 20, D 19. cycle_msg_all_jobs is a quality mutant, not a contract one. A&#39;s quadratic ready selection counts against implementation quality, not the contract, because the brief sets no performance requirement. C and F are near-tied: F ranks higher because its suite catches the readiness-time tie-break mutant that C&#39;s misses and runs its reference comparison in-suite.</p>
 </div></details></section>
-    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Fable 5.1 <span class="pill">10</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Sonnet 5.5 <span class="pill">9.75</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9.5</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">muse <span class="pill">8.25</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">8</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">mimo <span class="pill">6.25</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Fable 5.1 <span class="pill">10</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Sonnet 5.5 <span class="pill">9.75</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9.5</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">muse <span class="pill">8.25</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">8</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">mimo <span class="pill">6.25</span></button><button role="tab" id="tab-6" aria-controls="panel-6" aria-selected="false" tabindex="-1">GPT-6.1 Sol</button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
         <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission F</span></h3>
         <p>Correct, fast, well-structured scheduler with separate validation and dependency-resolution helpers. Its iterative cycle walk reports only the concrete cycle, and unknown dependencies are reported all at once. The 36-test suite includes an in-suite brute-force reference comparison over 120 random DAGs, 5,000-node cycle and chain tests, and a readiness-time tie-break test. It killed 26 of 27 mutants and reports its verification accurately.</p>
         <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches vs reference; 20k jobs about 0.02-0.03 s</li><li>Cycle message &#39;Dependency cycle detected: x -&gt; y -&gt; x&#39; excludes downstream and innocent jobs; no recursion</li><li>In-suite reference scheduler property test plus targeted tie-break and no-priority-inheritance tests</li></ul></div><div><h4>Weaknesses</h4><ul><li>Non-Job items give AttributeError and string priority gives TypeError (outside the written contract)</li><li>No test for mutation on the error path (the mutate_deps_on_error mutant survived)</li><li>Several tests assert exact wording, which fails other valid implementations in cross-tests</li></ul></div></div>
@@ -2607,6 +2607,350 @@ class PlanJobsTests(unittest.TestCase):
             yield Job(&quot;a&quot;, priority=9)
 
         self.assertEqual(plan_jobs(gen()), [&quot;a&quot;, &quot;b&quot;])
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre></div></section></div><div role="tabpanel" id="panel-6" aria-labelledby="tab-6" hidden><section class="card eval"><p class="muted">Not graded yet.</p><ul class="checks"><li>Hidden contract tests: failures</li></ul></section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="6-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="6-1" aria-selected="false">TASK.md</button><button role="tab" data-file="6-2" aria-selected="false">jobqueue.py</button><button role="tab" data-file="6-3" aria-selected="false">test_jobqueue.py</button></div>
+        <div class="file" id="file-6-0" ><p class="path mono">gpt-6.1-sol/01-feature-building/RESPONSE.md</p><div class="prose"><h1>Dependency-aware scheduler</h1>
+<p>Completed every deliverable: implemented <code>plan_jobs</code> in <code>jobqueue.py</code>, expanded
+<code>test_jobqueue.py</code>, ran the tests, and wrote this response. All repository reads
+and changes stayed inside <code>01-feature-building</code>; no network was used. The
+implementation and tests use only the Python standard library.</p>
+<h2>Design</h2>
+<p>The scheduler materializes the input iterable once, so generators work and input
+positions remain stable. It validates non-empty string IDs and uniqueness before
+checking dependencies, allowing references to jobs anywhere in the input. Invalid
+IDs and dependencies raise <code>ScheduleError</code> with the offending value and its input
+position or referring job. Duplicate dependencies count as one prerequisite.</p>
+<p>Kahn&#39;s topological sort tracks unsatisfied prerequisites and reverse dependency
+edges. A min-heap of <code>(-priority, input_position)</code> selects the highest-priority
+ready job, breaking ties by original input order. Newly ready jobs enter the heap
+before the next selection. Each job is scheduled once, after all prerequisites.</p>
+<p>If the heap empties before every job is scheduled, <code>ScheduleError</code> reports a
+dependency cycle and lists unresolved IDs in input order. This list includes
+cycle members and any jobs blocked downstream; it does not claim that every
+listed job belongs to a cycle. Only local graph bookkeeping changes; supplied
+jobs, dependency lists, payloads, and input order remain untouched.</p>
+<p>The algorithm takes O(V + E + V log V) time and O(V + E) space for V jobs and E
+dependency entries. An iterative algorithm avoids recursion limits on long
+chains. A heap was chosen over repeatedly scanning all jobs to keep ready-job
+selection efficient. Priority values follow the existing integer-typed <code>Job</code>
+contract; non-empty IDs are not restricted to identifier syntax.</p>
+<h2>Edge cases covered</h2>
+<p>The 24 tests cover:</p>
+<ul>
+<li>Empty sequences and iterators, single jobs, and generator input.</li>
+<li>Empty, non-string, unhashable, and duplicate job IDs; Unicode and whitespace IDs.</li>
+<li>Unknown, empty, non-string, and unhashable dependency IDs, with useful diagnostics.</li>
+<li>References to later input jobs and dependencies overriding priority.</li>
+<li>Positive and negative priorities, original-order ties, and newly ready jobs
+competing immediately with already ready jobs.</li>
+<li>Fan-in, fan-out, disconnected jobs, exactly-once output, and prerequisite order.</li>
+<li>Repeated dependencies and a 1,500-job dependency chain.</li>
+<li>Self-cycles, two-job cycles, longer cycles with independent and downstream jobs,
+and missing-dependency validation even when a cycle exists.</li>
+<li>Preservation of jobs, mutable dependency lists, payloads, and input order on
+success and failure, including repeated scheduling of the same input.</li>
+</ul>
+<h2>Verification</h2>
+<p>Working directory:
+<code>/Users/arda/projects/agent-eval-runs/agent-eval-gpt-6.1-sol/01-feature-building</code></p>
+<p>Exact command:</p>
+<pre><code class="language-sh">python3 -B -m unittest -v
+</code></pre>
+<p>Result: exit code 0; all 24 tests passed. The runner&#39;s summary was:</p>
+<pre><code class="language-text">Ran 24 tests in 0.003s
+
+OK
+</code></pre>
+<p>Model ID: <code>gpt-6.1-sol</code>.</p>
+</div></div><div class="file" id="file-6-1" hidden><p class="path mono">gpt-6.1-sol/01-feature-building/TASK.md</p><div class="prose"><h1>Task 01 — Feature building: dependency-aware scheduler</h1>
+<p>Implement <code>plan_jobs</code> in <code>jobqueue.py</code> and expand <code>test_jobqueue.py</code> with useful
+edge cases. Use only the Python standard library.</p>
+<p>Contract:</p>
+<ul>
+<li>Every <code>Job.id</code> must be a non-empty string and unique.</li>
+<li>Every dependency must name a supplied job. Reject invalid input with
+<code>ScheduleError</code> and a useful message.</li>
+<li>Return every job ID exactly once, always after all of its dependencies.</li>
+<li>Among jobs currently ready, choose higher <code>priority</code> first. Break equal
+priorities by original input order.</li>
+<li>Detect dependency cycles and raise <code>ScheduleError</code>; include the IDs involved
+in the diagnostic when practical.</li>
+<li>Do not mutate the supplied jobs or their dependency lists.</li>
+<li>Empty input returns an empty list.</li>
+</ul>
+<p>Run the tests. Write <code>RESPONSE.md</code> summarizing the design, edge cases covered,
+and the exact verification command/result. Keep all work inside this directory.</p>
+</div></div><div class="file" id="file-6-2" hidden><p class="path mono">gpt-6.1-sol/01-feature-building/jobqueue.py</p><pre><code>from dataclasses import dataclass, field
+from heapq import heappop, heappush
+from typing import Any, Iterable
+
+
+class ScheduleError(ValueError):
+    pass
+
+
+@dataclass(frozen=True)
+class Job:
+    id: str
+    priority: int = 0
+    depends_on: tuple[str, ...] = field(default_factory=tuple)
+    payload: Any = None
+
+
+def plan_jobs(jobs: Iterable[Job]) -&gt; list[str]:
+    &quot;&quot;&quot;Order jobs by dependencies, then ready-job priority and input position.
+
+    Repeated dependencies count once. Invalid IDs, missing dependencies, and
+    dependency cycles raise ScheduleError without modifying the supplied jobs.
+    &quot;&quot;&quot;
+    jobs = list(jobs)
+    positions = {}
+    for index, job in enumerate(jobs):
+        if not isinstance(job.id, str) or not job.id:
+            raise ScheduleError(
+                f&quot;Job at input position {index} has invalid ID {job.id!r}; &quot;
+                &quot;IDs must be non-empty strings&quot;
+            )
+        if job.id in positions:
+            raise ScheduleError(f&quot;Duplicate job ID: {job.id!r}&quot;)
+        positions[job.id] = index
+
+    remaining = [0] * len(jobs)
+    dependents = [[] for _ in jobs]
+    for index, job in enumerate(jobs):
+        seen = set()
+        for dependency in job.depends_on:
+            if not isinstance(dependency, str) or not dependency:
+                raise ScheduleError(
+                    f&quot;Job {job.id!r} has invalid dependency {dependency!r}; &quot;
+                    &quot;dependencies must name supplied jobs with non-empty string IDs&quot;
+                )
+            if dependency not in positions:
+                raise ScheduleError(
+                    f&quot;Job {job.id!r} has unknown dependency {dependency!r}&quot;
+                )
+            if dependency not in seen:
+                seen.add(dependency)
+                remaining[index] += 1
+                dependents[positions[dependency]].append(index)
+
+    ready = []
+    for index, job in enumerate(jobs):
+        if remaining[index] == 0:
+            heappush(ready, (-job.priority, index))
+
+    order = []
+    while ready:
+        _, index = heappop(ready)
+        order.append(jobs[index].id)
+        for dependent in dependents[index]:
+            remaining[dependent] -= 1
+            if remaining[dependent] == 0:
+                heappush(ready, (-jobs[dependent].priority, dependent))
+
+    if len(order) != len(jobs):
+        unresolved = &quot;, &quot;.join(
+            repr(job.id) for index, job in enumerate(jobs) if remaining[index]
+        )
+        raise ScheduleError(
+            f&quot;Dependency cycle detected; unresolved jobs: {unresolved}&quot;
+        )
+    return order
+</code></pre></div><div class="file" id="file-6-3" hidden><p class="path mono">gpt-6.1-sol/01-feature-building/test_jobqueue.py</p><pre><code>from copy import deepcopy
+import unittest
+
+from jobqueue import Job, ScheduleError, plan_jobs
+
+
+class PlanJobsTests(unittest.TestCase):
+    def test_dependencies_override_priority(self):
+        jobs = [
+            Job(&quot;build&quot;, priority=100, depends_on=(&quot;fetch&quot;,)),
+            Job(&quot;fetch&quot;, priority=1),
+        ]
+        self.assertEqual(plan_jobs(jobs), [&quot;fetch&quot;, &quot;build&quot;])
+
+    def test_ready_jobs_use_priority_then_input_order(self):
+        jobs = [Job(&quot;a&quot;, 2), Job(&quot;b&quot;, 5), Job(&quot;c&quot;, 2)]
+        self.assertEqual(plan_jobs(jobs), [&quot;b&quot;, &quot;a&quot;, &quot;c&quot;])
+
+    def test_unknown_dependency_is_rejected(self):
+        with self.assertRaises(ScheduleError) as raised:
+            plan_jobs([Job(&quot;build&quot;, depends_on=(&quot;missing&quot;,))])
+        self.assertIn(&quot;build&quot;, str(raised.exception))
+        self.assertIn(&quot;missing&quot;, str(raised.exception))
+
+    def test_empty_input(self):
+        self.assertEqual(plan_jobs([]), [])
+        self.assertEqual(plan_jobs(iter(())), [])
+
+    def test_single_job(self):
+        self.assertEqual(plan_jobs([Job(&quot;only&quot;)]), [&quot;only&quot;])
+
+    def test_invalid_ids_are_rejected(self):
+        for invalid_id in (&quot;&quot;, None, 0, False, [], {}, b&quot;job&quot;):
+            with self.subTest(id=invalid_id):
+                with self.assertRaises(ScheduleError) as raised:
+                    plan_jobs([Job(invalid_id)])
+                self.assertIn(&quot;non-empty strings&quot;, str(raised.exception))
+                self.assertIn(&quot;position 0&quot;, str(raised.exception))
+
+    def test_duplicate_ids_are_rejected(self):
+        with self.assertRaises(ScheduleError) as raised:
+            plan_jobs([Job(&quot;same&quot;, 1), Job(&quot;same&quot;, 2)])
+        self.assertIn(&quot;Duplicate&quot;, str(raised.exception))
+        self.assertIn(&quot;same&quot;, str(raised.exception))
+
+    def test_invalid_dependency_ids_are_rejected(self):
+        for dependency in (&quot;&quot;, None, 0, False, [], {}, b&quot;source&quot;):
+            with self.subTest(dependency=dependency):
+                with self.assertRaises(ScheduleError) as raised:
+                    plan_jobs([
+                        Job(&quot;source&quot;),
+                        Job(&quot;consumer&quot;, depends_on=(dependency,)),
+                    ])
+                self.assertIn(&quot;consumer&quot;, str(raised.exception))
+                self.assertIn(&quot;invalid dependency&quot;, str(raised.exception))
+
+    def test_valid_ids_need_not_be_identifiers(self):
+        jobs = [Job(&quot;完成&quot;, depends_on=(&quot; &quot;,)), Job(&quot; &quot;)]
+        self.assertEqual(plan_jobs(jobs), [&quot; &quot;, &quot;完成&quot;])
+
+    def test_dependencies_can_refer_to_later_input(self):
+        jobs = [
+            Job(&quot;last&quot;, depends_on=(&quot;middle&quot;,)),
+            Job(&quot;middle&quot;, depends_on=(&quot;first&quot;,)),
+            Job(&quot;first&quot;),
+        ]
+        self.assertEqual(plan_jobs(jobs), [&quot;first&quot;, &quot;middle&quot;, &quot;last&quot;])
+
+    def test_newly_ready_job_can_preempt_existing_ready_jobs(self):
+        jobs = [
+            Job(&quot;waiting&quot;, 2),
+            Job(&quot;unlock&quot;, 3),
+            Job(&quot;urgent&quot;, 100, depends_on=(&quot;unlock&quot;,)),
+        ]
+        self.assertEqual(plan_jobs(jobs), [&quot;unlock&quot;, &quot;urgent&quot;, &quot;waiting&quot;])
+
+    def test_newly_ready_tie_uses_original_input_order(self):
+        jobs = [
+            Job(&quot;earlier&quot;, 5, depends_on=(&quot;unlock&quot;,)),
+            Job(&quot;waiting&quot;, 5),
+            Job(&quot;unlock&quot;, 10),
+        ]
+        self.assertEqual(plan_jobs(jobs), [&quot;unlock&quot;, &quot;earlier&quot;, &quot;waiting&quot;])
+
+    def test_ties_do_not_use_lexical_id_order(self):
+        self.assertEqual(
+            plan_jobs([Job(&quot;z&quot;), Job(&quot;a&quot;), Job(&quot;m&quot;)]), [&quot;z&quot;, &quot;a&quot;, &quot;m&quot;]
+        )
+
+    def test_negative_priorities(self):
+        jobs = [Job(&quot;low&quot;, -10), Job(&quot;high&quot;, -1), Job(&quot;tied&quot;, -1)]
+        self.assertEqual(plan_jobs(jobs), [&quot;high&quot;, &quot;tied&quot;, &quot;low&quot;])
+
+    def test_fan_in_fan_out_and_disconnected_jobs(self):
+        jobs = [
+            Job(&quot;finish&quot;, 100, depends_on=(&quot;left&quot;, &quot;right&quot;)),
+            Job(&quot;right&quot;, 2, depends_on=(&quot;root&quot;,)),
+            Job(&quot;independent&quot;, 0),
+            Job(&quot;left&quot;, 1, depends_on=(&quot;root&quot;,)),
+            Job(&quot;root&quot;, -1),
+        ]
+        result = plan_jobs(jobs)
+        self.assertEqual(result, [&quot;independent&quot;, &quot;root&quot;, &quot;right&quot;, &quot;left&quot;, &quot;finish&quot;])
+        self.assertCountEqual(result, [job.id for job in jobs])
+        positions = {job_id: index for index, job_id in enumerate(result)}
+        for job in jobs:
+            for dependency in job.depends_on:
+                self.assertLess(positions[dependency], positions[job.id])
+
+    def test_repeated_dependencies_count_once(self):
+        jobs = [
+            Job(&quot;finish&quot;, depends_on=(&quot;source&quot;, &quot;other&quot;, &quot;source&quot;, &quot;other&quot;)),
+            Job(&quot;source&quot;),
+            Job(&quot;other&quot;),
+        ]
+        self.assertEqual(plan_jobs(jobs), [&quot;source&quot;, &quot;other&quot;, &quot;finish&quot;])
+
+    def test_generator_input(self):
+        jobs = (job for job in [Job(&quot;b&quot;, depends_on=(&quot;a&quot;,)), Job(&quot;a&quot;)])
+        self.assertEqual(plan_jobs(jobs), [&quot;a&quot;, &quot;b&quot;])
+
+    def test_self_dependency_is_a_cycle(self):
+        with self.assertRaises(ScheduleError) as raised:
+            plan_jobs([Job(&quot;self&quot;, depends_on=(&quot;self&quot;,))])
+        self.assertIn(&quot;cycle&quot;, str(raised.exception))
+        self.assertIn(&quot;self&quot;, str(raised.exception))
+
+    def test_two_job_cycle(self):
+        with self.assertRaises(ScheduleError) as raised:
+            plan_jobs([
+                Job(&quot;alpha&quot;, depends_on=(&quot;beta&quot;,)),
+                Job(&quot;beta&quot;, depends_on=(&quot;alpha&quot;,)),
+            ])
+        self.assertIn(&quot;cycle&quot;, str(raised.exception))
+        self.assertIn(&quot;alpha&quot;, str(raised.exception))
+        self.assertIn(&quot;beta&quot;, str(raised.exception))
+
+    def test_cycle_with_independent_and_downstream_jobs(self):
+        jobs = [
+            Job(&quot;alpha&quot;, depends_on=(&quot;gamma&quot;,)),
+            Job(&quot;beta&quot;, depends_on=(&quot;alpha&quot;,)),
+            Job(&quot;gamma&quot;, depends_on=(&quot;beta&quot;,)),
+            Job(&quot;blocked&quot;, depends_on=(&quot;gamma&quot;,)),
+            Job(&quot;independent&quot;, 100),
+        ]
+        with self.assertRaises(ScheduleError) as raised:
+            plan_jobs(jobs)
+        message = str(raised.exception)
+        self.assertIn(&quot;cycle&quot;, message)
+        for job_id in (&quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot;, &quot;blocked&quot;):
+            self.assertIn(job_id, message)
+        self.assertNotIn(&quot;independent&quot;, message)
+
+    def test_missing_dependency_is_validated_even_in_a_cycle(self):
+        with self.assertRaises(ScheduleError) as raised:
+            plan_jobs([Job(&quot;loop&quot;, depends_on=(&quot;loop&quot;, &quot;missing&quot;))])
+        self.assertIn(&quot;unknown dependency&quot;, str(raised.exception))
+        self.assertIn(&quot;missing&quot;, str(raised.exception))
+
+    def test_success_does_not_mutate_input(self):
+        dependencies = [&quot;source&quot;, &quot;source&quot;]
+        payload = {&quot;nested&quot;: [1, 2, 3]}
+        jobs = [
+            Job(&quot;consumer&quot;, 100, depends_on=dependencies, payload=payload),
+            Job(&quot;source&quot;),
+        ]
+        before = deepcopy(jobs)
+        original_jobs = tuple(jobs)
+        for _ in range(2):
+            self.assertEqual(plan_jobs(jobs), [&quot;source&quot;, &quot;consumer&quot;])
+            self.assertEqual(jobs, before)
+        self.assertTrue(all(job is original for job, original in zip(jobs, original_jobs)))
+        self.assertIs(jobs[0].depends_on, dependencies)
+        self.assertIs(jobs[0].payload, payload)
+
+    def test_failure_does_not_mutate_input(self):
+        for dependencies in ([&quot;missing&quot;], [&quot;consumer&quot;]):
+            with self.subTest(dependencies=dependencies):
+                jobs = [Job(&quot;consumer&quot;, depends_on=dependencies), Job(&quot;source&quot;)]
+                before = deepcopy(jobs)
+                with self.assertRaises(ScheduleError):
+                    plan_jobs(jobs)
+                self.assertEqual(jobs, before)
+                self.assertIs(jobs[0].depends_on, dependencies)
+
+    def test_long_dependency_chain(self):
+        jobs = [
+            Job(f&quot;job-{index}&quot;, depends_on=(f&quot;job-{index - 1}&quot;,))
+            for index in range(1499, 0, -1)
+        ]
+        jobs.append(Job(&quot;job-0&quot;))
+        self.assertEqual(plan_jobs(jobs), [f&quot;job-{index}&quot; for index in range(1500)])
 
 
 if __name__ == &quot;__main__&quot;:
