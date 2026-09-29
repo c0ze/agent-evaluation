@@ -24,17 +24,17 @@ in the diagnostic when practical.</li>
 and the exact verification command/result. Keep all work inside this directory.</p>
 </div>
       <p class="muted">Inputs given: <a href="../../../_templates/01-feature-building/jobqueue.py" target="_blank" rel="noopener" class="mono">jobqueue.py</a>, <a href="../../../_templates/01-feature-building/test_jobqueue.py" target="_blank" rel="noopener" class="mono">test_jobqueue.py</a></p></details>
-    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Fable 5.1</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">muse</th><th scope="col">mimo</th></tr>
-    <tr><th scope="row">contract correctness <span class="muted">(6)</span></th><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:0.93">5.75</td><td class="num heat" style="--h:0.86">5.5</td><td class="num heat" style="--h:0.58">4.5</td></tr><tr><th scope="row">implementation quality <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.38">1.25</td><td class="num heat" style="--h:0.38">1.25</td></tr><tr><th scope="row">tests and verification <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.00">0.75</td></tr>
-    <tr class="total"><th scope="row">Total (10)</th><td class="num">10</td><td class="num">9.75</td><td class="num">9.25</td><td class="num">7.75</td><td class="num">6.5</td></tr></table></div>
-    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = Fable 5.1, B = mimo, C = Opus 5.5, D = muse, E = Sonnet 5.5.</p><div class="prose"><p>All five pass the hidden 11-test contract suite and my 20,000-graph brute-force fuzz, including the cyclic/acyclic decision. The differences are in cycle diagnostics, robustness and tests. Most cross-test failures are stricter than the contract: exact message wording (A&#39;s regexes vs E&#39;s quoted IDs), extra validation the brief never asked for (non-Job items, priority type, bare-string depends_on), and C&#39;s split on &#39;;&#39;. I did not count these against contract correctness. The one cross-test failure that exposes a real contract bug is B&#39;s RecursionError on long cycles (A&#39;s and E&#39;s suites). D&#39;s cycle message counts as &#39;including the IDs involved&#39;, but it mislabels downstream jobs, so I took off a little. C&#39;s float rejection is defensible given &#39;priority: int&#39;. Its double read of depends_on only affects one-shot iterables (outside the type annotation), so the deduction is small. Mutants were applied by wrapping each submission&#39;s own implementation, which keeps each suite&#39;s message-wording assertions intact. There were 20 behavioural mutants: wrong tie-breaks (reverse, by id, FIFO by readiness), ascending priority, level-by-level scheduling, no priority, empty input -&gt; None, generator dropped, skipped dup/empty/non-string/unknown checks, duplicate deps stalling, cycle errors without IDs / silent / RecursionError / all IDs, mutated depends_on, dropped or duplicated output. Kill counts: A 20, C 19, E 19, D 15, B 14. A and E are close; A edges ahead on a full mutant kill and a reference-comparison property test inside the suite.</p>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Fable 5.1</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">muse</th><th scope="col">GPT-6 Luna</th><th scope="col">mimo</th></tr>
+    <tr><th scope="row">contract correctness <span class="muted">(6)</span></th><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:1.00">6</td><td class="num heat" style="--h:0.93">5.75</td><td class="num heat" style="--h:0.86">5.5</td><td class="num heat" style="--h:0.58">4.5</td></tr><tr><th scope="row">implementation quality <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.38">1.25</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:0.17">1</td></tr><tr><th scope="row">tests and verification <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.38">1.25</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.00">0.75</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">10</td><td class="num">9.75</td><td class="num">9.5</td><td class="num">8.25</td><td class="num">8</td><td class="num">6.25</td></tr></table></div>
+    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = muse, B = GPT-6 Luna, C = Sonnet 5.5, D = mimo, E = Opus 5.5, F = Fable 5.1.</p><div class="prose"><p>All six pass the hidden suite and match my brute-force reference on 4,000 random graphs (a quarter of them cyclic), including input-order tie-breaks among currently ready jobs. Most cross-test failures come from stricter-than-contract expectations: message wording or regex format, repr quoting, rejecting bare-string/None depends_on, non-Job items, priority type checks. I did not count those as contract violations. The one cross-test failure that exposes a real contract bug is D&#39;s RecursionError on large cycles (C&#39;s and F&#39;s long-cycle tests), which I confirmed independently. For mutation testing I wrapped each submission&#39;s own implementation in 27 behavioral mutants, so each suite&#39;s own message expectations still hold. Kills: C/E/F 26, A 21, B 20, D 19. cycle_msg_all_jobs is a quality mutant, not a contract one. A&#39;s quadratic ready selection counts against implementation quality, not the contract, because the brief sets no performance requirement. C and F are near-tied: F ranks higher because its suite catches the readiness-time tie-break mutant that C&#39;s misses and runs its reference comparison in-suite.</p>
 </div></details></section>
-    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Fable 5.1 <span class="pill">10</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Sonnet 5.5 <span class="pill">9.75</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9.25</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">muse <span class="pill">7.75</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">mimo <span class="pill">6.5</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
-        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
-        <p>Heap-based Kahn&#39;s algorithm with separate helpers for ID validation, dependency resolution and an iterative cycle walk. It matched a brute-force reference on 20,000 random graphs, including cyclic ones, and handles every edge case probed, including 50,000-node cycles. Its 36-test suite includes a random-DAG comparison against a reference scheduler and killed all 20 behavioural mutants.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>Precise cycle diagnostic listing only the cycle members, closed on itself (e.g. &#39;x -&gt; y -&gt; x&#39;), with downstream and unrelated jobs left out</li><li>Iterative cycle extraction: no RecursionError on 5,000- or 50,000-node cycles, or on small cycles behind 1,500-job downstream chains</li><li>Tie-break by input position, not by when a job became ready, and its tests check this explicitly</li><li>Strongest test suite: reference-scheduler property test, long cycle, immutability identity checks; RESPONSE is accurate</li></ul></div><div><h4>Weaknesses</h4><ul><li>Non-Job items raise AttributeError instead of ScheduleError (outside the contract)</li><li>Several of its own tests pin exact message wording (&#39;Duplicate job id&#39;, &#39;bare string&#39;), so the suite fails correct implementations that word messages differently</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>fuzz.py: 20,000 random graphs (0-10 jobs, 30% cyclic) vs brute-force reference: 0 mismatches</li><li>probe.py: 5,000/50,000-node cycle -&gt; ScheduleError; 3-cycle + 2,000 downstream -&gt; &#39;Dependency cycle detected: a -&gt; b -&gt; c -&gt; a&#39;</li><li>probe2.py: mutation checks on success and on cycle error: inputs unchanged; 20,000 independent jobs in 0.04s</li><li>Mutation run (own impl + 20 mutants): 20/20 killed, including tie_by_id, fifo_ties, levels, cycle_recursion, cycle_all_ids and mutate_deps</li><li>python3 -B -m unittest test_jobqueue: Ran 36 tests OK (matches RESPONSE)</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 36 tests in 0.086s / OK</li><li>This model&#39;s tests against each implementation — original: errors=38; mimo: failures=12, errors=2; Sonnet 5.5: failures=12; Fable 5.1: pass; Opus 5.5: failures=9; muse: failures=13</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=13, errors=3; Fable 5.1&#39;s tests: pass; Opus 5.5&#39;s tests: failures=3, errors=4; muse&#39;s tests: pass</li></ul>
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Fable 5.1 <span class="pill">10</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Sonnet 5.5 <span class="pill">9.75</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9.5</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">muse <span class="pill">8.25</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">8</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">mimo <span class="pill">6.25</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission F</span></h3>
+        <p>Correct, fast, well-structured scheduler with separate validation and dependency-resolution helpers. Its iterative cycle walk reports only the concrete cycle, and unknown dependencies are reported all at once. The 36-test suite includes an in-suite brute-force reference comparison over 120 random DAGs, 5,000-node cycle and chain tests, and a readiness-time tie-break test. It killed 26 of 27 mutants and reports its verification accurately.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches vs reference; 20k jobs about 0.02-0.03 s</li><li>Cycle message &#39;Dependency cycle detected: x -&gt; y -&gt; x&#39; excludes downstream and innocent jobs; no recursion</li><li>In-suite reference scheduler property test plus targeted tie-break and no-priority-inheritance tests</li></ul></div><div><h4>Weaknesses</h4><ul><li>Non-Job items give AttributeError and string priority gives TypeError (outside the written contract)</li><li>No test for mutation on the error path (the mutate_deps_on_error mutant survived)</li><li>Several tests assert exact wording, which fails other valid implementations in cross-tests</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>fuzz.py: F mismatches 0; probe bigcycle5000 -&gt; SE; cycle+5000chain -&gt; &#39;x -&gt; y -&gt; x&#39;</li><li>Mutation harness: 26/27 killed (survivor: mutate_deps_on_error)</li><li>Own suite: Ran 36 tests OK, matching RESPONSE.md</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 36 tests in 0.028s / OK</li><li>This model&#39;s tests against each implementation — original: errors=38; mimo: failures=12, errors=2; Sonnet 5.5: failures=12; Fable 5.1: pass; Opus 5.5: failures=9; muse: failures=13; GPT-6 Luna: failures=13</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=13, errors=3; Fable 5.1&#39;s tests: pass; Opus 5.5&#39;s tests: failures=3, errors=4; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: failures=8</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="0-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="0-1" aria-selected="false">TASK.md</button><button role="tab" data-file="0-2" aria-selected="false">jobqueue.py</button><button role="tab" data-file="0-3" aria-selected="false">test_jobqueue.py</button></div>
         <div class="file" id="file-0-0" ><p class="path mono">fable-5.1/01-feature-building/RESPONSE.md</p><div class="prose"><h1>Task 01 — Dependency-aware scheduler</h1>
 <h2>What was delivered</h2>
@@ -625,11 +625,11 @@ class PlanJobsImmutabilityTests(unittest.TestCase):
 if __name__ == &quot;__main__&quot;:
     unittest.main()
 </code></pre></div></section></div><div role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">9.75 / 10</span> <span class="muted small">graded blind as submission E</span></h3>
-        <p>Clean heap-based Kahn&#39;s algorithm. It reads each depends_on once, validates priorities including NaN, and finds cycles iteratively, naming only the cycle members plus a count of blocked jobs. It matched the reference on all fuzz cases and handled every edge probe. The 43-test suite is broad, with 5,000-node chain and cycle tests, but one wrong tie-breaking mutant (by readiness time) survived.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>Correct on all 20,000 fuzz cases; large cycles and long downstream chains give a short, precise message (&#39;... -&gt; &#39;a&#39; (2000 more job(s) are blocked behind it)&#39;)</li><li>Reads each depends_on once, so one-shot dependency iterables work, unlike C</li><li>Broad tests: excludes innocent and downstream jobs from the cycle message, cycle in the second component, recursion-limit tests, immutability on failure</li></ul></div><div><h4>Weaknesses</h4><ul><li>No test where a job that becomes ready later wins a tie by earlier input position, so a FIFO-by-readiness tie-break survives</li><li>The claimed 20,000-graph fuzz against a reference was run outside the deliverable, so it cannot be checked (my own fuzz agrees with its result)</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>fuzz.py: 0 mismatches; probe.py: 50,000-node cycle -&gt; ScheduleError; 2,000 downstream jobs reported as a count</li><li>probe3.py gen deps b(10)&lt;-a -&gt; [&#39;a&#39;,&#39;b&#39;] (correct)</li><li>Mutation run: 19/20 killed; survivor: fifo_ties</li><li>python3 -B -m unittest: 43 tests OK, matching RESPONSE</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 43 tests in 0.037s / OK</li><li>This model&#39;s tests against each implementation — original: errors=47; mimo: failures=8, errors=5; Sonnet 5.5: pass; Fable 5.1: failures=13, errors=3; Opus 5.5: failures=6, errors=1; muse: failures=8</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=12; Opus 5.5&#39;s tests: failures=3, errors=1; muse&#39;s tests: pass</li></ul>
+        <h3>Evaluation <span class="pill big">9.75 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
+        <p>Fully correct: heap-based Kahn, full validation, and an iterative cycle walk that reports one concrete cycle path plus a count of blocked jobs. It is fast at 20k jobs, and a 5,000-node cycle gives a clean ScheduleError. The 43-test suite is strong and killed 26 of 27 mutants, but it has no case where a later-ready, earlier-listed job wins a tie, so it misses a readiness-time tie-break bug.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches vs reference; 20k jobs about 0.02-0.04 s</li><li>Cycle message &quot;&#39;a&#39; -&gt; &#39;b&#39; -&gt; &#39;a&#39; (2 more job(s) are blocked behind it)&quot; is precise and excludes innocent jobs</li><li>Tests cover 5,000-node cycle and chain, mutation on the error path, bare-string deps, disconnected components</li></ul></div><div><h4>Weaknesses</h4><ul><li>Tests miss the &#39;tie by readiness time instead of input order&#39; mutant</li><li>Some tests (repr-quoted cycle path, float priorities, priority validation) are stricter than the contract</li><li>Fuzzing claim concerns a script kept outside the deliverable (disclosed honestly)</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>fuzz.py: C mismatches 0; probe &#39;bigcycle5000 SE&#39;</li><li>probe &#39;cycle+5000chain&#39; -&gt; &quot;&#39;x&#39; -&gt; &#39;y&#39; -&gt; &#39;x&#39; (5000 more job(s) are blocked behind it)&quot;</li><li>Mutation harness: 26/27 killed (survivor: fifo)</li><li>Own suite: Ran 43 tests OK, matching RESPONSE.md</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 43 tests in 0.013s / OK</li><li>This model&#39;s tests against each implementation — original: errors=47; mimo: failures=8, errors=5; Sonnet 5.5: pass; Fable 5.1: failures=13, errors=3; Opus 5.5: failures=6, errors=1; muse: failures=8; GPT-6 Luna: failures=12</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=12; Opus 5.5&#39;s tests: failures=3, errors=1; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: failures=7</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="1-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="1-1" aria-selected="false">TASK.md</button><button role="tab" data-file="1-2" aria-selected="false">jobqueue.py</button><button role="tab" data-file="1-3" aria-selected="false">test_jobqueue.py</button></div>
         <div class="file" id="file-1-0" ><p class="path mono">sonnet-5.5/01-feature-building/RESPONSE.md</p><div class="prose"><h1>Task 01 — Dependency-aware scheduler</h1>
 <p>Files changed: <code>jobqueue.py</code> (implemented <code>plan_jobs</code>), <code>test_jobqueue.py</code> (3 original tests kept, 40 added). Standard library only (<code>heapq</code>, <code>numbers</code>).</p>
@@ -1173,11 +1173,11 @@ class PlanJobsTests(unittest.TestCase):
 if __name__ == &quot;__main__&quot;:
     unittest.main()
 </code></pre></div></section></div><div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">9.25 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
-        <p>Heap-based Kahn&#39;s algorithm with thorough validation and an iterative, deterministic cycle walk. The message gives the true cycle plus a separate &#39;blocked jobs&#39; list. It matched the reference on every random graph and on all large-cycle probes. The suite is strong (a greedy-choice random checker, a tie by input order rather than readiness) but has no long-cycle recursion test.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>Correct on all 20,000 fuzz cases; iterative cycle walk handles 50,000-node cycles</li><li>Clear diagnostic that separates cycle members from downstream blocked jobs</li><li>Tests check each step&#39;s greedy choice on 200 random DAGs and check immutability on both success and error paths</li></ul></div><div><h4>Weaknesses</h4><ul><li>Reads depends_on several times: a one-shot iterable dependency is validated and then silently dropped, so Job(&#39;b&#39;,10,gen([&#39;a&#39;])) schedules b before a and an unknown dependency in a generator is not rejected</li><li>Rejects float priorities (stricter than the brief; reasonable given the int annotation, but it turns away input the others accept)</li><li>Its suite has no large-cycle test, so a recursive cycle finder would pass it</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>fuzz.py: 0 mismatches over 20,000 random graphs</li><li>probe3.py: C gen deps b(10)&lt;-a -&gt; [&#39;b&#39;,&#39;a&#39;] (dependency violated); gen deps unknown &#39;zz&#39; -&gt; ok [&#39;b&#39;]</li><li>probe.py float prio -&gt; ScheduleError &quot;non-integer priority 1.5&quot;</li><li>Mutation run: 19/20 killed; survivor: cycle_recursion</li><li>Cross-test failures of other suites on C are float priority, message wording, or the exact cycle-path text; none is a contract violation</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 34 tests in 0.015s / OK</li><li>This model&#39;s tests against each implementation — original: errors=42; mimo: failures=5, errors=3; Sonnet 5.5: failures=3, errors=1; Fable 5.1: failures=3, errors=4; Opus 5.5: pass; muse: failures=6</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=6, errors=1; Fable 5.1&#39;s tests: failures=9; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass</li></ul>
+        <h3>Evaluation <span class="pill big">9.5 / 10</span> <span class="muted small">graded blind as submission E</span></h3>
+        <p>Correct, fast heap-based scheduler with thorough validation. The cycle message shows a concrete cycle path and separately lists all blocked jobs. It is iterative, so 5,000-node cycles are fine. The 34-test suite includes a randomized greedy-choice oracle and killed 26 of 27 mutants, but it has no long-cycle test, so a recursion regression would go unnoticed. It rejects float priorities, which the int annotation allows but is stricter than needed.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches vs reference; 20k jobs about 0.02-0.05 s</li><li>Message &#39;a -&gt; b -&gt; a; blocked jobs: a, b, c, d&#39; separates the cycle from downstream jobs</li><li>200-random-DAG test checks each step against the best currently ready job</li></ul></div><div><h4>Weaknesses</h4><ul><li>No large-cycle test (the cycle_recursion mutant survived)</li><li>Rejects float and bool priorities (over-strict but within the typed contract); reads depends_on twice during validation</li><li>Some tests (non-integer priority, message split on &#39;;&#39;) are stricter than the contract</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>fuzz.py: E mismatches 0; probe bigcycle5000 -&gt; SE in 0.01s</li><li>probe &#39;float prio&#39; -&gt; ScheduleError &quot;non-integer priority 1.5&quot;</li><li>Mutation harness: 26/27 killed (survivor: cycle_recursion)</li><li>Own suite: Ran 34 tests OK, matching RESPONSE.md</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 34 tests in 0.007s / OK</li><li>This model&#39;s tests against each implementation — original: errors=42; mimo: failures=5, errors=3; Sonnet 5.5: failures=3, errors=1; Fable 5.1: failures=3, errors=4; Opus 5.5: pass; muse: failures=6; GPT-6 Luna: failures=6</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=6, errors=1; Fable 5.1&#39;s tests: failures=9; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: failures=5</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="2-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="2-1" aria-selected="false">TASK.md</button><button role="tab" data-file="2-2" aria-selected="false">jobqueue.py</button><button role="tab" data-file="2-3" aria-selected="false">test_jobqueue.py</button></div>
         <div class="file" id="file-2-0" ><p class="path mono">opus-5.5/01-feature-building/RESPONSE.md</p><div class="prose"><h1>Task 01: Dependency-aware scheduler</h1>
 <h2>Design</h2>
@@ -1714,11 +1714,11 @@ class PlanJobsTests(unittest.TestCase):
 if __name__ == &quot;__main__&quot;:
     unittest.main()
 </code></pre></div></section></div><div role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">7.75 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
-        <p>Validation is correct and thorough, and the ordering matched the reference on all random graphs. Ready jobs are chosen with max() and list.remove(), which is O(n^2): 30 s for 20,000 independent jobs. The cycle diagnostic lists every blocked job as &#39;involved&#39;, including downstream jobs that are not in the cycle. The suite is reasonable but let 5 of 20 mutants survive, including wrong tie-breaking.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>Correct ordering (0 fuzz mismatches) and no recursion anywhere</li><li>Thorough input validation (non-Job items, None or bare-string depends_on, non-string or empty dependencies)</li><li>Short and honest RESPONSE</li></ul></div><div><h4>Weaknesses</h4><ul><li>Cycle message &#39;dependency cycle detected involving: &#39;a&#39;, &#39;b&#39;, &#39;down&#39;&#39; names downstream jobs as cycle members; with a large downstream set, the cycle is buried</li><li>Quadratic ready-set selection: 5,000 independent jobs take 1.1 s and 20,000 take 30 s</li><li>Tests miss tie-breaking by id vs input order, readiness-time ties, level-by-level scheduling and large cycles</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>probe.py &#39;3cycle + 2000 downstream chain&#39; -&gt; a 16,940-character message listing every d-job</li><li>probe2.py: &#39;20000 independent: 30.24s&#39; (other submissions under 0.1 s)</li><li>Mutation run: 15/20 killed; survivors: tie_by_id, fifo_ties, levels, cycle_recursion, cycle_all_ids</li><li>Cross-test failures on D are wording, exact cycle-path or priority-type expectations</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 23 tests in 0.003s / OK</li><li>This model&#39;s tests against each implementation — original: errors=23; mimo: failures=1, errors=1; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=8; Fable 5.1&#39;s tests: failures=13; Opus 5.5&#39;s tests: failures=6; muse&#39;s tests: pass</li></ul>
+        <h3>Evaluation <span class="pill big">8.25 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
+        <p>Correct Kahn scheduler with thorough validation; matches a brute-force reference on 4,000 random graphs and never hits recursion limits. Ready-job selection is max() plus list.remove over a plain list, so it is quadratic: 20k independent jobs take about 15 s. The cycle message lists every blocked job, including downstream ones, not the cycle itself. The 23 tests are reasonable but miss several tie-break mutants.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches vs brute-force reference on 4,000 random DAG/cyclic inputs</li><li>Validates ids, dependency entries, None/bare-string depends_on and non-Job items with ScheduleError</li><li>Iterative, so 5,000-node cycles and chains raise ScheduleError cleanly</li></ul></div><div><h4>Weaknesses</h4><ul><li>O(n^2) ready selection: 5k/10k/20k independent jobs took 0.89/3.66/14.97 s (others about 0.02 s)</li><li>Cycle diagnostic (&#39;involving: ...&#39;) lists all blocked jobs, including downstream ones, with no cycle path</li><li>Tests do not catch tie-by-readiness-time, lexicographic tie-break, sort-once, recursion or mutate-on-error mutants</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>fuzz.py: 4000 cases, A mismatches 0</li><li>probe.py: &#39;20k independent OK 15.18s&#39;, &#39;20k randdag OK 1.78s&#39;</li><li>probe: 2-cycle + downstream -&gt; &quot;dependency cycle detected involving: &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;&quot;</li><li>Mutation harness (27 wrapper mutants around own impl): 21 killed; survived fifo, lex_tie, sort_once, cycle_recursion, cycle_msg_all_jobs, mutate_deps_on_error</li><li>Own suite: Ran 23 tests OK, matching RESPONSE.md</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 23 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: errors=23; mimo: failures=1, errors=1; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: failures=1</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=8; Fable 5.1&#39;s tests: failures=13; Opus 5.5&#39;s tests: failures=6; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: failures=7</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="3-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="3-1" aria-selected="false">TASK.md</button><button role="tab" data-file="3-2" aria-selected="false">jobqueue.py</button><button role="tab" data-file="3-3" aria-selected="false">test_jobqueue.py</button></div>
         <div class="file" id="file-3-0" ><p class="path mono">muse/01-feature-building/RESPONSE.md</p><div class="prose"><h1>Response — dependency-aware scheduler</h1>
 <h2>Design</h2>
@@ -2026,13 +2026,230 @@ class PlanJobsTests(unittest.TestCase):
 if __name__ == &quot;__main__&quot;:
     unittest.main()
 </code></pre></div></section></div><div role="tabpanel" id="panel-4" aria-labelledby="tab-4" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">6.5 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
-        <p>Kahn&#39;s algorithm with a heap is correct for acyclic input and matched the reference on 20,000 random graphs. Its cycle diagnostic uses a recursive DFS, which raises RecursionError instead of ScheduleError on large cycles and on small cycles with long downstream chains. The suite is the thinnest: 6 of 20 mutants survived, and the RESPONSE describes the cycle message format inaccurately.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>Ordering matches the brute-force reference exactly on all random DAGs and cycle-vs-no-cycle cases</li><li>Handles duplicate dependencies, generators and empty input; never mutates input</li></ul></div><div><h4>Weaknesses</h4><ul><li>Recursive _find_cycle: a 1,000- or 5,000-node cycle, or a 2-cycle behind a 1,500-job chain, crashes with RecursionError (contract requires ScheduleError)</li><li>The cycle path is not closed (&#39;a -&gt; b -&gt; c&#39;; a self-dependency shows just &#39;a&#39;), even though the RESPONSE claims &#39;a -&gt; b -&gt; c -&gt; a&#39; and &#39;a -&gt; a&#39;</li><li>depends_on=None or an unhashable dependency raises TypeError; a bare-string depends_on is iterated character by character</li><li>Tests are weak: the immutability test never passes a mutable list, and there are no tests for input-order vs readiness ties, large cycles, or random/reference checks</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>probe.py &#39;cycle 5000&#39; and &#39;cycle 50000&#39; -&gt; RecursionError; probe2.py small cycle + 1,500-job downstream chain -&gt; RecursionError; a 1,000-node cycle -&gt; RecursionError</li><li>B on 3-cycle: &#39;dependency cycle detected: a -&gt; b -&gt; c (unresolvable jobs: a, b, c)&#39;, which contradicts the RESPONSE example</li><li>Mutation run: 14/20 killed; survivors: tie_by_id, fifo_ties, levels, cycle_recursion, cycle_all_ids, mutate_deps</li><li>Cross-tests: fails E&#39;s and A&#39;s long-cycle recursion tests (a real contract bug); other cross failures are wording or extra validation</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 21 tests in 0.001s / OK</li><li>This model&#39;s tests against each implementation — original: errors=21; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=8, errors=5; Fable 5.1&#39;s tests: failures=12, errors=2; Opus 5.5&#39;s tests: failures=5, errors=3; muse&#39;s tests: failures=1, errors=1</li></ul>
+        <h3>Evaluation <span class="pill big">8 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
+        <p>Clean heap-based Kahn implementation that matches the reference on all random graphs and is fast at 20k jobs. The cycle diagnostic only lists every blocked job, with no cycle path. A bare-string depends_on is silently iterated character by character. The suite is small (12 tests) and tied to exact message wording, and it has no duplicate-dependency, generator or priority-inheritance coverage.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches vs reference; 20k jobs in about 0.02-0.04 s</li><li>Validates ids, dependency entries and non-Job items; handles duplicate deps by counting consistently</li><li>Recursion-free; large cycles raise ScheduleError</li></ul></div><div><h4>Weaknesses</h4><ul><li>depends_on=&#39;a&#39; accepted and iterated per character (probe returned [&#39;a&#39;,&#39;b&#39;])</li><li>Cycle message &#39;jobs still blocked: a, b, c, d&#39; includes downstream jobs and gives no cycle path</li><li>Only 12 tests; tests assert exact wording (&#39;Duplicate job ID:&#39;, &#39;non-empty strings&#39;), which makes them brittle across implementations</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>fuzz.py: B mismatches 0; probe: 20k randdag 0.04s</li><li>probe &#39;barestr deps&#39; -&gt; (&#39;OK&#39;, [&#39;a&#39;,&#39;b&#39;])</li><li>Mutation harness: 20/27 killed; survived inherit, dup_dep_counts, gen_twice, cycle_recursion, cycle_msg_all_jobs, mutate_deps_on_error, mutate_job_priority</li><li>Cross-tests: B&#39;s suite fails on every other impl only through regex wording (e.g. &#39;unknown job &#39;missing&#39;&#39; vs F&#39;s &#39;unknown job: &#39;missing&#39;&#39;), not through real contract bugs</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 12 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: errors=16; mimo: failures=7; Sonnet 5.5: failures=7; Fable 5.1: failures=8; Opus 5.5: failures=5; muse: failures=7; GPT-6 Luna: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=12; Fable 5.1&#39;s tests: failures=13; Opus 5.5&#39;s tests: failures=6; muse&#39;s tests: failures=1; GPT-6 Luna&#39;s tests: pass</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="4-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="4-1" aria-selected="false">TASK.md</button><button role="tab" data-file="4-2" aria-selected="false">jobqueue.py</button><button role="tab" data-file="4-3" aria-selected="false">test_jobqueue.py</button></div>
-        <div class="file" id="file-4-0" ><p class="path mono">mimo/01-feature-building/RESPONSE.md</p><div class="prose"><h1>RESPONSE — Task 01: dependency-aware scheduler</h1>
+        <div class="file" id="file-4-0" ><p class="path mono">gpt-6-luna/01-feature-building/RESPONSE.md</p><div class="prose"><h1>Task 01 response</h1>
+<p><code>plan_jobs</code> snapshots the supplied iterable, validates that jobs have unique,
+non-empty string IDs, and validates that each dependency is a non-empty string
+that names a supplied job. It builds prerequisite counts and reverse edges, then
+uses a heap to choose among ready jobs by descending priority and original input
+order. If jobs remain blocked after scheduling, it raises <code>ScheduleError</code> and
+lists their IDs. All scheduling state is local, so the input jobs and dependency
+collections are left unchanged.</p>
+<p>The tests cover empty input, dependency ordering over priority, priority among
+ready jobs including jobs released during scheduling, stable ties, unknown and
+malformed dependencies, empty/non-string/duplicate IDs, self and multi-job
+cycles, and non-mutation of the input and a dependency list.</p>
+<p>Verification command:</p>
+<pre><code class="language-text">python3 -m unittest -v
+</code></pre>
+<p>Result: <strong>12 tests passed</strong> (<code>Ran 12 tests in 0.000s</code>, <code>OK</code>).</p>
+</div></div><div class="file" id="file-4-1" hidden><p class="path mono">gpt-6-luna/01-feature-building/TASK.md</p><div class="prose"><h1>Task 01 — Feature building: dependency-aware scheduler</h1>
+<p>Implement <code>plan_jobs</code> in <code>jobqueue.py</code> and expand <code>test_jobqueue.py</code> with useful
+edge cases. Use only the Python standard library.</p>
+<p>Contract:</p>
+<ul>
+<li>Every <code>Job.id</code> must be a non-empty string and unique.</li>
+<li>Every dependency must name a supplied job. Reject invalid input with
+<code>ScheduleError</code> and a useful message.</li>
+<li>Return every job ID exactly once, always after all of its dependencies.</li>
+<li>Among jobs currently ready, choose higher <code>priority</code> first. Break equal
+priorities by original input order.</li>
+<li>Detect dependency cycles and raise <code>ScheduleError</code>; include the IDs involved
+in the diagnostic when practical.</li>
+<li>Do not mutate the supplied jobs or their dependency lists.</li>
+<li>Empty input returns an empty list.</li>
+</ul>
+<p>Run the tests. Write <code>RESPONSE.md</code> summarizing the design, edge cases covered,
+and the exact verification command/result. Keep all work inside this directory.</p>
+</div></div><div class="file" id="file-4-2" hidden><p class="path mono">gpt-6-luna/01-feature-building/jobqueue.py</p><pre><code>from dataclasses import dataclass, field
+import heapq
+from typing import Any, Iterable
+
+
+class ScheduleError(ValueError):
+    pass
+
+
+@dataclass(frozen=True)
+class Job:
+    id: str
+    priority: int = 0
+    depends_on: tuple[str, ...] = field(default_factory=tuple)
+    payload: Any = None
+
+
+def plan_jobs(jobs: Iterable[Job]) -&gt; list[str]:
+    &quot;&quot;&quot;Return job IDs in a valid deterministic execution order.&quot;&quot;&quot;
+    supplied_jobs = list(jobs)
+
+    # Keep the input order in the index: it is the stable tie breaker among
+    # jobs with equal priority.
+    jobs_by_id: dict[str, Job] = {}
+    for job in supplied_jobs:
+        if not isinstance(job, Job):
+            raise ScheduleError(f&quot;Expected a Job instance, got {type(job).__name__}&quot;)
+        if not isinstance(job.id, str) or not job.id:
+            raise ScheduleError(&quot;Job IDs must be non-empty strings&quot;)
+        if job.id in jobs_by_id:
+            raise ScheduleError(f&quot;Duplicate job ID: {job.id!r}&quot;)
+        jobs_by_id[job.id] = job
+
+    # Build reverse edges so that completing a prerequisite releases its
+    # dependent jobs. Copy dependencies into local structures only.
+    dependents: dict[str, list[str]] = {job_id: [] for job_id in jobs_by_id}
+    remaining_dependencies: dict[str, int] = {}
+    for job in supplied_jobs:
+        try:
+            dependencies = tuple(job.depends_on)
+        except TypeError as exc:
+            raise ScheduleError(f&quot;Dependencies for job {job.id!r} must be iterable&quot;) from exc
+
+        for dependency in dependencies:
+            if not isinstance(dependency, str) or not dependency:
+                raise ScheduleError(
+                    f&quot;Dependencies for job {job.id!r} must be non-empty job ID strings&quot;
+                )
+            if dependency not in jobs_by_id:
+                raise ScheduleError(
+                    f&quot;Job {job.id!r} depends on unknown job {dependency!r}&quot;
+                )
+            dependents[dependency].append(job.id)
+        remaining_dependencies[job.id] = len(dependencies)
+
+    job_indices = {job.id: index for index, job in enumerate(supplied_jobs)}
+    ready: list[tuple[int, int, str]] = []
+    for job in supplied_jobs:
+        if remaining_dependencies[job.id] == 0:
+            try:
+                heapq.heappush(ready, (-job.priority, job_indices[job.id], job.id))
+            except TypeError as exc:
+                raise ScheduleError(
+                    f&quot;Priority for job {job.id!r} must be an ordered numeric value&quot;
+                ) from exc
+
+    order: list[str] = []
+    while ready:
+        _, _, job_id = heapq.heappop(ready)
+        order.append(job_id)
+
+        for dependent_id in dependents[job_id]:
+            remaining_dependencies[dependent_id] -= 1
+            if remaining_dependencies[dependent_id] == 0:
+                dependent = jobs_by_id[dependent_id]
+                try:
+                    heapq.heappush(
+                        ready,
+                        (-dependent.priority, job_indices[dependent_id], dependent_id),
+                    )
+                except TypeError as exc:
+                    raise ScheduleError(
+                        f&quot;Priority for job {dependent_id!r} must be an ordered numeric value&quot;
+                    ) from exc
+
+    if len(order) != len(supplied_jobs):
+        unscheduled = [job.id for job in supplied_jobs if remaining_dependencies[job.id] &gt; 0]
+        raise ScheduleError(
+            &quot;Dependency cycle detected; jobs still blocked: &quot; + &quot;, &quot;.join(unscheduled)
+        )
+
+    return order
+</code></pre></div><div class="file" id="file-4-3" hidden><p class="path mono">gpt-6-luna/01-feature-building/test_jobqueue.py</p><pre><code>import unittest
+
+from jobqueue import Job, ScheduleError, plan_jobs
+
+
+class PlanJobsTests(unittest.TestCase):
+    def test_empty_input(self):
+        self.assertEqual(plan_jobs([]), [])
+
+    def test_dependencies_override_priority(self):
+        jobs = [
+            Job(&quot;build&quot;, priority=100, depends_on=(&quot;fetch&quot;,)),
+            Job(&quot;fetch&quot;, priority=1),
+        ]
+        self.assertEqual(plan_jobs(jobs), [&quot;fetch&quot;, &quot;build&quot;])
+
+    def test_ready_jobs_use_priority_then_input_order(self):
+        jobs = [Job(&quot;a&quot;, 2), Job(&quot;b&quot;, 5), Job(&quot;c&quot;, 2)]
+        self.assertEqual(plan_jobs(jobs), [&quot;b&quot;, &quot;a&quot;, &quot;c&quot;])
+
+    def test_unknown_dependency_is_rejected(self):
+        with self.assertRaisesRegex(ScheduleError, &quot;unknown job &#39;missing&#39;&quot;):
+            plan_jobs([Job(&quot;build&quot;, depends_on=(&quot;missing&quot;,))])
+
+    def test_newly_ready_high_priority_job_precedes_waiting_jobs(self):
+        jobs = [
+            Job(&quot;first&quot;, priority=10),
+            Job(&quot;second&quot;, priority=1),
+            Job(&quot;urgent&quot;, priority=20, depends_on=(&quot;first&quot;,)),
+        ]
+        self.assertEqual(plan_jobs(jobs), [&quot;first&quot;, &quot;urgent&quot;, &quot;second&quot;])
+
+    def test_equal_priority_jobs_keep_input_order_when_released_together(self):
+        jobs = [
+            Job(&quot;dependent-later&quot;, priority=3, depends_on=(&quot;root&quot;,)),
+            Job(&quot;root&quot;, priority=4),
+            Job(&quot;already-ready&quot;, priority=3),
+        ]
+        self.assertEqual(plan_jobs(jobs), [&quot;root&quot;, &quot;dependent-later&quot;, &quot;already-ready&quot;])
+
+    def test_rejects_empty_and_non_string_ids(self):
+        for job_id in (&quot;&quot;, None, 12):
+            with self.subTest(job_id=job_id):
+                with self.assertRaisesRegex(ScheduleError, &quot;non-empty strings&quot;):
+                    plan_jobs([Job(job_id)])
+
+    def test_rejects_duplicate_ids(self):
+        with self.assertRaisesRegex(ScheduleError, &quot;Duplicate job ID: &#39;same&#39;&quot;):
+            plan_jobs([Job(&quot;same&quot;), Job(&quot;same&quot;)])
+
+    def test_rejects_invalid_dependencies(self):
+        for dependency in (&quot;&quot;, None, 42):
+            with self.subTest(dependency=dependency):
+                with self.assertRaisesRegex(ScheduleError, &quot;non-empty job ID strings&quot;):
+                    plan_jobs([Job(&quot;build&quot;, depends_on=(dependency,))])
+
+    def test_self_dependency_is_a_cycle(self):
+        with self.assertRaisesRegex(ScheduleError, &quot;cycle.*self&quot;):
+            plan_jobs([Job(&quot;self&quot;, depends_on=(&quot;self&quot;,))])
+
+    def test_multi_job_cycle_reports_blocked_ids(self):
+        jobs = [
+            Job(&quot;a&quot;, depends_on=(&quot;b&quot;,)),
+            Job(&quot;b&quot;, depends_on=(&quot;a&quot;,)),
+            Job(&quot;blocked&quot;, depends_on=(&quot;a&quot;,)),
+        ]
+        with self.assertRaises(ScheduleError) as raised:
+            plan_jobs(jobs)
+        self.assertIn(&quot;a&quot;, str(raised.exception))
+        self.assertIn(&quot;b&quot;, str(raised.exception))
+
+    def test_does_not_mutate_jobs_or_dependency_lists(self):
+        dependencies = [&quot;root&quot;]
+        jobs = [Job(&quot;child&quot;, depends_on=dependencies), Job(&quot;root&quot;)]
+        original_jobs = jobs.copy()
+
+        self.assertEqual(plan_jobs(jobs), [&quot;root&quot;, &quot;child&quot;])
+        self.assertEqual(jobs, original_jobs)
+        self.assertEqual(dependencies, [&quot;root&quot;])
+        self.assertIs(jobs[0].depends_on, dependencies)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre></div></section></div><div role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">6.25 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
+        <p>Scheduling itself is correct and fast. The cycle diagnostic uses a recursive DFS, so cycles of 1,000+ jobs, or a long blocked chain in front of a small cycle, raise RecursionError instead of ScheduleError, which breaks the cycle clause of the contract. Validation gaps let raw TypeError or AttributeError escape for None or unhashable dependencies and non-Job items. The tests are the weakest here, and RESPONSE.md misstates the cycle message format.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches vs reference on random DAGs; 20k jobs about 0.02-0.04 s</li><li>Duplicate dependencies deduplicated correctly; generator input works</li><li>Tries to extract a concrete cycle path for the message</li></ul></div><div><h4>Weaknesses</h4><ul><li>RecursionError for cycle length &gt;= 1000 and for a 3,000-job chain feeding a 2-cycle</li><li>depends_on=None -&gt; TypeError; unhashable dep -&gt; TypeError; non-Job -&gt; AttributeError; bare-string depends_on silently iterated</li><li>The non-mutation test passes tuple(deps), so it never exercises a caller-owned list</li><li>RESPONSE claims output like &#39;a -&gt; b -&gt; c -&gt; a&#39; and &#39;a -&gt; a&#39;, but actual output is &#39;a -&gt; b -&gt; c&#39; and &#39;a&#39;</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>probe: cycle sizes 900/990 -&gt; SE, 1000/2000 -&gt; RecursionError</li><li>probe: 3000-job chain into 2-cycle -&gt; RecursionError</li><li>Cross-tests: C&#39;s test_long_cycle_does_not_hit_recursion_limit and F&#39;s test_very_long_cycle_does_not_hit_recursion_limit fail on D (real bugs)</li><li>Mutation harness: 19/27 killed; survived fifo, lex_tie, inherit, sort_once, cycle_recursion, cycle_msg_all_jobs, mutate_deps, mutate_deps_on_error</li><li>python3 -c on 3-cycle -&gt; &#39;dependency cycle detected: a -&gt; b -&gt; c (unresolvable jobs: a, b, c)&#39;</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 21 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: errors=21; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=8, errors=5; Fable 5.1&#39;s tests: failures=12, errors=2; Opus 5.5&#39;s tests: failures=5, errors=3; muse&#39;s tests: failures=1, errors=1; GPT-6 Luna&#39;s tests: failures=7</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="5-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="5-1" aria-selected="false">TASK.md</button><button role="tab" data-file="5-2" aria-selected="false">jobqueue.py</button><button role="tab" data-file="5-3" aria-selected="false">test_jobqueue.py</button></div>
+        <div class="file" id="file-5-0" ><p class="path mono">mimo/01-feature-building/RESPONSE.md</p><div class="prose"><h1>RESPONSE — Task 01: dependency-aware scheduler</h1>
 <h2>Design</h2>
 <p><code>plan_jobs</code> is a deterministic Kahn topological sort with a priority queue.</p>
 <ol>
@@ -2102,7 +2319,7 @@ OK
 </code></pre>
 <p>All 21 tests passed. No further checks were required by the task (stdlib only; no linter
 or type-checker config was supplied).</p>
-</div></div><div class="file" id="file-4-1" hidden><p class="path mono">mimo/01-feature-building/TASK.md</p><div class="prose"><h1>Task 01 — Feature building: dependency-aware scheduler</h1>
+</div></div><div class="file" id="file-5-1" hidden><p class="path mono">mimo/01-feature-building/TASK.md</p><div class="prose"><h1>Task 01 — Feature building: dependency-aware scheduler</h1>
 <p>Implement <code>plan_jobs</code> in <code>jobqueue.py</code> and expand <code>test_jobqueue.py</code> with useful
 edge cases. Use only the Python standard library.</p>
 <p>Contract:</p>
@@ -2120,7 +2337,7 @@ in the diagnostic when practical.</li>
 </ul>
 <p>Run the tests. Write <code>RESPONSE.md</code> summarizing the design, edge cases covered,
 and the exact verification command/result. Keep all work inside this directory.</p>
-</div></div><div class="file" id="file-4-2" hidden><p class="path mono">mimo/01-feature-building/jobqueue.py</p><pre><code>from __future__ import annotations
+</div></div><div class="file" id="file-5-2" hidden><p class="path mono">mimo/01-feature-building/jobqueue.py</p><pre><code>from __future__ import annotations
 
 import heapq
 from dataclasses import dataclass, field
@@ -2234,7 +2451,7 @@ def _find_cycle(stuck: list[str], by_id: dict[str, Job]) -&gt; list[str]:
             if found:
                 return found
     return []
-</code></pre></div><div class="file" id="file-4-3" hidden><p class="path mono">mimo/01-feature-building/test_jobqueue.py</p><pre><code>import unittest
+</code></pre></div><div class="file" id="file-5-3" hidden><p class="path mono">mimo/01-feature-building/test_jobqueue.py</p><pre><code>import unittest
 
 from jobqueue import Job, ScheduleError, plan_jobs
 

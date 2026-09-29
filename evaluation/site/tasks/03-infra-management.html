@@ -26,16 +26,16 @@ health verification, backup/restore, secret handling, and rollback. Write
 performed. Work only in this directory; do not actually start containers.</p>
 </div>
       <p class="muted">Inputs given: <a href="../../../_templates/03-infra-management/.env.example" target="_blank" rel="noopener" class="mono">.env.example</a>, <a href="../../../_templates/03-infra-management/compose.yaml" target="_blank" rel="noopener" class="mono">compose.yaml</a>, <a href="../../../_templates/03-infra-management/Dockerfile" target="_blank" rel="noopener" class="mono">Dockerfile</a>, <a href="../../../_templates/03-infra-management/nginx.conf" target="_blank" rel="noopener" class="mono">nginx.conf</a>, <a href="../../../_templates/03-infra-management/requirements.txt" target="_blank" rel="noopener" class="mono">requirements.txt</a></p></details>
-    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">mimo</th><th scope="col">muse</th></tr>
-    <tr><th scope="row">security/correctness <span class="muted">(4)</span></th><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.79">3.5</td><td class="num heat" style="--h:0.69">3.25</td><td class="num heat" style="--h:0.58">3</td></tr><tr><th scope="row">operability <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.44">2</td></tr><tr><th scope="row">runbook and judgment <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat" style="--h:0.44">2</td></tr>
-    <tr class="total"><th scope="row">Total (10)</th><td class="num">9.25</td><td class="num">9.25</td><td class="num">9</td><td class="num">7.25</td><td class="num">7</td></tr></table></div>
-    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = muse, B = Fable 5.1, C = Opus 5.5, D = Sonnet 5.5, E = mimo.</p><div class="prose"><p>D and B are tied at 9.25. D is ranked first because it stays in scope (no invented app.py) and defaults to a loopback bind, while B&#39;s added app.py gives a genuinely meaningful /healthz. C trails them only because its change-me placeholders pass the required-variable guard. E and A are close: E&#39;s config is stronger, but its backup/restore procedure is broken by scram local auth and host-variable usage. A is valid but has an undocumented stale nginx upstream and a weaker rollback. docker compose config passed for all five with real values. Only B and D fail when run against their own .env.example as shipped. nginx -t was not run: there is no nginx binary, and the Docker daemon was not used.</p>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">mimo</th><th scope="col">GPT-6 Luna</th><th scope="col">muse</th></tr>
+    <tr><th scope="row">security/correctness <span class="muted">(4)</span></th><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.90">3.75</td><td class="num heat" style="--h:0.69">3.25</td><td class="num heat" style="--h:0.69">3.25</td><td class="num heat" style="--h:0.58">3</td><td class="num heat" style="--h:0.48">2.75</td></tr><tr><th scope="row">operability <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.44">2</td></tr><tr><th scope="row">runbook and judgment <span class="muted">(3)</span></th><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.44">2</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat" style="--h:0.31">1.75</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">9.5</td><td class="num">9.25</td><td class="num">8.25</td><td class="num">7.5</td><td class="num">7</td><td class="num">6.5</td></tr></table></div>
+    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = Fable 5.1, B = Sonnet 5.5, C = Opus 5.5, D = GPT-6 Luna, E = muse, F = mimo.</p><div class="prose"><p>A and B are close. B wins on runbook accuracy (restore rehearsal, bind-mount reload subtlety, loopback default); A wins on actually implementing a dependency-aware /healthz. C, D, E and F all ship placeholder passwords that pass the ${VAR:?} guard (checked with docker compose --env-file .env.example config). F has the strongest container hardening, but its own scram local-auth setting breaks its backup/restore runbook, which pulls it below C. D and F are near-tied (F&#39;s configs are much stronger, D&#39;s runbook commands actually work). No containers were started; nginx -t was not available.</p>
 </div></details></section>
-    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">9.25</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9.25</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">7.25</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">muse <span class="pill">7</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
-        <h3>Evaluation <span class="pill big">9.25 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
-        <p>D is a correct and disciplined submission. Passwords in .env.example are blank, so the guard fires. nginx re-resolves the api through a resolver and a variable. The proxy and api run read_only with dropped capabilities, the proxy binds to loopback by default, and gunicorn is configured through env with an overridable APP_MODULE. The runbook is accurate and practical: it generates passwords with sed, rehearses a restore into a scratch database, and notes that a replaced nginx bind-mounted file needs a restart. The read_only and cap_add setup for nginx is unverified, but D says so.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>Blank passwords in .env.example make compose refuse to start (verified); the runbook generates them with openssl and sed</li><li>nginx resolver plus <code>set $api_upstream</code>, a JSON 503 fallback, overwritten X-Forwarded-For, and read timeout 35s just above gunicorn&#39;s 30s</li><li>Stays in scope: no invented app code, APP_MODULE override, exec gunicorn as PID 1</li><li>Runbook includes a scratch-db restore rehearsal, a host port-exposure check, and API_TAG rollback with --no-build</li><li>RESPONSE ranks exposure and credentials first and lists the unverified parts honestly (nginx read_only/caps, image tags)</li></ul></div><div><h4>Weaknesses</h4><ul><li>The read_only nginx with cap_drop ALL plus a cap_add set has not been exercised; there is some risk it fails to start (acknowledged)</li><li>Only the password is required; user and db fall back to defaults (fine, but less explicit)</li><li>No image-level HEALTHCHECK (compose covers it)</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>D/.env.example:9-10 empty passwords; compose config with .env.example fails: POSTGRES_PASSWORD must be set</li><li>D/nginx.conf:28,34,61,65 resolver plus variable proxy_pass; 57 error_page to a JSON 503</li><li>D/compose.yaml:33-39 proxy read_only, tmpfs and caps; 18 loopback default bind</li><li>D/RUNBOOK.md:64-76 umask-protected dump, pg_restore --list, scratch restore; 133-136 nginx -t then restart for the bind mount</li></ul></details>
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">9.5</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9.25</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">8.25</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">7.5</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">7</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">muse <span class="pill">6.5</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+        <h3>Evaluation <span class="pill big">9.5 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
+        <p>Correct and careful hardening with the most accurate, practical runbook. Passwords are blank so the guard works, nginx is published on loopback by default and hardened (read_only, reduced caps), nginx re-resolves the api, and Redis requires a password. The /healthz endpoint is assumed rather than implemented, and that dependency is stated clearly.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Blank passwords in .env.example plus ${VAR:?} (confirmed: config fails on the shipped template); the runbook generates them with openssl and sed</li><li>Only the proxy is published, on 127.0.0.1:8080 by default; backend is internal; X-Forwarded-For is overwritten to prevent spoofing</li><li>Resolver plus variable proxy_pass for re-resolution; JSON 503 on upstream failure; proxy_next_upstream off</li><li>Runbook: backup sanity check with pg_restore --list, restore rehearsal into a scratch DB, --single-transaction restore, rollback with --no-deps --no-build, and a correct note that a git checkout of a single-file bind mount needs a restart rather than a reload</li><li>RESPONSE ranking and verification are thorough and honest, including what was not verified and the risk from read_only/cap_drop on the proxy</li></ul></div><div><h4>Weaknesses</h4><ul><li>No /healthz is implemented; if the app lacks it, api never becomes healthy and the proxy never starts (documented)</li><li>read_only plus cap_drop on the nginx proxy is untested and could need adjustment (flagged by the author)</li><li>The Redis password is visible on the command line</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>B/.env.example:9-10 empty passwords; B/compose.yaml:18 &#39;${PROXY_BIND:-127.0.0.1}:${PROXY_PORT:-8080}:80&#39;</li><li>B/nginx.conf:28,34 resolver plus set $api_upstream; :45 X-Forwarded-For $remote_addr; :55 proxy_next_upstream off</li><li>B/compose.yaml:102 pg_isready -h 127.0.0.1; :133 REDISCLI_AUTH for the healthcheck</li><li>B/RUNBOOK.md:66 pg_restore --list sanity check; :72-75 restore rehearsal; :120 --no-deps --no-build rollback; :135-136 bind-mount inode note</li></ul></details>
         <h4>Objective checks</h4>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="0-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="0-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="0-2" aria-selected="false">TASK.md</button><button role="tab" data-file="0-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="0-4" aria-selected="false">.env.example</button><button role="tab" data-file="0-5" aria-selected="false">.gitignore</button><button role="tab" data-file="0-6" aria-selected="false">compose.yaml</button><button role="tab" data-file="0-7" aria-selected="false">Dockerfile</button><button role="tab" data-file="0-8" aria-selected="false">nginx.conf</button><button role="tab" data-file="0-9" aria-selected="false">requirements.txt</button></div>
         <div class="file" id="file-0-0" ><p class="path mono">sonnet-5.5/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Response: hardening the API / nginx / Postgres / Redis deployment</h1>
@@ -560,10 +560,10 @@ psycopg2-binary==2.9.10
 redis==6.4.0
 
 </code></pre></div></section></div><div role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">9.25 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
-        <p>B is strong and correct. The secrets in .env.example are blank, so the :? guard really fires. nginx uses a resolver plus a variable proxy_pass, so it re-resolves the api after recreation. Redis requires a password with bounded memory, and the api has read_only, cap_drop and init. Images are tagged by git SHA for rollback. The runbook runs its commands inside the container (sh -c) and so avoids the auth and variable traps. B added a minimal app.py so /healthz exists; the brief did not ask for this, but B flags it clearly.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>Blank POSTGRES_PASSWORD and REDIS_PASSWORD in .env.example make compose config fail until they are set (verified)</li><li>nginx resolver 127.0.0.11 plus <code>set $api_upstream</code> avoids stale api IPs; the JSON 503 error page returns JSON instead of HTML</li><li>pg_isready -h 127.0.0.1 avoids a false-healthy result during init; REDISCLI_AUTH keeps the password off the redis-cli argv</li><li>Rollback via API_TAG and <code>up -d --no-build</code>; the runbook notes that POSTGRES_PASSWORD only seeds the first init</li><li>Timeouts are aligned across nginx, gunicorn and stop_grace_period; RESPONSE verification is detailed and honest</li></ul></div><div><h4>Weaknesses</h4><ul><li>Adds application code (app.py) that the task did not ask for; it could shadow or conflict with the real app</li><li>Proxy publishes on 0.0.0.0:80 by default (acceptable, but not loopback-first for local use)</li><li>The proxy health check goes through the API&#39;s dependency-checking /healthz, so a db outage marks the proxy unhealthy too</li><li>Redis password appears in the rendered command line (docker inspect)</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>B/.env.example:12,16 empty secrets; compose config --env-file .env.example fails: required variable REDIS_PASSWORD is missing</li><li>B/nginx.conf:42,48,74,78 resolver plus variable proxy_pass</li><li>B/compose.yaml:55-62 tagged api image, read_only, tmpfs, init; 128-142 Redis requirepass with REDISCLI_AUTH</li><li>B/RUNBOOK.md:62-75 pg_dump/pg_restore via sh -c with container env; 110-118 tag-based rollback</li><li>B/app.py added: /healthz checks Postgres and Redis and returns 503 on failure</li></ul></details>
+        <h3>Evaluation <span class="pill big">9.25 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
+        <p>A complete, correct hardening. The secrets in .env.example are left blank so the required-variable guard actually works, Redis needs a password, the backend network is internal, and nginx re-resolves the api at request time. It also adds a small app.py with a /healthz that checks the database and cache, so the health chain means something. The runbook commands run inside the containers, so they would work.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>POSTGRES_PASSWORD and REDIS_PASSWORD are blank in .env.example, so ${VAR:?} fails on the shipped template (confirmed: docker compose --env-file .env.example config fails)</li><li>nginx uses the Docker resolver plus a variable in proxy_pass, so a recreated api is picked up without restarting nginx</li><li>Non-root venv multi-stage image, gunicorn.conf.py, read_only api, cap_drop ALL, init, pids limit</li><li>Rollback uses a tagged image with --no-build; backup and restore run pg_dump/pg_restore through sh -c inside the container</li><li>RESPONSE ranks the right risks (published db/cache, hard-coded creds, dev server, secrets baked into the image) and is honest about what was not verified</li></ul></div><div><h4>Weaknesses</h4><ul><li>Adds application code (app.py) the brief did not ask for. It is documented, but it is a stub that could be confused with the real app</li><li>The Redis password is on the redis-server command line, visible via inspect/ps</li><li>The proxy publishes on all interfaces at port 80 by default (same as the original)</li><li>The claim that --no-build &#39;refuses to run&#39; if the tag is missing is a little overstated (Compose may try to pull first)</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>A/.env.example:12,16 blank passwords; docker compose --env-file .env.example config fails with &#39;required variable POSTGRES_PASSWORD is missing a value&#39;</li><li>A/nginx.conf:42,48 resolver 127.0.0.11 plus set $api_upstream <a href="http://api:8000">http://api:8000</a></li><li>A/compose.yaml:105 pg_isready -h 127.0.0.1 (TCP, avoids the early-ready window during init); :160-163 backend internal</li><li>A/Dockerfile:56-57 stdlib HEALTHCHECK on /healthz; A/app.py:54-70 checks db and redis, returns 503 when degraded</li><li>A/RUNBOOK.md:112 &#39;API_TAG=&lt;previous-sha&gt; docker compose up -d --no-build api&#39;</li></ul></details>
         <h4>Objective checks</h4>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="1-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="1-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="1-2" aria-selected="false">TASK.md</button><button role="tab" data-file="1-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="1-4" aria-selected="false">.env.example</button><button role="tab" data-file="1-5" aria-selected="false">.gitignore</button><button role="tab" data-file="1-6" aria-selected="false">app.py</button><button role="tab" data-file="1-7" aria-selected="false">compose.yaml</button><button role="tab" data-file="1-8" aria-selected="false">Dockerfile</button><button role="tab" data-file="1-9" aria-selected="false">gunicorn.conf.py</button><button role="tab" data-file="1-10" aria-selected="false">nginx.conf</button><button role="tab" data-file="1-11" aria-selected="false">requirements.txt</button></div>
         <div class="file" id="file-1-0" ><p class="path mono">fable-5.1/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Response: hardening the API deployment</h1>
@@ -1315,10 +1315,10 @@ psycopg2-binary==2.9.10
 redis==6.4.0
 
 </code></pre></div></section></div><div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">9 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
-        <p>C is a thorough, correct hardening. It uses an nginx 1.28 upstream with <code>resolve</code> plus keepalive, Redis auth started through the image entrypoint so Redis still drops root, and loopback-bound publishing by default. APP_MODULE is configurable, and the runbook is accurate and runs its commands in the container. The main flaw is that .env.example ships <code>change-me</code> passwords that pass the required-variable guard.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li><code>server api:8000 resolve</code> with zone and resolver (valid on nginx &gt;=1.27.3; 1.28 is pinned) handles api recreation and keeps upstream keepalive</li><li>Redis started via <code>sh -c exec docker-entrypoint.sh redis-server --requirepass &amp;quot;$$REDIS_PASSWORD&amp;quot;</code> keeps the privilege drop and keeps the password out of compose-rendered args</li><li>APP_MODULE-driven gunicorn.conf.py; gunicorn keepalive 65 is above the nginx upstream keepalive_timeout</li><li>Runbook: in-container pg_dump/pg_restore, a --single-transaction restore, the postgres:18 mount-path caveat, and expand/contract migration guidance</li><li>RESPONSE is candid about what was not verified, including the nginx version requirement for <code>resolve</code></li></ul></div><div><h4>Weaknesses</h4><ul><li>.env.example POSTGRES_PASSWORD=change-me and REDIS_PASSWORD=change-me pass the :? guard (docker compose --env-file .env.example config exits 0)</li><li>Some extras (CSP and X-Frame headers, JSON log format, proxy buffers) go beyond what the brief needs</li><li>Postgres rotation recreates db unnecessarily (<code>--force-recreate db api</code>)</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>C/.env.example:11,15 change-me placeholders; compose config with .env.example succeeds</li><li>C/nginx.conf:49-57 resolver plus upstream zone with <code>server api:8000 resolve; keepalive 16</code></li><li>C/compose.yaml:137-146 Redis via docker-entrypoint.sh; 114 pg_isready -h 127.0.0.1</li><li>C/RUNBOOK.md:64-80 backup, verify and restore with sh -c container vars; 118-130 API_TAG rollback with --no-build --no-deps</li></ul></details>
+        <h3>Evaluation <span class="pill big">8.25 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
+        <p>Solid configuration, with an nginx upstream that uses &#39;resolve&#39; plus keepalive (valid on the pinned 1.28), Redis auth, an internal backend network, loopback publishing and a sound runbook. The main flaw is the change-me placeholder passwords in .env.example: they pass the ${VAR:?} guard, so copying the example starts the stack with a known password. The response even records that .env.example passes config.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>upstream with zone plus &#39;server api:8000 resolve&#39; and keepalive re-resolves api on nginx 1.28</li><li>Internal backend, only the proxy published (loopback default), read_only/cap_drop api, and Redis still drops privileges via the entrypoint</li><li>Runbook commands run in-container through sh -c; rollback uses --no-build --no-deps; the expand/contract migration advice is good</li><li>Honest verification section that states the nginx version requirement</li></ul></div><div><h4>Weaknesses</h4><ul><li>The placeholder passwords &#39;change-me&#39; slip past the required-variable guard; RUNBOOK says config -q &#39;fails if a required secret is missing&#39;, which does not protect against placeholders</li><li>The api healthcheck is liveness only (by design), so it is less meaningful than a dependency-aware check</li><li>The nginx reload path after a git checkout of a single-file bind mount may not pick up the new file</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>C/.env.example:11,15 POSTGRES_PASSWORD=change-me, REDIS_PASSWORD=change-me; docker compose --env-file .env.example config passes</li><li>C/RESPONSE.md:78 &#39;docker compose --env-file .env.example config succeeds&#39;</li><li>C/nginx.conf:52-57 upstream zone plus resolve plus keepalive</li><li>C/compose.yaml:137-146 sh -c exec docker-entrypoint.sh redis-server --requirepass &quot;$$REDIS_PASSWORD&quot;</li><li>C/RUNBOOK.md:130 rollback with --no-build --no-deps</li></ul></details>
         <h4>Objective checks</h4>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="2-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="2-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="2-2" aria-selected="false">TASK.md</button><button role="tab" data-file="2-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="2-4" aria-selected="false">.env.example</button><button role="tab" data-file="2-5" aria-selected="false">.gitignore</button><button role="tab" data-file="2-6" aria-selected="false">compose.yaml</button><button role="tab" data-file="2-7" aria-selected="false">Dockerfile</button><button role="tab" data-file="2-8" aria-selected="false">gunicorn.conf.py</button><button role="tab" data-file="2-9" aria-selected="false">nginx.conf</button><button role="tab" data-file="2-10" aria-selected="false">requirements.txt</button></div>
         <div class="file" id="file-2-0" ><p class="path mono">opus-5.5/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Response: hardening the API deployment</h1>
@@ -2015,10 +2015,10 @@ psycopg2-binary==2.9.10
 redis==6.4.0
 
 </code></pre></div></section></div><div role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">7.25 / 10</span> <span class="muted small">graded blind as submission E</span></h3>
-        <p>E has the most elaborate hardening: unprivileged nginx, caps dropped on every service, rate limits, JSON errors, and a verify_config.py that passes 69 structural checks. It has real correctness problems, though. <code>POSTGRES_INITDB_ARGS --auth-local=scram-sha-256</code> means the runbook&#39;s exec-based pg_dump, pg_restore and psql commands fail without a password. Several runbook commands depend on host shell variables that are never set. nginx still resolves the api once at startup, which is documented but not fixed. The change-me placeholders pass the guard, and the runbook is long rather than concise.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>nginx-unprivileged on 8080 with read_only, temp paths in /tmp, and a proxy health check that is independent of the API</li><li>All services have cap_drop, no-new-privileges and pids limits; the proxy is only on the edge network</li><li>verify_config.py is a rerunnable static check (ran clean: FAILURES: 0) that includes the compose fail-fast test</li><li>RESPONSE ranks the problems well and explains the Redis RCE and Werkzeug debugger risks</li></ul></div><div><h4>Weaknesses</h4><ul><li>--auth-local=scram-sha-256 makes local-socket connections require a password; the runbook backup (<code>exec -T db sh -c &amp;#39;pg_dump -U ...&amp;#39;</code>) and restore have no PGPASSWORD and will fail</li><li>The runbook uses host-side $POSTGRES_USER, $POSTGRES_DB and $REDIS_PASSWORD (health checks, rotation, routine psql and redis-cli) without sourcing .env</li><li>Upstream <code>server api:8000</code> is resolved once at startup; rollback needs a manual <code>restart proxy</code> instead of a fix</li><li>Rollback <code>APP_VERSION=&amp;lt;last-good&amp;gt; docker compose up -d api</code> omits --no-build; if the tag is missing it builds current source under the old tag</li><li>.env.example change-me placeholders pass the :? guard; CMD hardcodes wsgi:app with no env override</li><li>RESPONSE claims &#39;a tested dump/restore procedure&#39;, which was never tested; the runbook is 217 lines where the brief asked for a concise one</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>E/compose.yaml:138 POSTGRES_INITDB_ARGS --auth-local=scram-sha-256 vs E/RUNBOOK.md:96-117 pg_dump/pg_restore with no password</li><li>E/RUNBOOK.md:66-67,148-149,195-196 host-shell &quot;$POSTGRES_USER&quot; and &quot;$REDIS_PASSWORD&quot;</li><li>E/nginx.conf:81-84 comment &#39;Resolved once at startup&#39;; E/RUNBOOK.md:176-181 restart proxy workaround</li><li>E/RUNBOOK.md:172 rollback without --no-build</li><li>E/.env.example:11,15 change-me; compose config with .env.example exits 0</li><li>E/RESPONSE.md:43-44 &#39;tested dump/restore procedure&#39;</li></ul></details>
+        <h3>Evaluation <span class="pill big">7.5 / 10</span> <span class="muted small">graded blind as submission F</span></h3>
+        <p>The most elaborate submission: unprivileged read-only nginx, cap_drop everywhere, rate limiting, JSON errors, a 69-check verification script and an excellent RESPONSE. But several runbook operations would fail. Its own POSTGRES_INITDB_ARGS makes local-socket auth use scram-sha-256, so the in-container pg_dump/pg_restore/psql commands have no password and fail. The rollback can silently rebuild, nginx caches the api address (documented as needing a proxy restart), and the change-me placeholders pass the guard.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Strong container hardening: nginx-unprivileged with read_only and cap_drop ALL, read_only api, no-new-privileges, pids limits, PGDATA subdirectory</li><li>Clear network split (the proxy is not on backend at all); loopback publishing by default</li><li>Thorough, honest RESPONSE with well-ranked risks; verify_config.py runs and passes (0 failures)</li></ul></div><div><h4>Weaknesses</h4><ul><li>POSTGRES_INITDB_ARGS &#39;--auth-local=scram-sha-256&#39; breaks every runbook backup, restore and rotation command (pg_dump/pg_restore/dropdb/psql over the socket with no PGPASSWORD)</li><li>Rollback &#39;APP_VERSION=&lt;last-good&gt; docker compose up -d api&#39; has no --no-build, so a missing tag is silently rebuilt from current source under the old tag</li><li>Static upstream is resolved once; every api recreate needs a proxy restart (documented, but a design flaw)</li><li>change-me placeholders pass ${VAR:?}; health commands use host-side $REDIS_PASSWORD/$POSTGRES_USER; &#39;pg_restore --list&#39; needs host tools</li><li>Some over-engineering (rate limits, a verification script, a ./backups bind mount into db that the runbook never uses); the proxy_next_upstream comment is wrong about http_50x</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>F/compose.yaml:138 POSTGRES_INITDB_ARGS &#39;--auth-host=scram-sha-256 --auth-local=scram-sha-256&#39;; F/RUNBOOK.md:96-117 pg_dump/dropdb/pg_restore via exec with no password</li><li>F/RUNBOOK.md:172 &#39;APP_VERSION=&lt;last-good&gt; docker compose up -d api&#39; (no --no-build); :180 &#39;docker compose restart proxy # nginx resolves api only at startup&#39;</li><li>F/nginx.conf:81-84 static upstream api:8000; :125-128 retry comment</li><li>F/.env.example:11,15 change-me; config with .env.example passes</li><li>F/RUNBOOK.md:66-67 host-variable redis-cli -a &quot;$REDIS_PASSWORD&quot;; :104 host pg_restore --list</li><li>F/compose.yaml:144 ./backups:/backups unused by the runbook&#39;s stdout-redirect backup</li></ul></details>
         <h4>Objective checks</h4>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="3-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="3-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="3-2" aria-selected="false">TASK.md</button><button role="tab" data-file="3-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="3-4" aria-selected="false">.env.example</button><button role="tab" data-file="3-5" aria-selected="false">.gitignore</button><button role="tab" data-file="3-6" aria-selected="false">backups/.gitkeep</button><button role="tab" data-file="3-7" aria-selected="false">compose.yaml</button><button role="tab" data-file="3-8" aria-selected="false">Dockerfile</button><button role="tab" data-file="3-9" aria-selected="false">gunicorn.conf.py</button><button role="tab" data-file="3-10" aria-selected="false">nginx.conf</button><button role="tab" data-file="3-11" aria-selected="false">requirements.txt</button><button role="tab" data-file="3-12" aria-selected="false">verify_config.py</button></div>
         <div class="file" id="file-3-0" ><p class="path mono">mimo/03-infra-management/RESPONSE.md</p><div class="prose"><h1>RESPONSE — hardening the nginx / API / Postgres / Redis stack</h1>
@@ -3125,13 +3125,347 @@ print(&quot;FAILURES: %d&quot; % len(fails))
 for f in fails: print(&quot;  -&quot;, f)
 sys.exit(1 if fails else 0)
 </code></pre></div></section></div><div role="tabpanel" id="panel-4" aria-labelledby="tab-4" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">7 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
-        <p>A covers every goal: env-sourced credentials, only nginx published, a non-root slim image running gunicorn, stdlib health checks, health-gated startup, a pgdata volume, and an internal backend network. It stays small and valid. It does not fix nginx caching the api address, and the .env.example placeholder password gets past the :? guard. Rollback means rebuilding from git because images are not tagged, and some runbook commands depend on host shell variables that are not set.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>Compose config is valid, and the fail-fast :? guards work when variables are unset</li><li>API health check uses python urllib, so it works in the slim image without curl or wget</li><li>Backend network is internal; db and cache publish no ports; the API has expose only</li><li>RESPONSE.md ranks the real top risks and states honestly what was not run</li></ul></div><div><h4>Weaknesses</h4><ul><li>nginx uses a static upstream (server api:5000) with no resolver. After the api container is recreated (e.g. <code>up -d --build</code>), the proxy can hold a stale IP. This is not documented</li><li>.env.example ships POSTGRES_PASSWORD=change-me-before-first-run, which passes the :? guard (docker compose --env-file .env.example config exits 0)</li><li>Redis has no auth; it is documented as internal-only, which is acceptable but weaker than the others</li><li>No image tagging, so rollback is git checkout plus rebuild and there is no fast image-level rollback</li><li>pg_dump, restore and rotation commands use &quot;$POSTGRES_USER&quot; from the host shell; only the health section says to load .env first</li><li>No read_only, cap_drop or no-new-privileges hardening (optional, but weaker)</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>A/nginx.conf:28-30 upstream api { server api:5000 ... } with no resolver</li><li>A/.env.example:6 POSTGRES_PASSWORD=change-me-before-first-run; compose config with .env.example exits 0</li><li>A/compose.yaml:90-106 cache has no requirepass</li><li>A/RUNBOOK.md:42-43 pg_dump/psql with host-side &quot;$POSTGRES_USER&quot;; the note to load .env is only at line 29</li><li>A/RUNBOOK.md:63-71 rollback is git stash/checkout plus <code>up -d --build</code>, with no image tag</li></ul></details>
+        <h3>Evaluation <span class="pill big">7 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
+        <p>A minimal, mostly correct hardening. Ports are closed, the backend network is internal, there is a volume and health-gated startup, and nginx re-resolves the api. It is the only submission that pins transitive Python dependencies. But Redis has no auth, the placeholder password slips past the guard, and the Postgres healthcheck can report ready during init. The runbook is thin and its rollback rebuilds from git.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>requirements.txt pins the full transitive set (best dependency reproducibility)</li><li>nginx resolver plus variable proxy_pass; only nginx published; backend internal</li><li>Runbook backup and restore commands run inside the container and would work</li></ul></div><div><h4>Weaknesses</h4><ul><li>POSTGRES_PASSWORD=REPLACE_WITH_RANDOM_HEX_SECRET passes the ${VAR:?} guard</li><li>Redis has no password (it relies only on network isolation)</li><li>pg_isready without -h can report healthy during first-run init</li><li>Rollback is &#39;check out the revision and up -d --build&#39;, with no tagged images, so it rebuilds rather than restoring a known image</li><li>App code is chowned to the runtime user (writable); no read_only/cap_drop</li><li>RESPONSE is brief: the problems are lumped together and verification is minimal (honest, though)</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>D/.env.example:5 placeholder secret; config with .env.example passes</li><li>D/compose.yaml:37 REDIS_URL redis://cache:6379/0 with no auth; :97 redis-server with no requirepass; :81 pg_isready without -h</li><li>D/nginx.conf:11,24-25 resolver plus set $api_backend</li><li>D/RUNBOOK.md:67-68 rollback via checkout plus &#39;docker compose up -d --build&#39;</li><li>D/Dockerfile:15 COPY --chown=app:app</li></ul></details>
         <h4>Objective checks</h4>
-      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="4-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="4-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="4-2" aria-selected="false">TASK.md</button><button role="tab" data-file="4-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="4-4" aria-selected="false">.env.example</button><button role="tab" data-file="4-5" aria-selected="false">compose.yaml</button><button role="tab" data-file="4-6" aria-selected="false">Dockerfile</button><button role="tab" data-file="4-7" aria-selected="false">nginx.conf</button><button role="tab" data-file="4-8" aria-selected="false">requirements.txt</button></div>
-        <div class="file" id="file-4-0" ><p class="path mono">muse/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Response — highest-risk original problems and verification</h1>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="4-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="4-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="4-2" aria-selected="false">TASK.md</button><button role="tab" data-file="4-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="4-4" aria-selected="false">.env.example</button><button role="tab" data-file="4-5" aria-selected="false">.gitignore</button><button role="tab" data-file="4-6" aria-selected="false">compose.yaml</button><button role="tab" data-file="4-7" aria-selected="false">Dockerfile</button><button role="tab" data-file="4-8" aria-selected="false">nginx.conf</button><button role="tab" data-file="4-9" aria-selected="false">requirements.txt</button></div>
+        <div class="file" id="file-4-0" ><p class="path mono">gpt-6-luna/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Review response</h1>
+<h2>Highest-risk original problems</h2>
+<ul>
+<li>The database password was hard-coded as <code>admin:password</code>, and Postgres,
+Redis, and the API were all published directly on host ports. That exposed
+data services and bypassed nginx.</li>
+<li>The API ran Flask&#39;s development server as root, despite <code>gunicorn</code> already
+being listed as a dependency. The Docker build ignored <code>requirements.txt</code>
+and installed unpinned package names; all service images also used mutable
+<code>latest</code> tags.</li>
+<li>There were no health checks, readiness-based startup dependencies, or
+persistent Postgres volume. A simple start order could leave the API
+connecting before its dependencies were ready, and database data could be
+lost when the container was replaced.</li>
+<li>nginx forwarded requests without client/protocol headers or explicit
+connection and response timeouts.</li>
+</ul>
+<h2>Changes and verification</h2>
+<p>The API now runs Gunicorn as UID/GID 10001 with an exact, fully pinned Python
+dependency set. Compose keeps only nginx host-published, separates edge and
+internal data networks, persists Postgres in <code>pgdata</code>, and defines health
+checks, health-based startup dependencies, restart policies, bounded logs,
+resource limits, and graceful stop periods. nginx forwards the client and
+scheme headers and sets bounded proxy timeouts. <code>.env.example</code>, local ignore
+rules, <code>RUNBOOK.md</code>, and this review record cover local secrets and operations.</p>
+<p>Static review confirmed that Compose contains no published API, Postgres, or
+Redis ports, no embedded database password, and no <code>latest</code> image tags. The
+configuration was checked with <code>docker compose --env-file .env.example config --quiet</code>; this validates Compose parsing without starting containers. No
+containers were started. Runtime behavior could not be checked because this
+directory contains no API implementation; the default Gunicorn target is
+<code>app:app</code>, and its readiness check requires <code>GET /healthz</code> to return HTTP 200.</p>
+</div></div><div class="file" id="file-4-1" hidden><p class="path mono">gpt-6-luna/03-infra-management/RUNBOOK.md</p><div class="prose"><h1>Runbook</h1>
+<h2>Start and verify</h2>
+<p>The API image expects a Flask WSGI target in <code>APP_MODULE</code> (default <code>app:app</code>)
+and a fast <code>GET /healthz</code> route that returns HTTP 200 when the API is ready.
+The supplied directory has no API source, so provide that module and route in
+the application before expecting the API container to become healthy.</p>
+<ol>
+<li>Copy <code>.env.example</code> to <code>.env</code>. Replace <code>POSTGRES_PASSWORD</code> with the output
+of <code>openssl rand -hex 32</code>; hexadecimal keeps the value safe inside the
+generated <code>DATABASE_URL</code>. Keep the other settings appropriate for the
+deployment.</li>
+<li>Start the stack with <code>docker compose up -d --build</code>.</li>
+<li>Check <code>docker compose ps</code> for healthy services, then verify nginx and the
+proxied API with <code>curl -fsS http://localhost:8080/_nginx_health</code> and
+<code>curl -fsS http://localhost:8080/healthz</code>. If <code>HTTP_PORT</code> was changed, use
+that port. Inspect failures with <code>docker compose logs --tail=100 api db cache proxy</code>.</li>
+</ol>
+<p>Only nginx is published to the host. The API is reachable by nginx over the
+<code>edge</code> network, while Postgres and Redis are reachable by the API over the
+internal <code>backend</code> network. Redis is a volatile cache and is not backed up.
+Compose health checks gate startup order; they do not provide orchestration,
+traffic failover, or automatic recovery from application-level failures.</p>
+<h2>Backup and restore</h2>
+<p>Make and protect a custom-format Postgres backup before upgrades or data
+changes. Store backups outside the project directory and encrypt them when
+they leave the host:</p>
+<pre><code class="language-sh">umask 077
+docker compose exec -T db sh -c &#39;pg_dump -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; -Fc&#39; &gt; /secure/backups/backup-$(date +%F).dump
+</code></pre>
+<p>To restore, stop API writes, then restore the selected dump into the configured
+database. This replaces objects present in the archive; confirm the target and
+retain a separate pre-restore backup first.</p>
+<pre><code class="language-sh">docker compose stop api
+docker compose exec -T db sh -c &#39;pg_restore --clean --if-exists --no-owner -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot;&#39; &lt; /secure/backups/backup-YYYY-MM-DD.dump
+docker compose up -d api proxy
+docker compose ps
+</code></pre>
+<p>The named <code>pgdata</code> volume survives <code>docker compose down</code>; <code>docker compose down -v</code> removes it and must not be used when the database should be retained.</p>
+<h2>Secrets</h2>
+<p>Keep <code>.env</code> local and out of version control. It is excluded from this
+directory&#39;s Git and Docker build contexts; commit only <code>.env.example</code>. Do not
+put real values in Compose files or logs. Compose passes the database password
+as a container environment variable, which is visible to administrators of the
+Docker host. For production, source it from an approved secret manager and
+adapt the API to consume mounted secrets if the deployment requires them.
+Changing <code>POSTGRES_PASSWORD</code> in <code>.env</code> does not rotate the role password in an
+already-initialized data volume; rotate the database role and API secret
+together.</p>
+<h2>Rollback</h2>
+<p>Keep the last known-good application and configuration revision plus a
+pre-deployment database dump. To roll back, check out that revision and run
+<code>docker compose up -d --build</code>, then verify the health checks and API. Do not
+remove the Postgres volume. If a schema change is incompatible with the old
+application, stop writes and restore the pre-deployment dump before bringing
+the old API back up. Compose restart policies restart failed containers but
+do not roll out versions or undo schema changes.</p>
+</div></div><div class="file" id="file-4-2" hidden><p class="path mono">gpt-6-luna/03-infra-management/TASK.md</p><div class="prose"><h1>Task 03 — Infrastructure management: harden a small deployment</h1>
+<p>Review and improve the supplied <code>Dockerfile</code>, <code>compose.yaml</code>, and <code>nginx.conf</code>
+for a small Python API behind nginx with Postgres and Redis. Do not add
+Kubernetes or unrelated services.</p>
+<p>Goals:</p>
+<ul>
+<li>No embedded credentials or public database/cache ports.</li>
+<li>The API runs as a non-root user with a production server and reproducible
+dependency installation.</li>
+<li>Add meaningful health checks and startup dependencies based on health.</li>
+<li>Persist Postgres data, make internal service communication explicit, and add
+sensible restart/logging/resource settings without pretending Compose is a
+full orchestrator.</li>
+<li>Proxy headers and timeouts should be appropriate for a JSON API.</li>
+<li>Keep local operation straightforward through <code>.env.example</code>.</li>
+</ul>
+<p>Deliver corrected configuration and a concise <code>RUNBOOK.md</code> covering startup,
+health verification, backup/restore, secret handling, and rollback. Write
+<code>RESPONSE.md</code> listing the highest-risk original problems and verification you
+performed. Work only in this directory; do not actually start containers.</p>
+</div></div><div class="file" id="file-4-3" hidden><p class="path mono">gpt-6-luna/03-infra-management/.dockerignore</p><pre><code>.env
+.env.*
+.git
+.gitignore
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.log
+backup*.dump
+</code></pre></div><div class="file" id="file-4-4" hidden><p class="path mono">gpt-6-luna/03-infra-management/.env.example</p><pre><code># Copy to .env and replace the password before starting the stack.
+# A hexadecimal secret is URL-safe in DATABASE_URL; generate one with:
+#   openssl rand -hex 32
+POSTGRES_USER=app
+POSTGRES_PASSWORD=REPLACE_WITH_RANDOM_HEX_SECRET
+POSTGRES_DB=app
+
+# Host port for nginx. Postgres, Redis, and the API are not published.
+HTTP_PORT=8080
+
+# Python WSGI module, in Gunicorn&#39;s module:variable form.
+APP_MODULE=app:app
+</code></pre></div><div class="file" id="file-4-5" hidden><p class="path mono">gpt-6-luna/03-infra-management/.gitignore</p><pre><code>.env
+backup*.dump
+</code></pre></div><div class="file" id="file-4-6" hidden><p class="path mono">gpt-6-luna/03-infra-management/compose.yaml</p><pre><code>services:
+  proxy:
+    image: nginx:1.29-alpine
+    ports:
+      - &quot;${HTTP_PORT:-8080}:80&quot;
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - edge
+    restart: unless-stopped
+    stop_grace_period: 10s
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;wget -q -O /dev/null http://127.0.0.1/_nginx_health || exit 1&quot;]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: &quot;10m&quot;
+        max-file: &quot;3&quot;
+    cpus: 0.25
+    mem_limit: 128m
+    pids_limit: 100
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      APP_MODULE: &quot;${APP_MODULE:-app:app}&quot;
+      DATABASE_URL: &quot;postgresql://${POSTGRES_USER:?Set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?Set POSTGRES_DB in .env}&quot;
+      REDIS_URL: redis://cache:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    networks:
+      - edge
+      - backend
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - &quot;import urllib.request; urllib.request.urlopen(&#39;http://127.0.0.1:8000/healthz&#39;, timeout=2).read()&quot;
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: &quot;10m&quot;
+        max-file: &quot;3&quot;
+    cpus: 0.50
+    mem_limit: 512m
+    pids_limit: 100
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: &quot;${POSTGRES_USER:?Set POSTGRES_USER in .env}&quot;
+      POSTGRES_PASSWORD: &quot;${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}&quot;
+      POSTGRES_DB: &quot;${POSTGRES_DB:?Set POSTGRES_DB in .env}&quot;
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
+    stop_grace_period: 1m
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -U \&quot;$${POSTGRES_USER}\&quot; -d \&quot;$${POSTGRES_DB}\&quot;&quot;]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: &quot;10m&quot;
+        max-file: &quot;3&quot;
+    cpus: 1.0
+    mem_limit: 1g
+    pids_limit: 200
+
+  cache:
+    image: redis:7-alpine
+    command: [&quot;redis-server&quot;, &quot;--save&quot;, &quot;&quot;, &quot;--appendonly&quot;, &quot;no&quot;]
+    networks:
+      - backend
+    restart: unless-stopped
+    stop_grace_period: 10s
+    healthcheck:
+      test: [&quot;CMD&quot;, &quot;redis-cli&quot;, &quot;ping&quot;]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: &quot;10m&quot;
+        max-file: &quot;3&quot;
+    cpus: 0.25
+    mem_limit: 256m
+    pids_limit: 100
+
+networks:
+  edge:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true
+
+volumes:
+  pgdata:
+</code></pre></div><div class="file" id="file-4-7" hidden><p class="path mono">gpt-6-luna/03-infra-management/Dockerfile</p><pre><code>FROM python:3.13-slim-bookworm
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+RUN addgroup --system --gid 10001 app \
+    &amp;&amp; adduser --system --uid 10001 --ingroup app --home /app app
+
+COPY requirements.txt ./
+RUN python -m pip install --no-cache-dir --requirement requirements.txt
+
+COPY --chown=app:app . .
+
+USER 10001:10001
+EXPOSE 8000
+
+CMD [&quot;sh&quot;, &quot;-c&quot;, &quot;exec gunicorn --bind 0.0.0.0:8000 --workers 2 --threads 2 --timeout 60 --access-logfile - --error-logfile - \&quot;${APP_MODULE:-app:app}\&quot;&quot;]
+</code></pre></div><div class="file" id="file-4-8" hidden><p class="path mono">gpt-6-luna/03-infra-management/nginx.conf</p><pre><code>worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    server_tokens off;
+    resolver 127.0.0.11 valid=10s ipv6=off;
+
+    server {
+        listen 80;
+        client_max_body_size 1m;
+
+        location = /_nginx_health {
+            access_log off;
+            default_type text/plain;
+            return 200 &quot;ok\n&quot;;
+        }
+
+        location / {
+            set $api_backend api:8000;
+            proxy_pass http://$api_backend;
+            proxy_http_version 1.1;
+            proxy_set_header Connection &quot;&quot;;
+
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 30s;
+            proxy_read_timeout 60s;
+        }
+    }
+}
+</code></pre></div><div class="file" id="file-4-9" hidden><p class="path mono">gpt-6-luna/03-infra-management/requirements.txt</p><pre><code>blinker==1.9.0
+click==8.2.1
+Flask==3.1.2
+gunicorn==23.0.0
+itsdangerous==2.2.0
+Jinja2==3.1.6
+MarkupSafe==3.0.2
+packaging==25.0
+psycopg2-binary==2.9.10
+redis==6.4.0
+Werkzeug==3.1.3
+</code></pre></div></section></div><div role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">6.5 / 10</span> <span class="muted small">graded blind as submission E</span></h3>
+        <p>Covers the basic goals: ports are closed, there is an internal network, a volume, health-gated startup and gunicorn as non-root. Several correctness gaps remain. The nginx upstream is resolved once, so it goes stale when api is recreated, and this is not documented. Redis has no auth, the placeholder password passes the guard, and the runbook&#39;s backup and rotation commands depend on host shell variables that are not set.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Only nginx published; backend internal; pgdata volume; all four healthchecks with service_healthy gating</li><li>Reasonable nginx headers, timeouts and body limit</li><li>RESPONSE ranks the problems sensibly and lists its checks</li></ul></div><div><h4>Weaknesses</h4><ul><li>&#39;upstream api { server api:5000; }&#39; is resolved at startup: after api is recreated, nginx keeps the old IP (502s) until reloaded, and this is not mentioned</li><li>The placeholder &#39;change-me-before-first-run&#39; passes ${VAR:?}; Redis is unauthenticated</li><li>RUNBOOK backup/restore/rotation use host-side &quot;$POSTGRES_USER&quot;, which is empty unless exported, so pg_dump -U &#39;&#39; fails</li><li>Rollback rebuilds with --build; no image tagging</li><li>No .gitignore despite saying .env is &#39;never committed&#39;; pg_isready without -h; duplicate Content-Type via add_header; code writable by appuser</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>E/nginx.conf:28-29 static upstream with no resolver</li><li>E/.env.example:6 placeholder; E/compose.yaml:40 redis://cache:6379/0 with no password</li><li>E/RUNBOOK.md:42-43 &#39;docker compose exec -T db pg_dump -U &quot;$POSTGRES_USER&quot;&#39; expanded on the host; :58 ALTER USER with host vars; :68 up -d --build rollback</li><li>E/compose.yaml:84 pg_isready without -h; E/nginx.conf:39 add_header Content-Type</li></ul></details>
+        <h4>Objective checks</h4>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="5-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="5-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="5-2" aria-selected="false">TASK.md</button><button role="tab" data-file="5-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="5-4" aria-selected="false">.env.example</button><button role="tab" data-file="5-5" aria-selected="false">compose.yaml</button><button role="tab" data-file="5-6" aria-selected="false">Dockerfile</button><button role="tab" data-file="5-7" aria-selected="false">nginx.conf</button><button role="tab" data-file="5-8" aria-selected="false">requirements.txt</button></div>
+        <div class="file" id="file-5-0" ><p class="path mono">muse/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Response — highest-risk original problems and verification</h1>
 <h2>Highest-risk problems in the original configuration</h2>
 <ol>
 <li><strong>Hardcoded credentials in <code>compose.yaml</code></strong> (<code>admin:password</code>, both in
@@ -3205,7 +3539,7 @@ present.</li>
 <li>Not run (per constraints): <code>docker build</code>, <code>docker compose up</code>, <code>nginx -t</code>
 (no nginx binary installed); image pulls would require network access.</li>
 </ul>
-</div></div><div class="file" id="file-4-1" hidden><p class="path mono">muse/03-infra-management/RUNBOOK.md</p><div class="prose"><h1>Runbook — small Python API behind nginx (Compose)</h1>
+</div></div><div class="file" id="file-5-1" hidden><p class="path mono">muse/03-infra-management/RUNBOOK.md</p><div class="prose"><h1>Runbook — small Python API behind nginx (Compose)</h1>
 <p>Stack: <code>proxy</code> (nginx) → <code>api</code> (gunicorn/Flask) → <code>db</code> (Postgres 16),
 <code>cache</code> (Redis 7, ephemeral). Single-host Compose deployment.</p>
 <h2>Assumptions</h2>
@@ -3277,7 +3611,7 @@ orchestrator. There is no multi-host failover, rolling deploys, autoscaling,
 or secret store. <code>deploy.resources.limits</code> documents intent and caps local
 usage; reservations need Swarm/Kubernetes semantics. Plan a migration before
 those properties are required.</p>
-</div></div><div class="file" id="file-4-2" hidden><p class="path mono">muse/03-infra-management/TASK.md</p><div class="prose"><h1>Task 03 — Infrastructure management: harden a small deployment</h1>
+</div></div><div class="file" id="file-5-2" hidden><p class="path mono">muse/03-infra-management/TASK.md</p><div class="prose"><h1>Task 03 — Infrastructure management: harden a small deployment</h1>
 <p>Review and improve the supplied <code>Dockerfile</code>, <code>compose.yaml</code>, and <code>nginx.conf</code>
 for a small Python API behind nginx with Postgres and Redis. Do not add
 Kubernetes or unrelated services.</p>
@@ -3297,7 +3631,7 @@ full orchestrator.</li>
 health verification, backup/restore, secret handling, and rollback. Write
 <code>RESPONSE.md</code> listing the highest-risk original problems and verification you
 performed. Work only in this directory; do not actually start containers.</p>
-</div></div><div class="file" id="file-4-3" hidden><p class="path mono">muse/03-infra-management/.dockerignore</p><pre><code># Keep secrets, VCS metadata, and deploy files out of the image.
+</div></div><div class="file" id="file-5-3" hidden><p class="path mono">muse/03-infra-management/.dockerignore</p><pre><code># Keep secrets, VCS metadata, and deploy files out of the image.
 .env
 .git
 .gitignore
@@ -3307,7 +3641,7 @@ __pycache__/
 compose.yaml
 nginx.conf
 *.md
-</code></pre></div><div class="file" id="file-4-4" hidden><p class="path mono">muse/03-infra-management/.env.example</p><pre><code># Copy to .env and set real secrets before first start:
+</code></pre></div><div class="file" id="file-5-4" hidden><p class="path mono">muse/03-infra-management/.env.example</p><pre><code># Copy to .env and set real secrets before first start:
 #   cp .env.example .env
 # Never commit .env (see RUNBOOK.md).
 
@@ -3322,7 +3656,7 @@ NGINX_HTTP_PORT=80
 # network. If you need auth, set REDIS_PASSWORD here AND update the
 # cache command/healthcheck and the api REDIS_URL in compose.yaml.
 # REDIS_PASSWORD=change-me-too
-</code></pre></div><div class="file" id="file-4-5" hidden><p class="path mono">muse/03-infra-management/compose.yaml</p><pre><code># Shared logging profile: bounded local log files so a chatty service
+</code></pre></div><div class="file" id="file-5-5" hidden><p class="path mono">muse/03-infra-management/compose.yaml</p><pre><code># Shared logging profile: bounded local log files so a chatty service
 # cannot fill the host disk.
 x-logging: &amp;default-logging
   driver: json-file
@@ -3436,7 +3770,7 @@ networks:
   frontend:
   backend:
     internal: true
-</code></pre></div><div class="file" id="file-4-6" hidden><p class="path mono">muse/03-infra-management/Dockerfile</p><pre><code>FROM python:3.13-slim
+</code></pre></div><div class="file" id="file-5-6" hidden><p class="path mono">muse/03-infra-management/Dockerfile</p><pre><code>FROM python:3.13-slim
 
 # Minor-version pin balances reproducibility with security updates.
 # For immutable builds, pin this image by digest as well.
@@ -3467,7 +3801,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 # Production WSGI server. Assumes app.py exposes Flask object `app`;
 # adjust the module if the real entrypoint differs.
 CMD [&quot;gunicorn&quot;, &quot;--bind&quot;, &quot;0.0.0.0:5000&quot;, &quot;--workers&quot;, &quot;2&quot;, &quot;--timeout&quot;, &quot;30&quot;, &quot;app:app&quot;]
-</code></pre></div><div class="file" id="file-4-7" hidden><p class="path mono">muse/03-infra-management/nginx.conf</p><pre><code>worker_processes auto;
+</code></pre></div><div class="file" id="file-5-7" hidden><p class="path mono">muse/03-infra-management/nginx.conf</p><pre><code>worker_processes auto;
 
 events {
   worker_connections 1024;
@@ -3527,7 +3861,7 @@ http {
     }
   }
 }
-</code></pre></div><div class="file" id="file-4-8" hidden><p class="path mono">muse/03-infra-management/requirements.txt</p><pre><code>Flask==3.1.2
+</code></pre></div><div class="file" id="file-5-8" hidden><p class="path mono">muse/03-infra-management/requirements.txt</p><pre><code>Flask==3.1.2
 gunicorn==23.0.0
 psycopg2-binary==2.9.10
 redis==6.4.0

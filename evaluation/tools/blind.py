@@ -8,6 +8,8 @@ OUT, SEED, MODELS = Path(sys.argv[1]), int(sys.argv[2]), sys.argv[3:]
 checks = json.loads((ROOT / "evaluation/checks.json").read_text())
 cross = json.loads((ROOT / "evaluation/crosstest.json").read_text())
 fe = json.loads((ROOT / "evaluation/frontend-checks.json").read_text())
+notes_file = ROOT / "evaluation/blind-notes.json"
+NOTES = json.loads(notes_file.read_text()) if notes_file.exists() else {}
 PATH_RE = re.compile(r"/(home/user|home/arda|Users/arda/projects(/agent-eval-runs)?)/agent-eval[a-z0-9.\-]*(-2026-09-23)?(/(" + "|".join(map(re.escape, MODELS)) + r"))?")
 rng = random.Random(SEED); key = {}; letters_all = "ABCDEFGH"[:len(MODELS)]
 for task in sorted(p.name for p in (ROOT / "_templates").iterdir()):
@@ -35,6 +37,7 @@ for task in sorted(p.name for p in (ROOT / "_templates").iterdir()):
             for sh in ("desktop", "mobile", "desktop-full", "mobile-full"):
                 src = ROOT / f"evaluation/screenshots/{m}-{n}-{sh}.png"
                 if src.exists(): shutil.copy(src, out / f"{l}-{sh}.png")
+        if NOTES.get(m, {}).get(task): fx["process_note"] = NOTES[m][task]
         facts[l] = fx
     if task in cross:
         facts["cross_tests"] = {"explanation": "rows: whose test suite; columns: whose implementation (template = original unfixed file)",

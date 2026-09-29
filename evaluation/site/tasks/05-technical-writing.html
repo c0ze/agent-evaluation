@@ -16,19 +16,253 @@ requires product confirmation instead of inventing behavior.</p>
 only in this directory.</p>
 </div>
       <p class="muted">Inputs given: <a href="../../../_templates/05-technical-writing/SOURCE_NOTES.md" target="_blank" rel="noopener" class="mono">SOURCE_NOTES.md</a></p></details>
-    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Opus 5.5</th><th scope="col">Sonnet 5.5</th><th scope="col">Fable 5.1</th><th scope="col">mimo</th><th scope="col">muse</th></tr>
-    <tr><th scope="row">factual fidelity <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat" style="--h:0.31">1.75</td></tr><tr><th scope="row">information design <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.58">2.25</td></tr><tr><th scope="row">clarity/examples <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.44">2</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat" style="--h:0.31">1.75</td></tr><tr><th scope="row">handling uncertainty <span class="muted">(1)</span></th><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat" style="--h:0.17">0.5</td></tr>
-    <tr class="total"><th scope="row">Total (10)</th><td class="num">9.25</td><td class="num">8.75</td><td class="num">7.5</td><td class="num">6.5</td><td class="num">6.25</td></tr></table></div>
-    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = Opus 5.5, B = muse, C = Fable 5.1, D = mimo, E = Sonnet 5.5.</p><div class="prose"><p>A and E are close. A edges ahead because its verifier is more robust, it points out that the event ID header is unsigned, and its reasoning about timestamps covers retries as well as replays; E&#39;s guide is equally faithful apart from one internal inconsistency. C&#39;s organization is good, but its default 300-second tolerance could silently drop legitimate retries. D and B are close: D invents a delivery log and a lowercase-hex guarantee, while B invents an HTTPS guarantee and &#39;send time&#39; semantics and flags almost nothing as uncertain. D ranks above B for its fuller open-questions list. All five WEBHOOKS.md files are within 700-1,100 words by wc -w (A 1,094, B 1,048, C 1,076, D 955, E 1,066).</p>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">Fable 5.1</th><th scope="col">GPT-6 Luna</th><th scope="col">mimo</th><th scope="col">muse</th></tr>
+    <tr><th scope="row">factual fidelity <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.17">1.5</td><td class="num heat" style="--h:0.17">1.5</td></tr><tr><th scope="row">information design <span class="muted">(3)</span></th><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.44">2</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.58">2.25</td></tr><tr><th scope="row">clarity/examples <span class="muted">(3)</span></th><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.86">2.75</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.58">2.25</td><td class="num heat" style="--h:0.31">1.75</td><td class="num heat" style="--h:0.31">1.75</td></tr><tr><th scope="row">handling uncertainty <span class="muted">(1)</span></th><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat" style="--h:0.17">0.5</td><td class="num heat" style="--h:0.00">0.25</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">9</td><td class="num">9</td><td class="num">8.5</td><td class="num">7.5</td><td class="num">6.25</td><td class="num">5.75</td></tr></table></div>
+    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = Fable 5.1, B = Opus 5.5, C = Sonnet 5.5, D = GPT-6 Luna, E = muse, F = mimo.</p><div class="prose"><p>B and C tie at 9.0. B is ranked first because its verifier was the only Python example with no exceptions on any edge case. C handles uncertainty better, flagging retry id reuse and key encoding. A (8.5) is close behind; it lost points for the invented timestamp semantics and a brittle example. All six WEBHOOKS.md files are within 700-1,100 words by wc -w (B at 1,094). D&#39;s example was run as extracted Node logic, since Express is not installed.</p>
 </div></details></section>
-    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Opus 5.5 <span class="pill">9.25</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Sonnet 5.5 <span class="pill">8.75</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">7.5</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">6.5</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">muse <span class="pill">6.25</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
-        <h3>Evaluation <span class="pill big">9.25 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
-        <p>The most careful and complete guide. It has a three-way Guarantee/Recommendation/Unconfirmed legend, a header table, a retry outcome table, a rotation procedure that works whichever secret Orbit signs with, and a nine-row troubleshooting table. It is the only guide that reasons correctly about timestamp freshness: retries can arrive about 15 hours late and replays 7 days late, so it says to log timestamp age rather than reject on it. Its one overreach is the header table, which states under Guarantee that retries reuse the event ID; the notes say that only for replays, and A raises it only in RESPONSE.md.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>The verifier takes a list of secrets, uses .get() with defaults, compares bytes in constant time, and handled every edge case I tested: missing headers, a non-ASCII signature, a garbage timestamp, and a previous secret during rotation.</li><li>Timestamp freshness is left unconfirmed, with a clear reason not to set a short window (a rejected delivery gets a non-retried 4xx).</li><li>It points out that X-Orbit-Event is not signed, which follows directly from the signing scheme.</li><li>The Unconfirmed list covers the retry interval basis, Retry-After, what happens after the last retry, redirects, which secret signs during the overlap, and timestamp semantics.</li><li>Its dedupe advice is to record an ID only after processing succeeds, and to clear the record before a deliberate replay.</li></ul></div><div><h4>Weaknesses</h4><ul><li>The header table says &#39;Retries and manual replays of an event reuse it&#39; under Guarantee; the notes state this only for replays.</li><li>At 1,094 words by wc -w it is right at the upper limit.</li><li>The &#39;Record an ID only after processing succeeds&#39; advice does not address concurrent duplicate deliveries (no atomic claim).</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>&#39;&lt;X-Orbit-Timestamp value&gt; + &quot;.&quot; + &lt;raw request body bytes&gt;&#39; matches the notes&#39; &#39;signs timestamp + dot + raw body&#39;; the callout calls the parsed-JSON docs &#39;out of date&#39;, as the notes ask (&#39;Need state that old note conflicts&#39;).</li><li>&#39;Retries can arrive about 15 hours after the first attempt and replays up to 7 days later ... log timestamp age instead of rejecting on it&#39;: conservative, and consistent with the notes, which give no tolerance.</li><li>&#39;Whether each interval is measured from the previous attempt (about 14.6 h in total) or from the first attempt&#39; flags the ambiguity in the notes&#39; &#39;roughly 1m, 5m, 30m, 2h, 12h&#39;.</li><li>&#39;Redirects. Security believes they aren&#39;t followed; the implementation owner hasn&#39;t confirmed&#39; matches the notes.</li><li>In my Python run: valid True, previous secret True, wrong secret False, re-serialized body False, missing headers False, &#39;v1=é&#39; False with no exception.</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>WEBHOOKS.md ≈ 911 words (700–1,100)</li></ul>
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">9</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">8.5</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">7.5</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">mimo <span class="pill">6.25</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">muse <span class="pill">5.75</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+        <h3>Evaluation <span class="pill big">9 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
+        <p>Careful, well-labelled guide with a legend and a thorough Open items list. It explicitly marks as unconfirmed the assumptions the notes leave open: key encoding, a single v1 value, whether retries reuse the event id, and the retry span. The multi-secret verifier is correct but raises KeyError on missing headers. Minor inventions include a &#39;contact us&#39; channel.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Best handling of uncertainty: assumptions such as UTF-8 key encoding and retries reusing the id are labelled Unconfirmed rather than stated as fact</li><li>Says outright that retries are not a delivery guarantee and that recovery is manual replay</li><li>Idempotency advice is concrete: atomic insert-if-absent, and mark done only after commit</li><li>Ten-row troubleshooting table, including the outage and retries-exhausted cases</li></ul></div><div><h4>Weaknesses</h4><ul><li>&#39;That is stale&#39; is stated definitively; the notes say &#39;probably stale&#39;</li><li>The example raises KeyError when either header is missing; it takes secrets as bytes while the text describes secrets &#39;as displayed&#39;</li><li>&#39;if you suspect compromise, contact us&#39; names a support channel the notes do not give</li><li>&#39;about 14.5 hours&#39; is a slight under-sum (876 min is about 14.6 h), though it is marked Unconfirmed</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Line 51 &#39;We assume the key is the secret exactly as displayed, as UTF-8 bytes&#39; is flagged as Unconfirmed</li><li>Line 120 &#39;Whether retries reuse the event ID. Replays do; retries are assumed to.&#39; matches the notes, which state this only for replay</li><li>python3 test: valid, previous, tampered, wrong-secret, non-ASCII and uppercase cases returned bools; missing header KeyError</li><li>Line 65 reports security&#39;s belief and that the owner has not confirmed, matching the notes&#39; redirect line</li><li>WEBHOOKS.md 1066 words (wc -w)</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>WEBHOOKS.md ≈ 929 words (700–1,100)</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="0-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="0-1" aria-selected="false">SOURCE_NOTES.md</button><button role="tab" data-file="0-2" aria-selected="false">TASK.md</button><button role="tab" data-file="0-3" aria-selected="false">WEBHOOKS.md</button></div>
-        <div class="file" id="file-0-0" ><p class="path mono">opus-5.5/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>Response: Webhook Delivery Guide</h1>
+        <div class="file" id="file-0-0" ><p class="path mono">sonnet-5.5/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>RESPONSE: editorial choices and unresolved questions</h1>
+<p>Deliverable: <code>WEBHOOKS.md</code> (1,066 words by <code>wc -w</code>, 1,004 excluding the code block; the 700-1,100 target holds either way). The Python example was executed against a synthetic signature and passed with the previous secret, failed without it, and failed on a re-serialized body.</p>
+<h2>Editorial choices</h2>
+<p><strong>Labeling.</strong> Every claim is tagged Guarantee, Recommendation, or Unconfirmed, with a legend at the top. Anything in the notes stated as fact is a Guarantee. Advice I derived is a Recommendation. Anything the notes flag as uncertain, or that I would have had to infer, is Unconfirmed and repeated in an &quot;Open items&quot; list.</p>
+<p><strong>Signing contradiction (resolved conservatively).</strong> The notes say the old docs sign parsed JSON and that this is &quot;probably stale&quot;, while the current implementation signs <code>timestamp + &quot;.&quot; + raw body</code>. The guide documents the current scheme as the only scheme, states explicitly that the older docs conflict, and tells readers not to add a parsed-JSON fallback (it would accept a scheme we do not claim to support). The first bullet&#39;s &quot;HMAC SHA-256 over raw bytes&quot; is read as the raw-body part of the same scheme, not a separate one. The example uses the <code>X-Orbit-Timestamp</code> header string verbatim, which avoids inventing a timestamp format.</p>
+<p><strong>&quot;Comparison constant-time.&quot;</strong> The senders do not compare anything, so I read this as a receiver instruction and made it a Recommendation, implemented with <code>hmac.compare_digest</code>.</p>
+<p><strong>Retry arithmetic.</strong> &quot;Five retries after initial try&quot; and five listed intervals agree (six attempts total). &quot;Roughly&quot; is preserved as &quot;approximate&quot;. The roughly 14.5-hour span is my sum of the intervals and is marked Unconfirmed, because the notes do not say whether intervals run from the previous attempt.</p>
+<p><strong>Delivery is not guaranteed.</strong> The notes support at-least-once attempts with duplicates, not guaranteed delivery, so the guide says outright that retries can be exhausted and that recovery is manual replay.</p>
+<p><strong>Redirects.</strong> Marked Unconfirmed. Security&#39;s belief (&quot;no&quot;) and the implementation owner&#39;s silence are both reported. The reader instruction (register the final URL, never redirect) is safe under either answer, and the guide makes no promise about what Orbit does on a 3xx.</p>
+<p><strong>Rotation.</strong> The notes say two secrets are &quot;valid for 24 hours&quot; without saying which signs. I made the example accept a list of secrets, and made &quot;accept both&quot; the recommendation, since that is correct whichever secret signs.</p>
+<p><strong>Ordering advice.</strong> The notes do not describe the payload schema, so I did not invent a sequence or version field. The guide says not to overwrite newer state with older events and not to order by <code>X-Orbit-Timestamp</code>.</p>
+<p><strong>Idempotency details.</strong> Atomic insert-if-absent and &quot;mark done only after commit&quot; are derived from the notes&#39; facts (concurrent retries, replay with the same event id). They are labeled Recommendations.</p>
+<p><strong>Conservative omissions.</strong> The guide does not state a timestamp freshness window, a Content-Type, HTTPS enforcement, IP allowlists, <code>Retry-After</code> handling, or which 3xx codes count as failures, because none are in the notes.</p>
+<p><strong>Naming.</strong> I called the product &quot;Orbit&quot;, inferred from the <code>X-Orbit-*</code> headers and the <code>Orbit-Hooks/2</code> User-Agent. Please confirm.</p>
+<p><strong>Support channel.</strong> The guide says &quot;contact us&quot; once (early revocation after a suspected compromise) without naming a channel, because the notes name none.</p>
+<h2>Unresolved questions for product/engineering</h2>
+<ol>
+<li><strong>Redirects.</strong> Does the delivery client follow them? Does a 3xx count as a failure, and is it retried?</li>
+<li><strong>Key format.</strong> Is the HMAC key the displayed secret as UTF-8 bytes, or is there a prefix or encoding to strip?</li>
+<li><strong>Signature header.</strong> Can it carry multiple <code>v1=</code> values (for example during rotation)? What happens when a <code>v2</code> scheme is introduced?</li>
+<li><strong>Rotation.</strong> Which secret signs during the 24-hour overlap? Can the previous secret be revoked early after a compromise? Can rotation be repeated during the overlap?</li>
+<li><strong>Timestamp semantics.</strong> Is <code>X-Orbit-Timestamp</code> regenerated per attempt and per replay, or fixed at event creation? What tolerance, if any, do we recommend for replay protection?</li>
+<li><strong>Event ID stability.</strong> The notes confirm replays keep the event id. Do automatic retries also keep it? The dedupe advice assumes yes.</li>
+<li><strong>Retry exhaustion.</strong> What happens to an event after the sixth failed attempt? Is it marked failed, visible in the dashboard, or does the endpoint get disabled?</li>
+<li><strong>Replay window.</strong> Is the 7 days measured from event creation or from the last attempt? Does a replay get a fresh signature and timestamp, and which secret signs it?</li>
+<li><strong>Timeout scope.</strong> Does the 10-second limit cover connection setup and the full response, or only time to first byte?</li>
+<li><strong>429 handling.</strong> Is <code>Retry-After</code> honored, or does the fixed schedule apply?</li>
+<li><strong>Oversize events.</strong> What happens to an event whose payload would exceed 512 KiB (rejected, truncated, or sent by reference)?</li>
+<li><strong>Are the retry intervals jittered</strong>, and are intervals measured from the previous attempt?</li>
+<li><strong>Support channel</strong> to reference for compromise or replay issues, and source IP ranges for customers who allowlist.</li>
+</ol>
+</div></div><div class="file" id="file-0-1" hidden><p class="path mono">sonnet-5.5/05-technical-writing/SOURCE_NOTES.md</p><div class="prose"><h1>Raw webhook notes</h1>
+<ul>
+<li>POST JSON. Event id in <code>X-Orbit-Event</code>; event type <code>X-Orbit-Type</code>.</li>
+<li>signature header <code>X-Orbit-Signature</code>: <code>v1=&lt;hex&gt;</code> using HMAC SHA-256 over raw
+bytes. Secret shown once. Comparison constant-time.</li>
+<li>docs from old system say sign parsed JSON; this is probably stale. Current
+implementation signs timestamp + dot + raw body. Timestamp header is
+<code>X-Orbit-Timestamp</code> Unix seconds. Need state that old note conflicts.</li>
+<li>retry on timeout, network error, 408, 425, 429, and 5xx. Do not retry other
+4xx. Schedule roughly 1m, 5m, 30m, 2h, 12h. Five retries after initial try.</li>
+<li>receiver has 10 seconds to return any 2xx. Response body ignored.</li>
+<li>duplicates possible. Delivery order usually follows creation but concurrent
+retries mean it is not guaranteed.</li>
+<li>secret rotation: two secrets valid for 24 hours; UI labels current/previous.</li>
+<li>replay UI can resend an event for 7 days and uses same event id.</li>
+<li>payload max 512 KiB. User-Agent <code>Orbit-Hooks/2</code>.</li>
+<li>uncertain: are redirects followed? Security thinks no, implementation owner
+has not confirmed.</li>
+<li>examples should warn against logging secrets or full sensitive payloads.</li>
+</ul>
+</div></div><div class="file" id="file-0-2" hidden><p class="path mono">sonnet-5.5/05-technical-writing/TASK.md</p><div class="prose"><h1>Task 05 — Technical writing: webhook delivery guide</h1>
+<p>Turn <code>SOURCE_NOTES.md</code> into <code>WEBHOOKS.md</code>, a developer guide for customers
+integrating with the service. Target 700–1,100 words.</p>
+<p>The guide must include a minimal verification example, delivery and retry
+semantics, ordering/idempotency guidance, key rotation, operational advice, and
+a troubleshooting table. Clearly distinguish guarantees from recommendations.
+Resolve apparent contradictions conservatively and call out anything that still
+requires product confirmation instead of inventing behavior.</p>
+<p>Write <code>RESPONSE.md</code> with your editorial choices and unresolved questions. Work
+only in this directory.</p>
+</div></div><div class="file" id="file-0-3" hidden><p class="path mono">sonnet-5.5/05-technical-writing/WEBHOOKS.md</p><div class="prose"><h1>Orbit Webhooks: Delivery Guide</h1>
+<p>This guide covers how Orbit delivers webhooks, how to verify them, and how to build a receiver that tolerates retries, duplicates, and reordering.</p>
+<p>Statements are labeled:</p>
+<ul>
+<li><strong>Guarantee</strong>: behavior Orbit commits to. You can depend on it.</li>
+<li><strong>Recommendation</strong>: our advice. Nothing enforces it.</li>
+<li><strong>Unconfirmed</strong>: not yet confirmed by Orbit product or engineering. Do not build on it. See <a href="#open-items">Open items</a>.</li>
+</ul>
+<h2>Request format</h2>
+<p><strong>Guarantee.</strong> Each delivery is an HTTP <code>POST</code> with a JSON body of at most 512 KiB and the User-Agent <code>Orbit-Hooks/2</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>X-Orbit-Event</code></td>
+<td>Unique event ID (not the event type)</td>
+</tr>
+<tr>
+<td><code>X-Orbit-Type</code></td>
+<td>Event type</td>
+</tr>
+<tr>
+<td><code>X-Orbit-Timestamp</code></td>
+<td>Unix time in seconds</td>
+</tr>
+<tr>
+<td><code>X-Orbit-Signature</code></td>
+<td><code>v1=&lt;hex&gt;</code> HMAC-SHA-256 signature</td>
+</tr>
+</tbody></table>
+<p><strong>Recommendation.</strong> Make sure your framework and any gateway in front of it accept bodies up to 512 KiB. Do not authenticate by User-Agent; verify the signature.</p>
+<h2>Verify signatures</h2>
+<p><strong>Guarantee.</strong> The signature is the hex HMAC-SHA-256, keyed with your signing secret, of the <code>X-Orbit-Timestamp</code> value, a literal <code>.</code>, and the raw request body bytes:</p>
+<pre><code>v1=&lt;hex( HMAC_SHA256(secret, timestamp + &quot;.&quot; + raw_body) )&gt;
+</code></pre>
+<blockquote>
+<p><strong>Conflict with older docs.</strong> Documentation from the previous system says to sign the <em>parsed JSON</em>. That is stale and contradicts the current implementation. Follow this guide, and do not add a parsed-JSON fallback.</p>
+</blockquote>
+<pre><code class="language-python">import hashlib, hmac
+
+def verify(raw_body: bytes, headers, secrets: list[bytes]) -&gt; bool:
+    sent = headers[&quot;X-Orbit-Signature&quot;]
+    if not sent.startswith(&quot;v1=&quot;):
+        return False
+    signed = headers[&quot;X-Orbit-Timestamp&quot;].encode() + b&quot;.&quot; + raw_body
+    for secret in secrets:  # current + previous during rotation
+        expected = &quot;v1=&quot; + hmac.new(secret, signed, hashlib.sha256).hexdigest()
+        if hmac.compare_digest(expected.encode(), sent.encode()):
+            return True
+    return False
+</code></pre>
+<ul>
+<li><strong>Recommendation.</strong> Read the raw bytes before any JSON parsing or middleware.</li>
+<li><strong>Recommendation.</strong> Compare in constant time, as above. Reject failures with a 4xx; it will not be retried.</li>
+<li><strong>Unconfirmed.</strong> We assume the key is the secret exactly as displayed, as UTF-8 bytes, and that the header carries a single <code>v1=</code> value.</li>
+</ul>
+<h2>Delivery and retries</h2>
+<p><strong>Guarantees</strong></p>
+<ul>
+<li>A delivery succeeds only if your endpoint returns a 2xx within 10 seconds. The response body is ignored.</li>
+<li>Orbit retries after a timeout, a network error, or a <code>408</code>, <code>425</code>, <code>429</code>, or 5xx response.</li>
+<li>Orbit does not retry any other 4xx.</li>
+<li>There are up to five retries after the first attempt, at roughly 1 minute, 5 minutes, 30 minutes, 2 hours, and 12 hours. Intervals are approximate.</li>
+<li>The dashboard can replay an event for 7 days. A replay uses the same event ID.</li>
+</ul>
+<p>Retries are not a delivery guarantee. Once they are exhausted, Orbit does not resend automatically. If each interval runs from the previous attempt, the last retry lands about 14.5 hours after the first attempt (<strong>Unconfirmed</strong>).</p>
+<p><strong>Unconfirmed: redirects.</strong> Security review believes redirects are not followed; the implementation owner has not confirmed. Register your final URL and never answer with a redirect.</p>
+<h2>Ordering, duplicates, and idempotency</h2>
+<p><strong>Guarantee.</strong> Duplicates are possible. Delivery order usually follows creation order, but concurrent retries mean order is <strong>not</strong> guaranteed.</p>
+<p><strong>Recommendations</strong></p>
+<ol>
+<li>Deduplicate on <code>X-Orbit-Event</code>. Use an atomic insert-if-absent (for example a unique constraint), because duplicate deliveries can arrive concurrently.</li>
+<li>Mark an event done only after your processing commits. If you record it on receipt and processing then fails, the retry or replay is discarded as a duplicate.</li>
+<li>Do not let an older event overwrite newer state, and do not infer order from arrival time or <code>X-Orbit-Timestamp</code> (its meaning on retries is unconfirmed).</li>
+<li>Expect replays to look like duplicates. Idempotent handlers make them safe.</li>
+</ol>
+<h2>Key rotation</h2>
+<p><strong>Guarantee.</strong> After a rotation, two secrets are valid for 24 hours. The dashboard labels them current and previous. A secret is shown only once.</p>
+<p><strong>Recommended procedure</strong></p>
+<ol>
+<li>Rotate and copy the new secret immediately.</li>
+<li>Deploy a receiver that tries both secrets, as in the example.</li>
+<li>After 24 hours, check for verification failures, then remove the previous secret.</li>
+</ol>
+<p><strong>Unconfirmed.</strong> Which secret signs during the overlap, so accept both. Also whether the previous secret can be revoked early; if you suspect compromise, contact us.</p>
+<h2>Operating your endpoint</h2>
+<ul>
+<li><strong>Recommendation: acknowledge fast.</strong> Verify, durably enqueue, return <code>200</code> or <code>204</code>, then process asynchronously. Ten seconds is a ceiling.</li>
+<li><strong>Recommendation: choose status codes deliberately.</strong> Use 5xx for temporary trouble you want retried. A 4xx caused by your own misconfiguration (a <code>401</code> from a wrong secret, say) is not retried; fix it, then replay.</li>
+<li><strong>Recommendation: monitor.</strong> Alert on non-2xx rates and signature failures. After an outage longer than the retry span, replay missed events within 7 days.</li>
+<li><strong>Recommendation: protect data.</strong> Never log signing secrets or commit them to source control. Avoid logging full payloads, which may be sensitive. Log event ID, type, and outcome.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Every signature fails</td>
+<td>Following old docs (parsed JSON), or omitting the timestamp</td>
+<td>Sign <code>timestamp + &quot;.&quot; + raw_body</code></td>
+</tr>
+<tr>
+<td>Only some signatures fail</td>
+<td>Middleware altered or re-serialized the body</td>
+<td>Capture raw bytes before parsing</td>
+</tr>
+<tr>
+<td>Failures right after rotation</td>
+<td>Only one secret configured, or a truncated copy</td>
+<td>Accept both secrets for 24 hours</td>
+</tr>
+<tr>
+<td>Same event processed twice</td>
+<td>No deduplication, or a check-then-insert race</td>
+<td>Atomic dedupe on <code>X-Orbit-Event</code></td>
+</tr>
+<tr>
+<td>Events arrive out of order</td>
+<td>Ordering is not guaranteed</td>
+<td>Make handlers order-tolerant</td>
+</tr>
+<tr>
+<td>Endless retries</td>
+<td>No 2xx within 10 seconds, or a 5xx/<code>429</code></td>
+<td>Return 2xx early; process asynchronously</td>
+</tr>
+<tr>
+<td>Event never retried</td>
+<td>Your endpoint returned a non-retryable 4xx</td>
+<td>Fix it and replay within 7 days</td>
+</tr>
+<tr>
+<td><code>413</code> or truncated bodies</td>
+<td>Gateway limit below 512 KiB</td>
+<td>Raise the body limit</td>
+</tr>
+<tr>
+<td>Events missing after an outage</td>
+<td>Retries exhausted</td>
+<td>Replay from the dashboard within 7 days</td>
+</tr>
+<tr>
+<td>Redirect response</td>
+<td>Endpoint URL moved</td>
+<td>Register the final URL (redirect handling is unconfirmed)</td>
+</tr>
+</tbody></table>
+<h2>Open items</h2>
+<p>These need product confirmation.</p>
+<ol>
+<li>Are redirects followed?</li>
+<li>Secret key encoding, and whether the signature header can carry multiple values.</li>
+<li>Which secret signs during rotation overlap, and whether early revocation exists.</li>
+<li>Whether the timestamp is refreshed on retries and replays. Until then, we cannot recommend a freshness window.</li>
+<li>Whether retries reuse the event ID. Replays do; retries are assumed to.</li>
+<li>What happens after the final retry fails.</li>
+</ol>
+</div></div></section></div><div role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">9 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
+        <p>Scannable guide with explicit labels, a header table and a retry-outcome table. It has the most robust verifier of the six, and it takes a conservative stance of logging timestamp age rather than rejecting on it. It also points out that X-Orbit-Event is not covered by the signature. It weakens slightly by declaring the old parsed-JSON note flatly &#39;out of date&#39; and by asserting that retries reuse the event id.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Verifier returns False on missing headers, a non-ASCII signature and uppercase hex; checks multiple secrets; uses constant-time comparison</li><li>Conservative timestamp handling: freshness is unconfirmed, so log age rather than reject, with the reason explained</li><li>Retry table (timeout/network, 408/425/429/5xx, other 4xx, 2xx) is clear; the Unconfirmed list covers interval semantics, Retry-After, post-exhaustion behaviour and redirects</li><li>Good derived advice: record the id only after processing succeeds, clear the record to reprocess a replay, raise body limits on every layer</li></ul></div><div><h4>Weaknesses</h4><ul><li>&#39;That is out of date.&#39; overstates the notes&#39; &#39;probably stale&#39; and is not listed as needing product confirmation</li><li>Header table states as fact that &#39;Retries and manual replays of an event reuse it&#39;; only replay is in the notes (admitted in RESPONSE Q5)</li><li>At 1,094 words it is close to the 1,100 cap</li><li>HTTPS appears as a recommendation (acceptable) and &#39;Register the exact final HTTPS URL&#39; is slightly presumptive</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Line 33 &#39;That is out of date&#39; vs notes &#39;this is probably stale&#39;</li><li>Line 63 &#39;X-Orbit-Event is not signed&#39; follows correctly from &#39;signs timestamp + dot + raw body&#39;</li><li>python3 test: all edge cases returned a bool with no exceptions; old timestamp accepted (no freshness check, by design)</li><li>Line 82 &#39;up to five retries after the initial attempt (six attempts in total)&#39; matches &#39;Five retries after initial try&#39;</li><li>WEBHOOKS.md 1094 words (wc -w)</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>WEBHOOKS.md ≈ 911 words (700–1,100)</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="1-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="1-1" aria-selected="false">SOURCE_NOTES.md</button><button role="tab" data-file="1-2" aria-selected="false">TASK.md</button><button role="tab" data-file="1-3" aria-selected="false">WEBHOOKS.md</button></div>
+        <div class="file" id="file-1-0" ><p class="path mono">opus-5.5/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>Response: Webhook Delivery Guide</h1>
 <h2>Deliverable</h2>
 <p><code>WEBHOOKS.md</code> is 1,094 words by <code>wc -w</code>, or about 1,030 without table pipes, so it falls inside the 700–1,100 target. It covers every required element:</p>
 <ul>
@@ -84,7 +318,7 @@ only in this directory.</p>
 <li><strong>Plain HTTP endpoints.</strong> Are they permitted?</li>
 <li><strong>Content-Type.</strong> What is the exact <code>Content-Type</code> header value?</li>
 </ol>
-</div></div><div class="file" id="file-0-1" hidden><p class="path mono">opus-5.5/05-technical-writing/SOURCE_NOTES.md</p><div class="prose"><h1>Raw webhook notes</h1>
+</div></div><div class="file" id="file-1-1" hidden><p class="path mono">opus-5.5/05-technical-writing/SOURCE_NOTES.md</p><div class="prose"><h1>Raw webhook notes</h1>
 <ul>
 <li>POST JSON. Event id in <code>X-Orbit-Event</code>; event type <code>X-Orbit-Type</code>.</li>
 <li>signature header <code>X-Orbit-Signature</code>: <code>v1=&lt;hex&gt;</code> using HMAC SHA-256 over raw
@@ -104,7 +338,7 @@ retries mean it is not guaranteed.</li>
 has not confirmed.</li>
 <li>examples should warn against logging secrets or full sensitive payloads.</li>
 </ul>
-</div></div><div class="file" id="file-0-2" hidden><p class="path mono">opus-5.5/05-technical-writing/TASK.md</p><div class="prose"><h1>Task 05 — Technical writing: webhook delivery guide</h1>
+</div></div><div class="file" id="file-1-2" hidden><p class="path mono">opus-5.5/05-technical-writing/TASK.md</p><div class="prose"><h1>Task 05 — Technical writing: webhook delivery guide</h1>
 <p>Turn <code>SOURCE_NOTES.md</code> into <code>WEBHOOKS.md</code>, a developer guide for customers
 integrating with the service. Target 700–1,100 words.</p>
 <p>The guide must include a minimal verification example, delivery and retry
@@ -114,7 +348,7 @@ Resolve apparent contradictions conservatively and call out anything that still
 requires product confirmation instead of inventing behavior.</p>
 <p>Write <code>RESPONSE.md</code> with your editorial choices and unresolved questions. Work
 only in this directory.</p>
-</div></div><div class="file" id="file-0-3" hidden><p class="path mono">opus-5.5/05-technical-writing/WEBHOOKS.md</p><div class="prose"><h1>Receiving Orbit Webhooks</h1>
+</div></div><div class="file" id="file-1-3" hidden><p class="path mono">opus-5.5/05-technical-writing/WEBHOOKS.md</p><div class="prose"><h1>Receiving Orbit Webhooks</h1>
 <p>This guide covers how to verify, acknowledge, and process Orbit webhook deliveries. Statements are labelled:</p>
 <ul>
 <li><strong>Guarantee</strong>: current delivery behavior you can build on.</li>
@@ -316,245 +550,11 @@ def verify_orbit_signature(raw_body: bytes, headers, secrets: list[str]) -&gt; b
 <td>Clear the ID&#39;s record before replaying</td>
 </tr>
 </tbody></table>
-</div></div></section></div><div role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">8.75 / 10</span> <span class="muted small">graded blind as submission E</span></h3>
-        <p>E is a strong, faithful guide with a clear three-way legend, a multi-secret verifier, well-reasoned idempotency advice (atomic insert-if-absent, mark done after commit), and a ten-row troubleshooting table. It deliberately sets no timestamp freshness window, because whether the timestamp is refreshed on retries is unconfirmed. Its main flaws are that it states &#39;Orbit does not resend automatically&#39; after retries run out as fact, while its own open item 6 treats that as unknown, and that its code raises KeyError on missing headers.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>It names the conflict with the older docs explicitly and tells readers not to add a parsed-JSON fallback.</li><li>The ~14.5-hour retry span is marked Unconfirmed because the basis of the intervals is unknown.</li><li>Its idempotency advice covers concurrent duplicates (atomic insert) and not recording an event before processing commits.</li><li>Its open items cover redirects, key encoding, multiple signature values, which secret signs during rotation, timestamp refresh, retries reusing the event ID, and what happens after retries run out.</li><li>In my tests the verifier handled a non-ASCII signature header without crashing and accepted a signature from the previous secret.</li></ul></div><div><h4>Weaknesses</h4><ul><li>&#39;Once they are exhausted, Orbit does not resend automatically&#39; is stated as fact, but open item 6 lists &#39;What happens after the final retry fails&#39; as unconfirmed.</li><li>The code raises KeyError when X-Orbit-Signature or X-Orbit-Timestamp is missing, and it expects bytes secrets (passing str raises TypeError).</li><li>&#39;if you suspect compromise, contact us&#39; names no channel.</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>&#39;Documentation from the previous system says to sign the parsed JSON. That is stale and contradicts the current implementation&#39; matches the notes&#39; requirement to state the conflict.</li><li>&#39;Whether the timestamp is refreshed on retries and replays. Until then, we cannot recommend a freshness window&#39; is conservative and not invented.</li><li>&#39;Whether retries reuse the event ID. Replays do; retries are assumed to&#39; distinguishes precisely what the notes state from what the guide assumes.</li><li>In my Python run, missing headers raised &#39;KeyError: x-orbit-signature&#39;, &#39;v1=é&#39; returned False, and a signature from the previous secret returned True.</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>WEBHOOKS.md ≈ 929 words (700–1,100)</li></ul>
-      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="1-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="1-1" aria-selected="false">SOURCE_NOTES.md</button><button role="tab" data-file="1-2" aria-selected="false">TASK.md</button><button role="tab" data-file="1-3" aria-selected="false">WEBHOOKS.md</button></div>
-        <div class="file" id="file-1-0" ><p class="path mono">sonnet-5.5/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>RESPONSE: editorial choices and unresolved questions</h1>
-<p>Deliverable: <code>WEBHOOKS.md</code> (1,066 words by <code>wc -w</code>, 1,004 excluding the code block; the 700-1,100 target holds either way). The Python example was executed against a synthetic signature and passed with the previous secret, failed without it, and failed on a re-serialized body.</p>
-<h2>Editorial choices</h2>
-<p><strong>Labeling.</strong> Every claim is tagged Guarantee, Recommendation, or Unconfirmed, with a legend at the top. Anything in the notes stated as fact is a Guarantee. Advice I derived is a Recommendation. Anything the notes flag as uncertain, or that I would have had to infer, is Unconfirmed and repeated in an &quot;Open items&quot; list.</p>
-<p><strong>Signing contradiction (resolved conservatively).</strong> The notes say the old docs sign parsed JSON and that this is &quot;probably stale&quot;, while the current implementation signs <code>timestamp + &quot;.&quot; + raw body</code>. The guide documents the current scheme as the only scheme, states explicitly that the older docs conflict, and tells readers not to add a parsed-JSON fallback (it would accept a scheme we do not claim to support). The first bullet&#39;s &quot;HMAC SHA-256 over raw bytes&quot; is read as the raw-body part of the same scheme, not a separate one. The example uses the <code>X-Orbit-Timestamp</code> header string verbatim, which avoids inventing a timestamp format.</p>
-<p><strong>&quot;Comparison constant-time.&quot;</strong> The senders do not compare anything, so I read this as a receiver instruction and made it a Recommendation, implemented with <code>hmac.compare_digest</code>.</p>
-<p><strong>Retry arithmetic.</strong> &quot;Five retries after initial try&quot; and five listed intervals agree (six attempts total). &quot;Roughly&quot; is preserved as &quot;approximate&quot;. The roughly 14.5-hour span is my sum of the intervals and is marked Unconfirmed, because the notes do not say whether intervals run from the previous attempt.</p>
-<p><strong>Delivery is not guaranteed.</strong> The notes support at-least-once attempts with duplicates, not guaranteed delivery, so the guide says outright that retries can be exhausted and that recovery is manual replay.</p>
-<p><strong>Redirects.</strong> Marked Unconfirmed. Security&#39;s belief (&quot;no&quot;) and the implementation owner&#39;s silence are both reported. The reader instruction (register the final URL, never redirect) is safe under either answer, and the guide makes no promise about what Orbit does on a 3xx.</p>
-<p><strong>Rotation.</strong> The notes say two secrets are &quot;valid for 24 hours&quot; without saying which signs. I made the example accept a list of secrets, and made &quot;accept both&quot; the recommendation, since that is correct whichever secret signs.</p>
-<p><strong>Ordering advice.</strong> The notes do not describe the payload schema, so I did not invent a sequence or version field. The guide says not to overwrite newer state with older events and not to order by <code>X-Orbit-Timestamp</code>.</p>
-<p><strong>Idempotency details.</strong> Atomic insert-if-absent and &quot;mark done only after commit&quot; are derived from the notes&#39; facts (concurrent retries, replay with the same event id). They are labeled Recommendations.</p>
-<p><strong>Conservative omissions.</strong> The guide does not state a timestamp freshness window, a Content-Type, HTTPS enforcement, IP allowlists, <code>Retry-After</code> handling, or which 3xx codes count as failures, because none are in the notes.</p>
-<p><strong>Naming.</strong> I called the product &quot;Orbit&quot;, inferred from the <code>X-Orbit-*</code> headers and the <code>Orbit-Hooks/2</code> User-Agent. Please confirm.</p>
-<p><strong>Support channel.</strong> The guide says &quot;contact us&quot; once (early revocation after a suspected compromise) without naming a channel, because the notes name none.</p>
-<h2>Unresolved questions for product/engineering</h2>
-<ol>
-<li><strong>Redirects.</strong> Does the delivery client follow them? Does a 3xx count as a failure, and is it retried?</li>
-<li><strong>Key format.</strong> Is the HMAC key the displayed secret as UTF-8 bytes, or is there a prefix or encoding to strip?</li>
-<li><strong>Signature header.</strong> Can it carry multiple <code>v1=</code> values (for example during rotation)? What happens when a <code>v2</code> scheme is introduced?</li>
-<li><strong>Rotation.</strong> Which secret signs during the 24-hour overlap? Can the previous secret be revoked early after a compromise? Can rotation be repeated during the overlap?</li>
-<li><strong>Timestamp semantics.</strong> Is <code>X-Orbit-Timestamp</code> regenerated per attempt and per replay, or fixed at event creation? What tolerance, if any, do we recommend for replay protection?</li>
-<li><strong>Event ID stability.</strong> The notes confirm replays keep the event id. Do automatic retries also keep it? The dedupe advice assumes yes.</li>
-<li><strong>Retry exhaustion.</strong> What happens to an event after the sixth failed attempt? Is it marked failed, visible in the dashboard, or does the endpoint get disabled?</li>
-<li><strong>Replay window.</strong> Is the 7 days measured from event creation or from the last attempt? Does a replay get a fresh signature and timestamp, and which secret signs it?</li>
-<li><strong>Timeout scope.</strong> Does the 10-second limit cover connection setup and the full response, or only time to first byte?</li>
-<li><strong>429 handling.</strong> Is <code>Retry-After</code> honored, or does the fixed schedule apply?</li>
-<li><strong>Oversize events.</strong> What happens to an event whose payload would exceed 512 KiB (rejected, truncated, or sent by reference)?</li>
-<li><strong>Are the retry intervals jittered</strong>, and are intervals measured from the previous attempt?</li>
-<li><strong>Support channel</strong> to reference for compromise or replay issues, and source IP ranges for customers who allowlist.</li>
-</ol>
-</div></div><div class="file" id="file-1-1" hidden><p class="path mono">sonnet-5.5/05-technical-writing/SOURCE_NOTES.md</p><div class="prose"><h1>Raw webhook notes</h1>
-<ul>
-<li>POST JSON. Event id in <code>X-Orbit-Event</code>; event type <code>X-Orbit-Type</code>.</li>
-<li>signature header <code>X-Orbit-Signature</code>: <code>v1=&lt;hex&gt;</code> using HMAC SHA-256 over raw
-bytes. Secret shown once. Comparison constant-time.</li>
-<li>docs from old system say sign parsed JSON; this is probably stale. Current
-implementation signs timestamp + dot + raw body. Timestamp header is
-<code>X-Orbit-Timestamp</code> Unix seconds. Need state that old note conflicts.</li>
-<li>retry on timeout, network error, 408, 425, 429, and 5xx. Do not retry other
-4xx. Schedule roughly 1m, 5m, 30m, 2h, 12h. Five retries after initial try.</li>
-<li>receiver has 10 seconds to return any 2xx. Response body ignored.</li>
-<li>duplicates possible. Delivery order usually follows creation but concurrent
-retries mean it is not guaranteed.</li>
-<li>secret rotation: two secrets valid for 24 hours; UI labels current/previous.</li>
-<li>replay UI can resend an event for 7 days and uses same event id.</li>
-<li>payload max 512 KiB. User-Agent <code>Orbit-Hooks/2</code>.</li>
-<li>uncertain: are redirects followed? Security thinks no, implementation owner
-has not confirmed.</li>
-<li>examples should warn against logging secrets or full sensitive payloads.</li>
-</ul>
-</div></div><div class="file" id="file-1-2" hidden><p class="path mono">sonnet-5.5/05-technical-writing/TASK.md</p><div class="prose"><h1>Task 05 — Technical writing: webhook delivery guide</h1>
-<p>Turn <code>SOURCE_NOTES.md</code> into <code>WEBHOOKS.md</code>, a developer guide for customers
-integrating with the service. Target 700–1,100 words.</p>
-<p>The guide must include a minimal verification example, delivery and retry
-semantics, ordering/idempotency guidance, key rotation, operational advice, and
-a troubleshooting table. Clearly distinguish guarantees from recommendations.
-Resolve apparent contradictions conservatively and call out anything that still
-requires product confirmation instead of inventing behavior.</p>
-<p>Write <code>RESPONSE.md</code> with your editorial choices and unresolved questions. Work
-only in this directory.</p>
-</div></div><div class="file" id="file-1-3" hidden><p class="path mono">sonnet-5.5/05-technical-writing/WEBHOOKS.md</p><div class="prose"><h1>Orbit Webhooks: Delivery Guide</h1>
-<p>This guide covers how Orbit delivers webhooks, how to verify them, and how to build a receiver that tolerates retries, duplicates, and reordering.</p>
-<p>Statements are labeled:</p>
-<ul>
-<li><strong>Guarantee</strong>: behavior Orbit commits to. You can depend on it.</li>
-<li><strong>Recommendation</strong>: our advice. Nothing enforces it.</li>
-<li><strong>Unconfirmed</strong>: not yet confirmed by Orbit product or engineering. Do not build on it. See <a href="#open-items">Open items</a>.</li>
-</ul>
-<h2>Request format</h2>
-<p><strong>Guarantee.</strong> Each delivery is an HTTP <code>POST</code> with a JSON body of at most 512 KiB and the User-Agent <code>Orbit-Hooks/2</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Header</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>X-Orbit-Event</code></td>
-<td>Unique event ID (not the event type)</td>
-</tr>
-<tr>
-<td><code>X-Orbit-Type</code></td>
-<td>Event type</td>
-</tr>
-<tr>
-<td><code>X-Orbit-Timestamp</code></td>
-<td>Unix time in seconds</td>
-</tr>
-<tr>
-<td><code>X-Orbit-Signature</code></td>
-<td><code>v1=&lt;hex&gt;</code> HMAC-SHA-256 signature</td>
-</tr>
-</tbody></table>
-<p><strong>Recommendation.</strong> Make sure your framework and any gateway in front of it accept bodies up to 512 KiB. Do not authenticate by User-Agent; verify the signature.</p>
-<h2>Verify signatures</h2>
-<p><strong>Guarantee.</strong> The signature is the hex HMAC-SHA-256, keyed with your signing secret, of the <code>X-Orbit-Timestamp</code> value, a literal <code>.</code>, and the raw request body bytes:</p>
-<pre><code>v1=&lt;hex( HMAC_SHA256(secret, timestamp + &quot;.&quot; + raw_body) )&gt;
-</code></pre>
-<blockquote>
-<p><strong>Conflict with older docs.</strong> Documentation from the previous system says to sign the <em>parsed JSON</em>. That is stale and contradicts the current implementation. Follow this guide, and do not add a parsed-JSON fallback.</p>
-</blockquote>
-<pre><code class="language-python">import hashlib, hmac
-
-def verify(raw_body: bytes, headers, secrets: list[bytes]) -&gt; bool:
-    sent = headers[&quot;X-Orbit-Signature&quot;]
-    if not sent.startswith(&quot;v1=&quot;):
-        return False
-    signed = headers[&quot;X-Orbit-Timestamp&quot;].encode() + b&quot;.&quot; + raw_body
-    for secret in secrets:  # current + previous during rotation
-        expected = &quot;v1=&quot; + hmac.new(secret, signed, hashlib.sha256).hexdigest()
-        if hmac.compare_digest(expected.encode(), sent.encode()):
-            return True
-    return False
-</code></pre>
-<ul>
-<li><strong>Recommendation.</strong> Read the raw bytes before any JSON parsing or middleware.</li>
-<li><strong>Recommendation.</strong> Compare in constant time, as above. Reject failures with a 4xx; it will not be retried.</li>
-<li><strong>Unconfirmed.</strong> We assume the key is the secret exactly as displayed, as UTF-8 bytes, and that the header carries a single <code>v1=</code> value.</li>
-</ul>
-<h2>Delivery and retries</h2>
-<p><strong>Guarantees</strong></p>
-<ul>
-<li>A delivery succeeds only if your endpoint returns a 2xx within 10 seconds. The response body is ignored.</li>
-<li>Orbit retries after a timeout, a network error, or a <code>408</code>, <code>425</code>, <code>429</code>, or 5xx response.</li>
-<li>Orbit does not retry any other 4xx.</li>
-<li>There are up to five retries after the first attempt, at roughly 1 minute, 5 minutes, 30 minutes, 2 hours, and 12 hours. Intervals are approximate.</li>
-<li>The dashboard can replay an event for 7 days. A replay uses the same event ID.</li>
-</ul>
-<p>Retries are not a delivery guarantee. Once they are exhausted, Orbit does not resend automatically. If each interval runs from the previous attempt, the last retry lands about 14.5 hours after the first attempt (<strong>Unconfirmed</strong>).</p>
-<p><strong>Unconfirmed: redirects.</strong> Security review believes redirects are not followed; the implementation owner has not confirmed. Register your final URL and never answer with a redirect.</p>
-<h2>Ordering, duplicates, and idempotency</h2>
-<p><strong>Guarantee.</strong> Duplicates are possible. Delivery order usually follows creation order, but concurrent retries mean order is <strong>not</strong> guaranteed.</p>
-<p><strong>Recommendations</strong></p>
-<ol>
-<li>Deduplicate on <code>X-Orbit-Event</code>. Use an atomic insert-if-absent (for example a unique constraint), because duplicate deliveries can arrive concurrently.</li>
-<li>Mark an event done only after your processing commits. If you record it on receipt and processing then fails, the retry or replay is discarded as a duplicate.</li>
-<li>Do not let an older event overwrite newer state, and do not infer order from arrival time or <code>X-Orbit-Timestamp</code> (its meaning on retries is unconfirmed).</li>
-<li>Expect replays to look like duplicates. Idempotent handlers make them safe.</li>
-</ol>
-<h2>Key rotation</h2>
-<p><strong>Guarantee.</strong> After a rotation, two secrets are valid for 24 hours. The dashboard labels them current and previous. A secret is shown only once.</p>
-<p><strong>Recommended procedure</strong></p>
-<ol>
-<li>Rotate and copy the new secret immediately.</li>
-<li>Deploy a receiver that tries both secrets, as in the example.</li>
-<li>After 24 hours, check for verification failures, then remove the previous secret.</li>
-</ol>
-<p><strong>Unconfirmed.</strong> Which secret signs during the overlap, so accept both. Also whether the previous secret can be revoked early; if you suspect compromise, contact us.</p>
-<h2>Operating your endpoint</h2>
-<ul>
-<li><strong>Recommendation: acknowledge fast.</strong> Verify, durably enqueue, return <code>200</code> or <code>204</code>, then process asynchronously. Ten seconds is a ceiling.</li>
-<li><strong>Recommendation: choose status codes deliberately.</strong> Use 5xx for temporary trouble you want retried. A 4xx caused by your own misconfiguration (a <code>401</code> from a wrong secret, say) is not retried; fix it, then replay.</li>
-<li><strong>Recommendation: monitor.</strong> Alert on non-2xx rates and signature failures. After an outage longer than the retry span, replay missed events within 7 days.</li>
-<li><strong>Recommendation: protect data.</strong> Never log signing secrets or commit them to source control. Avoid logging full payloads, which may be sensitive. Log event ID, type, and outcome.</li>
-</ul>
-<h2>Troubleshooting</h2>
-<table>
-<thead>
-<tr>
-<th>Symptom</th>
-<th>Likely cause</th>
-<th>Fix</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Every signature fails</td>
-<td>Following old docs (parsed JSON), or omitting the timestamp</td>
-<td>Sign <code>timestamp + &quot;.&quot; + raw_body</code></td>
-</tr>
-<tr>
-<td>Only some signatures fail</td>
-<td>Middleware altered or re-serialized the body</td>
-<td>Capture raw bytes before parsing</td>
-</tr>
-<tr>
-<td>Failures right after rotation</td>
-<td>Only one secret configured, or a truncated copy</td>
-<td>Accept both secrets for 24 hours</td>
-</tr>
-<tr>
-<td>Same event processed twice</td>
-<td>No deduplication, or a check-then-insert race</td>
-<td>Atomic dedupe on <code>X-Orbit-Event</code></td>
-</tr>
-<tr>
-<td>Events arrive out of order</td>
-<td>Ordering is not guaranteed</td>
-<td>Make handlers order-tolerant</td>
-</tr>
-<tr>
-<td>Endless retries</td>
-<td>No 2xx within 10 seconds, or a 5xx/<code>429</code></td>
-<td>Return 2xx early; process asynchronously</td>
-</tr>
-<tr>
-<td>Event never retried</td>
-<td>Your endpoint returned a non-retryable 4xx</td>
-<td>Fix it and replay within 7 days</td>
-</tr>
-<tr>
-<td><code>413</code> or truncated bodies</td>
-<td>Gateway limit below 512 KiB</td>
-<td>Raise the body limit</td>
-</tr>
-<tr>
-<td>Events missing after an outage</td>
-<td>Retries exhausted</td>
-<td>Replay from the dashboard within 7 days</td>
-</tr>
-<tr>
-<td>Redirect response</td>
-<td>Endpoint URL moved</td>
-<td>Register the final URL (redirect handling is unconfirmed)</td>
-</tr>
-</tbody></table>
-<h2>Open items</h2>
-<p>These need product confirmation.</p>
-<ol>
-<li>Are redirects followed?</li>
-<li>Secret key encoding, and whether the signature header can carry multiple values.</li>
-<li>Which secret signs during rotation overlap, and whether early revocation exists.</li>
-<li>Whether the timestamp is refreshed on retries and replays. Until then, we cannot recommend a freshness window.</li>
-<li>Whether retries reuse the event ID. Replays do; retries are assumed to.</li>
-<li>What happens after the final retry fails.</li>
-</ol>
 </div></div></section></div><div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">7.5 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
-        <p>C is well organized, with a Guarantee/Recommendation/Unconfirmed legend, a good multi-step rotation procedure, retry-window arithmetic that holds under either reading (&#39;12–15 hours&#39;), and solid dedupe advice (atomic claim, release on failure, keep records for 8 days or more). However, its code example enforces a 300-second timestamp tolerance by default. If timestamps are not refreshed, deliveries from the second retry onward (about 6 minutes in) would be rejected with a non-retried 401 and lost. The guide flags this risk only for replays. It also invents semantics for the timestamp (&#39;when the request was signed&#39;).</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>The verifier accepts a list of secrets [current, previous] and compares in constant time.</li><li>&#39;expect the last retry 12–15 hours after the first attempt&#39; handles the ambiguity in the schedule honestly.</li><li>It notes that a 413 from the receiver is a final 4xx and will not be retried.</li><li>The Unconfirmed section covers the signature input, redirects, the rotation signature(s), and replay timestamps.</li><li>The rotation procedure accounts for &#39;shown once&#39; and the gap before deploying the new secret, with a replay step.</li></ul></div><div><h4>Weaknesses</h4><ul><li>The timestamp is described as &#39;Unix time in seconds when the request was signed&#39;; this meaning is invented.</li><li>The default TOLERANCE_SECONDS = 300 contradicts the conservative stance the brief asks for: the risk applies to retries as well as replays, and rejected deliveries get a 401 that is never retried.</li><li>The code raises KeyError on missing headers, ValueError on a non-integer timestamp, and TypeError on a non-ASCII signature.</li><li>Some inferences are presented as guarantees: &#39;after that, only the current secret is valid&#39; and &#39;not delivered again automatically&#39;.</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>&#39;X-Orbit-Timestamp | Unix time in seconds when the request was signed&#39;: the notes give only &#39;Unix seconds&#39;.</li><li>In my Python run, a 3-hour-old timestamp (the case where a retry keeps the original timestamp) returned False, a missing-headers input raised KeyError, &#39;abc&#39; as the timestamp raised ValueError, and &#39;v1=é&#39; raised TypeError.</li><li>&#39;Replays rejected | Your timestamp tolerance ... | Widen the tolerance while replaying&#39; covers replays but not retries.</li><li>&#39;That description is believed stale; see Unconfirmed&#39; is a reasonable reading of the notes&#39; &#39;probably stale&#39;.</li></ul></details>
+        <h3>Evaluation <span class="pill big">8.5 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
+        <p>Well-organised guide with a legend (Guarantee/Recommendation/Unconfirmed), header table, multi-secret Python verifier, a concrete rotation procedure and a dedicated Unconfirmed section. It invents timestamp semantics, and its example enforces a 300 s tolerance that rejects old timestamps and crashes on missing or malformed input.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Unconfirmed section covers the signature-input conflict, redirects, rotation-window signing and replay timestamps</li><li>Rotation procedure follows from &#39;secret shown once&#39; (store, add, deploy, remove, replay the gap)</li><li>Useful derived advice: 413 is a final 4xx, clear the dedupe record before replaying, keep dedupe records 8+ days</li><li>Troubleshooting table has 8 rows and 3 columns and points to replay as the recovery path</li></ul></div><div><h4>Weaknesses</h4><ul><li>Header table says X-Orbit-Timestamp is &#39;Unix time in seconds when the request was signed&#39;; the notes give only &#39;Unix seconds&#39;</li><li>Tolerance check in the example rejected a validly signed 3-day-old timestamp; replays may be affected (this is flagged)</li><li>The example raises KeyError on a missing header, ValueError on a non-numeric timestamp and TypeError on a non-ASCII signature instead of returning False</li><li>States as a guarantee that the event id is &#39;identical across retries&#39;; the notes say this only for replays</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Line 15 &#39;when the request was signed&#39; vs notes: &#39;X-Orbit-Timestamp Unix seconds&#39;</li><li>Line 104 lists &#39;Signature input&#39; as unconfirmed, matching notes &#39;probably stale ... Need state that old note conflicts&#39;</li><li>python3 test: valid/current, previous secret, tampered and wrong secret correct; old_ts False; missing header KeyError; &#39;abc&#39; timestamp ValueError; non-ASCII signature TypeError</li><li>Line 46 &#39;expect the last retry 12-15 hours after the first attempt&#39; holds under either reading of &#39;roughly 1m, 5m, 30m, 2h, 12h&#39;</li><li>WEBHOOKS.md 1076 words (wc -w), within target</li></ul></details>
         <h4>Objective checks</h4><ul class="checks"><li>WEBHOOKS.md ≈ 941 words (700–1,100)</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="2-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="2-1" aria-selected="false">SOURCE_NOTES.md</button><button role="tab" data-file="2-2" aria-selected="false">TASK.md</button><button role="tab" data-file="2-3" aria-selected="false">WEBHOOKS.md</button></div>
         <div class="file" id="file-2-0" ><p class="path mono">fable-5.1/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>Task 05 response: editorial choices and open questions</h1>
@@ -776,13 +776,151 @@ def verify(headers, raw_body: bytes, secrets: list[str]) -&gt; bool:
 <li><strong>Replay timestamps.</strong> Whether a replay carries a fresh <code>X-Orbit-Timestamp</code>. If not, a timestamp tolerance rejects replays.</li>
 </ul>
 </div></div></section></div><div role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">6.5 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
-        <p>D is clear and well labeled, and it flags the signature conflict and redirects properly. However, it invents a feature (&#39;check Orbit&#39;s delivery log&#39;) and a format guarantee (&#39;The digest is lowercase hex&#39;), and it says the signed message is &#39;ASCII bytes&#39; even though the raw body need not be ASCII. The code example checks a single secret and encodes the secret as ASCII. The troubleshooting table says an event is undelivered &#39;after ~12 hours&#39;, which undercounts the retry span of roughly 14.6 hours if intervals are cumulative.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>It has a concise, scannable structure with a separate Replay section and an Open questions list (signature input, redirects, HTTPS, schedule precision).</li><li>Its retry and non-retry codes and the 10-second 2xx rule are stated correctly.</li><li>Its advice to acknowledge unknown event types with a 2xx is useful and labeled as a Recommendation.</li><li>The signature conflict is shown in a clearly marked &#39;requires product confirmation&#39; block.</li></ul></div><div><h4>Weaknesses</h4><ul><li>It invents &#39;check Orbit&#39;s delivery log&#39; in the troubleshooting table; the notes mention no delivery log.</li><li>&#39;The digest is lowercase hex&#39; is presented under Guarantee without support in the notes.</li><li>&#39;over the ASCII bytes of &quot;&lt;X-Orbit-Timestamp&gt;.&lt;raw request body&gt;&quot;&#39; is inaccurate, since the JSON body can contain non-ASCII bytes.</li><li>verify() takes a single secret, even though the guide recommends accepting either secret during rotation. secret.encode(&#39;ascii&#39;) and a str compare_digest raise exceptions on non-ASCII input.</li><li>It recommends rejecting timestamps &#39;more than a few minutes away&#39; without considering retries and replays that may keep the original timestamp.</li><li>Rotation guidance is thin: it gives no procedure for the gap between the secret being shown once and the new secret being deployed.</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>&#39;Confirm public reachability; check Orbit&#39;s delivery log&#39;: the notes describe only a &#39;replay UI&#39;.</li><li>&#39;Event undelivered after ~12 hours | All five retries exhausted&#39; conflicts with the notes&#39; schedule &#39;1m, 5m, 30m, 2h, 12h&#39;, which sums to about 14.6h.</li><li>In my Python run, verify(cur, now, body, &#39;v1=é&#39;) raised TypeError, and a signature from the previous secret returned False because the API takes only one secret.</li><li>&#39;Security believes redirects are not followed; the implementation owner has not confirmed&#39; matches the notes.</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>WEBHOOKS.md ≈ 866 words (700–1,100)</li></ul>
+        <h3>Evaluation <span class="pill big">7.5 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
+        <p>Accurate and cautious, with &#39;Product confirmation needed&#39; callouts on the signing contract and the freshness window, plus an unsigned-header observation. The layout is prose-heavy: headers sit in a paragraph, there is no dedicated unconfirmed section and the troubleshooting table has only two columns. The Express example is robust on input validation but checks a single secret, and it assumes a Content-Type the notes never give.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Express example validates the header format with a regex, checks buffer lengths before timingSafeEqual, enforces a 512 KiB raw-body limit and returns 400 or 401 appropriately</li><li>Correctly declines to invent a timestamp freshness window</li><li>Flags that the event id and type are not bound by the HMAC</li><li>Six-attempt arithmetic is correct; the ambiguity in interval measurement is noted</li></ul></div><div><h4>Weaknesses</h4><ul><li>Least scannable of the six: dense paragraphs, headers listed inline, two-column troubleshooting table</li><li>The example verifies against one secret only, so the rotation advice is not reflected in code</li><li>express.raw({type:&#39;application/json&#39;}) assumes a Content-Type the notes never specify; with any other type req.body is {} and createHmac.update throws (reproduced ERR_INVALID_ARG_TYPE)</li><li>Troubleshooting does not point to replay as the recovery for exhausted or non-retried deliveries</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Line 17 &#39;the signature does not bind those headers&#39; follows from &#39;signs timestamp + dot + raw body&#39;</li><li>node test of the handler logic: valid 204, uppercase hex 204, previous secret 401, tampered 401, non-ASCII 400, missing header 400; object body threw ERR_INVALID_ARG_TYPE</li><li>Line 15 &#39;should be treated as stale&#39; is stated without a confirmation flag</li><li>Line 54 &#39;The notes do not say whether each delay is measured from the preceding attempt&#39; is appropriately hedged</li><li>WEBHOOKS.md 1036 words (wc -w)</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>WEBHOOKS.md ≈ 907 words (700–1,100)</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="3-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="3-1" aria-selected="false">SOURCE_NOTES.md</button><button role="tab" data-file="3-2" aria-selected="false">TASK.md</button><button role="tab" data-file="3-3" aria-selected="false">WEBHOOKS.md</button></div>
-        <div class="file" id="file-3-0" ><p class="path mono">mimo/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>RESPONSE.md — editorial choices and unresolved questions</h1>
+        <div class="file" id="file-3-0" ><p class="path mono">gpt-6-luna/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>Editorial choices and open questions</h1>
+<h2>Editorial choices</h2>
+<ul>
+<li>Treated the current implementation note as authoritative for signature verification: HMAC-SHA-256 covers <code>X-Orbit-Timestamp</code>, a literal period, and the raw body bytes. Explicitly identified the older parsed-JSON instruction as stale because it contradicts that implementation note.</li>
+<li>Separated documented behavior (“Guarantee”) from integration guidance (“Recommendation”), particularly around fast acknowledgment, durable queuing, idempotency, logging, and key handling.</li>
+<li>Interpreted “five retries after initial try” plus the five listed intervals as up to six total delivery attempts, and retained “roughly” because the schedule is approximate.</li>
+<li>Described <code>X-Orbit-Event</code> as a deduplication key while noting that UI replay retains the same ID. This makes the operational consequence visible without implying that a replay creates a distinct event.</li>
+<li>Included a Node.js/Express verification example that preserves the raw request body and compares equal-length digest buffers with a timing-safe function. It demonstrates signature verification without inventing timestamp expiry validation.</li>
+<li>Called out that the documented HMAC does not include the event ID or type headers, so their authentication status needs product confirmation; the guide limits their use to routing and duplicate suppression until clarified.</li>
+<li>Avoided claiming that Orbit follows redirects, retries <code>3xx</code>, has a particular timeout retry cadence, or provides payload sequence fields.</li>
+</ul>
+<h2>Product questions to resolve</h2>
+<ol>
+<li>Does Orbit follow endpoint redirects? The notes explicitly say this is unconfirmed. Until answered, integrations should configure the final URL directly.</li>
+<li>Is there an expected timestamp freshness/replay window, and is the timestamp generated per event or per delivery attempt? The timestamp is signed, but no validation window or regeneration rule is documented.</li>
+<li>What happens for a <code>3xx</code> response? Retry rules list certain status codes and say not to retry other <code>4xx</code>, leaving <code>3xx</code> unspecified.</li>
+<li>Is <code>X-Orbit-Event</code> globally unique, and does manual replay intentionally preserve the ID so receiver-side deduplication suppresses it? The seven-day replay window and stable replay ID are documented, but uniqueness scope and intended reprocessing behavior are not.</li>
+<li>Are the listed retry intervals measured from the preceding attempt, and does retrying stop immediately after the fifth retry fails? The notes give approximate intervals and a retry count, but not exact clock semantics or post-exhaustion status visibility.</li>
+<li>Should <code>X-Orbit-Event</code> and <code>X-Orbit-Type</code> be included in the authenticated signing input, or are they intentionally unsigned? The documented formula signs the timestamp and raw body only.</li>
+</ol>
+</div></div><div class="file" id="file-3-1" hidden><p class="path mono">gpt-6-luna/05-technical-writing/SOURCE_NOTES.md</p><div class="prose"><h1>Raw webhook notes</h1>
+<ul>
+<li>POST JSON. Event id in <code>X-Orbit-Event</code>; event type <code>X-Orbit-Type</code>.</li>
+<li>signature header <code>X-Orbit-Signature</code>: <code>v1=&lt;hex&gt;</code> using HMAC SHA-256 over raw
+bytes. Secret shown once. Comparison constant-time.</li>
+<li>docs from old system say sign parsed JSON; this is probably stale. Current
+implementation signs timestamp + dot + raw body. Timestamp header is
+<code>X-Orbit-Timestamp</code> Unix seconds. Need state that old note conflicts.</li>
+<li>retry on timeout, network error, 408, 425, 429, and 5xx. Do not retry other
+4xx. Schedule roughly 1m, 5m, 30m, 2h, 12h. Five retries after initial try.</li>
+<li>receiver has 10 seconds to return any 2xx. Response body ignored.</li>
+<li>duplicates possible. Delivery order usually follows creation but concurrent
+retries mean it is not guaranteed.</li>
+<li>secret rotation: two secrets valid for 24 hours; UI labels current/previous.</li>
+<li>replay UI can resend an event for 7 days and uses same event id.</li>
+<li>payload max 512 KiB. User-Agent <code>Orbit-Hooks/2</code>.</li>
+<li>uncertain: are redirects followed? Security thinks no, implementation owner
+has not confirmed.</li>
+<li>examples should warn against logging secrets or full sensitive payloads.</li>
+</ul>
+</div></div><div class="file" id="file-3-2" hidden><p class="path mono">gpt-6-luna/05-technical-writing/TASK.md</p><div class="prose"><h1>Task 05 — Technical writing: webhook delivery guide</h1>
+<p>Turn <code>SOURCE_NOTES.md</code> into <code>WEBHOOKS.md</code>, a developer guide for customers
+integrating with the service. Target 700–1,100 words.</p>
+<p>The guide must include a minimal verification example, delivery and retry
+semantics, ordering/idempotency guidance, key rotation, operational advice, and
+a troubleshooting table. Clearly distinguish guarantees from recommendations.
+Resolve apparent contradictions conservatively and call out anything that still
+requires product confirmation instead of inventing behavior.</p>
+<p>Write <code>RESPONSE.md</code> with your editorial choices and unresolved questions. Work
+only in this directory.</p>
+</div></div><div class="file" id="file-3-3" hidden><p class="path mono">gpt-6-luna/05-technical-writing/WEBHOOKS.md</p><div class="prose"><h1>Webhook delivery and verification</h1>
+<p>Orbit sends event notifications as JSON <code>POST</code> requests. Each request includes <code>X-Orbit-Event</code> (event ID), <code>X-Orbit-Type</code> (event type), <code>X-Orbit-Timestamp</code> (Unix seconds), and <code>X-Orbit-Signature</code>. The request body is limited to 512 KiB, and the sender identifies itself with the <code>Orbit-Hooks/2</code> User-Agent.</p>
+<p>This guide labels documented service behavior as <strong>Guarantee</strong> and implementation advice as <strong>Recommendation</strong>. “Guarantee” reflects the current product notes; where those notes are unclear, the limit is called out.</p>
+<h2>Verify the signature</h2>
+<p><strong>Guarantee:</strong> The signature is <code>v1=&lt;hex&gt;</code> and uses HMAC-SHA-256 over the timestamp, a period, and the exact raw request-body bytes:</p>
+<pre><code class="language-text">HMAC-SHA-256(secret, timestamp + &quot;.&quot; + raw_body)
+</code></pre>
+<p>An older note says to sign parsed JSON. That description conflicts with the current implementation and should be treated as stale. Parsing and re-serializing JSON can change whitespace, escaping, or key order, so verify the original bytes. Compare signatures in constant time. Orbit shows a secret only once; store it in a secret manager or protected environment variable and never log it.</p>
+<p><strong>Product confirmation needed:</strong> The documented HMAC input includes the timestamp and body, but not the event ID or event type headers. As documented, the signature does not bind those headers. Use them for routing and duplicate suppression, but do not treat them as authenticated authorization data until Orbit confirms the intended signing contract.</p>
+<p><strong>Minimal Node.js/Express example:</strong> install the raw-body handler on this route before any JSON parser, and replace the queue call with your durable queue or database operation.</p>
+<pre><code class="language-js">import express from &#39;express&#39;;
+import { createHmac, timingSafeEqual } from &#39;node:crypto&#39;;
+
+const app = express();
+const secret = process.env.ORBIT_WEBHOOK_SECRET;
+
+app.post(&#39;/webhooks/orbit&#39;, express.raw({
+  type: &#39;application/json&#39;, limit: 512 * 1024,
+}), async (req, res) =&gt; {
+  const timestamp = req.get(&#39;X-Orbit-Timestamp&#39;);
+  const signature = req.get(&#39;X-Orbit-Signature&#39;) ?? &#39;&#39;;
+  if (!secret || !timestamp || !/^v1=[0-9a-fA-F]{64}$/.test(signature)) {
+    return res.sendStatus(400);
+  }
+
+  const expected = createHmac(&#39;sha256&#39;, secret)
+    .update(`${timestamp}.`).update(req.body).digest();
+  const supplied = Buffer.from(signature.slice(3), &#39;hex&#39;);
+  if (supplied.length !== expected.length ||
+      !timingSafeEqual(supplied, expected)) return res.sendStatus(401);
+
+  const eventId = req.get(&#39;X-Orbit-Event&#39;);
+  const eventType = req.get(&#39;X-Orbit-Type&#39;);
+  await enqueueDurably({ eventId, eventType, rawBody: req.body });
+  return res.sendStatus(204);
+});
+</code></pre>
+<p>This example checks the HMAC only. <strong>Product confirmation needed:</strong> the notes do not define a timestamp freshness window, so do not invent an age limit and reject requests based on one without confirming the policy. The timestamp is part of the signed input; it is not itself proof that a request is recent.</p>
+<h2>Delivery, retries, and acknowledgments</h2>
+<p><strong>Guarantee:</strong> Orbit considers any <code>2xx</code> response an acknowledgment, waits at most 10 seconds for it, and ignores the response body. It retries timeouts, network errors, <code>408</code>, <code>425</code>, <code>429</code>, and <code>5xx</code> responses. Other <code>4xx</code> responses are not retried. The approximate retry delays are 1 minute, 5 minutes, 30 minutes, 2 hours, and 12 hours. The notes do not say whether each delay is measured from the preceding attempt or from the initial attempt. That is five retries after the initial delivery, or at most six attempts when every attempt needs a retry.</p>
+<p><strong>Recommendation:</strong> Validate and durably enqueue a verified event, then return <code>2xx</code> promptly; do slow work asynchronously. Acknowledge only after the event is safely recorded, because Orbit will not use the response body to learn whether your application accepted it. Return a non-<code>2xx</code> when you cannot safely accept it. Do not rely on redirects: the notes do not say whether Orbit follows them, and redirect behavior needs product confirmation. Configure the final HTTPS endpoint directly.</p>
+<h2>Ordering and idempotency</h2>
+<p><strong>Guarantee:</strong> Duplicate deliveries can occur. Delivery generally follows event creation order, but concurrent retries mean order is not guaranteed. A replay from the UI is available for seven days and uses the same event ID as the original event.</p>
+<p><strong>Recommendation:</strong> Make processing idempotent. Persist <code>X-Orbit-Event</code> with the processing result and use it to prevent duplicate side effects. Do not use arrival order as event order. If an event type carries an authoritative version or sequence in its payload, apply updates using that value; otherwise reconcile with your source of truth when order matters. Since a manual replay retains the event ID, your deduplication policy may treat it as already processed; decide how operators should recover or reprocess an event. The notes do not specify a global uniqueness scope or a separate replay identifier.</p>
+<h2>Rotate signing keys</h2>
+<p><strong>Guarantee:</strong> During rotation, the current and previous secrets are both valid for 24 hours; the UI labels them “current” and “previous.”</p>
+<p><strong>Recommendation:</strong> On rotation, securely store the new current secret and keep the previous secret available during the overlap. If you cannot identify which key signed a request from another header, verify against each active secret using the same constant-time comparison. Remove the previous key after the 24-hour overlap ends and update the secret manager promptly. Never write either key to application logs, tickets, or shell history.</p>
+<h2>Operate and troubleshoot</h2>
+<p><strong>Recommendation:</strong> Track delivery outcomes, acknowledgment latency, event IDs and types, and processing failures. Keep logs useful but limited: redact credentials and avoid logging full payloads, which may contain sensitive data. Alert on a growing backlog or repeated verification failures. Ensure the endpoint can accept payloads up to 512 KiB and respond within the 10-second acknowledgment window.</p>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>What to check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Signature verification fails</td>
+<td>Capture the raw bytes before JSON middleware; concatenate the timestamp, period, and those bytes; check the active secret(s) and <code>v1=</code> hex header. Do not sign parsed JSON.</td>
+</tr>
+<tr>
+<td>The sender reports timeouts or repeats events</td>
+<td>Keep synchronous work short; durably enqueue before returning any <code>2xx</code>, and make downstream effects idempotent by event ID.</td>
+</tr>
+<tr>
+<td>Events appear out of order</td>
+<td>Retries can race. Do not process by arrival order; use an authoritative payload version if available or reconcile state.</td>
+</tr>
+<tr>
+<td>Delivery stops after an error</td>
+<td>Check the HTTP status. Only the listed statuses and network/timeout failures are retried; other <code>4xx</code> responses are not. The automatic schedule has five retries.</td>
+</tr>
+<tr>
+<td>Redirected endpoint does not receive events</td>
+<td>Point Orbit directly at the final endpoint. Redirect-following behavior is unconfirmed; ask the product team before depending on it.</td>
+</tr>
+<tr>
+<td>A large request is rejected</td>
+<td>Check that your server and middleware allow bodies up to 512 KiB and preserve the raw bytes for verification.</td>
+</tr>
+</tbody></table>
+</div></div></section></div><div role="tabpanel" id="panel-4" aria-labelledby="tab-4" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">6.25 / 10</span> <span class="muted small">graded blind as submission F</span></h3>
+        <p>Cleanly structured, with labels, a header table, a separate replay section and an open-questions list that flags the signature conflict for confirmation. Its fidelity is hurt by invented details: a delivery log, lowercase hex as a guarantee, the message described as ASCII, and a wrong &#39;~12 hours&#39; exhaustion time. The single-secret example raises on a non-ASCII secret or header.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Flags the parsed-JSON conflict as &#39;requires product confirmation&#39; and lists it under open questions</li><li>Good section order (request format, verification, retries, ordering, rotation, replay, operations, troubleshooting, open questions)</li><li>Sensible advice to acknowledge unknown event types with 2xx</li><li>Treats HTTPS explicitly as a recommendation pending confirmation</li></ul></div><div><h4>Weaknesses</h4><ul><li>The troubleshooting fix &#39;check Orbit&#39;s delivery log&#39; invents a feature the notes never mention</li><li>&#39;The digest is lowercase hex&#39; is an invented guarantee; &#39;the ASCII bytes of &quot;&lt;timestamp&gt;.&lt;raw request body&gt;&quot;&#39; is wrong for arbitrary JSON bytes</li><li>&#39;Event undelivered after ~12 hours ... All five retries exhausted&#39; is wrong; the sum is about 14.6 h after the first attempt</li><li>The example takes one secret and calls secret.encode(&#39;ascii&#39;), which raised UnicodeEncodeError for a non-ASCII secret; a non-ASCII header raised TypeError; the rotation advice is not reflected in code</li><li>Recommends rejecting timestamps a few minutes off with no caveat about replays or late retries</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Line 127 &#39;check Orbit&#39;s delivery log&#39;, a feature absent from SOURCE_NOTES</li><li>Line 31 &#39;The digest is lowercase hex&#39;, which the notes do not state (notes: &#39;v1=&lt;hex&gt;&#39;)</li><li>Line 133 &#39;~12 hours&#39; vs schedule 1m+5m+30m+2h+12h (about 14.6 h if the intervals are gaps)</li><li>python3 test: valid and tampered cases correct; non-ASCII secret UnicodeEncodeError; non-ASCII signature TypeError</li><li>WEBHOOKS.md 955 words (wc -w)</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>WEBHOOKS.md ≈ 866 words (700–1,100)</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="4-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="4-1" aria-selected="false">SOURCE_NOTES.md</button><button role="tab" data-file="4-2" aria-selected="false">TASK.md</button><button role="tab" data-file="4-3" aria-selected="false">WEBHOOKS.md</button></div>
+        <div class="file" id="file-4-0" ><p class="path mono">mimo/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>RESPONSE.md — editorial choices and unresolved questions</h1>
 <h2>Editorial choices</h2>
 <ol>
 <li><p><strong>Signature contradiction resolved toward the current implementation.</strong>
@@ -852,7 +990,7 @@ treated as failure (and retried)? Assumed yes via &quot;retry on timeout.&quot;<
 workspace, and how does the current/previous labeling behave with multiple
 endpoints?</li>
 </ol>
-</div></div><div class="file" id="file-3-1" hidden><p class="path mono">mimo/05-technical-writing/SOURCE_NOTES.md</p><div class="prose"><h1>Raw webhook notes</h1>
+</div></div><div class="file" id="file-4-1" hidden><p class="path mono">mimo/05-technical-writing/SOURCE_NOTES.md</p><div class="prose"><h1>Raw webhook notes</h1>
 <ul>
 <li>POST JSON. Event id in <code>X-Orbit-Event</code>; event type <code>X-Orbit-Type</code>.</li>
 <li>signature header <code>X-Orbit-Signature</code>: <code>v1=&lt;hex&gt;</code> using HMAC SHA-256 over raw
@@ -872,7 +1010,7 @@ retries mean it is not guaranteed.</li>
 has not confirmed.</li>
 <li>examples should warn against logging secrets or full sensitive payloads.</li>
 </ul>
-</div></div><div class="file" id="file-3-2" hidden><p class="path mono">mimo/05-technical-writing/TASK.md</p><div class="prose"><h1>Task 05 — Technical writing: webhook delivery guide</h1>
+</div></div><div class="file" id="file-4-2" hidden><p class="path mono">mimo/05-technical-writing/TASK.md</p><div class="prose"><h1>Task 05 — Technical writing: webhook delivery guide</h1>
 <p>Turn <code>SOURCE_NOTES.md</code> into <code>WEBHOOKS.md</code>, a developer guide for customers
 integrating with the service. Target 700–1,100 words.</p>
 <p>The guide must include a minimal verification example, delivery and retry
@@ -882,7 +1020,7 @@ Resolve apparent contradictions conservatively and call out anything that still
 requires product confirmation instead of inventing behavior.</p>
 <p>Write <code>RESPONSE.md</code> with your editorial choices and unresolved questions. Work
 only in this directory.</p>
-</div></div><div class="file" id="file-3-3" hidden><p class="path mono">mimo/05-technical-writing/WEBHOOKS.md</p><div class="prose"><h1>Orbit Webhooks</h1>
+</div></div><div class="file" id="file-4-3" hidden><p class="path mono">mimo/05-technical-writing/WEBHOOKS.md</p><div class="prose"><h1>Orbit Webhooks</h1>
 <p>Orbit delivers events to your endpoint as HTTP <code>POST</code> requests with JSON bodies.
 Verify the signature before you trust a payload. This guide covers request
 format, verification, delivery semantics, and production operations.</p>
@@ -1048,14 +1186,14 @@ stated. Treated here as a recommendation.</li>
 <li><strong>Retry schedule precision.</strong> Delays are described as &quot;roughly&quot; 1m/5m/30m/
 2h/12h. Confirm whether those are contractual or best-effort.</li>
 </ol>
-</div></div></section></div><div role="tabpanel" id="panel-4" aria-labelledby="tab-4" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">6.25 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
-        <p>B is readable and correctly labels guarantees and recommendations, but it states several invented details as guarantees: HTTPS delivery, the timestamp as &#39;send time&#39;, and replays &#39;for up to 7 days after its original delivery&#39;. The code example checks a single secret, even though the guide itself says to fall back to the previous secret, and it raises exceptions on malformed input. It recommends rejecting timestamps older than 5 minutes without considering that retries and replays may keep the original timestamp. Its &#39;Needs product confirmation&#39; section lists only redirects.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>It clearly marks the parsed-JSON docs as stale and documents the timestamp.raw-body scheme.</li><li>Its retry and non-retry status codes are correct, and it gives useful advice on which status to return (400 to stop retries, 429/503 to get one).</li><li>It keeps User-Agent as a routing hint only, never as authentication.</li></ul></div><div><h4>Weaknesses</h4><ul><li>It invents facts under Guarantee: &#39;an HTTPS POST&#39;, &#39;X-Orbit-Timestamp: send time&#39;, and replay &#39;for up to 7 days after its original delivery&#39;.</li><li>It presents the retry schedule as intervals &#39;after the prior attempt&#39; as if that were known, when the notes don&#39;t say.</li><li>It recommends rejecting timestamps &#39;older than 5 minutes&#39;. If retries or replays keep the original timestamp, they would get a non-retried 4xx and be lost, and the guide doesn&#39;t flag this.</li><li>verify_orbit takes one secret, so the code doesn&#39;t support the rotation fallback the guide recommends. It raises TypeError on a non-ASCII signature header and UnicodeEncodeError on a non-ASCII timestamp.</li><li>The troubleshooting row &#39;Large payload rejected or truncated / Body exceeds the 512 KiB maximum&#39; contradicts the guaranteed maximum, and &#39;fetch large objects out of band&#39; is invented.</li><li>Uncertainty handling is thin: the open-questions section lists only redirects. Timestamp semantics, the retry interval basis and which secret signs during rotation are not flagged in the guide.</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>&#39;Guarantee: Each delivery is an HTTPS POST&#39;: the notes say only &#39;POST JSON&#39;.</li><li>&#39;X-Orbit-Timestamp: send time as Unix seconds&#39;: the notes say only &#39;X-Orbit-Timestamp Unix seconds&#39;.</li><li>&#39;reject timestamps far from your clock (for example, older than 5 minutes)&#39; conflicts with the notes&#39; retries up to 12h and &#39;replay UI can resend an event for 7 days&#39;.</li><li>In my Python run, verify_orbit(..., &#39;v1=é&#39;) raised &#39;TypeError: comparing strings with non-ASCII characters is not supported&#39;, and a signature from the previous secret failed because only one secret can be passed.</li><li>&#39;## 6. Needs product confirmation&#39; contains a single bullet (redirects).</li></ul></details>
+</div></div></section></div><div role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">5.75 / 10</span> <span class="muted small">graded blind as submission E</span></h3>
+        <p>Covers all required sections with Guarantee and Recommendation labels, but several of its guarantees are invented or read too firmly into the notes: HTTPS, timestamp as send time, intervals measured from the prior attempt, and replay counted from the original delivery. The single-secret example raises on non-ASCII input. Only redirects are flagged as needing confirmation, and advice sometimes sits inside guarantee paragraphs.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>All required sections are present, including a 7-row troubleshooting table</li><li>The logging warning sits next to the code example</li><li>Correct retryable set and six-attempt total</li><li>Advises that User-Agent is never authentication</li></ul></div><div><h4>Weaknesses</h4><ul><li>&#39;Each delivery is an HTTPS POST&#39; is labelled a Guarantee; the notes say only &#39;POST JSON&#39;</li><li>&#39;X-Orbit-Timestamp: send time&#39; and &#39;after the prior attempt&#39; are invented semantics stated as guarantees</li><li>The confirmation section lists only redirects; the old-doc conflict is declared &#39;stale and must not be used&#39; with no confirmation flag</li><li>The example takes one secret; a non-ASCII signature header raises TypeError; the 5-minute freshness recommendation ignores the possibility that 7-day replays or 12 h+ retries carry an old timestamp</li><li>Troubleshooting row &#39;Body exceeds the 512 KiB maximum ... fetch large objects out of band&#39; invents behaviour and contradicts the stated maximum</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Line 9 &#39;Guarantee: Each delivery is an HTTPS POST&#39; vs notes &#39;POST JSON&#39;</li><li>Line 54 &#39;... 12 hours after the prior attempt&#39; vs notes &#39;Schedule roughly 1m, 5m, 30m, 2h, 12h&#39; (the reference point is unstated)</li><li>Line 68 &#39;for up to 7 days after its original delivery&#39; vs notes &#39;can resend an event for 7 days&#39;</li><li>python3 test: valid, tampered and wrong-secret correct; non-ASCII signature raised TypeError</li><li>WEBHOOKS.md 1048 words (wc -w)</li></ul></details>
         <h4>Objective checks</h4><ul class="checks"><li>WEBHOOKS.md ≈ 916 words (700–1,100)</li></ul>
-      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="4-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="4-1" aria-selected="false">SOURCE_NOTES.md</button><button role="tab" data-file="4-2" aria-selected="false">TASK.md</button><button role="tab" data-file="4-3" aria-selected="false">WEBHOOKS.md</button></div>
-        <div class="file" id="file-4-0" ><p class="path mono">muse/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>Response: editorial choices and open questions</h1>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="5-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="5-1" aria-selected="false">SOURCE_NOTES.md</button><button role="tab" data-file="5-2" aria-selected="false">TASK.md</button><button role="tab" data-file="5-3" aria-selected="false">WEBHOOKS.md</button></div>
+        <div class="file" id="file-5-0" ><p class="path mono">muse/05-technical-writing/RESPONSE.md</p><div class="prose"><h1>Response: editorial choices and open questions</h1>
 <h2>Editorial choices</h2>
 <ul>
 <li><strong>Guarantee vs. recommendation labels:</strong> Every behavior paragraph is prefixed
@@ -1115,7 +1253,7 @@ or delivered with an error signal? Should receivers pre-reject by
 secret or the secret active at original delivery? This affects how long
 old secrets must be retained.</li>
 </ol>
-</div></div><div class="file" id="file-4-1" hidden><p class="path mono">muse/05-technical-writing/SOURCE_NOTES.md</p><div class="prose"><h1>Raw webhook notes</h1>
+</div></div><div class="file" id="file-5-1" hidden><p class="path mono">muse/05-technical-writing/SOURCE_NOTES.md</p><div class="prose"><h1>Raw webhook notes</h1>
 <ul>
 <li>POST JSON. Event id in <code>X-Orbit-Event</code>; event type <code>X-Orbit-Type</code>.</li>
 <li>signature header <code>X-Orbit-Signature</code>: <code>v1=&lt;hex&gt;</code> using HMAC SHA-256 over raw
@@ -1135,7 +1273,7 @@ retries mean it is not guaranteed.</li>
 has not confirmed.</li>
 <li>examples should warn against logging secrets or full sensitive payloads.</li>
 </ul>
-</div></div><div class="file" id="file-4-2" hidden><p class="path mono">muse/05-technical-writing/TASK.md</p><div class="prose"><h1>Task 05 — Technical writing: webhook delivery guide</h1>
+</div></div><div class="file" id="file-5-2" hidden><p class="path mono">muse/05-technical-writing/TASK.md</p><div class="prose"><h1>Task 05 — Technical writing: webhook delivery guide</h1>
 <p>Turn <code>SOURCE_NOTES.md</code> into <code>WEBHOOKS.md</code>, a developer guide for customers
 integrating with the service. Target 700–1,100 words.</p>
 <p>The guide must include a minimal verification example, delivery and retry
@@ -1145,7 +1283,7 @@ Resolve apparent contradictions conservatively and call out anything that still
 requires product confirmation instead of inventing behavior.</p>
 <p>Write <code>RESPONSE.md</code> with your editorial choices and unresolved questions. Work
 only in this directory.</p>
-</div></div><div class="file" id="file-4-3" hidden><p class="path mono">muse/05-technical-writing/WEBHOOKS.md</p><div class="prose"><h1>Orbit Webhooks</h1>
+</div></div><div class="file" id="file-5-3" hidden><p class="path mono">muse/05-technical-writing/WEBHOOKS.md</p><div class="prose"><h1>Orbit Webhooks</h1>
 <p>Use webhooks to receive event notifications over HTTPS: verification, retries, and running a reliable receiver.</p>
 <p>Throughout this guide, <strong>Guarantee</strong> means behavior the service commits to, and <strong>Recommendation</strong> means guidance for your receiver that the service does not enforce.</p>
 <h2>1. Receiving and verifying events</h2>
