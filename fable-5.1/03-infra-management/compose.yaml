@@ -1,0 +1,166 @@
+# Small Python API behind nginx, with Postgres and Redis.
+#
+# Secrets and per-environment values come from ./.env (copy .env.example).
+# Variables written as ${VAR:?message} are required: `docker compose config`
+# and `docker compose up` fail early with that message instead of starting
+# with a default password.
+#
+# Only the proxy publishes a port. Services talk over two explicit networks:
+#   frontend: proxy <-> api
+#   backend : api <-> db, cache   (internal: no route to the host or internet)
+#
+# Restart policies, log rotation and resource limits are the sensible defaults
+# a single Compose host can enforce; anything beyond that (rolling deploys,
+# multi-node scheduling, secret distribution) is out of scope for Compose.
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  proxy:
+    image: nginx:1.28-alpine
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      # Goes through nginx to the API, so "healthy" means requests are actually served.
+      test: ["CMD", "wget", "-q", "--spider", "-T", "5", "http://127.0.0.1/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
+    logging: *default-logging
+
+  api:
+    build:
+      context: .
+    # Tag builds (e.g. with the git SHA) so a previous image can be rolled back to.
+    image: ${API_IMAGE:-api}:${API_TAG:-dev}
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+    expose:
+      - "8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:?set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?set POSTGRES_DB in .env}
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@cache:6379/0
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-4}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    # healthcheck: inherited from the image (HEALTHCHECK in the Dockerfile, GET /healthz).
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    stop_grace_period: 30s   # matches gunicorn graceful_timeout
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 256M
+          pids: 256
+    logging: *default-logging
+
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      # -h forces a TCP check: the entrypoint's temporary init-time server only
+      # listens on a unix socket, so this cannot report healthy too early.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    shm_size: 256m           # parallel queries; Docker's 64m default is too small
+    stop_signal: SIGINT      # postgres "fast" shutdown: clean, does not wait for idle clients
+    stop_grace_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    logging: *default-logging
+
+  cache:
+    image: redis:8-alpine
+    restart: unless-stopped
+    # Used as a cache: bounded memory with LRU eviction and no disk persistence.
+    # If it is ever used as a queue/session store, switch the policy to noeviction
+    # and enable appendonly with a volume.
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+      - --maxmemory
+      - 128mb
+      - --maxmemory-policy
+      - allkeys-lru
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+    environment:
+      # Read by redis-cli in the healthcheck; avoids putting the password on its command line.
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 192M       # maxmemory 128mb plus overhead
+    logging: *default-logging
+
+networks:
+  frontend:
+  backend:
+    internal: true
+
+volumes:
+  db_data:
