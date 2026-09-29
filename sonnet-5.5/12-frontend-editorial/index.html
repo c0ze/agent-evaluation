@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Margin — Issue 14, Low Water</title>
+  <meta name="description" content="Margin is an independent quarterly journal about overlooked places. Issue 14, Low Water, Autumn 2026.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,"><!-- empty icon: stops the browser requesting /favicon.ico -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Runs immediately so the saved reading mode is applied before first paint. -->
+  <script src="app.js"></script>
+</head>
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- The margin: a fixed ruler down the left edge. Purely decorative, so hidden from assistive tech. -->
+  <div class="ruler" aria-hidden="true">
+    <span class="ruler__title">Margin · No. 14</span>
+    <span class="ruler__water"></span>
+  </div>
+
+  <header class="masthead">
+    <div class="wrap masthead__inner">
+      <a class="wordmark" href="#top" aria-label="Margin — back to top">Margin</a>
+
+      <nav class="nav" aria-label="Primary">
+        <ul>
+          <li><a href="#issue">Issue 14</a></li>
+          <li><a href="#stories">Stories</a></li>
+          <li><a href="#archive">Archive</a></li>
+          <li><a href="#subscribe">Subscribe</a></li>
+        </ul>
+      </nav>
+
+      <!-- Reading mode: shown only when JavaScript is available (see .js in the stylesheet). -->
+      <div class="readmode" role="group" aria-labelledby="rm-label">
+        <span class="readmode__label" id="rm-label">Reading mode</span>
+        <div class="readmode__controls">
+          <fieldset class="seg">
+            <legend class="sr-only">Colour</legend>
+            <label>
+              <input type="radio" name="tone" value="paper" checked>
+              <span>Paper</span>
+            </label>
+            <label>
+              <input type="radio" name="tone" value="night">
+              <span>Night</span>
+            </label>
+          </fieldset>
+          <button type="button" class="size-toggle" id="size-toggle" aria-pressed="false">
+            <span aria-hidden="true">Aa</span>
+            <span class="sr-only">Large text</span>
+          </button>
+        </div>
+        <p class="sr-only" id="rm-status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ISSUE / COVER -->
+    <section class="issue wrap" id="issue" aria-labelledby="issue-title">
+      <div class="title">
+        <div class="title__meta">
+          <p class="meta-row"><span>Issue 14</span><span>Autumn 2026</span></p>
+          <p class="meta-desc">An independent quarterly journal about overlooked places.</p>
+        </div>
+
+        <div class="title__stage">
+          <h1 class="display" id="issue-title">
+            <span class="display__line display__line--a">Low</span>
+            <span class="display__line display__line--b">Water</span>
+          </h1>
+
+          <div class="waterline" aria-hidden="true"><span>Water level — low</span></div>
+        </div>
+      </div>
+
+      <div class="cover">
+        <article class="cover__story" aria-labelledby="cover-title">
+          <p class="kicker"><span aria-hidden="true">01</span> Cover story</p>
+          <div class="cover__body">
+            <h2 id="cover-title">The River Keeps Its <em>Receipts</em></h2>
+            <p class="byline">By <span>Imani Vale</span></p>
+            <p class="dek">Along a drought-exposed riverbed, shop ledgers, bottle caps, and vanished street plans surface together. A field essay about civic memory and what infrastructure tries to forget.</p>
+            <p class="cta-row"><a class="link-arrow" href="#subscribe">Subscribe to read Issue 14 <span aria-hidden="true">→</span></a></p>
+          </div>
+        </article>
+
+        <figure class="receipt">
+          <svg class="receipt__art" viewBox="0 0 280 420" role="img" aria-labelledby="receipt-title receipt-desc" focusable="false">
+            <title id="receipt-title">An itemised receipt for a riverbed</title>
+            <desc id="receipt-desc">A strip of till-roll paper with a torn lower edge. It lists items the river has kept: a dry-goods ledger, fourteen bottle caps, and a vanished street plan, with the balance marked outstanding. A barcode runs along the bottom.</desc>
+            <path class="receipt__paper" d="M0 0H280V404l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10l-10 10-10-10V0z"/>
+            <g class="receipt__text">
+              <text x="24" y="44" class="receipt__head">THE RIVER</text>
+              <text x="24" y="64">ITEMISED RECEIPT · LOW WATER</text>
+              <line x1="24" y1="80" x2="256" y2="80" class="receipt__dash"/>
+              <text x="24" y="108">LEDGER, DRY GOODS</text>
+              <text x="256" y="108" text-anchor="end">1</text>
+              <text x="24" y="136">BOTTLE CAPS</text>
+              <text x="256" y="136" text-anchor="end">14</text>
+              <text x="24" y="164">STREET PLAN (VANISHED)</text>
+              <text x="256" y="164" text-anchor="end">1</text>
+              <text x="24" y="192">HIGH-WATER MARK</text>
+              <text x="256" y="192" text-anchor="end">—</text>
+              <line x1="24" y1="212" x2="256" y2="212" class="receipt__dash"/>
+              <text x="24" y="240" class="receipt__head">BALANCE</text>
+              <text x="256" y="240" text-anchor="end" class="receipt__due">OUTSTANDING</text>
+              <text x="24" y="284">THE RIVER KEEPS THESE.</text>
+              <text x="24" y="304">NO REFUNDS. NO EXCHANGES.</text>
+            </g>
+            <line x1="24" y1="352" x2="256" y2="352" class="receipt__bars"/>
+          </svg>
+          <figcaption>An itemised receipt for the riverbed. Illustration.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about wrap" aria-labelledby="about-h">
+      <h2 class="kicker" id="about-h">About Margin</h2>
+      <p class="about__lead">Margin is an independent quarterly journal about overlooked places: the riverbed, the night route, the unfinished floor, the empty pool.</p>
+      <ul class="about__notes" aria-label="Margin in brief">
+        <li>Independent</li>
+        <li>Quarterly</li>
+        <li>Print + digital</li>
+      </ul>
+    </section>
+
+    <!-- SUPPORTING STORIES -->
+    <section class="stories wrap" id="stories" aria-labelledby="stories-h">
+      <header class="section-head">
+        <h2 id="stories-h">Also in this issue</h2>
+        <p class="kicker">Three more stories</p>
+      </header>
+
+      <ul class="story-list" role="list">
+        <li class="story story--night">
+          <article aria-labelledby="story-night">
+            <p class="story__no" aria-hidden="true">02</p>
+            <div class="story__main">
+              <h3 id="story-night">Night Bus Atlas</h3>
+              <p class="story__by">Tomás Iriarte</p>
+            </div>
+            <p class="story__sum">The unofficial geography drawn by cleaners, nurses, bakers, and drivers while a city’s daytime map is asleep.</p>
+            <svg class="glyph" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+              <path class="glyph__dots" d="M10 82C34 82 24 50 46 46S64 22 86 18"/>
+              <circle class="glyph__stop" cx="10" cy="82" r="5"/>
+              <circle class="glyph__stop" cx="38" cy="58" r="4"/>
+              <circle class="glyph__stop glyph__stop--hot" cx="60" cy="32" r="4"/>
+              <circle class="glyph__stop" cx="86" cy="18" r="5"/>
+              <path class="glyph__moon" d="M20 22a12 12 0 1 0 14 14a10 10 0 0 1-14-14z"/>
+            </svg>
+          </article>
+        </li>
+
+        <li class="story story--orchard">
+          <article aria-labelledby="story-orchard">
+            <p class="story__no" aria-hidden="true">03</p>
+            <div class="story__main">
+              <h3 id="story-orchard">Concrete Orchards</h3>
+              <p class="story__by">Meera Das</p>
+            </div>
+            <p class="story__sum">Residents tend fruit trees in the unfinished floors of a financial district, negotiating shade, ownership, and the patience of roots.</p>
+            <svg class="glyph" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+              <path class="glyph__slab" d="M6 30H90M6 58H90M6 86H90"/>
+              <path class="glyph__col" d="M14 30V86M82 30V86"/>
+              <path class="glyph__trunk" d="M40 58V48M64 86V76M30 30V22"/>
+              <circle class="glyph__crown glyph__crown--hot" cx="40" cy="41" r="8"/>
+              <circle class="glyph__crown" cx="64" cy="69" r="8"/>
+              <circle class="glyph__crown" cx="30" cy="15" r="7"/>
+            </svg>
+          </article>
+        </li>
+
+        <li class="story story--pools">
+          <article aria-labelledby="story-pools">
+            <p class="story__no" aria-hidden="true">04</p>
+            <div class="story__main">
+              <h3 id="story-pools">A Language for Empty Pools</h3>
+              <p class="story__by">Hana Mori</p>
+            </div>
+            <p class="story__sum">Photographs and short notes from public baths retired after the last swimmer, where tile patterns keep directing bodies that no longer arrive.</p>
+            <svg class="glyph" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+              <rect class="glyph__pool" x="8" y="20" width="80" height="68"/>
+              <path class="glyph__tiles" d="M28 20V88M48 20V88M68 20V88M8 37H88M8 54H88M8 71H88"/>
+              <rect class="glyph__tile-hot" x="48" y="37" width="20" height="17"/>
+              <path class="glyph__ladder" d="M70 8V30M78 8V30M70 14H78M70 22H78M70 8a4 4 0 0 1 8 0"/>
+            </svg>
+          </article>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ARCHIVE STRIP -->
+    <section class="archive" id="archive" aria-labelledby="archive-h">
+      <div class="wrap archive__inner">
+        <h2 class="archive__head" id="archive-h"><span class="kicker">Archive</span> <span class="archive__range">Issues 11–13</span></h2>
+        <ul class="archive__list" role="list">
+          <li style="--level: 46%">
+            <span class="archive__no" aria-hidden="true">13</span>
+            <span class="archive__text"><span class="kicker">Issue 13</span><span class="archive__title">After the Last Train</span></span>
+            <span class="gauge" aria-hidden="true"></span>
+          </li>
+          <li style="--level: 64%">
+            <span class="archive__no" aria-hidden="true">12</span>
+            <span class="archive__text"><span class="kicker">Issue 12</span><span class="archive__title">Borrowed Ground</span></span>
+            <span class="gauge" aria-hidden="true"></span>
+          </li>
+          <li style="--level: 82%">
+            <span class="archive__no" aria-hidden="true">11</span>
+            <span class="archive__text"><span class="kicker">Issue 11</span><span class="archive__title">The Weather Indoors</span></span>
+            <span class="gauge" aria-hidden="true"></span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SUBSCRIBE -->
+    <section class="subscribe" id="subscribe" aria-labelledby="subscribe-h">
+      <div class="wrap subscribe__grid">
+        <div class="offer">
+          <p class="kicker">Subscribe</p>
+          <h2 id="subscribe-h">Print + digital, every&nbsp;issue.</h2>
+          <p class="price"><span class="price__amt">¥2,400</span> <span class="price__per">per issue</span></p>
+          <dl class="terms">
+            <div><dt>Format</dt><dd>Print + digital</dd></div>
+            <div><dt>Price</dt><dd>¥2,400 per issue</dd></div>
+            <div><dt>Commitment</dt><dd>Cancel anytime</dd></div>
+          </dl>
+        </div>
+
+        <div class="card" id="sub-card">
+          <form class="sub-form" id="sub-form" action="#subscribe" method="get" novalidate>
+            <h3 class="card__title">Start with Issue 14</h3>
+            <div class="field" id="email-field">
+              <label for="email">Email address</label>
+              <input type="email" id="email" name="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="name@example.com" required aria-describedby="email-hint email-feedback">
+              <p class="hint" id="email-hint">Print + digital, ¥2,400 per issue. Cancel anytime.</p>
+              <div class="feedback" id="email-feedback" aria-live="polite"></div>
+            </div>
+            <button type="submit" class="btn-submit">Subscribe <span aria-hidden="true">→</span></button>
+            <p class="fine">This page is a preview: your address is checked here in your browser and is never sent anywhere.</p>
+            <noscript><p class="fine">JavaScript is needed for the inline email check and reading mode.</p></noscript>
+          </form>
+
+          <div class="success" id="sub-success" role="status" tabindex="-1" hidden>
+            <p class="success__mark" aria-hidden="true">✓</p>
+            <h3 class="card__title">You’re on the list for Issue 14.</h3>
+            <p class="success__body">We’d send the confirmation to <strong id="success-email"></strong>. This page is a preview, so nothing was actually sent or stored.</p>
+            <button type="button" class="link-btn" id="sub-reset">Use a different email</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="colophon">
+    <div class="wrap colophon__inner">
+      <p class="colophon__brand">Margin</p>
+      <p class="colophon__line">An independent quarterly journal about overlooked places.</p>
+      <p class="colophon__line">Issue 14 — Low Water — Autumn 2026</p>
+      <p class="colophon__line">Set in the typefaces already on your device. No trackers, no remote requests.</p>
+      <p class="colophon__line"><a href="#top">Back to top <span aria-hidden="true">↑</span></a></p>
+    </div>
+  </footer>
+</body>
+</html>
