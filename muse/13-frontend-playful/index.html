@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moss — gentle plant-care companion</title>
+<meta name="description" content="Moss is a gentle household plant-care companion. Today's care queue, plant details, and weekly rhythm.">
+<meta name="theme-color" content="#fbf4e6">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#queueHeading">Skip to today's care queue</a>
+
+<header class="site-header">
+  <div class="wrap header-bar">
+    <p class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28" focusable="false">
+          <circle cx="16" cy="16" r="15" fill="#d96c47"/>
+          <path d="M16 23c0-5 1-8.5 4.5-11C23 9.7 25 9 25 9c0 3-1.5 6-4.5 8.5" fill="#fbf4e6"/>
+          <path d="M16 23c0-4-.8-7-3.8-9.2C9.8 12 8 11.6 8 11.6c.2 2.8 1.7 5.2 4.2 6.8" fill="#e9b44c"/>
+          <path d="M16 23v-2.4" stroke="#2e2a23" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M11 24.5h10l-1.2 3.2H12.2z" fill="#2e2a23"/>
+        </svg>
+      </span>
+      <span class="brand-word">Moss <span class="brand-sub">plant-care companion</span></span>
+    </p>
+    <p class="date-pill" id="datePill">Today</p>
+  </div>
+
+  <div class="wrap hero">
+    <div class="hero-copy">
+      <p class="eyebrow" id="eyebrow">Today &middot; 4 small kindnesses</p>
+      <h1 id="greeting">Good morning, plant parent.</h1>
+      <p class="lede" id="lede">Frida is thirstiest &mdash; she&rsquo;s two days overdue. Start at the top and work down; Moss keeps score.</p>
+      <div class="progress" role="group" aria-labelledby="progressLabel">
+        <div class="progress-top">
+          <span id="progressLabel" class="progress-label">Today&rsquo;s tending</span>
+          <span class="progress-count" id="progressCount" aria-live="polite">0 of 4 tended</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Plants tended today" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" id="progressBar">
+          <span class="progress-fill" id="progressFill"></span>
+          <span class="progress-pebbles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 320 210" width="100%" height="auto" focusable="false">
+        <rect x="14" y="14" width="292" height="182" rx="88" fill="#dde3c8"/>
+        <rect x="14" y="14" width="292" height="182" rx="88" fill="none" stroke="#2e2a23" stroke-width="3"/>
+        <rect x="34" y="150" width="252" height="14" rx="7" fill="#2e2a23"/>
+        <!-- fern -->
+        <g>
+          <path d="M70 150c-6-22 2-40 14-50-2 16-4 34-4 50z" fill="#3e6b4f"/>
+          <path d="M84 150c-8-18-6-38 2-52 2 16 2 34 6 52z" fill="#2a4a38"/>
+          <path d="M96 150c-2-16 2-32 12-42-1 14-2 28-4 42z" fill="#3e6b4f"/>
+          <path d="M62 150h48l-5 22H67z" fill="#d96c47" stroke="#2e2a23" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <!-- pothos trailing -->
+        <g>
+          <path d="M140 150h44l-4 22h-36z" fill="#e9b44c" stroke="#2e2a23" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M150 150c-2-14-8-22-18-26 8-2 20 4 24 18" fill="#3e6b4f"/>
+          <path d="M166 150c4-16 12-24 24-26-4 8-10 18-18 24" fill="#2a4a38"/>
+          <circle cx="141" cy="130" r="7" fill="#3e6b4f"/>
+          <circle cx="185" cy="128" r="7" fill="#3e6b4f"/>
+          <path d="M150 172c0 8-4 12-8 14M174 172c0 8 4 12 8 14" stroke="#3e6b4f" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </g>
+        <!-- cactus -->
+        <g>
+          <rect x="212" y="112" width="20" height="38" rx="10" fill="#3e6b4f" stroke="#2e2a23" stroke-width="3"/>
+          <rect x="200" y="124" width="14" height="26" rx="7" fill="#3e6b4f" stroke="#2e2a23" stroke-width="3"/>
+          <rect x="230" y="124" width="14" height="26" rx="7" fill="#3e6b4f" stroke="#2e2a23" stroke-width="3"/>
+          <path d="M204 150h44l-4 22h-36z" fill="#f3d9c8" stroke="#2e2a23" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <circle cx="258" cy="52" r="13" fill="#e9b44c" stroke="#2e2a23" stroke-width="3"/>
+        <path d="M52 66c4-6 10-6 14 0M60 58v-8" stroke="#2e2a23" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+  </div>
+  <div class="scallop" aria-hidden="true"></div>
+</header>
+
+<main class="wrap main" id="main">
+  <section class="queue-col" aria-labelledby="queueHeading">
+    <div class="queue-head">
+      <div>
+        <h2 id="queueHeading" tabindex="-1">Today&rsquo;s care queue</h2>
+        <p class="queue-sub" id="queueSub">Most overdue first. Tap a plant for its story.</p>
+      </div>
+      <button class="link-btn" id="resetBtn" type="button">Restart demo day</button>
+    </div>
+
+    <ol class="queue" id="queue"></ol>
+
+    <div class="alldone" id="allDone" hidden>
+      <div class="alldone-art" aria-hidden="true">
+        <svg viewBox="0 0 200 140" width="180" height="126" focusable="false">
+          <ellipse cx="100" cy="120" rx="70" ry="12" fill="#dde3c8"/>
+          <path d="M70 118h60l-6 18H76z" fill="#d96c47" stroke="#2e2a23" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M100 118c0-26 2-44 16-58 10-10 22-12 22-12 0 14-6 28-18 38" fill="#3e6b4f" stroke="#2e2a23" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M100 118c0-20-2-34-12-46-8-9-18-11-18-11 0 12 5 23 15 30" fill="#2a4a38"/>
+          <path d="M52 40l6 6M148 40l-6 6M100 22v8" stroke="#e9b44c" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="100" cy="48" r="12" fill="#e9b44c" stroke="#2e2a23" stroke-width="3"/>
+        </svg>
+      </div>
+      <h3>All tended. The jungle exhales.</h3>
+      <p id="allDoneCopy">Every plant is watered, misted, or happily snoozed. Go enjoy the green.</p>
+      <p class="next-up" id="nextUp">Tomorrow: Drama wants a mist. Dot is still living its best dry life.</p>
+      <div class="alldone-actions">
+        <button type="button" class="btn btn-primary" id="reviewBtn">Review the crew</button>
+        <button type="button" class="btn btn-ghost" id="tomorrowBtn">Peek at tomorrow</button>
+      </div>
+    </div>
+
+    <div class="done-list" id="doneList" hidden>
+      <h3 class="done-heading">Tended &amp; snoozed</h3>
+      <ul id="doneItems"></ul>
+    </div>
+  </section>
+
+  <aside class="aside">
+    <section class="card rhythm" aria-labelledby="rhythmHeading">
+      <div class="card-top">
+        <h2 id="rhythmHeading">Weekly rhythm</h2>
+        <span class="chip chip-sun" id="rhythmTotal">16 visits this week</span>
+      </div>
+      <ol class="bars" id="bars" aria-label="Care tasks per day this week"></ol>
+      <p class="rhythm-caption" id="rhythmCaption">Thursday is the busy day &mdash; four little visits.</p>
+    </section>
+
+    <section class="card tip" aria-labelledby="tipHeading">
+      <h2 id="tipHeading">Field note</h2>
+      <p id="tipText">Calatheas fold their leaves up at night like hands. If Drama looks droopy after dark, she&rsquo;s just asleep &mdash; not mad at you.</p>
+      <button class="link-btn" id="tipBtn" type="button">Another note &rarr;</button>
+    </section>
+
+    <section class="card moss-thinks" aria-labelledby="thinksHeading">
+      <h2 id="thinksHeading">How Moss thinks</h2>
+      <ul>
+        <li><strong>Overdue first.</strong> The thirstiest plant tops the queue.</li>
+        <li><strong>Small wins.</strong> One tap logs water; snooze forgives a busy day.</li>
+        <li><strong>Nothing vanishes.</strong> Every tap can be undone.</li>
+      </ul>
+    </section>
+  </aside>
+</main>
+
+<footer class="wrap footer">
+  <p>Moss &middot; made of soil &amp; sunlight. Your plants never saw this page &mdash; they just feel it.</p>
+</footer>
+
+<div class="toast-wrap" aria-live="polite" aria-atomic="true">
+  <div class="toast" id="toast" hidden role="status">
+    <span class="toast-dot" aria-hidden="true"></span>
+    <p class="toast-msg" id="toastMsg">Logged.</p>
+    <button class="btn btn-toast" id="undoBtn" type="button">Undo</button>
+    <button class="toast-close" id="toastClose" type="button" aria-label="Dismiss notification">&times;</button>
+    <span class="toast-timer" id="toastTimer" aria-hidden="true"></span>
+  </div>
+</div>
+<p class="sr-only" role="status" id="live"></p>
+
+<script src="app.js" defer></script>
+</body>
+</html>

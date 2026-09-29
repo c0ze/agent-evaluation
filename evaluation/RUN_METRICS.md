@@ -15,7 +15,7 @@ for each one is as Arda identified it.
 | Sonnet 5.5 | extra | A | ~01:15 | 01:43:38 | ~28 min | $94 | $79 | **$15** | 13 / 13 | `claude/optimistic-dirac-o4m2z9` in `c0ze/agent-eval-sonnet-5.5` |
 | Fable 5.1 | extra | B | ~01:17 | 02:05:18 | ~49 min | $79 | $26 | **$53** | 13 / 13 | `claude/funny-turing-1qfdj4` in `c0ze/agent-eval-fable-5.1` |
 | Opus 5.5 | high | A | ~01:48 | 02:09:37 | ~21 min | $79 (01:44 reading) | $65 | **$14** | 13 / 13 | `claude/focused-hopper-vexle5` in `c0ze/agent-eval-opus-5.5` |
-| muse (muse-spark-1.3) | max | local (tincan on the Mac) | 02:12:21 | running | | n/a | n/a | not measurable; tokens below | | `muse-run` in `c0ze/agent-eval-muse` |
+| muse (muse-spark-1.3) | max | local (tincan on the Mac) | 02:12:21 | 02:32:49 | 20 min 28 s | n/a | n/a | not measurable; see tokens | 13 / 13 | `muse-run` in `c0ze/agent-eval-muse` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -59,3 +59,11 @@ event's usage, counted once, including muse's built-in reminder helpers.
   is the repo. Each task has a 2-hour limit.
 - The orchestrator (Claude Opus 5.5 in Claude Code) writes `RUN_LOG.md` from
   muse's replies and the timing log, and commits the branch at the end.
+
+### muse usage (from its session logs)
+
+| | Model steps | Input tokens | of which cached | Output tokens | Reasoning tokens | Model time |
+|---|---|---|---|---|---|---|
+| **13 tasks** | 172 | 6,200,186 | 5,544,028 | 162,252 | 59,639 | 61.9 min (summed over parallel sessions) |
+
+Per-task figures are in `run-logs/muse-RUN_LOG.md` and `run-logs/muse-orchestration/usage.txt`.
