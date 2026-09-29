@@ -18,7 +18,7 @@ for each one is as Arda identified it.
 | muse (muse-spark-1.3) | max | local (tincan on the Mac) | 02:12:21 | 02:32:49 | 20 min 28 s | n/a | n/a | not measurable; see tokens | 13 / 13 | `muse-run` in `c0ze/agent-eval-muse` |
 | GPT-6 Luna (`gpt-6-luna`) | max | Codex CLI, gand-business | 03:06:18 | 03:40:28 | 34 min 10 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-luna` |
 | GPT-6.1 Sol (`gpt-6.1-sol`) | xhigh | Codex CLI, gand-business | 04:06:46 | 04:54:38 | 47 min 52 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6.1-sol` |
-| GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business | 03:06:18 | paused at 9 / 13 | 15 min 32 s so far | n/a | n/a | quota, see below | 9 / 13 so far | `run` in `c0ze/agent-eval-gpt-6-astra` |
+| GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business then gmail-personal | 03:06:18 (01-09), 05:19:41 (10-13) | 05:39:03 | 34 min 54 s (15:32 + 19:22) | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-astra` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -100,3 +100,17 @@ Codex was updated to 0.159.0 for this run. A duplicate launch at 04:02 ran two c
 same repository for about four minutes before both were stopped; the repository was reset and
 the clean run above started at 04:06:46. The false start used quota too (94% -> 81% of the
 5-hour window). Its output is kept outside the repositories.
+
+### GPT-6 Astra: completed
+
+Tasks 10-13 were re-run from the template on gmail-personal (Arda reset its limit) from 05:19:41 to
+05:39:03 (19 min 22 s). Completion time: 15 min 32 s + 19 min 22 s = **34 min 54 s**.
+
+| | Tasks | Input tokens (cached) | Output tokens (reasoning) | Quota used |
+|---|---|---|---|---|
+| gmail-business | 01-09 | 1,950,073 (1,683,456) | 82,221 (22,285) | full 5-hour window; weekly 100% -> 84% |
+| gmail-personal | 10-13 | 1,615,634 (1,402,368) | 102,579 (19,311) | weekly 100% -> 97%; 5-hour still 100% |
+| **Total** | 13 | 3,565,707 (3,085,824) | 184,800 (41,596) | |
+
+The same model used far less of gmail-personal's quota for similar token counts, so how "hungry" a
+model looks depends on the account's plan as much as on the model.

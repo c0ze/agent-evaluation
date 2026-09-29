@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f4e9">
+  <meta name="description" content="Moss is a gentle place to keep up with your plants. A little care, a little growth.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Moss — a little care, a little growth</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#care-queue">Skip to today’s care</a>
+  <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <symbol id="icon-drop" viewBox="0 0 24 24"><path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11Z"/><path d="M9 14a3 3 0 0 0 3 3"/></symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+      <symbol id="icon-rotate" viewBox="0 0 24 24"><path d="M20 10a8 8 0 1 0-2 8M20 4v6h-6"/></symbol>
+      <symbol id="icon-soil" viewBox="0 0 24 24"><path d="M4 16h16M5 20h2m4 0h2m4 0h2M12 14V4m-4 6 4 4 4-4"/></symbol>
+      <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+      <symbol id="icon-leaf" viewBox="0 0 24 24"><path d="M5 19c-3-13 5-15 15-15 0 10-2 18-15 15Zm0 0L16 8"/></symbol>
+      <symbol id="plant-fern" viewBox="0 0 160 180">
+        <path fill="#cdd8ad" d="M15 113C-5 62 22 8 69 13c48-21 91 21 82 68s-93 75-136 32Z"/>
+        <g fill="none" stroke="#355839" stroke-width="3" stroke-linecap="round"><path d="M80 123C80 76 54 32 23 40m57 83c0-63 4-87 22-106m-22 105C64 79 44 73 16 80m65 40c17-58 40-69 68-61M80 123c-9-57 31-78 59-78M80 119C62 67 43 55 18 58"/></g>
+        <g fill="#466d43"><path d="M64 84C45 81 43 71 43 61c12 4 21 11 21 23Zm-9-23C38 61 32 51 31 41c14 4 20 11 24 20Zm-15-17C24 48 17 44 13 35c12-3 20 1 27 9Zm32 59C52 100 47 89 47 80c16 5 23 12 25 23Zm-20-9C36 99 24 91 22 81c14-2 24 3 30 13Zm-23-15C15 83 7 80 3 73c11-4 20-3 26 6Zm53-21c-13-12-12-24-6-33 10 10 11 22 6 33Zm5-19C86 25 94 13 104 9c0 14-6 25-17 30Zm-6 45C64 74 63 63 67 53c13 8 19 19 14 31Zm9-16c-1-17 8-29 20-29-2 13-8 23-20 29Zm8 25c1-18 12-26 22-23-4 12-12 20-22 23Zm14-21c3-15 12-23 25-20-6 11-12 17-25 20Zm21-13c2-11 12-17 22-15-3 11-9 15-22 15Zm-17-4c1-17 6-24 18-26-2 12-7 20-18 26Z"/></g>
+        <path fill="#b66849" d="m51 113 8 48q21 11 42 0l9-48Z"/><ellipse fill="#88452e" cx="80" cy="114" rx="31" ry="7"/><path fill="#cb8059" d="M48 112h64v13H48z"/><path fill="none" stroke="#e8b48b" stroke-width="2" d="M63 132v20m9-20v23m9-23v24m9-24v23m9-23v19"/>
+      </symbol>
+      <symbol id="plant-pothos" viewBox="0 0 160 180">
+        <path fill="#e5ce88" d="M28 30C65 6 128 18 144 58s-15 95-64 93S-7 77 28 30Z"/>
+        <g fill="none" stroke="#42613b" stroke-width="3" stroke-linecap="round"><path d="M78 119C57 88 44 44 74 28m10 89c6-45 39-32 45-66m-47 69c-27 6-52 19-50 45m47-48C72 74 92 71 99 48"/></g>
+        <g fill="#547346"><path d="M65 69C31 73 27 49 37 45c14-6 25 6 28 24Zm3-20C50 35 61 16 71 19c14 4 7 21-3 30Zm8 46C44 103 30 77 43 72c14-5 26 6 33 23Zm17-16C80 53 91 34 103 41c13 8 4 28-10 38Zm18 4c-2-27 18-43 28-32 10 13-6 26-28 32ZM52 136c-25-9-40 9-32 20 10 13 29 1 32-20Zm-16 19c19-14 32-5 28 7-4 14-26 16-28-7Z"/></g>
+        <g fill="#a6b363"><path d="M60 65 38 49c12 1 19 6 22 16Zm11 23L45 77c12-1 20 3 26 11Zm26-18 5-23c4 9 1 17-5 23Zm22 5 16-20c-1 10-6 16-16 20Z"/></g>
+        <path fill="#e1b754" d="m54 110 6 51q23 12 46-1l6-50Z"/><ellipse fill="#8b7039" cx="83" cy="111" rx="30" ry="6"/><path fill="#ebc767" d="M50 109h65v13H50z"/><path fill="none" stroke="#967b39" stroke-width="2" d="M66 135q17 10 34 0m-34 13q17 10 34 0"/>
+      </symbol>
+      <symbol id="plant-cactus" viewBox="0 0 160 180">
+        <path fill="#e5d9d7" d="M12 89C10 40 42 19 85 26s72 32 59 75-54 59-86 41S14 121 12 89Z"/>
+        <g stroke="#496245" stroke-width="2"><path fill="#7c965e" d="M76 126c-19-6-23-29-17-48 4-16 27-19 38-7 17 19 6 49-21 55Z"/><path fill="#91a872" d="M65 83C43 79 28 60 35 43c8-17 29-12 35 1 7 14 7 27-5 39Z"/><path fill="#91a872" d="M87 72c-10-21 0-47 17-48 19-1 23 20 15 34-8 15-21 20-32 14Z"/></g>
+        <g fill="#e9e5c6"><circle cx="45" cy="47" r="2"/><circle cx="58" cy="47" r="2"/><circle cx="51" cy="60" r="2"/><circle cx="64" cy="67" r="2"/><circle cx="97" cy="40" r="2"/><circle cx="110" cy="40" r="2"/><circle cx="93" cy="53" r="2"/><circle cx="106" cy="54" r="2"/><circle cx="69" cy="85" r="2"/><circle cx="83" cy="82" r="2"/><circle cx="94" cy="93" r="2"/><circle cx="75" cy="99" r="2"/><circle cx="86" cy="110" r="2"/><circle cx="64" cy="110" r="2"/></g>
+        <path fill="#9a614f" d="m51 118 9 45q20 9 40 0l10-45Z"/><ellipse fill="#754c3b" cx="80" cy="119" rx="29" ry="6"/><path fill="#b67d64" d="M48 116h64v14H48z"/><path fill="none" stroke="#dfb296" stroke-width="3" d="m60 142 9 9 10-9 10 9 10-9"/>
+      </symbol>
+      <symbol id="plant-calathea" viewBox="0 0 160 180">
+        <path fill="#d9dfc4" d="M19 39C49 10 109 10 135 52s19 84-29 94S-14 95 19 39Z"/>
+        <g fill="none" stroke="#567049" stroke-width="3"><path d="M82 126 49 63m33 64 26-76m-25 75-5-88m5 87 45-40"/></g>
+        <g fill="#668659" stroke="#355a3c" stroke-width="1.5"><path d="M68 101C23 101 13 60 30 43c31 0 53 29 38 58Z"/><path d="M82 78C52 61 59 24 79 13c25 15 29 46 3 65Z"/><path d="M93 101c-17-35 4-67 35-67 16 28 3 59-35 67Z"/><path d="M103 121c-3-29 20-46 40-40 6 25-10 45-40 40Z"/></g>
+        <g fill="none" stroke="#b4c390" stroke-width="2.5"><path d="m32 46 33 48M45 63l-13 2m20 8-3-18m11 30-23-4M79 17l3 54m-2-32-12-9m13 21 13-14m-12 27-15-14m58-13-27 58m18-39 12 1m-18 13-4-21m-3 34 19-9m18 10-29 31m19-21 7 9m-16 0-1-14"/></g>
+        <path fill="#c8bdac" d="m53 116 6 46q22 10 44 0l7-46Z"/><ellipse fill="#726e55" cx="81" cy="117" rx="28" ry="6"/><path fill="#ded3bf" d="M49 114h64v14H49z"/><path fill="none" stroke="#a49987" stroke-width="2" d="M65 135v24m11-24v27m11-27v27m11-27v24"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="page-shell" id="top">
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Moss home"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 33V17M20 25C3 26 3 10 6 7c12 1 17 9 14 18Zm1-9C22 4 30 3 35 5c1 10-5 17-14 17"/></svg>moss<span class="brand-period">.</span></a>
+      <nav aria-label="Main navigation"><a class="nav-link active" href="#care-queue">Today</a><a class="nav-link" href="#your-plants">Your plants <span>4</span></a></nav>
+      <div class="header-note">A little care. A little growth.</div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="greeting">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="tiny-sun" aria-hidden="true">✳</span> YOUR DAILY PAUSE <span class="eyebrow-rule"></span> <time id="today-date"></time></p>
+          <h1 id="greeting">Small rituals.<br><em>Happy roots.</em></h1>
+          <p class="hero-description">A sip here, a little sunlight there.<br>Let’s make a little room for growing.</p>
+          <a class="daily-pill" href="#care-queue"><span class="pill-dot" aria-hidden="true"></span><span id="daily-summary">Your little jungle is waiting</span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <svg viewBox="0 0 520 320" class="garden-illustration">
+            <path fill="#e7c66d" d="M72 263V156C72 61 151 21 245 30s181 46 179 142v91Z"/>
+            <path fill="none" stroke="#c6a655" stroke-width="1" stroke-dasharray="2 8" d="M97 239V159c0-74 59-112 144-104s159 38 158 116v68"/>
+            <path fill="#dbb965" d="M34 263q225-23 451 0l-9 9H44Z"/>
+            <use href="#plant-pothos" x="311" y="91" width="171" height="192"/>
+            <use href="#plant-fern" x="59" y="56" width="207" height="232"/>
+            <use href="#plant-calathea" x="186" y="78" width="184" height="208"/>
+            <use href="#plant-cactus" x="282" y="170" width="111" height="125"/>
+            <g fill="none" stroke="#42603c" stroke-width="2" stroke-linecap="round"><path d="m431 64 5-10m9 20 11-2m-23 15 7 9M38 184l-8-4m11-5-4-7"/><path d="M475 163q-20 12-24 37m-1-10 1 12 12-4"/></g>
+            <g transform="translate(374 36) rotate(12)"><path fill="#f7f4e9" stroke="#536341" stroke-width="1.5" d="m0 0 9 3 8-5 5 8 9 1 1 9 7 5-4 8 2 9-9 4-4 8-9-2-8 4-6-7-9-1-1-9-6-6 5-8-1-9Z"/><path fill="none" stroke="#536341" stroke-width="1.5" d="m5 22 6 6 12-14"/></g>
+          </svg>
+          <span class="garden-caption">quite a nice little jungle you’ve got.</span>
+        </div>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="care-section" id="care-queue" aria-labelledby="care-heading" tabindex="-1">
+          <div class="section-heading"><div><p class="eyebrow">ONE LEAF AT A TIME</p><h2 id="care-heading">A little love, today.</h2></div><span class="count-badge" id="queue-count" aria-label="Care tasks remaining">3</span></div>
+          <p class="queue-intro" id="queue-intro">Start with the one that’s waited a little longer.</p>
+          <div id="today-queue"></div>
+          <div id="all-done" class="all-done" hidden>
+            <span class="done-seal"><svg class="icon" aria-hidden="true"><use href="#icon-check"/></svg></span>
+            <p class="eyebrow">ROOM TO JUST BE</p><h3>All tended to.</h3>
+            <p id="done-description">Your plants are in a good place. So is your to-do list.</p>
+            <a class="text-link" href="#your-plants">Spend a moment with your plants <span aria-hidden="true">↗</span></a>
+          </div>
+          <section class="upcoming-section" id="upcoming-section" aria-labelledby="upcoming-heading"><div class="mini-heading"><h3 id="upcoming-heading">On the horizon</h3><span>No rush.</span></div><div id="upcoming-queue"></div></section>
+          <details class="completed-section" id="completed-section" hidden><summary id="completed-summary">Tended to today</summary><div id="completed-list"></div></details>
+        </section>
+
+        <aside class="side-column" aria-label="Your growing rhythm">
+          <section class="rhythm-panel" aria-labelledby="rhythm-heading">
+            <div class="rhythm-top"><p class="eyebrow">THE BIGGER PICTURE</p><svg class="icon" aria-hidden="true"><use href="#icon-sun"/></svg></div>
+            <h2 id="rhythm-heading">A little, often.</h2><p>That’s how good things grow.</p>
+            <div class="week-chart" id="week-chart" role="img" aria-label="Weekly care rhythm"></div>
+            <div class="rhythm-footer"><span><span class="legend-dot" aria-hidden="true"></span>Care moments this week</span><strong id="week-total">16</strong></div>
+          </section>
+          <section class="field-note" aria-labelledby="note-heading"><div class="note-pin" aria-hidden="true"></div><p class="eyebrow">A NOTE TO GROW BY</p><h2 id="note-heading">Presence over<br>perfection.</h2><p>Take a closer look. A new leaf, a leaning stem, a tiny change — getting to know your plants is care, too.</p><span class="note-signature">You’re growing together.</span><svg class="note-leaf icon" aria-hidden="true"><use href="#icon-leaf"/></svg></section>
+        </aside>
+      </div>
+
+      <section class="collection-section" id="your-plants" aria-labelledby="collection-heading" tabindex="-1"><div class="section-heading"><div><p class="eyebrow">GOOD COMPANY</p><h2 id="collection-heading">Your little jungle.</h2></div><span class="collection-count">4 plants, right at home</span></div><div class="collection-grid" id="plant-collection"></div></section>
+    </main>
+    <footer class="site-footer"><a class="footer-brand" href="#top">moss.</a><span>Grow at your own pace.</span><span id="storage-status">Just you, your plants, and this device.</span></footer>
+  </div>
+
+  <dialog id="plant-dialog" aria-labelledby="detail-name"><div id="plant-detail"></div></dialog>
+  <div class="toast-stack" id="toast-stack" aria-label="Recent actions"></div>
+  <div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></div>
+  <noscript><div class="noscript-note">Moss needs JavaScript to show your four plants and save care actions. Please enable it and reopen this page.</div></noscript>
+</body>
+</html>

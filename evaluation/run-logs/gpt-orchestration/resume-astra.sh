@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Resume GPT-6 Astra (xhigh, gmail-business): run the tasks that were interrupted when the account
+# Resume GPT-6 Astra (xhigh; tasks 01-09 ran on gmail-business, these on gmail-personal): run the tasks that were interrupted when the account
 # ran out of credits, each from a clean copy of the template, same protocol as run.sh.
 CODEX=/Users/arda/.local/share/mise/installs/node/24.14.0/bin/codex
 O=/Users/arda/projects/agent-eval-runs/gpt-run-orch
-H=/Users/arda/.codex-gmail-business
+H=/Users/arda/.codex-gmail-personal
 R=/Users/arda/projects/agent-eval-runs/agent-eval-gpt-6-astra
 TASKS=(10-general-operations 11-frontend-operations 12-frontend-editorial 13-frontend-playful)
 
 pgrep -f "gpt-run-orch/run.sh" >/dev/null && { echo "main run.sh still running; wait for it" >&2; exit 2; }
-line=$(/Users/arda/.local/bin/codex-accounts all 2>/dev/null | grep '^gmail-business')
+line=$(/Users/arda/.local/bin/codex-accounts all 2>/dev/null | grep '^gmail-personal')
 echo "$line"
-case "$line" in *BLOCKED*) echo "gmail-business is still blocked" >&2; exit 3;; esac
+case "$line" in *BLOCKED*) echo "gmail-personal is still blocked" >&2; exit 3;; esac
 for t in "${TASKS[@]}"; do   # every resumed task must start from the template
   diff -rq --exclude=__pycache__ /Users/arda/projects/agent-evaluation-2026-09-23/_templates/$t $R/$t >/dev/null || { echo "$t is not a clean template copy" >&2; exit 4; }
 done

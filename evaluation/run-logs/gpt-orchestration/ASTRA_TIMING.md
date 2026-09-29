@@ -23,10 +23,21 @@
 - Work lost to the credit cut-off: 23m38s across tasks 10-13 (partial output kept in astra-interrupted/).
 - gmail-business showed 5h 0.0% left, weekly 84.0% left, right after the cut-off.
 
-## Part 2: resumed tasks 10-13 after the 5-hour limit resets
+## Part 2: tasks 10-13 re-run from the template on gmail-personal
 
-Not run yet.
+gmail-business was still blocked, so Arda reset the limit on gmail-personal and the four tasks ran there
+(same model, effort, instruction and flags; the account's AGENTS.md set aside and restored).
+
+| Task | Ended | Time | Result |
+|---|---|---|---|
+| 10-general-operations | 05:24:16 | 4m35s | completed |
+| 11-frontend-operations | 05:35:54 | 16m13s | completed |
+| 12-frontend-editorial | 05:32:50 | 13m09s | completed |
+| 13-frontend-playful | 05:39:03 | 19m22s | completed |
+
+- Four tasks in parallel, 05:19:41 to 05:39:03 JST: **19 min 22 s** of wall-clock time.
+- gmail-personal: weekly 100% -> 97% left; 5-hour window still showed 100% afterwards.
 
 ## Total
 
-Completion time = part 1 (15 min 32 s) + part 2 wall-clock time; the wait between them does not count.
+**Completion time: 15 min 32 s + 19 min 22 s = 34 min 54 s.** The wait between the parts does not count.

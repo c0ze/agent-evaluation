@@ -22,12 +22,12 @@ and <code>None</code>; it raises <code>KeyError</code> only for missing or expir
 and exact test result. Work only in this directory.</p>
 </div>
       <p class="muted">Inputs given: <a href="../../../_templates/02-bug-fixing/test_ttl_cache.py" target="_blank" rel="noopener" class="mono">test_ttl_cache.py</a>, <a href="../../../_templates/02-bug-fixing/ttl_cache.py" target="_blank" rel="noopener" class="mono">ttl_cache.py</a></p></details>
-    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">Fable 5.1</th><th scope="col">mimo</th><th scope="col">muse</th><th scope="col">GPT-6 Luna</th><th scope="col">GPT-6.1 Sol</th></tr>
-    <tr><th scope="row">behavioral correctness <span class="muted">(7)</span></th><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat">–</td></tr><tr><th scope="row">diagnosis <span class="muted">(1)</span></th><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat">–</td></tr><tr><th scope="row">regression coverage <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.17">1</td><td class="num heat">–</td></tr>
-    <tr class="total"><th scope="row">Total (10)</th><td class="num">10</td><td class="num">10</td><td class="num">9.75</td><td class="num">9.5</td><td class="num">9</td><td class="num">8.75</td><td class="num">–</td></tr></table></div>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">Fable 5.1</th><th scope="col">mimo</th><th scope="col">muse</th><th scope="col">GPT-6 Luna</th><th scope="col">GPT-6.1 Sol</th><th scope="col">GPT-6 Astra</th></tr>
+    <tr><th scope="row">behavioral correctness <span class="muted">(7)</span></th><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat">–</td><td class="num heat">–</td></tr><tr><th scope="row">diagnosis <span class="muted">(1)</span></th><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat">–</td><td class="num heat">–</td></tr><tr><th scope="row">regression coverage <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.17">1</td><td class="num heat">–</td><td class="num heat">–</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">10</td><td class="num">10</td><td class="num">9.75</td><td class="num">9.5</td><td class="num">9</td><td class="num">8.75</td><td class="num">–</td><td class="num">–</td></tr></table></div>
     <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = mimo, B = Sonnet 5.5, C = Opus 5.5, D = Fable 5.1, E = GPT-6 Luna, F = muse.</p><div class="prose"><p>All six implementations are behaviorally equivalent on get/put/validation over 5000 random traces, so they separate on regression coverage. The brief never specifies len(), so test_len_excludes_expired (D) is not a requirement: the other five are not penalized for failing it, and D loses 0.25 coverage for pinning out-of-contract behavior in its suite. Its len purge is an acceptable choice and is not penalized in behavior. C and B tie at 10; C ranks first on its documented self-mutation check that found and closed a real gap. F and E have identical mutant kill sets; F ranks above E on its fuller diagnosis. A&#39;s double clock read in put was noted but not penalized, since no contract violation is observable with a monotonic clock. Mutant X11 (skip the purge when updating an existing key) is equivalent to F&#39;s design and was excluded.</p>
 </div></details></section>
-    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">10</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">10</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9.75</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">9.5</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">muse <span class="pill">9</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">8.75</span></button><button role="tab" id="tab-6" aria-controls="panel-6" aria-selected="false" tabindex="-1">GPT-6.1 Sol</button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">10</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">10</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9.75</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">9.5</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">muse <span class="pill">9</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">8.75</span></button><button role="tab" id="tab-6" aria-controls="panel-6" aria-selected="false" tabindex="-1">GPT-6.1 Sol</button><button role="tab" id="tab-7" aria-controls="panel-7" aria-selected="false" tabindex="-1">GPT-6 Astra</button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
         <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
         <p>The implementation is correct: it matched the reference on every fuzzed trace. The diagnosis gives all seven root causes, each paired with its fix. It correctly explains why the purge has to scan every entry. The 25-test suite kills every original-bug mutant and every extra mutant, and its claims about the template run are accurate.</p>
         <div class="two"><div><h4>Strengths</h4><ul><li>Correct implementation; reads the clock once per put</li><li>Thorough regression suite: falsy values incl. [] and 0.0, boundary on both sides, updating the MRU key at capacity, a non-head expired entry being purged, max_size=1, default clock</li><li>Correctly leaves len() unspecified and documents that choice</li></ul></div><div><h4>Weaknesses</h4><ul><li>No notable weaknesses; uses a while loop for eviction where an if would do (harmless)</li></ul></div></div>
@@ -2556,6 +2556,297 @@ class TTLCache:
 
     def put(self, key, value):
         now = self.clock()
+        expired_keys = [
+            stored_key
+            for stored_key, (_, created) in self._items.items()
+            if now - created &gt;= self.ttl_seconds
+        ]
+        for expired_key in expired_keys:
+            del self._items[expired_key]
+
+        self._items[key] = (value, now)
+        self._items.move_to_end(key)
+        if len(self._items) &gt; self.max_size:
+            self._items.popitem(last=False)
+
+    def get(self, key):
+        value, created = self._items[key]
+        if self.clock() - created &gt;= self.ttl_seconds:
+            del self._items[key]
+            raise KeyError(key)
+        self._items.move_to_end(key)
+        return value
+
+    def __len__(self):
+        return len(self._items)
+</code></pre></div></section></div><div role="tabpanel" id="panel-7" aria-labelledby="tab-7" hidden><section class="card eval"><p class="muted">Not graded yet.</p><ul class="checks"><li>Hidden contract tests: failures</li></ul></section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="7-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="7-1" aria-selected="false">TASK.md</button><button role="tab" data-file="7-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="7-3" aria-selected="false">ttl_cache.py</button></div>
+        <div class="file" id="file-7-0" ><p class="path mono">gpt-6-astra/02-bug-fixing/RESPONSE.md</p><div class="prose"><p>Completed every deliverable: fixed <code>ttl_cache.py</code> without changing the public
+API, expanded <code>test_ttl_cache.py</code> from 3 to 18 tests, ran the tests locally, and
+documented the results here. No network access was used.</p>
+<p>Root causes and fixes:</p>
+<ul>
+<li><code>put</code> used <code>time.time()</code> while <code>get</code> used the injected monotonic clock, making
+entry ages inconsistent. Both operations now use the injected clock; each
+<code>put</code> takes one timestamp for expiration cleanup and the stored value.</li>
+<li><code>get</code> treated falsy values as absent. It now relies on dictionary lookup for
+missing keys and returns stored values unchanged, including <code>0</code>, <code>False</code>, and
+<code>None</code>.</li>
+<li>Expiration used <code>age &gt; ttl_seconds</code>. It now uses <code>age &gt;= ttl_seconds</code>, and an
+expired lookup removes the entry before raising <code>KeyError</code>.</li>
+<li>Successful reads did not refresh recency. They now move the key to the end of
+the ordered dictionary while preserving its insertion/update timestamp.</li>
+<li><code>put</code> evicted before checking whether it was updating an existing key, and
+assignment alone did not refresh recency. It now stores the new value and
+timestamp, moves the key to the most recent position, and evicts only when
+the resulting size exceeds capacity.</li>
+<li>Capacity enforcement ignored expired entries. Every <code>put</code> now removes all
+expired entries before enforcing capacity, scanning the entire dictionary
+because LRU order can differ from expiration order. Any remaining eviction
+removes the least recently used live entry.</li>
+<li>Constructor arguments were not validated. <code>max_size &lt; 1</code> and
+<code>ttl_seconds &lt;= 0</code> now raise <code>ValueError</code>.</li>
+</ul>
+<p>Regression cases use an injected, manually advanced clock without sleeping:</p>
+<ul>
+<li>Normal and falsy value round trips; missing-key errors.</li>
+<li>Reads just before, exactly at, and after the TTL boundary.</li>
+<li>Successful reads refresh LRU recency without extending TTL.</li>
+<li>Updates replace values, reset TTL, refresh recency, and preserve other entries
+when the cache is full; expired keys can be inserted again with a fresh TTL.</li>
+<li>Capacity eviction with and without reads, including a one-entry cache.</li>
+<li>An expired most recently used entry is removed before a live least recently
+used entry; all expired entries are purged even below capacity.</li>
+<li>Zero, negative, and sub-one capacities; zero and negative TTLs.</li>
+</ul>
+<p>The original suite reproduced two failures out of three tests before the fix.
+The expanded suite also ran against the faulty implementation and reported
+<code>FAILED (failures=16, errors=6)</code> across 18 test methods, including subtest results.</p>
+<p>Final command, run from this directory:</p>
+<pre><code class="language-sh">python3 -m unittest discover -s . -p &#39;test_*.py&#39; -v
+</code></pre>
+<p>Exact final test summary:</p>
+<pre><code class="language-text">----------------------------------------------------------------------
+Ran 18 tests in 0.000s
+
+OK
+</code></pre>
+<p>Exit code: <code>0</code>. Every test passed.</p>
+<p>Exact model ID: <code>gpt-6-astra</code>.</p>
+</div></div><div class="file" id="file-7-1" hidden><p class="path mono">gpt-6-astra/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+<p><code>ttl_cache.py</code> is a deliberately faulty implementation. Fix it without changing
+the public API and add regression tests.</p>
+<p>Required behavior:</p>
+<ul>
+<li><code>get(key)</code> returns the stored value, including falsy values such as <code>0</code>, <code>False</code>
+and <code>None</code>; it raises <code>KeyError</code> only for missing or expired entries.</li>
+<li>TTL uses the injected monotonic <code>clock</code> and expires at <code>age &gt;= ttl_seconds</code>.</li>
+<li>A successful <code>get</code> refreshes LRU recency but does not refresh TTL.</li>
+<li><code>put</code> updates an existing key&#39;s value, timestamp and recency.</li>
+<li>Before enforcing capacity, expired entries are removed.</li>
+<li>Capacity eviction removes the least recently used live entry.</li>
+<li><code>max_size &lt; 1</code> and <code>ttl_seconds &lt;= 0</code> raise <code>ValueError</code>.</li>
+</ul>
+<p>Run the tests. Write <code>RESPONSE.md</code> with the root causes, fixes, regression cases,
+and exact test result. Work only in this directory.</p>
+</div></div><div class="file" id="file-7-2" hidden><p class="path mono">gpt-6-astra/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
+
+from ttl_cache import TTLCache
+
+
+class Clock:
+    def __init__(self):
+        self.now = 100.0
+
+    def __call__(self):
+        return self.now
+
+
+class TTLCacheTests(unittest.TestCase):
+    def setUp(self):
+        self.clock = Clock()
+
+    def test_round_trip(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+
+    def test_falsy_values_round_trip(self):
+        for value in (0, False, None, &quot;&quot;, [], {}):
+            with self.subTest(value=value):
+                cache = TTLCache(1, 10, self.clock)
+                cache.put(&quot;a&quot;, value)
+                self.assertIs(cache.get(&quot;a&quot;), value)
+
+    def test_missing_key_raises_key_error(self):
+        cache = TTLCache(2, 10, self.clock)
+        with self.assertRaises(KeyError) as error:
+            cache.get(&quot;missing&quot;)
+        self.assertEqual(error.exception.args, (&quot;missing&quot;,))
+
+    def test_live_just_before_expiration(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 9.999
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+
+    def test_expires_at_boundary(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 10
+        with self.assertRaises(KeyError) as error:
+            cache.get(&quot;a&quot;)
+        self.assertEqual(error.exception.args, (&quot;a&quot;,))
+
+    def test_expires_after_boundary(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 11
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_get_does_not_refresh_ttl(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 6
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.clock.now += 4
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_get_refreshes_lru(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.get(&quot;a&quot;)
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;b&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+        self.assertEqual(len(cache), 2)
+
+    def test_put_updates_value_and_timestamp(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;old&quot;)
+        self.clock.now += 6
+        cache.put(&quot;a&quot;, &quot;new&quot;)
+        self.assertEqual(len(cache), 1)
+        self.clock.now += 4
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;new&quot;)
+        self.clock.now += 6
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_put_existing_key_at_capacity_preserves_other_entries(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.put(&quot;b&quot;, &quot;updated&quot;)
+        self.assertEqual(len(cache), 2)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;b&quot;), &quot;updated&quot;)
+
+    def test_put_refreshes_lru(self):
+        cache = TTLCache(3, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.put(&quot;a&quot;, &quot;updated&quot;)
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        cache.put(&quot;d&quot;, &quot;D&quot;)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;b&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;updated&quot;)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+        self.assertEqual(cache.get(&quot;d&quot;), &quot;D&quot;)
+
+    def test_capacity_evicts_oldest_without_reads(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+        self.assertEqual(cache.get(&quot;b&quot;), &quot;B&quot;)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+
+    def test_expired_mru_is_removed_before_live_lru(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;expired&quot;, &quot;old&quot;)
+        self.clock.now += 6
+        cache.put(&quot;live&quot;, &quot;keep&quot;)
+        cache.get(&quot;expired&quot;)
+        self.clock.now += 4
+        cache.put(&quot;new&quot;, &quot;new&quot;)
+        self.assertEqual(cache.get(&quot;live&quot;), &quot;keep&quot;)
+        self.assertEqual(cache.get(&quot;new&quot;), &quot;new&quot;)
+        self.assertEqual(len(cache), 2)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;expired&quot;)
+
+    def test_put_removes_all_expired_entries_below_capacity(self):
+        cache = TTLCache(4, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        self.clock.now += 10
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        self.assertEqual(len(cache), 1)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+        for key in (&quot;a&quot;, &quot;b&quot;):
+            with self.subTest(key=key), self.assertRaises(KeyError):
+                cache.get(key)
+
+    def test_put_replaces_expired_key_with_fresh_ttl(self):
+        cache = TTLCache(1, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;old&quot;)
+        self.clock.now += 10
+        cache.put(&quot;a&quot;, &quot;new&quot;)
+        self.clock.now += 9
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;new&quot;)
+        self.assertEqual(len(cache), 1)
+        self.clock.now += 1
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_single_entry_capacity(self):
+        cache = TTLCache(1, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        self.assertEqual(len(cache), 1)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+        self.assertEqual(cache.get(&quot;b&quot;), &quot;B&quot;)
+
+    def test_rejects_invalid_capacity(self):
+        for max_size in (0, -1, -10, 0.5):
+            with self.subTest(max_size=max_size), self.assertRaises(ValueError):
+                TTLCache(max_size, 10, self.clock)
+
+    def test_rejects_nonpositive_ttl(self):
+        for ttl_seconds in (0, -1, -0.5):
+            with self.subTest(ttl_seconds=ttl_seconds), self.assertRaises(ValueError):
+                TTLCache(2, ttl_seconds, self.clock)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre></div><div class="file" id="file-7-3" hidden><p class="path mono">gpt-6-astra/02-bug-fixing/ttl_cache.py</p><pre><code>import time
+from collections import OrderedDict
+
+
+class TTLCache:
+    def __init__(self, max_size, ttl_seconds, clock=time.monotonic):
+        if max_size &lt; 1:
+            raise ValueError(&quot;max_size must be at least 1&quot;)
+        if ttl_seconds &lt;= 0:
+            raise ValueError(&quot;ttl_seconds must be positive&quot;)
+        self.max_size = max_size
+        self.ttl_seconds = ttl_seconds
+        self.clock = clock
+        self._items = OrderedDict()
+
+    def put(self, key, value):
+        now = self.clock()
+        # LRU order can differ from expiration order after reads or updates.
         expired_keys = [
             stored_key
             for stored_key, (_, created) in self._items.items()
