@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="description" content="Relay — a focused operations console for service health, throughput, and incident response.">
+  <title>Relay · Operations overview</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to operations</a>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-overview" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></symbol>
+    <symbol id="i-traffic" viewBox="0 0 24 24"><path d="M3 17h4l3-10 4 14 3-10h4"/></symbol>
+    <symbol id="i-incidents" viewBox="0 0 24 24"><path d="m12 3 10 18H2L12 3Z"/><path d="M12 9v5m0 3v.1"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  </svg>
+
+  <nav class="rail" aria-label="Primary navigation">
+    <a class="brand" href="#overview" aria-label="Relay overview">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <span class="brand-name">relay<span class="brand-period">.</span></span>
+    </a>
+    <span class="rail-label">WORKSPACE</span>
+    <div class="rail-links">
+      <a class="rail-link" href="#overview" aria-current="location"><svg class="icon" aria-hidden="true"><use href="#i-overview"/></svg><span>Overview</span></a>
+      <a class="rail-link" href="#throughput"><svg class="icon" aria-hidden="true"><use href="#i-traffic"/></svg><span>Throughput</span></a>
+      <a class="rail-link" href="#incidents"><svg class="icon" aria-hidden="true"><use href="#i-incidents"/></svg><span>Incidents</span><span class="rail-count" id="rail-count">4</span></a>
+    </div>
+    <div class="rail-footer"><span class="operator-avatar" aria-hidden="true">OP</span><div><strong>Operator</strong><span>Local workspace</span></div><span class="rail-footer-dot" aria-hidden="true"></span></div>
+  </nav>
+
+  <div class="workspace">
+    <header class="status-bar">
+      <div class="breadcrumb"><span>Workspace</span><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg><strong>Global operations</strong></div>
+      <div class="status-bar-end"><span class="critical-summary"><span class="status-dot" aria-hidden="true"></span><span id="critical-summary">1 critical incident</span></span><span class="snapshot-label"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Snapshot <span class="mono">UTC</span></span></div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <section id="overview" aria-labelledby="overview-heading">
+        <div class="page-heading"><div><div class="eyebrow">CONTROL ROOM <span class="environment">PRODUCTION</span></div><h1 id="overview-heading">Operations overview</h1><p class="page-description">Global services <span aria-hidden="true">/</span> 24-hour snapshot</p></div><a class="review-link" href="#incidents" aria-label="Review incidents">Review incidents<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+        <noscript><p class="noscript-notice">Enable JavaScript to load the local snapshot and manage incidents.</p></noscript>
+        <div class="metrics" id="metrics" role="region" aria-label="Summary metrics"></div>
+      </section>
+
+      <section class="panel throughput-panel" id="throughput" aria-labelledby="throughput-heading">
+        <div class="panel-heading"><div><h2 id="throughput-heading">24-hour throughput</h2><p>Hourly event profile <span aria-hidden="true">·</span> relative volume</p></div><div class="chart-summary"><span class="legend-mark" aria-hidden="true"></span><span>Event throughput</span><span class="chart-peak mono" id="chart-peak"></span></div></div>
+        <p class="sr-only" id="chart-instructions">Use left and right arrow keys to explore hourly throughput. Home selects the first hour; End selects the last. Values are also available in the hourly values disclosure below.</p>
+        <div class="chart" aria-label="24 hourly throughput values">
+          <div class="chart-y-axis mono" aria-hidden="true"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div>
+          <div class="chart-plot"><div class="chart-grid" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><ol class="chart-bars" id="chart-bars" aria-label="Hourly throughput" aria-describedby="chart-instructions"></ol></div>
+          <div class="chart-x-axis mono" aria-hidden="true"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+        </div>
+        <div class="chart-footer"><output class="chart-readout" id="chart-readout" aria-live="polite"></output><span class="chart-hint"><kbd>←</kbd><kbd>→</kbd> Explore hours</span><span class="chart-average" id="chart-average"></span></div>
+        <details class="chart-values"><summary>Hourly values <span class="mono">UTC</span></summary><dl class="hour-values" id="hour-values"></dl></details>
+      </section>
+
+      <div class="incident-workspace" id="incidents">
+        <section class="panel incident-panel" aria-labelledby="incidents-heading">
+          <div class="panel-heading"><div class="incident-heading"><h2 id="incidents-heading">Incident queue</h2><span class="count-badge" id="incident-total">4</span></div><span class="queue-scope">Active incidents</span></div>
+          <form class="filters" role="search" aria-label="Filter incidents">
+            <div class="search-field"><label class="sr-only" for="incident-search">Search by incident, service, title, or owner</label><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input id="incident-search" type="search" placeholder="Search incidents…" autocomplete="off" spellcheck="false" aria-describedby="search-help"><kbd aria-hidden="true">/</kbd></div>
+            <label class="select-field"><span class="sr-only">Severity</span><select id="severity-filter"><option value="all">All severities</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></label>
+            <label class="select-field"><span class="sr-only">Status</span><select id="status-filter"><option value="all">All statuses</option><option value="open">Open</option><option value="investigating">Investigating</option><option value="monitoring">Monitoring</option><option value="acknowledged">Acknowledged</option></select></label>
+            <button class="reset-button" id="reset-filters" type="button" disabled>Reset</button>
+          </form>
+          <span class="sr-only" id="search-help">Press slash outside a form field to focus search. Press Escape in search to clear it. Filters apply together.</span>
+          <div class="table-container">
+            <table id="incident-table" role="table"><caption class="sr-only">Active incidents, sorted by severity. Select an incident to view its details and acknowledge it.</caption><thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Incident</th><th scope="col" role="columnheader">Severity</th><th scope="col" role="columnheader">Service</th><th class="age-heading" scope="col" role="columnheader">Age</th><th scope="col" role="columnheader">Owner</th><th scope="col" role="columnheader">Status</th></tr></thead><tbody id="incident-rows" role="rowgroup"></tbody></table>
+            <div class="empty-state" id="incidents-empty" hidden><span class="empty-icon" aria-hidden="true"><svg class="icon"><use href="#i-search"/></svg></span><h3>No incidents match</h3><p id="empty-description">Try a broader search or adjust your filters.</p><button class="secondary-button" id="empty-reset" type="button">Clear filters</button></div>
+          </div>
+          <div class="queue-footer"><p id="filter-summary" role="status" aria-live="polite" aria-atomic="true"></p><span>Severity first</span></div>
+        </section>
+
+        <aside class="panel detail-panel" id="incident-detail" aria-labelledby="detail-heading">
+          <div class="detail-topline"><span class="eyebrow">INCIDENT DETAIL</span><span class="detail-selection-label">Selected</span></div>
+          <div id="detail-content">
+            <div class="detail-identity"><span class="mono" id="detail-id"></span><span class="severity-badge" id="detail-severity"></span></div>
+            <h2 id="detail-heading" tabindex="-1"></h2>
+            <div class="detail-action"><button class="primary-button" type="button" id="acknowledge"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span id="acknowledge-label">Acknowledge incident</span></button><p id="acknowledge-note">Records that you have seen this incident.</p><button class="undo-button" type="button" id="undo-acknowledge" hidden>Undo acknowledgment</button></div>
+            <p class="detail-description" id="detail-description"></p>
+            <dl class="detail-facts"><div><dt>Service</dt><dd class="mono" id="detail-service"></dd></div><div><dt>Status</dt><dd><span class="status-badge" id="detail-status"></span></dd></div><div><dt>Open for</dt><dd class="mono" id="detail-age"></dd></div><div><dt>Owner</dt><dd class="owner-value"><span class="owner-avatar" id="detail-avatar" aria-hidden="true"></span><span id="detail-owner"></span></dd></div></dl>
+            <div class="response-guidance"><h3>Next step</h3><p id="detail-guidance"></p></div>
+            <div class="activity"><h3>Activity</h3><ol id="detail-activity"></ol></div>
+          </div>
+          <div class="detail-empty" id="detail-empty" hidden><h2 id="detail-empty-heading" tabindex="-1">No incident selected</h2><p>Adjust or clear the filters to select an incident.</p></div>
+        </aside>
+      </div>
+      <footer class="workspace-footer"><span><span class="footer-mark" aria-hidden="true">↳</span> Relay operations console</span><span>Snapshot data <span aria-hidden="true">·</span> Acknowledgments are local to this device</span></footer>
+    </main>
+  </div>
+  <div class="sr-only" id="announcements" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
