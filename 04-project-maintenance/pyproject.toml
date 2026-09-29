@@ -4,11 +4,25 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "slugkit"
-version = "0.3.2"
+version = "0.4.0"
 description = "Small slug and version helpers"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[project.optional-dependencies]
+dev = ["ruff==0.15.8"]
+
+[tool.setuptools]
+# Flat layout with two top-level modules (slugkit, test_slugkit): name the one that
+# ships, otherwise setuptools' auto-discovery refuses to build the project at all.
+py-modules = ["slugkit"]
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 line-length = 100
-
