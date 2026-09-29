@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Relay — calm, high-density operations control room dashboard.">
+  <title>Relay — Operations Control Room</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- Top status bar -->
+  <header class="statusbar">
+    <div class="statusbar-group">
+      <span class="brand" aria-label="Relay home">
+        <svg class="brand-mark" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+          <rect x="1" y="1" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M6 12.5 8.5 8l2 3 1.5-2 2 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-name">Relay</span>
+      </span>
+      <span class="env-pill">PROD</span>
+      <span class="statusbar-divider" aria-hidden="true"></span>
+      <span class="alert-pill" id="alertPill">
+        <span class="dot dot-alert" aria-hidden="true"></span>
+        <span id="alertCount">2 active alerts</span>
+      </span>
+    </div>
+    <div class="statusbar-group statusbar-right">
+      <span class="live-indicator" title="Live view">
+        <span class="dot dot-live" aria-hidden="true"></span>
+        <span aria-hidden="true">Live</span>
+        <span class="sr-only">Live view, updating.</span>
+      </span>
+      <time id="clock" class="clock" datetime="">--:--:-- UTC</time>
+      <span class="statusbar-divider" aria-hidden="true"></span>
+      <span class="operator">
+        <span class="avatar" aria-hidden="true">DR</span>
+        <span class="operator-name">D. Reyes · on call</span>
+      </span>
+    </div>
+  </header>
+
+  <div class="shell">
+    <!-- Navigation rail -->
+    <nav class="rail" aria-label="Primary">
+      <ul class="rail-list">
+        <li>
+          <a class="rail-link is-active" href="#overview" aria-current="page">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></g></svg>
+            <span>Overview</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail-link" href="#throughput">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 15h12"/><path d="M5 15v-4M9 15V6M13 15v-6"/></g></svg>
+            <span>Throughput</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail-link" href="#incidents">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.5 16 14H2L9 2.5z"/><path d="M9 7v3.2"/><circle cx="9" cy="12.3" r=".4" fill="currentColor"/></g></svg>
+            <span>Incidents</span>
+            <span class="rail-badge" id="railBadge">4</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail-link" href="#detail">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2.5" width="12" height="13" rx="1.5"/><path d="M6 6h6M6 9h6M6 12h3.5" stroke-linecap="round"/></g></svg>
+            <span>Detail</span>
+          </a>
+        </li>
+      </ul>
+      <button class="rail-link rail-theme" id="themeToggle" type="button" aria-pressed="false" title="Toggle dark theme">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14.5 10.5A5.8 5.8 0 0 1 7.5 3.6a5.8 5.8 0 1 0 7 6.9z"/></g></svg>
+        <span>Theme</span>
+      </button>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main" id="main" tabindex="-1">
+      <div class="pagehead">
+        <div>
+          <h1 class="page-title">Operations overview</h1>
+          <p class="page-sub" id="pageDate">US-East primary · all regions reporting</p>
+        </div>
+        <p class="slo-note">SLO compliance <strong>99.94%</strong> · 30-day window</p>
+      </div>
+
+      <!-- Summary metrics -->
+      <section id="overview" aria-labelledby="metricsHeading" class="section">
+        <h2 id="metricsHeading" class="sr-only">Summary metrics</h2>
+        <ul class="metrics" id="metricsList">
+          <!-- Rendered from app.js (seeded from DATA.json) -->
+        </ul>
+      </section>
+
+      <div class="columns">
+        <div class="primary">
+          <!-- Throughput chart -->
+          <section id="throughput" aria-labelledby="throughputHeading" class="section panel">
+            <div class="panel-head">
+              <div>
+                <h2 id="throughputHeading" class="panel-title">Throughput — last 24 hours</h2>
+                <p class="panel-sub">Hourly mean, thousands of events / min</p>
+              </div>
+              <p class="peak-note" id="peakNote">Peak —</p>
+            </div>
+            <div class="chart-wrap" id="chartWrap">
+              <!-- Inline SVG chart injected by app.js -->
+              <div class="chart-tip" id="chartTip" role="status" hidden></div>
+            </div>
+            <table class="sr-only" id="chartDataTable">
+              <caption>Hourly throughput values for the last 24 hours</caption>
+              <thead><tr><th scope="col">Hour (UTC)</th><th scope="col">Events per minute (thousands)</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </section>
+
+          <!-- Incident table -->
+          <section id="incidents" aria-labelledby="incidentsHeading" class="section panel">
+            <div class="panel-head">
+              <div>
+                <h2 id="incidentsHeading" class="panel-title">Incidents</h2>
+                <p class="panel-sub"><span id="incidentCount" role="status">4 shown</span> · select a row for detail</p>
+              </div>
+              <button class="btn btn-ghost btn-sm" id="clearFiltersTop" type="button" hidden>Clear filters</button>
+            </div>
+
+            <form class="filters" id="filterForm" role="search" aria-label="Filter incidents">
+              <div class="filter-field filter-search">
+                <label class="filter-label" for="searchInput">Search</label>
+                <input class="input" id="searchInput" name="q" type="search" placeholder="ID, title, service, owner…" autocomplete="off">
+              </div>
+              <div class="filter-field">
+                <label class="filter-label" for="severityFilter">Severity</label>
+                <select class="input" id="severityFilter" name="severity">
+                  <option value="all">All severities</option>
+                  <option value="critical">Critical</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+              <div class="filter-field">
+                <label class="filter-label" for="statusFilter">Status</label>
+                <select class="input" id="statusFilter" name="status">
+                  <option value="all">All statuses</option>
+                  <option value="open">Open</option>
+                  <option value="investigating">Investigating</option>
+                  <option value="monitoring">Monitoring</option>
+                  <option value="acknowledged">Acknowledged</option>
+                  <option value="resolved">Resolved</option>
+                </select>
+              </div>
+            </form>
+
+            <div class="table-wrap">
+              <table class="incident-table" id="incidentTable">
+                <thead>
+                  <tr>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Incident</th>
+                    <th scope="col">Service</th>
+                    <th scope="col" class="num">Age</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="incidentRows"><!-- Rendered by app.js --></tbody>
+              </table>
+              <div class="empty-state" id="emptyState" hidden>
+                <svg width="28" height="28" viewBox="0 0 18 18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="5.2"/><path d="M12 12l3.2 3.2"/></g></svg>
+                <p class="empty-title">No incidents match these filters</p>
+                <p class="empty-sub" id="emptySub">Try widening the severity or status filter.</p>
+                <button class="btn btn-secondary btn-sm" id="clearFiltersEmpty" type="button">Clear all filters</button>
+              </div>
+            </div>
+            <p class="table-hint">Keyboard: <kbd>↑</kbd><kbd>↓</kbd> move between rows · <kbd>Enter</kbd> opens detail.</p>
+          </section>
+        </div>
+
+        <!-- Detail panel -->
+        <aside id="detail" class="section panel detail" aria-labelledby="detailTitle">
+          <div class="detail-head">
+            <p class="detail-kicker">Incident detail</p>
+            <p>
+              <span class="sev-badge" id="detailSev">—</span>
+              <code class="mono" id="detailId">—</code>
+            </p>
+            <h2 class="detail-title" id="detailTitle">Select an incident</h2>
+          </div>
+          <dl class="detail-grid" id="detailGrid">
+            <div><dt>Service</dt><dd id="detailService">—</dd></div>
+            <div><dt>Age</dt><dd id="detailAge" class="num">—</dd></div>
+            <div><dt>Owner</dt><dd id="detailOwner">—</dd></div>
+            <div><dt>Status</dt><dd><span class="status-pill" id="detailStatus">—</span></dd></div>
+          </dl>
+          <p class="detail-desc" id="detailDesc">Choose a row in the incident table to inspect it here.</p>
+          <h3 class="detail-h">Signals</h3>
+          <ul class="signals" id="detailSignals"></ul>
+          <h3 class="detail-h">Timeline</h3>
+          <ol class="timeline" id="detailTimeline"></ol>
+          <div class="detail-actions">
+            <button class="btn btn-primary" id="ackButton" type="button">Acknowledge</button>
+            <button class="btn btn-secondary" id="copyButton" type="button">Copy ID</button>
+          </div>
+          <p class="detail-note">Playbook <strong id="detailPlaybook">RB-114</strong> · paging policy P2</p>
+        </aside>
+      </div>
+
+      <footer class="footer">
+        <p>Relay · local demo build · content seeded from DATA.json · no network requests.</p>
+      </footer>
+    </main>
+  </div>
+
+  <div class="sr-only" role="status" aria-live="polite" id="announcer"></div>
+  <script src="app.js"></script>
+</body>
+</html>
