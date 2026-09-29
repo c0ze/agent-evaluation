@@ -1,30 +1,173 @@
+# Single-host deployment: nginx -> gunicorn/Flask API -> Postgres + Redis.
+#
+# Compose restarts crashed containers and orders startup by health, but it does
+# NOT restart containers that turn "unhealthy", reschedule across hosts, or do
+# rolling updates. See RUNBOOK.md for the operational procedures.
+#
+# All credentials come from .env (copy .env.example); `${VAR:?}` makes Compose
+# refuse to start if a required secret is missing instead of using a default.
+
+name: ${COMPOSE_PROJECT_NAME:-api}
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 services:
   proxy:
-    image: nginx:latest
+    image: nginx:1.28-alpine
+    restart: unless-stopped
+    # The only published port. Bound to localhost by default; set
+    # PROXY_BIND_ADDRESS=0.0.0.0 (or a specific interface) to expose it.
     ports:
-      - "80:80"
+      - "${PROXY_BIND_ADDRESS:-127.0.0.1}:${PROXY_PORT:-8080}:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-  api:
-    build: .
-    environment:
-      DATABASE_URL: postgres://admin:password@db:5432/app
-      REDIS_URL: redis://cache:6379
-    ports:
-      - "5000:5000"
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - edge
     depends_on:
-      - db
-      - cache
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app
-    ports:
-      - "5432:5432"
-  cache:
-    image: redis:latest
-    ports:
-      - "6379:6379"
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/nginx-health || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
+    logging: *default-logging
 
+  api:
+    build:
+      context: .
+    image: ${API_IMAGE:-api}:${API_TAG:-local}
+    restart: unless-stopped
+    environment:
+      APP_MODULE: ${APP_MODULE:-app:app}
+      FLASK_DEBUG: "0"
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-4}
+      # Hostnames are compose service names on the internal "backend" network.
+      # Passwords must be URL-safe (see RUNBOOK.md, "Secret handling").
+      DATABASE_URL: postgresql://${POSTGRES_USER:?set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?set POSTGRES_DB in .env}
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@cache:6379/0
+    # No published ports: only reachable through the proxy.
+    expose:
+      - "8000"
+    networks:
+      - edge
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    healthcheck:
+      # Liveness of the app process. Requires the app to serve GET /healthz -> 200.
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+          pids: 256
+    logging: *default-logging
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+    volumes:
+      # postgres:17 keeps data in /var/lib/postgresql/data. postgres:18+ uses
+      # /var/lib/postgresql instead -- see RUNBOOK.md before a major upgrade.
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      # -h 127.0.0.1 so the check fails during first-run init, when the
+      # entrypoint's temporary server only listens on the Unix socket.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    shm_size: 128m
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+    logging: *default-logging
+
+  cache:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    # Run through the image entrypoint so Redis still drops to the "redis" user.
+    # Pure cache: no persistence, bounded memory with LRU eviction.
+    command:
+      - sh
+      - -c
+      - >-
+        exec docker-entrypoint.sh redis-server
+        --requirepass "$$REDIS_PASSWORD"
+        --maxmemory 200mb
+        --maxmemory-policy allkeys-lru
+        --save ""
+        --appendonly no
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$${REDIS_PASSWORD}\" redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 256M
+    logging: *default-logging
+
+networks:
+  # Proxy <-> API only.
+  edge:
+  # API <-> Postgres/Redis. internal: no route to the outside world and no
+  # way to publish ports from it.
+  backend:
+    internal: true
+
+volumes:
+  pgdata:
