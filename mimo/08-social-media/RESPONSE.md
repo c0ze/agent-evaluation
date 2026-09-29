@@ -1,0 +1,3 @@
+# Voice choices
+
+Voice is precise, warm, mildly nerdy, never grandiose: lead with what Threadmark does (local evidence map, source-linked summaries), then price and platforms, with one dry file-naming joke as the only flourish. Every claim stays inside BRAND.md — no customer counts, benchmarks, certifications, or Linux dates. Linux is “investigated, not promised”; Japanese support is deferred to the trial instead of guessed. Replies match each room: LinkedIn answers the chatbot and lab-seat questions head-on; Bluesky stays lower-case and blunt; Instagram owns the stuck-indexing report with a restart step and a DM request limited to OS and file count, so nothing private lands in public. Engagement bait and canned “thanks for your feedback” lines are avoided entirely.

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relay — Operations</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <nav class="rail" aria-label="Primary">
+      <div class="rail-brand" aria-hidden="true">R</div>
+      <ul class="rail-nav">
+        <li><a href="#main" class="rail-item is-active" aria-current="page" title="Overview"><span class="rail-icon" aria-hidden="true">▦</span><span class="rail-label">Overview</span></a></li>
+        <li><a href="#incidents" class="rail-item" title="Incidents"><span class="rail-icon" aria-hidden="true">⚑</span><span class="rail-label">Incidents</span></a></li>
+        <li><a href="#throughput" class="rail-item" title="Throughput"><span class="rail-icon" aria-hidden="true">∿</span><span class="rail-label">Throughput</span></a></li>
+        <li><a href="#detail" class="rail-item" title="Detail"><span class="rail-icon" aria-hidden="true">☰</span><span class="rail-label">Detail</span></a></li>
+      </ul>
+      <div class="rail-foot" aria-hidden="true">
+        <span class="rail-icon">⚙</span>
+      </div>
+    </nav>
+
+    <div class="frame">
+      <header class="topbar" role="banner">
+        <div class="topbar-left">
+          <h1 class="app-title">Relay</h1>
+          <span class="app-sub">Operations</span>
+        </div>
+        <div class="topbar-mid" aria-live="polite">
+          <span class="status-pill" data-level="ok">
+            <span class="status-dot" aria-hidden="true"></span>
+            All systems nominal
+          </span>
+          <span class="meta-chip">Region · us-east-1</span>
+          <span class="meta-chip">Shift · Night B</span>
+        </div>
+        <div class="topbar-right">
+          <span class="clock" id="clock" aria-label="Current time">—</span>
+          <span class="operator" title="Signed-in operator">OP · J. Okonkwo</span>
+        </div>
+      </header>
+
+      <main id="main" class="main" tabindex="-1">
+        <section class="metrics" aria-label="Summary metrics">
+          <article class="metric">
+            <h2 class="metric-label">Events / min</h2>
+            <p class="metric-value">18,420</p>
+            <p class="metric-trend" data-dir="up"><span class="trend-arrow" aria-hidden="true">▲</span><span class="trend-text">+8.2%</span><span class="trend-context">vs prior hour</span></p>
+          </article>
+          <article class="metric">
+            <h2 class="metric-label">P95 latency</h2>
+            <p class="metric-value">184 <span class="unit">ms</span></p>
+            <p class="metric-trend" data-dir="down-good"><span class="trend-arrow" aria-hidden="true">▼</span><span class="trend-text">−12 ms</span><span class="trend-context">vs prior hour</span></p>
+          </article>
+          <article class="metric">
+            <h2 class="metric-label">Error rate</h2>
+            <p class="metric-value">0.37<span class="unit">%</span></p>
+            <p class="metric-trend" data-dir="up-bad"><span class="trend-arrow" aria-hidden="true">▲</span><span class="trend-text">+0.08 pp</span><span class="trend-context">vs prior hour</span></p>
+          </article>
+          <article class="metric">
+            <h2 class="metric-label">Queue depth</h2>
+            <p class="metric-value">2,841</p>
+            <p class="metric-trend" data-dir="down-good"><span class="trend-arrow" aria-hidden="true">▼</span><span class="trend-text">−19%</span><span class="trend-context">vs prior hour</span></p>
+          </article>
+        </section>
+
+        <section class="panel throughput-panel" id="throughput" aria-labelledby="throughput-heading">
+          <header class="panel-head">
+            <h2 id="throughput-heading" class="panel-title">24-hour throughput</h2>
+            <p class="panel-sub">Events processed per hour · last 24h</p>
+          </header>
+          <div class="chart-wrap">
+            <svg class="chart" id="throughput-chart" viewBox="0 0 720 180" role="img" aria-labelledby="chart-title chart-desc" preserveAspectRatio="none">
+              <title id="chart-title">Throughput over 24 hours</title>
+              <desc id="chart-desc">Line chart of hourly event throughput ranging from 20 to 88 thousand events. Peak at hour 20.</desc>
+            </svg>
+            <div class="chart-x" id="chart-x" aria-hidden="true"></div>
+          </div>
+          <div class="chart-legend" aria-hidden="true">
+            <span><span class="swatch swatch-accent"></span>Throughput (k events)</span>
+            <span class="legend-note">Peak 88k · low 20k</span>
+          </div>
+        </section>
+
+        <section class="panel incidents-panel" id="incidents" aria-labelledby="incidents-heading">
+          <header class="panel-head panel-head-row">
+            <div>
+              <h2 id="incidents-heading" class="panel-title">Incidents</h2>
+              <p class="panel-sub">Active queue · sorted by severity</p>
+            </div>
+            <div class="filters" role="group" aria-label="Incident filters">
+              <label class="filter">
+                <span class="filter-label">Severity</span>
+                <select id="filter-severity" class="filter-control">
+                  <option value="all">All</option>
+                  <option value="critical">Critical</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </label>
+              <label class="filter">
+                <span class="filter-label">Status</span>
+                <select id="filter-status" class="filter-control">
+                  <option value="all">All</option>
+                  <option value="open">Open</option>
+                  <option value="investigating">Investigating</option>
+                  <option value="monitoring">Monitoring</option>
+                  <option value="acknowledged">Acknowledged</option>
+                </select>
+              </label>
+              <label class="filter">
+                <span class="filter-label">Service</span>
+                <select id="filter-service" class="filter-control">
+                  <option value="all">All</option>
+                </select>
+              </label>
+              <label class="filter filter-search">
+                <span class="filter-label">Search</span>
+                <input id="filter-query" class="filter-control" type="search" placeholder="id, title, owner…" autocomplete="off" />
+              </label>
+              <button type="button" class="btn btn-ghost" id="filter-reset">Reset</button>
+            </div>
+          </header>
+
+          <div class="table-meta" id="table-meta" aria-live="polite"></div>
+
+          <div class="table-scroll">
+            <table class="incident-table" id="incident-table">
+              <caption class="sr-only">Active incidents with severity, service, age, owner, and status. Select a row to open detail.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Sev</th>
+                  <th scope="col">ID</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Service</th>
+                  <th scope="col">Age</th>
+                  <th scope="col">Owner</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="incident-body"></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" id="empty-state" hidden>
+            <p class="empty-title">No incidents match</p>
+            <p class="empty-body">Adjust severity, status, service, or search filters to widen the result set.</p>
+            <button type="button" class="btn btn-secondary" id="empty-reset">Clear filters</button>
+          </div>
+        </section>
+
+        <section class="panel detail-panel" id="detail" aria-labelledby="detail-heading" tabindex="-1">
+          <header class="panel-head">
+            <h2 id="detail-heading" class="panel-title">Incident detail</h2>
+            <p class="panel-sub">Selected row · acknowledge marks ownership</p>
+          </header>
+          <div id="detail-body" class="detail-body">
+            <p class="detail-placeholder">Select an incident from the table to inspect details and acknowledge.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>

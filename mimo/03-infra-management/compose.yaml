@@ -1,0 +1,229 @@
+# Small single-host deployment: nginx -> gunicorn API -> Postgres + Redis.
+#
+# Compose is not an orchestrator: there is no rolling update, no rescheduling,
+# no multi-host failover and no quorum here. What a single Docker host can
+# honestly provide is below - restart policy, health-gated startup, bounded
+# logs and bounded resources. Operations live in RUNBOOK.md.
+
+name: smallapi
+
+# ---------------------------------------------------------------------------
+# shared fragments
+# ---------------------------------------------------------------------------
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"      # the default is unbounded and eventually fills the disk
+    max-file: "5"
+    compress: "true"
+
+x-hardening: &hardening
+  restart: unless-stopped   # survive host reboot / crash, but respect `compose stop`
+  security_opt:
+    - no-new-privileges:true
+  logging: *logging
+
+services:
+  # -------------------------------------------------------------------------
+  # Edge proxy - the only service with a published port.
+  # -------------------------------------------------------------------------
+  proxy:
+    <<: *hardening
+    # Unprivileged variant: runs as uid 101 and listens on 8080, so there is no
+    # root master process and no CAP_NET_BIND_SERVICE. Pin to a digest in prod.
+    image: nginxinc/nginx-unprivileged:1.27-alpine
+    user: "101:101"
+    ports:
+      # Loopback by default so a laptop never publishes the stack to the LAN;
+      # set HTTP_BIND_ADDR=0.0.0.0 (or a host IP) on a real server.
+      - "${HTTP_BIND_ADDR:-127.0.0.1}:${HTTP_PORT:-8080}:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    read_only: true
+    tmpfs:
+      - /tmp:mode=1777,size=64m     # pid file + proxy temp paths
+    cap_drop: [ALL]
+    networks:
+      # Edge only: the proxy has no route to db or cache at all. Docker's
+      # embedded DNS resolves `api` to its address on this shared network.
+      - edge
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      # Checks nginx itself, not the upstream: a healthy proxy must not be
+      # restarted just because the API is sick - it still serves 502/504 JSON.
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/nginx-health || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    stop_grace_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
+          pids: 200
+        reservations:
+          memory: 32M
+
+  # -------------------------------------------------------------------------
+  # Application - no published port, reachable only through the proxy.
+  # -------------------------------------------------------------------------
+  api:
+    <<: *hardening
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Tagged image: `APP_VERSION=<previous> docker compose up -d api` is the
+    # rollback path (RUNBOOK.md).
+    image: smallapi/api:${APP_VERSION:-dev}
+    expose:
+      - "8000"          # documentation only; no host port is published
+    environment:
+      # Credentials come from the git-ignored .env, never from this file.
+      # `:?` aborts `compose up` instead of starting a half-configured service.
+      DATABASE_URL: postgresql://${POSTGRES_USER:?set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?set POSTGRES_DB in .env}
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@cache:6379/0
+      APP_PORT: "8000"
+      APP_ENV: ${APP_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-4}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-30}
+    read_only: true
+    tmpfs:
+      - /tmp:mode=1777,size=64m     # gunicorn worker heartbeat files
+    cap_drop: [ALL]
+    init: true                      # reap zombies if the app shells out
+    networks:
+      - edge        # accepts connections from the proxy
+      - backend     # reaches db and cache
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true               # recreate-safe: follow a restarted database
+      cache:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      # /healthz must answer from the process itself. Keep dependency probing on
+      # a separate /readyz so a slow database cannot loop-restart the API.
+      test: ["CMD", "python", "-c", "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=4).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 30s          # >= gunicorn graceful_timeout, so requests drain
+    deploy:
+      resources:
+        limits:
+          cpus: "1.50"
+          memory: 512M
+          pids: 200
+        reservations:
+          memory: 128M
+
+  # -------------------------------------------------------------------------
+  # Postgres - internal network only, data on a named volume.
+  # -------------------------------------------------------------------------
+  db:
+    <<: *hardening
+    image: postgres:17-alpine       # pin to a digest in production
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    # No `ports:` - 5432 is unreachable from outside the compose network.
+    # Use `docker compose exec db psql` or an SSH tunnel for admin access.
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # survives `down`, unlike the old anonymous volume
+      - ./backups:/backups                # pg_dump target, see RUNBOOK.md
+    cap_drop: [ALL]
+    cap_add:
+      # The entrypoint starts as root, fixes data-dir ownership, then drops to
+      # the `postgres` user. Dropping these four breaks first-run initdb.
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+    shm_size: 256mb                 # default 64m is too small for real queries
+    networks:
+      - backend
+    healthcheck:
+      # $$ escapes compose interpolation: expanded by the container's shell.
+      test: ["CMD-SHELL", "pg_isready -q -h 127.0.0.1 -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    stop_grace_period: 60s          # allow a clean shutdown checkpoint
+    deploy:
+      resources:
+        limits:
+          cpus: "1.50"
+          memory: 1G
+          pids: 200
+        reservations:
+          memory: 256M
+
+  # -------------------------------------------------------------------------
+  # Redis - used as a cache, therefore deliberately not persisted.
+  # -------------------------------------------------------------------------
+  cache:
+    <<: *hardening
+    image: redis:8-alpine           # pin to a digest in production
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+      - --save
+      - ""                          # cache contents are disposable: no RDB
+      - --appendonly
+      - "no"
+      - --maxmemory
+      - ${REDIS_MAXMEMORY:-256mb}
+      - --maxmemory-policy
+      - allkeys-lru                 # evict instead of returning OOM errors
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}   # healthcheck only
+    # No `ports:` - a reachable unauthenticated Redis is remote code execution.
+    cap_drop: [ALL]
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"$${REDIS_PASSWORD}\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    stop_grace_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 320M              # maxmemory + process overhead
+          pids: 100
+        reservations:
+          memory: 64M
+
+networks:
+  # Published segment: proxy <-> api.
+  edge:
+    driver: bridge
+  # Data segment. `internal: true` removes the default gateway, so db and cache
+  # cannot reach (or be reached from) anything off this host.
+  backend:
+    driver: bridge
+    internal: true
+
+volumes:
+  pgdata:

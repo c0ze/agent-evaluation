@@ -1,0 +1,7 @@
+# RESPONSE — three riskiest assumptions
+
+1. **Offline auth stays usable for a full shift (A1/D5).** If tokens die or the server demands fresh auth while the inspector is in a basement, every other offline feature is unreachable. This is the single point of failure before capture even starts. Mitigation: device-bound cached credentials gated by a daily biometric/passcode unlock (D5); validate on real devices in S0 before building anything else.
+
+2. **Conflict policy of "server (supervisor) wins on same-field edit" is acceptable to inspectors and compliance (A8/D4).** If field staff cannot accept losing a locally edited value (even with an audit copy and a toast), the product needs merge UI or offline edit leases — a large scope increase the brief explicitly forbids. Mitigation: put the conflict dialog in front of pilot users in S0 and treat any "I lost my notes" complaint as a gate failure, not a support ticket.
+
+3. **The 24h post-acceptance local purge requirement can be met with a purge receipt (hash list) rather than a local audit replica (A4/D6).** If regulators require on-device audit history after acceptance, purge and retention collide, the data model changes, and mobile storage may never be demonstrably clean. Mitigation: confirm with compliance before M4; the receipt design is a cheap extension point but the underlying deletion is not reversible, so this must be locked before the first real acceptance in the pilot.
