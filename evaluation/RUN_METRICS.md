@@ -15,6 +15,7 @@ for each one is as Arda identified it.
 | Sonnet 5.5 | extra | A | ~01:15 | 01:43:38 | ~28 min | $94 | $79 | **$15** | 13 / 13 | `claude/optimistic-dirac-o4m2z9` in `c0ze/agent-eval-sonnet-5.5` |
 | Fable 5.1 | extra | B | ~01:17 | 02:05:18 | ~49 min | $79 | $26 | **$53** | 13 / 13 | `claude/funny-turing-1qfdj4` in `c0ze/agent-eval-fable-5.1` |
 | Opus 5.5 | high | A | ~01:48 | 02:09:37 | ~21 min | $79 (01:44 reading) | $65 | **$14** | 13 / 13 | `claude/focused-hopper-vexle5` in `c0ze/agent-eval-opus-5.5` |
+| muse (muse-spark-1.3) | max | local (tincan on the Mac) | 02:12:21 | running | | n/a | n/a | not measurable; tokens below | | `muse-run` in `c0ze/agent-eval-muse` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -40,3 +41,21 @@ Durations are as Arda timed them. The push times agree with them.
   starting point. No screenshot was taken right before Opus started.
 - Opus committed after each task, because a stop hook in its session asked
   for commits; the others committed once at the end. The outputs are unaffected.
+
+## muse run (local, through tincan)
+
+muse's cost can't be read from a balance, so its **token usage** is recorded
+instead. It comes from muse's own session logs: every `model_completed`
+event's usage, counted once, including muse's built-in reminder helpers.
+`muse-run-orch/usage.py` in `~/projects/agent-eval-runs` computes it.
+
+- Command: the `muse` tincan preset unchanged (`muse exec --model muse-spark-1.3
+  … --max-model-steps 200 --disable-approval`) plus `--reasoning-effort max`
+  (the default is high, which the earlier muse run used). Confirmed on the
+  running processes.
+- Same protocol as the cloud runs: one fresh, stateless request per task with
+  the same instruction, four at a time (listeners `muse-1` to `muse-4`), no
+  hints and no re-runs. The room is the repository itself, so muse's workspace
+  is the repo. Each task has a 2-hour limit.
+- The orchestrator (Claude Opus 5.5 in Claude Code) writes `RUN_LOG.md` from
+  muse's replies and the timing log, and commits the branch at the end.
