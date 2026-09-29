@@ -1,0 +1,1 @@
+The intended arc moves from Ruth's anxious effort to preserve a disappearing place towards a tentative willingness to inhabit another one. The future recording initially sounds like evidence of cognitive loss; the tram and the new address allow it to suggest belonging as well. The ending leaves the loss intact while giving Ruth something immediate to attend to.
