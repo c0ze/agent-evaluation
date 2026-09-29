@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Relay · Operations</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#incidents-heading">Skip to incidents</a>
+
+  <div class="shell">
+    <!-- Navigation rail -->
+    <nav class="rail" aria-label="Primary">
+      <div class="rail-brand" aria-hidden="true">R</div>
+      <ul class="rail-list">
+        <li>
+          <a class="rail-link" href="#overview" aria-current="page">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 3h6v6H3zM11 3h6v4h-6zM11 9h6v8h-6zM3 11h6v6H3z"/></svg>
+            <span class="rail-label">Overview</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail-link" href="#incidents-heading">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2.5 18 17H2z"/><path d="M10 8v4M10 14.2v.3" class="stroke"/></svg>
+            <span class="rail-label">Incidents</span>
+            <span class="rail-badge" id="rail-open-count" aria-label="open incidents"></span>
+          </a>
+        </li>
+        <li>
+          <a class="rail-link" href="#throughput-heading">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M2 17h16M4 14V9M8 14V5M12 14V8M16 14V3" class="stroke"/></svg>
+            <span class="rail-label">Traffic</span>
+          </a>
+        </li>
+        <li>
+          <span class="rail-link is-disabled" title="Not available in this workspace">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="6" cy="6" r="2.5" class="stroke"/><circle cx="14" cy="14" r="2.5" class="stroke"/><path d="M8 7.5 12 12.5" class="stroke"/></svg>
+            <span class="rail-label">Services<span class="visually-hidden"> (unavailable)</span></span>
+          </span>
+        </li>
+        <li>
+          <span class="rail-link is-disabled" title="Not available in this workspace">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="7" r="3.2" class="stroke"/><path d="M3.5 17c1.2-3 3.6-4.5 6.5-4.5s5.3 1.5 6.5 4.5" class="stroke"/></svg>
+            <span class="rail-label">On-call<span class="visually-hidden"> (unavailable)</span></span>
+          </span>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="frame">
+      <!-- Top status bar -->
+      <header class="statusbar">
+        <div class="statusbar-id">
+          <span class="product">Relay</span>
+          <span class="env" title="Environment">prod · eu-west-1</span>
+        </div>
+        <div class="statusbar-state" id="system-state" role="status">
+          <!-- filled by app.js -->
+        </div>
+        <dl class="statusbar-meta">
+          <div class="meta-item">
+            <dt>UTC</dt>
+            <dd><time id="utc-clock" class="num">--:--:--</time></dd>
+          </div>
+          <div class="meta-item meta-hide-sm">
+            <dt>Refreshed</dt>
+            <dd class="num" id="refreshed">just now</dd>
+          </div>
+          <div class="meta-item">
+            <dt>On call</dt>
+            <dd id="operator-name">You</dd>
+          </div>
+        </dl>
+      </header>
+
+      <main class="main" id="overview" tabindex="-1">
+        <h1 class="visually-hidden">Relay operations overview</h1>
+
+        <!-- Summary metrics -->
+        <section class="panel metrics" aria-labelledby="metrics-heading">
+          <h2 id="metrics-heading" class="visually-hidden">Summary metrics</h2>
+          <ul class="metric-list" id="metric-list">
+            <!-- filled by app.js -->
+          </ul>
+        </section>
+
+        <!-- Throughput -->
+        <section class="panel throughput" aria-labelledby="throughput-heading">
+          <div class="panel-head">
+            <h2 id="throughput-heading" class="panel-title">Throughput · last 24 h</h2>
+            <p class="panel-sub" id="throughput-summary"></p>
+          </div>
+          <figure class="chart" id="chart">
+            <!-- inline SVG rendered by app.js -->
+          </figure>
+          <details class="chart-table">
+            <summary>Show hourly values as a table</summary>
+            <div class="table-scroll">
+              <table class="mini-table" id="throughput-table">
+                <caption class="visually-hidden">Hourly throughput, percent of provisioned capacity</caption>
+              </table>
+            </div>
+          </details>
+        </section>
+
+        <!-- Incidents: table + detail -->
+        <section class="incidents" aria-labelledby="incidents-heading">
+          <div class="panel incident-list">
+            <div class="panel-head">
+              <h2 id="incidents-heading" class="panel-title" tabindex="-1">Incidents</h2>
+              <p class="panel-sub" id="result-count"></p>
+            </div>
+
+            <form class="filters" id="filters" role="search" aria-label="Filter incidents">
+              <div class="field field-search">
+                <label for="f-query">Search</label>
+                <input id="f-query" name="query" type="search" autocomplete="off"
+                       placeholder="ID, title, service, owner" spellcheck="false">
+              </div>
+              <fieldset class="field field-sev">
+                <legend>Severity</legend>
+                <div class="seg" id="f-severity">
+                  <!-- checkboxes filled by app.js -->
+                </div>
+              </fieldset>
+              <div class="field field-status">
+                <label for="f-status">Status</label>
+                <select id="f-status" name="status">
+                  <option value="all">All statuses</option>
+                </select>
+              </div>
+              <button type="button" class="btn btn-quiet" id="f-clear">Clear</button>
+            </form>
+
+            <div class="table-wrap">
+              <table class="inc-table" id="inc-table">
+                <caption class="visually-hidden">Incidents. Select an incident ID to show its details.</caption>
+                <thead>
+                  <tr>
+                    <th scope="col" class="col-sev" aria-sort="none">
+                      <button type="button" class="sort" data-sort="severity">Severity<span class="sort-ind" aria-hidden="true"></span></button>
+                    </th>
+                    <th scope="col" class="col-id">Incident</th>
+                    <th scope="col" class="col-svc">Service</th>
+                    <th scope="col" class="col-age num" aria-sort="none">
+                      <button type="button" class="sort" data-sort="age">Age<span class="sort-ind" aria-hidden="true"></span></button>
+                    </th>
+                    <th scope="col" class="col-owner">Owner</th>
+                    <th scope="col" class="col-status">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="inc-body"></tbody>
+              </table>
+              <div class="empty" id="empty" hidden>
+                <p class="empty-title">No incidents match these filters</p>
+                <p class="empty-body" id="empty-body"></p>
+                <button type="button" class="btn" id="empty-clear">Clear filters</button>
+              </div>
+            </div>
+          </div>
+
+          <aside class="panel detail" id="detail" aria-labelledby="detail-heading">
+            <!-- filled by app.js -->
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="visually-hidden" id="announcer" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

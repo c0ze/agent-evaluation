@@ -1,1 +1,0 @@
-The arc moves from lonely, methodical detachment through uncanny dread as Mara confronts her own future voice, toward quiet acceptance. The future message first reads as a warning to fear, then reframes as a plea to let memory stay physical and perishable. It ends in tender resignation, with archiving recast as an act of love rather than rescue.
