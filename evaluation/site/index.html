@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent evaluation</title><link rel="stylesheet" href="style.css"></head>
+<body><header class="top"><a class="brand" href="index.html">Agent evaluation</a>
+<nav aria-label="Tasks"><a href="tasks/01-feature-building.html" title="Feature building">01</a><a href="tasks/02-bug-fixing.html" title="Bug fixing">02</a><a href="tasks/03-infra-management.html" title="Infra management">03</a><a href="tasks/04-project-maintenance.html" title="Project maintenance">04</a><a href="tasks/05-technical-writing.html" title="Technical writing">05</a><a href="tasks/06-product-planning.html" title="Product planning">06</a><a href="tasks/07-creative-writing.html" title="Creative writing">07</a><a href="tasks/08-social-media.html" title="Social media">08</a><a href="tasks/09-incident-analysis.html" title="Incident analysis">09</a><a href="tasks/10-general-operations.html" title="General operations">10</a><a href="tasks/11-frontend-operations.html" title="Frontend operations">11</a><a href="tasks/12-frontend-editorial.html" title="Frontend editorial">12</a><a href="tasks/13-frontend-playful.html" title="Frontend playful">13</a></nav></header>
+<main><section class="hero"><h1>Thirteen tasks, 4 models</h1>
+    <p class="lede">Each model got the same thirteen briefs as independent tasks with a fresh context. Every task is scored out of 10.</p></section>
+    <section class="card prose report"><h2>Results</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Sonnet 5.5</th>
+<th>Fable 5.1</th>
+<th>Opus 5.5</th>
+<th>mimo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Total (of 130)</strong></td>
+<td><strong>123.25</strong></td>
+<td>118.5</td>
+<td>118.5</td>
+<td>86.25</td>
+</tr>
+<tr>
+<td>Code (01–04)</td>
+<td>9.62</td>
+<td>9.62</td>
+<td>9.38</td>
+<td>7.12</td>
+</tr>
+<tr>
+<td>Writing (05–08)</td>
+<td><strong>9.38</strong></td>
+<td>8.75</td>
+<td>9.00</td>
+<td>6.62</td>
+</tr>
+<tr>
+<td>Operations (09–10)</td>
+<td><strong>9.75</strong></td>
+<td>9.25</td>
+<td>9.00</td>
+<td>6.75</td>
+</tr>
+<tr>
+<td>Frontend (11–13)</td>
+<td><strong>9.25</strong></td>
+<td>8.83</td>
+<td>9.00</td>
+<td>5.92</td>
+</tr>
+<tr>
+<td>Effort</td>
+<td>extra</td>
+<td>extra</td>
+<td>high</td>
+<td>default</td>
+</tr>
+<tr>
+<td>Time</td>
+<td>~28 min</td>
+<td>~49 min</td>
+<td>~21 min</td>
+<td>not recorded</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>$15</td>
+<td>$53</td>
+<td>$14</td>
+<td>not recorded</td>
+</tr>
+</tbody></table>
+<h3>What was observed</h3>
+<ul>
+<li><strong>All four completed all 13 tasks</strong> and passed the hidden 11-test contract suite for tasks 01–02. Every frontend page loaded with no console errors, no network requests and no horizontal scroll at 390 px.</li>
+<li><strong>The three Claude models are close.</strong> Sonnet 5.5 is ahead by 4.75 points over 13 tasks, about 0.4 per task. It placed first or tied for first on 9 of 13 tasks.</li>
+<li><strong>mimo is clearly behind, with real defects rather than weaker polish:</strong><ul>
+<li>Its task 04 package doesn&#39;t build, so every CI job would fail.</li>
+<li>Its task 01 cycle check crashes with <code>RecursionError</code> on large inputs.</li>
+<li>Its task 05 and 08 copy invents product facts.</li>
+<li>Its task 11 chart is visibly broken.</li>
+<li>Its task 13 buttons say &quot;Watered&quot; for every action.</li>
+</ul>
+</li>
+<li><strong>Fable 5.1&#39;s main weakness is small factual embellishment in writing.</strong> On tasks 05 and 08 it stated things the source didn&#39;t say. It had the strongest test suite on task 01 (10/10) and the most thorough diagnoses.</li>
+<li><strong>Opus 5.5 was best on two of the three frontend tasks</strong> (12 editorial, 13 playful) and on release work (04, 10/10). It was weakest on task 11, whose 390 px table layout was cramped. It ran on <em>high</em> effort and was the fastest and cheapest.</li>
+<li><strong>Cost differs far more than quality.</strong> Fable cost about 3.5–3.8× as much as Sonnet or Opus and took 1.75–2.3× as long, for a lower total.</li>
+</ul>
+<h3>What is inferred</h3>
+<ul>
+<li>The gap between the three Claude models is within what one grader per task can distinguish. A second grading pass could reorder them. The gap to mimo would not close.</li>
+<li>Opus 5.5 on extra effort might score higher. This run can&#39;t say.</li>
+</ul>
+<h2>Recommendations by work type</h2>
+<ul>
+<li><strong>Writing, planning, incident analysis and scheduling:</strong> Sonnet 5.5. It had the highest score and was the most disciplined about facts and uncertainty. Its cost per point is about the same as Opus&#39;s.</li>
+<li><strong>Code:</strong> any of the three. Fable 5.1 writes the strongest tests. Opus 5.5 is fastest and was best on release and packaging work.</li>
+<li><strong>Frontend with a strong visual direction:</strong> Opus 5.5 or Sonnet 5.5. Opus had the most coherent editorial and playful pages; Sonnet had the most complete operations dashboard.</li>
+<li><strong>Cost-sensitive batch work:</strong> Opus 5.5 or Sonnet 5.5, about $0.12 per point each (Opus $14 / 118.5, Sonnet $15 / 123.25; Fable about $0.45). Fable 5.1&#39;s extra cost didn&#39;t show up as extra quality here.</li>
+<li><strong>mimo:</strong> not for unsupervised work on these task types. Its output needs review for invented facts and untested failure paths.</li>
+</ul>
+<h2>Caveats</h2>
+<ul>
+<li><strong>One run per model and one blind grader per task.</strong> The graders were Claude Opus 5.5 subagents, and Opus 5.5 is also a contestant. Blinding (random letters per task, names and paths removed) reduces that bias but doesn&#39;t remove it. Opus did not come out on top.</li>
+<li><strong>Effort levels differ:</strong> Sonnet and Fable ran on extra, Opus on high.</li>
+<li><strong>mimo ran a week earlier under a different setup:</strong> tincan on cachyos, with no timing or cost recorded.</li>
+<li><strong>Not checked:</strong> the ruff lint results in task 04, and nginx syntax in task 03 (no nginx binary was available). No containers were started.</li>
+<li><strong>muse</strong> is being re-run at max reasoning and is not included yet.</li>
+</ul>
+</section>
+    <section class="models"><article class="card model">
+      <div class="rank">1</div>
+      <h3>Sonnet 5.5</h3><p class="muted mono">claude-sonnet-5-5</p>
+      <p class="big">123.25<span class="muted"> / 130</span></p>
+      <p class="muted">average 9.48 per task</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>extra</dd>
+        <dt>Time</dt><dd>~28 min</dd>
+        <dt>Cost</dt><dd>$15</dd>
+        
+        <dt>Where</dt><dd>Claude Code cloud, account A</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.94" class="chip">Code 9.63</span><span style="--h:0.90" class="chip">Writing 9.38</span><span style="--h:0.96" class="chip">Operations 9.75</span><span style="--h:0.88" class="chip">Frontend 9.25</span></div>
+      <p class="note">One subagent per task, four at a time.</p>
+    </article><article class="card model">
+      <div class="rank">2=</div>
+      <h3>Fable 5.1</h3><p class="muted mono">claude-fable-5-1</p>
+      <p class="big">118.5<span class="muted"> / 130</span></p>
+      <p class="muted">average 9.12 per task</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>extra</dd>
+        <dt>Time</dt><dd>~49 min</dd>
+        <dt>Cost</dt><dd>$53</dd>
+        
+        <dt>Where</dt><dd>Claude Code cloud, account B</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.94" class="chip">Code 9.63</span><span style="--h:0.79" class="chip">Writing 8.75</span><span style="--h:0.88" class="chip">Operations 9.25</span><span style="--h:0.81" class="chip">Frontend 8.83</span></div>
+      <p class="note">One subagent per task, four at a time.</p>
+    </article><article class="card model">
+      <div class="rank">2=</div>
+      <h3>Opus 5.5</h3><p class="muted mono">claude-opus-5-5</p>
+      <p class="big">118.5<span class="muted"> / 130</span></p>
+      <p class="muted">average 9.12 per task</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>high</dd>
+        <dt>Time</dt><dd>~21 min</dd>
+        <dt>Cost</dt><dd>$14</dd>
+        
+        <dt>Where</dt><dd>Claude Code cloud, account A</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.90" class="chip">Code 9.38</span><span style="--h:0.83" class="chip">Writing 9.00</span><span style="--h:0.83" class="chip">Operations 9.00</span><span style="--h:0.83" class="chip">Frontend 9.00</span></div>
+      <p class="note">One subagent per task, four at a time. Ran on high, not extra: not like-for-like.</p>
+    </article><article class="card model">
+      <div class="rank">4</div>
+      <h3>mimo</h3><p class="muted mono">xiaomi/mimo-v2.6-pro</p>
+      <p class="big">86.25<span class="muted"> / 130</span></p>
+      <p class="muted">average 6.63 per task</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>default</dd>
+        <dt>Time</dt><dd>not recorded</dd>
+        <dt>Cost</dt><dd>not recorded</dd>
+        
+        <dt>Where</dt><dd>tincan on cachyos, 2026-09-22/23</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.52" class="chip">Code 7.13</span><span style="--h:0.44" class="chip">Writing 6.63</span><span style="--h:0.46" class="chip">Operations 6.75</span><span style="--h:0.32" class="chip">Frontend 5.92</span></div>
+      <p class="note">Earlier run, one request per task (mimo run --pure). Timing and cost were not recorded.</p>
+    </article></section>
+    <section class="card"><h2>Scores by task</h2><div class="scroll"><table class="grid"><tr><th scope="col">Task</th><th scope="col">Sonnet 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">mimo</th></tr><tr><th scope="row"><a href="tasks/01-feature-building.html">01 Feature building</a></th><td class="num heat" style="--h:0.92">9.5</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.50">7</td></tr><tr><th scope="row"><a href="tasks/02-bug-fixing.html">02 Bug fixing</a></th><td class="num heat best" style="--h:1.00">10</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.92">9.5</td></tr><tr><th scope="row"><a href="tasks/03-infra-management.html">03 Infra management</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.50">7</td></tr><tr><th scope="row"><a href="tasks/04-project-maintenance.html">04 Project maintenance</a></th><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.17">5</td></tr><tr><th scope="row"><a href="tasks/05-technical-writing.html">05 Technical writing</a></th><td class="num heat best" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat best" style="--h:0.83">9</td><td class="num heat" style="--h:0.33">6</td></tr><tr><th scope="row"><a href="tasks/06-product-planning.html">06 Product planning</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.50">7</td></tr><tr><th scope="row"><a href="tasks/07-creative-writing.html">07 Creative writing</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.42">6.5</td></tr><tr><th scope="row"><a href="tasks/08-social-media.html">08 Social media</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.50">7</td></tr><tr><th scope="row"><a href="tasks/09-incident-analysis.html">09 Incident analysis</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.33">6</td></tr><tr><th scope="row"><a href="tasks/10-general-operations.html">10 General operations</a></th><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.58">7.5</td></tr><tr><th scope="row"><a href="tasks/11-frontend-operations.html">11 Frontend operations</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.29">5.75</td></tr><tr><th scope="row"><a href="tasks/12-frontend-editorial.html">12 Frontend editorial</a></th><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.46">6.75</td></tr><tr><th scope="row"><a href="tasks/13-frontend-playful.html">13 Frontend playful</a></th><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat best" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.21">5.25</td></tr><tr class="sub"><th scope="row">Code average</th><td class="num heat" style="--h:0.94">9.63</td><td class="num heat" style="--h:0.94">9.63</td><td class="num heat" style="--h:0.90">9.38</td><td class="num heat" style="--h:0.52">7.13</td></tr><tr class="sub"><th scope="row">Writing average</th><td class="num heat" style="--h:0.90">9.38</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.83">9.00</td><td class="num heat" style="--h:0.44">6.63</td></tr><tr class="sub"><th scope="row">Operations average</th><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.83">9.00</td><td class="num heat" style="--h:0.46">6.75</td></tr><tr class="sub"><th scope="row">Frontend average</th><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.81">8.83</td><td class="num heat" style="--h:0.83">9.00</td><td class="num heat" style="--h:0.32">5.92</td></tr><tr class="total"><th scope="row">Total</th><td class="num">123.25</td><td class="num">118.5</td><td class="num">118.5</td><td class="num">86.25</td></tr></table></div>
+    <p class="muted">Highlighted cell: the best score on that task (ties all highlighted).</p></section>
+    <section class="card prose"><h2>How this was scored</h2>
+    <ul>
+      <li><strong>Objective checks first.</strong> A hidden 11-test contract suite for tasks 01–02; each model's own tests; each model's tests run against every other model's code and against the original files; word, character and hashtag limits; and for tasks 11–13, a headless browser at 1440 px and 390 px checking horizontal scroll, console errors and network requests.</li>
+      <li><strong>Blind grading.</strong> For each task, one grader saw the four submissions as A–D under a different random mapping per task, with model names and paths removed. It scored against <code>RUBRIC.md</code>, checking claims itself: rerunning tests, probing the code, counting limits, and clicking through the pages with Playwright.</li>
+      <li><strong>Who graded.</strong> The graders were Claude Opus 5.5 subagents. Opus 5.5 is also one of the models graded; blinding reduces but does not remove that bias.</li>
+      <li><strong>Not like-for-like.</strong> Sonnet 5.5 and Fable 5.1 ran on extra effort, Opus 5.5 on high, mimo on its default. Scores are comparative within each task and anchored to the brief.</li>
+    </ul><p class="muted">13 of 13 tasks graded.</p></section></main><script src="app.js"></script></body></html>

@@ -1,0 +1,3127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>03 Infra management · Agent evaluation</title><link rel="stylesheet" href="../style.css"></head>
+<body><header class="top"><a class="brand" href="../index.html">Agent evaluation</a>
+<nav aria-label="Tasks"><a href="../tasks/01-feature-building.html" title="Feature building">01</a><a href="../tasks/02-bug-fixing.html" title="Bug fixing">02</a><a href="../tasks/03-infra-management.html" title="Infra management">03</a><a href="../tasks/04-project-maintenance.html" title="Project maintenance">04</a><a href="../tasks/05-technical-writing.html" title="Technical writing">05</a><a href="../tasks/06-product-planning.html" title="Product planning">06</a><a href="../tasks/07-creative-writing.html" title="Creative writing">07</a><a href="../tasks/08-social-media.html" title="Social media">08</a><a href="../tasks/09-incident-analysis.html" title="Incident analysis">09</a><a href="../tasks/10-general-operations.html" title="General operations">10</a><a href="../tasks/11-frontend-operations.html" title="Frontend operations">11</a><a href="../tasks/12-frontend-editorial.html" title="Frontend editorial">12</a><a href="../tasks/13-frontend-playful.html" title="Frontend playful">13</a></nav></header>
+<main><section class="hero"><p class="muted">Task 03</p><h1>Infra management</h1></section>
+    <details class="card brief" open><summary>The brief</summary><div class="prose"><h1>Task 03 — Infrastructure management: harden a small deployment</h1>
+<p>Review and improve the supplied <code>Dockerfile</code>, <code>compose.yaml</code>, and <code>nginx.conf</code>
+for a small Python API behind nginx with Postgres and Redis. Do not add
+Kubernetes or unrelated services.</p>
+<p>Goals:</p>
+<ul>
+<li>No embedded credentials or public database/cache ports.</li>
+<li>The API runs as a non-root user with a production server and reproducible
+dependency installation.</li>
+<li>Add meaningful health checks and startup dependencies based on health.</li>
+<li>Persist Postgres data, make internal service communication explicit, and add
+sensible restart/logging/resource settings without pretending Compose is a
+full orchestrator.</li>
+<li>Proxy headers and timeouts should be appropriate for a JSON API.</li>
+<li>Keep local operation straightforward through <code>.env.example</code>.</li>
+</ul>
+<p>Deliver corrected configuration and a concise <code>RUNBOOK.md</code> covering startup,
+health verification, backup/restore, secret handling, and rollback. Write
+<code>RESPONSE.md</code> listing the highest-risk original problems and verification you
+performed. Work only in this directory; do not actually start containers.</p>
+</div>
+      <p class="muted">Inputs given: <a href="../../../_templates/03-infra-management/.env.example" target="_blank" rel="noopener" class="mono">.env.example</a>, <a href="../../../_templates/03-infra-management/compose.yaml" target="_blank" rel="noopener" class="mono">compose.yaml</a>, <a href="../../../_templates/03-infra-management/Dockerfile" target="_blank" rel="noopener" class="mono">Dockerfile</a>, <a href="../../../_templates/03-infra-management/nginx.conf" target="_blank" rel="noopener" class="mono">nginx.conf</a>, <a href="../../../_templates/03-infra-management/requirements.txt" target="_blank" rel="noopener" class="mono">requirements.txt</a></p></details>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">mimo</th></tr>
+    <tr><th scope="row">security/correctness <span class="muted">(4)</span></th><td class="num heat" style="--h:0.79">3.5</td><td class="num heat" style="--h:0.79">3.5</td><td class="num heat" style="--h:0.58">3</td><td class="num heat" style="--h:0.79">3.5</td></tr><tr><th scope="row">operability <span class="muted">(3)</span></th><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:0.44">2</td></tr><tr><th scope="row">runbook and judgment <span class="muted">(3)</span></th><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.17">1.5</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">9.5</td><td class="num">9</td><td class="num">8.5</td><td class="num">7</td></tr></table></div>
+    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = Fable 5.1, B = Sonnet 5.5, C = Opus 5.5, D = mimo.</p><div class="prose"><p>B and A are close (9.5 vs 9.0) and both are strong. A&#39;s added app.py makes the stack consistent with itself and its health check is deeper, but its runbook&#39;s nginx reload after a config rollback can serve a stale bind mount, and RESPONSE repeats the outdated FLASK_ENV debugger claim. B handles both correctly. None of the four ran nginx -t or docker build, and all four say so. C and D both ship change-me placeholders that pass the fail-fast guard. D&#39;s hardening is the broadest, but it creates a real conflict with its own backup and restore runbook. I validated all four compose files with <code>docker compose config</code> (Compose v5.1.4) and started no containers.</p>
+</div></details></section>
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">9.5</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">8.5</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">7</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+        <h3>Evaluation <span class="pill big">9.5 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
+        <p>B is a clean, correct hardening. Secrets fail fast, the proxy is the only published port and binds to loopback by default, the backend network is internal, and all four services have health checks with health-gated startup. The nginx proxy itself runs read_only with reduced capabilities, and X-Forwarded-For is overwritten to prevent spoofing. The runbook is the most accurate of the four: it generates passwords, rehearses a restore, restores with --single-transaction, and correctly says a single-file nginx bind mount needs a restart rather than a reload. RESPONSE is precise, including that Flask 3 ignores FLASK_ENV, and is honest about what was not run.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>The only published port is <code>${PROXY_BIND:-127.0.0.1}:${PROXY_PORT:-8080}:80</code>, a safe default that is documented for production</li><li>The proxy runs read_only with tmpfs for /tmp and /var/cache/nginx, cap_drop ALL plus the minimal add-backs, and no-new-privileges; pid and logs point to writable or stdout paths</li><li>nginx overwrites XFF, re-resolves the api dynamically, sets proxy_next_upstream off, returns a JSON 503 and uses 35s read / 5s connect timeouts aligned with gunicorn&#39;s 30s</li><li>The runbook&#39;s startup sed generates hex secrets; backup uses umask 077 and a pg_restore --list sanity check; there is a restore rehearsal into a scratch database, and the bind-mount restart caveat is correct</li><li>RESPONSE is accurate: it notes that Flask 3 ignores FLASK_ENV, and lists unverified items such as the image tags and whether the proxy works under read_only/cap_drop</li></ul></div><div><h4>Weaknesses</h4><ul><li>No application module and no /healthz are provided, so the stack cannot become healthy as delivered (clearly documented as an assumption)</li><li>GUNICORN_CMD_ARGS is a single ENV string in the Dockerfile, so changing one setting means restating all of them; workers use the default sync class</li><li>The Redis password is visible in the command array; no-new-privileges and cap_drop are not applied to db or cache</li><li>The proxy&#39;s read_only/cap_drop configuration has not been exercised (the submission says so)</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>B/compose.yaml:18: loopback-bound published port; B/compose.yaml:33-39: proxy read_only, tmpfs, cap_drop/cap_add</li><li>B/nginx.conf:2-3, 15: pid in /tmp and logs to /dev/stdout and /dev/stderr, compatible with a read-only root filesystem</li><li>B/nginx.conf:45: <code>proxy_set_header X-Forwarded-For $remote_addr;</code>; B/nginx.conf:55: <code>proxy_next_upstream off</code></li><li>B/compose.yaml:102: pg_isready -h 127.0.0.1 forces TCP so the check cannot pass during init</li><li>B/RUNBOOK.md:25-26: password generation; B/RUNBOOK.md:69-76: restore rehearsal; B/RUNBOOK.md:133-136: restart required for a single-file bind mount</li><li>B/RESPONSE.md:13-15: correctly notes Flask 3 ignores FLASK_ENV</li><li><code>docker compose config -q</code> passes with test values and fails with the empty .env.example</li></ul></details>
+        <h4>Objective checks</h4>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="0-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="0-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="0-2" aria-selected="false">TASK.md</button><button role="tab" data-file="0-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="0-4" aria-selected="false">.env.example</button><button role="tab" data-file="0-5" aria-selected="false">.gitignore</button><button role="tab" data-file="0-6" aria-selected="false">compose.yaml</button><button role="tab" data-file="0-7" aria-selected="false">Dockerfile</button><button role="tab" data-file="0-8" aria-selected="false">nginx.conf</button><button role="tab" data-file="0-9" aria-selected="false">requirements.txt</button></div>
+        <div class="file" id="file-0-0" ><p class="path mono">sonnet-5.5/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Response: hardening the API / nginx / Postgres / Redis deployment</h1>
+<h2>Highest-risk original problems (most severe first)</h2>
+<ol>
+<li><strong>Database and cache exposed to the network.</strong> <code>5432:5432</code> and <code>6379:6379</code> were published
+on all host interfaces. Redis had no password; Postgres had <code>admin</code> / <code>password</code>.
+Anyone who could reach the host could read or destroy all data.</li>
+<li><strong>Hardcoded credentials, and a config that contradicted itself.</strong> <code>admin:password</code> was
+written into <code>compose.yaml</code> (twice). <code>.env.example</code> said <code>app</code> / <code>change-me</code> and was never
+referenced, so the &quot;configuration&quot; file did nothing.</li>
+<li><strong>Secrets could be baked into the image.</strong> <code>COPY . .</code> with no <code>.dockerignore</code> copies any
+local <code>.env</code>, <code>.git</code> history and dumps into every layer.</li>
+<li><strong>Development server in production, as root.</strong> <code>flask run --host=0.0.0.0</code> (Werkzeug dev
+server) with <code>FLASK_ENV=development</code>, running as root. Flask 3 ignores <code>FLASK_ENV</code>, but
+the dev server is still not a production server.</li>
+<li><strong>App port 5000 published directly</strong>, bypassing nginx and any proxy limits or headers.</li>
+<li><strong>Non-reproducible build.</strong> <code>pip install flask psycopg2 redis</code> ignored the pinned
+<code>requirements.txt</code> (unpinned versions, and source <code>psycopg2</code> instead of
+<code>psycopg2-binary</code>, which needs a compiler). Base and service images were <code>python:3.13</code>,
+<code>nginx:latest</code>, <code>postgres:latest</code>, <code>redis:latest</code>; a <code>pull</code> could jump Postgres majors and
+corrupt a data directory.</li>
+<li><strong>No data persistence.</strong> No Postgres volume, so <code>down</code> or a container recreate lost the
+database.</li>
+<li><strong>Start order was a lie.</strong> Plain <code>depends_on</code> only waits for container start, not
+readiness. No health checks, restart policies, log rotation or resource limits anywhere.</li>
+<li><strong>nginx proxied with no headers or timeouts.</strong> No <code>Host</code> / <code>X-Forwarded-*</code> (the app sees
+the proxy as the client), default 60 s timeouts, no body limit, and no JSON error
+response. Backend DNS was resolved once at startup, so a recreated <code>api</code> gave permanent
+502s until nginx restarted.</li>
+</ol>
+<h2>What changed</h2>
+<ul>
+<li><strong>Dockerfile:</strong> pinned slim base, deps from <code>requirements.txt</code> in a cached layer, fixed
+UID 10001, gunicorn (<code>WEB_CONCURRENCY</code>, timeouts, worker recycling, logs to stdout) as PID 1,
+code root-owned, no dev flags. <code>.dockerignore</code> added.</li>
+<li><strong>compose.yaml:</strong> no secrets in the file (<code>${VAR:?}</code> fails fast when unset); only nginx is
+published, on loopback by default; <code>edge</code> network (proxy, api) plus an <code>internal: true</code>
+<code>backend</code> network (api, db, cache) with no outside route; named <code>pgdata</code> volume; health
+checks on all four services with <code>depends_on: service_healthy</code>; <code>restart: unless-stopped</code>;
+rotated json-file logs; CPU/memory limits; <code>read_only</code>, <code>cap_drop: ALL</code> and
+<code>no-new-privileges</code> on api and proxy; Redis password, memory cap and LRU; pinned image
+tags; release tags via <code>API_TAG</code> for rollback.</li>
+<li><strong>nginx.conf:</strong> forwarded headers (<code>X-Forwarded-For</code> is overwritten, not appended, so it
+cannot be spoofed), request ID, 5 s connect / 35 s read timeouts (just above gunicorn&#39;s 30 s),
+1 MB body cap, client timeouts, runtime DNS re-resolution, JSON 503 body on upstream
+failure, quiet <code>/healthz</code> logging, <code>server_tokens off</code>.</li>
+<li><strong><code>.env.example</code>:</strong> correct variables, empty passwords (Compose refuses to start until
+they are set), one-line generation in the runbook. <strong><code>.gitignore</code></strong> added.</li>
+<li><strong>RUNBOOK.md:</strong> startup, health verification, backup/restore (with a rehearsal), secret
+handling and rotation, rollback.</li>
+</ul>
+<h2>Verification performed (nothing was started, no network used)</h2>
+<ul>
+<li><code>docker compose config</code> (Compose v5.1.1) passes with generated passwords, and <strong>fails with
+the intended message</strong> with no environment and with <code>.env.example</code> as shipped (empty
+passwords).</li>
+<li>Inspected the resolved model: only <code>proxy</code> has a published port (<code>127.0.0.1:8080-&gt;80</code>);
+<code>db</code>, <code>cache</code> and <code>api</code> publish none; <code>backend</code> is <code>internal: true</code>; <code>pgdata</code> volume exists;
+every service has a restart policy, log limits, memory/CPU limits and a health check;
+the dependency chain is <code>db</code>/<code>cache</code> healthy, then <code>api</code>, then <code>proxy</code>.</li>
+<li>Ran the API health-check one-liner against a throwaway local stub server: exit 0 on 200,
+exit 1 on 503, on 404 and when nothing is listening.</li>
+<li>Structural lint of <code>nginx.conf</code> (balanced braces, terminated directives) and PyYAML parse of
+<code>compose.yaml</code>.</li>
+</ul>
+<h2>Not verified, and assumptions</h2>
+<ul>
+<li><strong>Not built, not run.</strong> <code>nginx -t</code>, <code>hadolint</code> and a <code>docker build</code> were unavailable or
+needed the network. <code>nginx.conf</code>, the Dockerfile and the read-only / <code>cap_drop</code> settings
+for nginx have not been exercised. If the proxy fails to start under <code>read_only</code> or the
+reduced capabilities, relax those two settings first.</li>
+<li><strong>The app source is not in this directory.</strong> I assumed <code>app:app</code> (overridable through
+<code>APP_MODULE</code>) and a <code>GET /healthz</code> endpoint. If <code>/healthz</code> does not exist, <code>api</code> will never
+be healthy and <code>proxy</code> will not start; add the endpoint (ideally checking DB and Redis).</li>
+<li><strong>Image tags</strong> (<code>python:3.13-slim-bookworm</code>, <code>nginx:1.28-alpine</code>, <code>postgres:17-alpine</code>,
+<code>redis:7.4-alpine</code>) were chosen from memory and could not be checked against a registry.
+For real reproducibility pin them by digest.</li>
+<li><strong>Dependencies are pinned only at the top level</strong> in <code>requirements.txt</code>; transitive packages
+and hashes are not locked (no network to resolve them). Generate a fully pinned, hashed
+file with <code>pip-compile --generate-hashes</code> and install with <code>--require-hashes</code>.</li>
+<li>Redis is assumed to be a cache. If it holds sessions or queues, change the eviction policy
+and add persistence (noted in <code>compose.yaml</code>).</li>
+<li>The app connects as the Postgres superuser (<code>POSTGRES_USER</code>). A least-privilege role would
+be better but needs knowledge of the app&#39;s migrations.</li>
+<li>TLS, monitoring/alerting and rate limiting are not included; Compose does not restart
+unhealthy containers, so an external watcher is needed (see RUNBOOK).</li>
+</ul>
+</div></div><div class="file" id="file-0-1" hidden><p class="path mono">sonnet-5.5/03-infra-management/RUNBOOK.md</p><div class="prose"><h1>Runbook: API + nginx + Postgres + Redis (single-host Compose)</h1>
+<p>Run every command from this directory. Requires Docker Engine with Compose v2.</p>
+<h2>Assumptions</h2>
+<ul>
+<li>The app source sits next to the <code>Dockerfile</code> (it is not part of this directory&#39;s
+supplied files). It must expose a WSGI callable <code>app</code> in <code>app.py</code>; otherwise set
+<code>APP_MODULE=module:callable</code> in <code>.env</code>.</li>
+<li>The app serves <code>GET /healthz</code> returning 2xx. Ideally the handler runs <code>SELECT 1</code> and a
+Redis <code>PING</code> with short timeouts. <strong>Without this endpoint <code>api</code> never turns healthy and
+<code>proxy</code> never starts.</strong></li>
+<li>Redis is a disposable cache (no persistence, 128 MB, LRU eviction).</li>
+<li>Compose here means one host: a crashed container is restarted, but there is no failover,
+no rescheduling, and a recreate of <code>api</code> or <code>proxy</code> is a few seconds of downtime.
+An <strong>unhealthy</strong> container is <em>not</em> restarted by Docker, so something must watch
+<code>docker compose ps</code> (or the <code>/healthz</code> URL) and alert.</li>
+<li>TLS is not included. Terminate it in front of <code>proxy</code> (cloud LB, Caddy, etc.) before
+exposing this to the internet.</li>
+</ul>
+<h2>Startup</h2>
+<pre><code class="language-sh">cp .env.example .env
+sed -i.bak &quot;s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=$(openssl rand -hex 24)|; \
+            s|^REDIS_PASSWORD=.*|REDIS_PASSWORD=$(openssl rand -hex 24)|&quot; .env &amp;&amp; rm .env.bak
+chmod 600 .env
+
+docker compose build
+docker compose up -d
+</code></pre>
+<p>Order is enforced by health: <code>db</code> and <code>cache</code> healthy, then <code>api</code>, then <code>proxy</code>.
+Compose refuses to start with a clear message if either password is empty.
+Default URL is <code>http://127.0.0.1:8080</code> (loopback only). For a real host set
+<code>PROXY_BIND=0.0.0.0</code> and <code>PROXY_PORT=80</code> in <code>.env</code>.</p>
+<h2>Health verification</h2>
+<pre><code class="language-sh">docker compose ps                                   # every service: (healthy)
+curl -fsS -i http://127.0.0.1:8080/healthz          # 200 through nginx to the app
+docker compose exec db pg_isready -h 127.0.0.1      # accepting connections
+docker compose exec cache redis-cli ping            # PONG
+docker compose logs --tail=50 proxy api             # access + error logs (stdout/stderr)
+</code></pre>
+<p>Confirm nothing but nginx is reachable from the host:</p>
+<pre><code class="language-sh">docker compose ps --format &#39;{{.Service}}\t{{.Ports}}&#39;   # only proxy shows a host port
+ss -ltn | grep -E &#39;:(5432|6379|8000)\b&#39; || echo &quot;no db/cache/api ports on host&quot;
+</code></pre>
+<h2>Backup and restore (Postgres)</h2>
+<p>Backup (custom format, compressed, restorable selectively). Run before every deploy and on
+a schedule (cron or a systemd timer wrapping the snippet below), and copy dumps <strong>off this
+host</strong>.</p>
+<pre><code class="language-sh">mkdir -p backups
+f=backups/app-$(date +%Y%m%d-%H%M%S).dump
+( umask 077; docker compose exec -T db sh -c \
+  &#39;pg_dump -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; --format=custom&#39; &gt; &quot;$f&quot; )
+test -s &quot;$f&quot; &amp;&amp; docker compose exec -T db pg_restore --list &lt; &quot;$f&quot; | head -5   # sanity check
+</code></pre>
+<p>Rehearse a restore into a scratch database (do this regularly; an untested backup is a hope):</p>
+<pre><code class="language-sh">docker compose exec db sh -c &#39;createdb -U &quot;$POSTGRES_USER&quot; restore_test&#39;
+docker compose exec -T db sh -c &#39;pg_restore -U &quot;$POSTGRES_USER&quot; -d restore_test --no-owner&#39; &lt; &quot;$f&quot;
+docker compose exec db sh -c &#39;psql -U &quot;$POSTGRES_USER&quot; -d restore_test -c &quot;\dt&quot;&#39;
+docker compose exec db sh -c &#39;dropdb -U &quot;$POSTGRES_USER&quot; restore_test&#39;
+</code></pre>
+<p>Restore over the live database (destructive; replaces current data with the dump):</p>
+<pre><code class="language-sh">docker compose stop proxy api
+docker compose exec -T db sh -c \
+  &#39;pg_restore -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; --single-transaction --clean --if-exists --no-owner&#39; \
+  &lt; backups/app-YYYYMMDD-HHMMSS.dump
+docker compose up -d
+</code></pre>
+<p><code>--single-transaction</code> makes it all-or-nothing. Data lives in the named volume
+<code>apistack_pgdata</code>. <strong><code>docker compose down -v</code> deletes it</strong>; never use <code>-v</code> on a real host.
+Redis is not backed up by design.</p>
+<h2>Secret handling</h2>
+<ul>
+<li>Secrets live only in <code>.env</code> (mode 600, git-ignored, docker-ignored so it cannot be copied
+into an image). <code>.env.example</code> holds names and empty values, never real secrets.</li>
+<li>Generate with <code>openssl rand -hex 24</code> (hex keeps them URL-safe for <code>DATABASE_URL</code> and
+<code>REDIS_URL</code>).</li>
+<li><code>docker compose config</code> and <code>docker inspect</code> print resolved secrets. Do not paste their
+output into tickets or chat, and treat Docker socket access as access to the secrets.</li>
+<li>Rotate Redis: edit <code>REDIS_PASSWORD</code>, then <code>docker compose up -d</code> (cache restarts empty,
+which is fine for a cache).</li>
+<li>Rotate Postgres: the password is applied only when the volume is first initialised, so
+editing <code>.env</code> alone breaks <code>api</code>. Run
+<code>docker compose exec db sh -c &#39;psql -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot;&#39;</code>, use
+<code>\password</code>, then update <code>.env</code> and <code>docker compose up -d</code>.</li>
+<li>If a secret was ever committed, pasted, or logged, rotate it immediately.</li>
+<li>Later step up: Docker/Compose <code>secrets:</code> with <code>*_FILE</code>, or an external secret manager.</li>
+</ul>
+<h2>Rollback</h2>
+<p>Application image (tagged per release through <code>API_TAG</code>):</p>
+<pre><code class="language-sh"># deploy: take a backup first, note the current tag, then
+sed -i.bak &#39;s/^API_TAG=.*/API_TAG=2026-09-29a/&#39; .env &amp;&amp; rm .env.bak
+docker compose build api &amp;&amp; docker compose up -d --no-deps api
+
+# roll back: set API_TAG back to the previous tag (kept locally as an image)
+sed -i.bak &#39;s/^API_TAG=.*/API_TAG=&lt;previous-tag&gt;/&#39; .env &amp;&amp; rm .env.bak
+docker compose up -d --no-deps --no-build api    # fails loudly if that tag is gone
+</code></pre>
+<p>Do not <code>docker image prune -a</code> between releases or the previous tag disappears.</p>
+<p>If the release included a database migration that the old code cannot run against, rolling
+back the image is not enough. Restore the pre-deploy dump (see above); writes made since the
+backup are lost.</p>
+<p>Config files (<code>nginx.conf</code>, <code>compose.yaml</code>): <code>git checkout &lt;good-commit&gt; -- nginx.conf compose.yaml</code>, then</p>
+<pre><code class="language-sh">docker compose run --rm --no-deps proxy nginx -t    # validate first
+docker compose up -d
+docker compose restart proxy                        # single-file bind mount: a replaced file
+                                                    # is only seen after a restart, not a reload
+</code></pre>
+<p>Postgres major upgrades are not a tag bump. Dump, start the new major on a new volume,
+restore, verify, then switch. Keep the old volume until verified.</p>
+</div></div><div class="file" id="file-0-2" hidden><p class="path mono">sonnet-5.5/03-infra-management/TASK.md</p><div class="prose"><h1>Task 03 — Infrastructure management: harden a small deployment</h1>
+<p>Review and improve the supplied <code>Dockerfile</code>, <code>compose.yaml</code>, and <code>nginx.conf</code>
+for a small Python API behind nginx with Postgres and Redis. Do not add
+Kubernetes or unrelated services.</p>
+<p>Goals:</p>
+<ul>
+<li>No embedded credentials or public database/cache ports.</li>
+<li>The API runs as a non-root user with a production server and reproducible
+dependency installation.</li>
+<li>Add meaningful health checks and startup dependencies based on health.</li>
+<li>Persist Postgres data, make internal service communication explicit, and add
+sensible restart/logging/resource settings without pretending Compose is a
+full orchestrator.</li>
+<li>Proxy headers and timeouts should be appropriate for a JSON API.</li>
+<li>Keep local operation straightforward through <code>.env.example</code>.</li>
+</ul>
+<p>Deliver corrected configuration and a concise <code>RUNBOOK.md</code> covering startup,
+health verification, backup/restore, secret handling, and rollback. Write
+<code>RESPONSE.md</code> listing the highest-risk original problems and verification you
+performed. Work only in this directory; do not actually start containers.</p>
+</div></div><div class="file" id="file-0-3" hidden><p class="path mono">sonnet-5.5/03-infra-management/.dockerignore</p><pre><code># Never bake secrets, VCS history, or operational files into the image.
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+backups/
+__pycache__/
+*.pyc
+Dockerfile
+.dockerignore
+compose.yaml
+nginx.conf
+TASK.md
+RUNBOOK.md
+RESPONSE.md
+</code></pre></div><div class="file" id="file-0-4" hidden><p class="path mono">sonnet-5.5/03-infra-management/.env.example</p><pre><code># Copy to .env and fill in the two passwords (commands in RUNBOOK.md).
+# .env is git-ignored and docker-ignored. Never commit it.
+# Compose refuses to start while a required value is empty.
+
+POSTGRES_USER=app
+POSTGRES_DB=app
+# Required. Use URL-safe characters only (hex is ideal): these values are
+# embedded in DATABASE_URL / REDIS_URL. Example: openssl rand -hex 24
+POSTGRES_PASSWORD=
+REDIS_PASSWORD=
+
+# Where nginx is published on the host. Default is loopback only.
+# For a public host use PROXY_BIND=0.0.0.0 PROXY_PORT=80 (and put TLS in front).
+PROXY_BIND=127.0.0.1
+PROXY_PORT=8080
+
+# Image tag for the API. Bump per release; roll back by setting the old tag.
+API_TAG=local
+
+# Optional overrides (defaults shown).
+# APP_MODULE=app:app
+# WEB_CONCURRENCY=2
+</code></pre></div><div class="file" id="file-0-5" hidden><p class="path mono">sonnet-5.5/03-infra-management/.gitignore</p><pre><code>.env
+backups/
+__pycache__/
+*.pyc
+</code></pre></div><div class="file" id="file-0-6" hidden><p class="path mono">sonnet-5.5/03-infra-management/compose.yaml</p><pre><code>name: apistack
+
+# Single-host deployment. Compose restarts crashed containers but does not
+# reschedule, scale, or fail over; see RUNBOOK.md for what that means in practice.
+
+x-logging: &amp;default-logging
+  driver: json-file
+  options:
+    max-size: &quot;10m&quot;
+    max-file: &quot;3&quot;
+
+services:
+  proxy:
+    image: nginx:1.28-alpine
+    restart: unless-stopped
+    ports:
+      # The only published port in the stack. Loopback by default (see .env.example).
+      - &quot;${PROXY_BIND:-127.0.0.1}:${PROXY_PORT:-8080}:80&quot;
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks: [edge]
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      # End to end: nginx -&gt; gunicorn -&gt; app. 127.0.0.1 because busybox wget
+      # resolves &quot;localhost&quot; to ::1 first and nginx only listens on IPv4.
+      test: [&quot;CMD&quot;, &quot;wget&quot;, &quot;-q&quot;, &quot;-O&quot;, &quot;/dev/null&quot;, &quot;http://127.0.0.1:80/healthz&quot;]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+    cap_drop: [ALL]
+    cap_add: [CHOWN, SETGID, SETUID, NET_BIND_SERVICE]
+    security_opt: [&quot;no-new-privileges:true&quot;]
+    logging: *default-logging
+    deploy:
+      resources:
+        limits: { cpus: &quot;0.50&quot;, memory: 128M }
+
+  api:
+    build: .
+    image: apistack/api:${API_TAG:-local}
+    restart: unless-stopped
+    environment:
+      # postgresql:// (not postgres://) is accepted by libpq, psycopg2 and SQLAlchemy.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@db:5432/${POSTGRES_DB:-app}
+      REDIS_URL: redis://:${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}@cache:6379/0
+      APP_MODULE: ${APP_MODULE:-app:app}
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-2}
+      # Trust X-Forwarded-* from nginx. Safe because this service is not
+      # published and only nginx shares a network with it besides the backend.
+      FORWARDED_ALLOW_IPS: &quot;*&quot;
+    # No `ports:`. Reached only by nginx over the edge network.
+    networks: [edge, backend]
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    healthcheck:
+      # Requires the app to serve GET /healthz -&gt; 2xx (urlopen raises on 4xx/5xx).
+      # Ideally that handler runs SELECT 1 and a Redis PING with short timeouts.
+      test:
+        - CMD
+        - python
+        - -c
+        - &quot;import urllib.request as u; u.urlopen(&#39;http://127.0.0.1:8000/healthz&#39;, timeout=3)&quot;
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: [&quot;no-new-privileges:true&quot;]
+    stop_grace_period: 35s  # &gt; gunicorn --graceful-timeout 30
+    logging: *default-logging
+    deploy:
+      resources:
+        limits: { cpus: &quot;1.00&quot;, memory: 512M }
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [backend]
+    healthcheck:
+      # -h 127.0.0.1 forces TCP. During first-run init the entrypoint runs a
+      # temporary server on the unix socket only; a socket check would report
+      # &quot;ready&quot; before the real server (and the init scripts) are done.
+      test: [&#39;CMD-SHELL&#39;, &#39;pg_isready -h 127.0.0.1 -U &quot;$$POSTGRES_USER&quot; -d &quot;$$POSTGRES_DB&quot;&#39;]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    stop_grace_period: 30s
+    logging: *default-logging
+    deploy:
+      resources:
+        limits: { cpus: &quot;1.00&quot;, memory: 1G }
+
+  cache:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    # Treated as a disposable cache: no persistence, bounded memory, LRU eviction.
+    # If the app keeps sessions or queues here, switch to noeviction + appendonly
+    # yes and add a volume. Password is passed as an argument (not `sh -c`) so the
+    # image entrypoint still drops privileges to the redis user.
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}
+      - --save
+      - &quot;&quot;
+      - --appendonly
+      - &quot;no&quot;
+      - --maxmemory
+      - 128mb
+      - --maxmemory-policy
+      - allkeys-lru
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}  # lets redis-cli auth without -a
+    networks: [backend]
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;redis-cli ping | grep -q PONG&quot;]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    logging: *default-logging
+    deploy:
+      resources:
+        limits: { cpus: &quot;0.50&quot;, memory: 192M }
+
+networks:
+  edge: {}
+  backend:
+    # No route to or from the outside world. Only api, db and cache attach here.
+    internal: true
+
+volumes:
+  pgdata: {}
+</code></pre></div><div class="file" id="file-0-7" hidden><p class="path mono">sonnet-5.5/03-infra-management/Dockerfile</p><pre><code>FROM python:3.13-slim-bookworm
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Fixed UID/GID so file ownership and `user:` overrides are predictable.
+RUN groupadd --system --gid 10001 app \
+ &amp;&amp; useradd --system --uid 10001 --gid app --no-create-home \
+            --home-dir /nonexistent --shell /usr/sbin/nologin app
+
+WORKDIR /app
+
+# Dependencies first: this layer is only rebuilt when requirements.txt changes.
+# psycopg2-binary ships its own libpq, so no compiler or -dev packages are needed.
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Application code stays root-owned and read-only to the runtime user.
+# .dockerignore keeps .env, .git and backups out of this COPY.
+COPY . .
+
+# Module:callable that gunicorn serves. Override with APP_MODULE if the app
+# is not `app.py` exposing `app`.
+ENV APP_MODULE=app:app \
+    WEB_CONCURRENCY=2 \
+    GUNICORN_CMD_ARGS=&quot;--bind 0.0.0.0:8000 --timeout 30 --graceful-timeout 30 --keep-alive 5 --max-requests 1000 --max-requests-jitter 100 --worker-tmp-dir /dev/shm --access-logfile - --error-logfile -&quot;
+
+USER 10001:10001
+EXPOSE 8000
+
+# `exec` makes gunicorn PID 1 so it receives SIGTERM directly and drains cleanly.
+CMD [&quot;sh&quot;, &quot;-c&quot;, &quot;exec gunicorn \&quot;$APP_MODULE\&quot;&quot;]
+</code></pre></div><div class="file" id="file-0-8" hidden><p class="path mono">sonnet-5.5/03-infra-management/nginx.conf</p><pre><code>worker_processes auto;
+pid /tmp/nginx.pid;                 # container root fs is read-only; /tmp is tmpfs
+error_log /dev/stderr warn;
+
+events {
+  worker_connections 1024;
+}
+
+http {
+  server_tokens off;
+  default_type application/json;
+
+  log_format main &#39;$remote_addr &quot;$request&quot; $status $body_bytes_sent &#39;
+                  &#39;rt=$request_time urt=$upstream_response_time rid=$request_id&#39;;
+  access_log /dev/stdout main;
+
+  # Slow-client and body limits. Adjust client_max_body_size to the largest
+  # legitimate JSON payload.
+  client_max_body_size 1m;
+  client_header_timeout 10s;
+  client_body_timeout 10s;
+  send_timeout 30s;
+  keepalive_timeout 30s;
+
+  # Docker&#39;s embedded DNS. Re-resolving api:8000 (via the variable below) means a
+  # recreated api container is picked up without reloading nginx, and nginx can
+  # start even if api is briefly absent.
+  resolver 127.0.0.11 valid=10s ipv6=off;
+
+  server {
+    listen 80 default_server;
+    server_name _;
+
+    set $api_upstream http://api:8000;
+
+    # Set here (not in locations) so the error location inherits them.
+    add_header X-Request-ID $request_id always;
+    add_header X-Content-Type-Options nosniff always;
+
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    # This nginx is the first hop, so overwrite instead of appending a
+    # client-supplied X-Forwarded-For (prevents spoofing). If another proxy or
+    # load balancer sits in front, switch to the realip module instead.
+    proxy_set_header X-Forwarded-For   $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Request-ID      $request_id;
+
+    # Tuned for a JSON API behind gunicorn (--timeout 30): fail fast on connect,
+    # and read timeout just above the worker timeout so gunicorn reports its
+    # own failure before nginx gives up.
+    proxy_connect_timeout 5s;
+    proxy_send_timeout    30s;
+    proxy_read_timeout    35s;
+    proxy_next_upstream   off;      # never replay a possibly non-idempotent request
+
+    error_page 502 503 504 = @upstream_unavailable;
+
+    location = /healthz {
+      access_log off;               # probes every few seconds; keep logs useful
+      proxy_pass $api_upstream;
+    }
+
+    location / {
+      proxy_pass $api_upstream;
+    }
+
+    location @upstream_unavailable {
+      internal;
+      default_type application/json;
+      return 503 &#39;{&quot;error&quot;:&quot;service_unavailable&quot;}\n&#39;;
+    }
+  }
+}
+</code></pre></div><div class="file" id="file-0-9" hidden><p class="path mono">sonnet-5.5/03-infra-management/requirements.txt</p><pre><code>Flask==3.1.2
+gunicorn==23.0.0
+psycopg2-binary==2.9.10
+redis==6.4.0
+
+</code></pre></div></section></div><div role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">9 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
+        <p>A covers every goal in the brief. Required secrets fail fast through ${VAR:?}, only the proxy publishes a port, the backend network is internal, there is a multi-stage non-root gunicorn image, startup is health-gated, and nginx re-resolves the api through Docker DNS. It adds a small placeholder app.py with a /healthz that checks the database and cache, so the stack is consistent with itself. The runbook is accurate and concise. It loses points for a factual slip about FLASK_ENV, a config-rollback reload that can hit a stale single-file bind mount, and a Redis password passed on the command line.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Blank passwords in .env.example combined with ${VAR:?} make <code>docker compose config</code> fail until real secrets are set (confirmed by running it)</li><li>Frontend and backend networks, with backend marked internal: true; api exposes 8000 and publishes nothing</li><li>nginx uses resolver 127.0.0.11 with a variable proxy_pass, so it follows a recreated api container; XFF is appended and ProxyFix trusts one hop, so the client IP cannot be spoofed</li><li>The Python stdlib urllib healthcheck works in the slim image; busybox wget is available in nginx:alpine</li><li>The api has read_only, cap_drop ALL, init and pids limits; worker_tmp_dir is /dev/shm; images are tagged by git SHA for rollback</li><li>RESPONSE ranks the real top risks (exposed database and cache, hard-coded credentials, dev server as root, secrets in the image) and states clearly what was not verified</li></ul></div><div><h4>Weaknesses</h4><ul><li>RESPONSE.md #3 says FLASK_ENV=development enables the Werkzeug debugger, but Flask 3.x ignores FLASK_ENV</li><li>The config-rollback and nginx-change procedure (git restore, then nginx -s reload or <code>compose up -d</code>) can keep serving a stale single-file bind mount when the file is replaced by a new inode</li><li>The Redis password goes in the command array (<code>--requirepass ${REDIS_PASSWORD}</code>), so it shows in <code>docker inspect</code> Cmd</li><li>The proxy healthcheck goes through the api&#39;s dependency-checking /healthz, so a database outage also marks the proxy unhealthy (cosmetic under Compose)</li><li>Adding application code (app.py) is slightly out of scope, though it is clearly documented as a placeholder</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>A/compose.yaml:64-65, 95-97: <code>${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}</code>; <code>docker compose config -q</code> without .env fails with the required-variable message</li><li>A/compose.yaml:160-163: <code>backend: internal: true</code>; only proxy has <code>ports</code></li><li>A/nginx.conf:42,48,74,78: resolver plus <code>set $api_upstream http://api:8000; proxy_pass $api_upstream;</code></li><li>A/Dockerfile:56-57: HEALTHCHECK uses python urllib; A/Dockerfile:50: <code>USER app</code>; A/gunicorn.conf.py:24: worker_tmp_dir /dev/shm</li><li>A/app.py:54-70: /healthz returns 503 when the database or cache check fails</li><li>A/RUNBOOK.md:36-37 and 120-122: nginx reload after a file change, which does not account for bind-mount inode staleness</li><li>A/RESPONSE.md:16-18: FLASK_ENV debugger claim</li></ul></details>
+        <h4>Objective checks</h4>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="1-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="1-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="1-2" aria-selected="false">TASK.md</button><button role="tab" data-file="1-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="1-4" aria-selected="false">.env.example</button><button role="tab" data-file="1-5" aria-selected="false">.gitignore</button><button role="tab" data-file="1-6" aria-selected="false">app.py</button><button role="tab" data-file="1-7" aria-selected="false">compose.yaml</button><button role="tab" data-file="1-8" aria-selected="false">Dockerfile</button><button role="tab" data-file="1-9" aria-selected="false">gunicorn.conf.py</button><button role="tab" data-file="1-10" aria-selected="false">nginx.conf</button><button role="tab" data-file="1-11" aria-selected="false">requirements.txt</button></div>
+        <div class="file" id="file-1-0" ><p class="path mono">fable-5.1/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Response: hardening the API deployment</h1>
+<h2>Highest-risk problems in the original configuration</h2>
+<p>Ranked by how directly each one leads to compromise or data loss.</p>
+<ol>
+<li><strong>Database and cache published to every host interface.</strong> <code>db</code> exposed
+<code>5432:5432</code> and <code>cache</code> <code>6379:6379</code>. Docker&#39;s port publishing bypasses
+host firewalls such as ufw, so Postgres (password <code>password</code>) and Redis
+(no authentication at all; the official image disables protected mode)
+were reachable from any network the host sits on.</li>
+<li><strong>Credentials hard-coded in <code>compose.yaml</code>.</strong> <code>admin</code>/<code>password</code> in
+both the <code>db</code> environment and the api <code>DATABASE_URL</code>, committed to git.
+<code>.env.example</code> was decorative: nothing referenced its variables, so
+editing <code>.env</code> changed nothing.</li>
+<li><strong>Root container running Flask&#39;s development server.</strong> <code>flask run</code> with
+<code>FLASK_ENV=development</code> enables the Werkzeug debugger, which is remote
+code execution for anyone who triggers an exception, and the API port
+<code>5000</code> was published directly, so the proxy could simply be skipped.</li>
+<li><strong>Secrets and repository baked into the image.</strong> <code>COPY . .</code> with no
+<code>.dockerignore</code> copies <code>.env</code> and <code>.git</code> into every image layer.</li>
+<li><strong>Non-reproducible builds.</strong> <code>pip install flask psycopg2 redis</code> ignored
+the pinned <code>requirements.txt</code> (and <code>gunicorn</code>), pulled whatever was
+latest, and compiled <code>psycopg2</code> from source; <code>python:3.13</code>,
+<code>nginx:latest</code>, <code>postgres:latest</code>, <code>redis:latest</code> all float. A
+<code>postgres:latest</code> bump across a major version would refuse to start on
+the old data directory.</li>
+<li><strong>Postgres data not persisted.</strong> No volume, so <code>docker compose down</code>
+deleted the database.</li>
+<li><strong>No health checks; start-order races.</strong> <code>depends_on</code> only waited for
+the containers to exist, so the api could start before Postgres accepted
+connections, and nothing reported an unhealthy service.</li>
+<li><strong>Proxy unfit for an API.</strong> No <code>Host</code>/<code>X-Forwarded-*</code> headers (the app
+saw nginx&#39;s IP and wrong scheme/host), no timeouts or body-size limits,
+<code>nginx.conf</code> mounted writable, and nginx&#39;s own errors returned HTML.</li>
+<li><strong>No operational defaults.</strong> No restart policy, unbounded JSON log files,
+no CPU/memory limits, all services on one flat network.</li>
+</ol>
+<h2>What changed</h2>
+<ul>
+<li><code>Dockerfile</code>: two-stage build on <code>python:3.13-slim</code> (digest pinning
+documented); dependencies installed only from <code>requirements.txt</code> into a
+venv; non-root <code>app</code> user (uid 10001); root-owned code; <code>gunicorn</code> with
+<code>gunicorn.conf.py</code>; stdlib-only <code>HEALTHCHECK</code> on <code>/healthz</code>.</li>
+<li><code>compose.yaml</code>: secrets via <code>${VAR:?message}</code> from <code>.env</code>; only the proxy
+publishes a port; <code>frontend</code>/<code>backend</code> networks with <code>backend</code> marked
+<code>internal</code>; <code>db_data</code> volume; health checks for db, cache and proxy (api&#39;s
+comes from the image) and <code>depends_on ... condition: service_healthy</code>;
+<code>restart: unless-stopped</code>; json-file log rotation; <code>deploy.resources</code>
+limits (the subset Compose enforces on a single host); <code>read_only</code>,
+<code>cap_drop: ALL</code>, <code>init</code> and tmpfs for the api; <code>no-new-privileges</code> on all;
+Redis with <code>requirepass</code>, bounded memory and persistence off; Postgres
+fast shutdown, <code>shm_size</code>, tagged api image for rollback.</li>
+<li><code>nginx.conf</code>: forwarding headers and request id, timeouts matched to
+gunicorn&#39;s 30 s, 1 MB body limit, client timeouts, <code>server_tokens off</code>,
+gzip for JSON, JSON <code>503</code> for gateway errors, un-logged <code>/healthz</code>, and
+Docker DNS re-resolution so a recreated api container keeps working.</li>
+<li><code>.env.example</code>: all variables the stack reads, secrets left blank on
+purpose so the required-variable check catches them.</li>
+<li>New: <code>.dockerignore</code>, <code>.gitignore</code>, <code>gunicorn.conf.py</code>, <code>app.py</code>.
+<code>app.py</code> is a minimal Flask entrypoint (<code>/</code> and <code>/healthz</code> checking
+Postgres and Redis with 2 s timeouts, <code>ProxyFix</code> for one proxy hop). The
+original directory had no application code, so without it the gunicorn
+target and every health check would point at nothing; if the real app
+lives elsewhere, keep its module and give it the same <code>/healthz</code>.</li>
+<li><code>requirements.txt</code>: unchanged, already pinned and already listed gunicorn.</li>
+</ul>
+<h2>Verification performed</h2>
+<p>No containers were started and no network was used, as required. There is
+no Docker daemon or <code>nginx</code> binary in this environment, so verification was
+static:</p>
+<ul>
+<li><code>docker compose config --quiet</code> (Compose v5.1.1) with no <code>.env</code>: fails
+with <code>required variable REDIS_PASSWORD is missing a value: set REDIS_PASSWORD in .env</code> (exit 1), confirming the guard.</li>
+<li><code>docker compose --env-file &lt;scratch env&gt; config</code>: exit 0. Inspected the
+rendered JSON: only <code>proxy</code> has <code>ports</code>; <code>db</code>/<code>cache</code> are on <code>backend</code>
+only (<code>internal: true</code>); <code>api</code> is on both networks with no ports; all
+<code>depends_on</code> conditions are <code>service_healthy</code>; the nginx mount is
+<code>read_only</code>; limits, <code>cap_drop</code>, <code>read_only</code>, <code>init</code>, <code>stop_signal</code>,
+<code>shm_size</code> and the Redis command (including the empty <code>--save &quot;&quot;</code>
+argument) rendered as intended.</li>
+<li><code>python3 -m py_compile app.py gunicorn.conf.py</code>: clean. Executed
+<code>gunicorn.conf.py</code> and printed the effective settings with and without
+<code>GUNICORN_WORKERS</code>/<code>GUNICORN_THREADS</code>/<code>LOG_LEVEL</code> overrides.</li>
+<li><code>app.py</code> exercised against stub <code>flask</code>/<code>werkzeug</code>/<code>psycopg2</code>/<code>redis</code>
+modules: both routes register; <code>/healthz</code> returns 200 only when both
+dependencies answer and 503 with the failing check named when either or
+both fail; logs contain the exception type only (a stub error containing
+<code>password=SECRET</code> never reached the log); a missing <code>DATABASE_URL</code>
+raises <code>KeyError</code> at import.</li>
+<li><code>nginx.conf</code>: script-checked brace balance and statement terminators
+(quoted strings masked), listed the directives used (all core/http/proxy/
+rewrite module directives), and cross-checked that nginx, gunicorn,
+<code>EXPOSE</code> and <code>HEALTHCHECK</code> all agree on port 8000.</li>
+<li>Reviewed the Dockerfile by hand (no hadolint available): pinned base,
+cached requirements layer, <code>USER</code> before <code>CMD</code>, exec-form <code>CMD</code> and
+<code>HEALTHCHECK</code>, no secrets copied given <code>.dockerignore</code>.</li>
+</ul>
+<h2>Not verified here / recommended follow-ups</h2>
+<ul>
+<li><code>nginx -t</code>, <code>docker build</code> and an end-to-end <code>docker compose up</code> could
+not run without a daemon; RUNBOOK.md section 1 gives the pre-deploy
+<code>nginx -t</code> command. Run the stack once in a staging environment before
+relying on it, in particular the <code>resolver</code>/<code>proxy_pass $variable</code>
+behaviour and the <code>read_only</code> api filesystem.</li>
+<li>Dependency installation is reproducible at the level of pinned top-level
+packages. For full hermeticity generate a hash-locked file
+(<code>pip-compile --generate-hashes</code> or <code>uv pip compile</code>) and install with
+<code>--require-hashes</code>; that needs network access to compute the hashes.</li>
+<li>Pin the base images to digests (documented in the Dockerfile).</li>
+<li>TLS is not configured: nginx listens on plain port 80. Terminate TLS
+either here (certificates plus a <code>listen 443 ssl</code> server) or at an
+upstream load balancer, and add HSTS once it exists.</li>
+<li><code>cap_drop: ALL</code> is applied to the api only; the third-party images
+(nginx, postgres, redis) start as root and drop privileges themselves, so
+restricting their capabilities needs a test run to confirm the minimal set.</li>
+<li>If usage warrants it, add nginx <code>limit_req</code> rate limiting and move
+secrets from environment variables to Compose <code>secrets:</code>.</li>
+</ul>
+</div></div><div class="file" id="file-1-1" hidden><p class="path mono">fable-5.1/03-infra-management/RUNBOOK.md</p><div class="prose"><h1>Runbook: API stack (nginx + Flask/gunicorn + Postgres + Redis)</h1>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Image</th>
+<th>Reachable from</th>
+<th>Health check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>proxy</td>
+<td>nginx:1.28-alpine</td>
+<td>host port <code>HTTP_PORT</code></td>
+<td><code>GET /healthz</code> through nginx</td>
+</tr>
+<tr>
+<td>api</td>
+<td>built from <code>.</code></td>
+<td>proxy only (frontend)</td>
+<td><code>GET /healthz</code> (checks db and cache)</td>
+</tr>
+<tr>
+<td>db</td>
+<td>postgres:17</td>
+<td>api only (backend)</td>
+<td><code>pg_isready</code> over TCP</td>
+</tr>
+<tr>
+<td>cache</td>
+<td>redis:8-alpine</td>
+<td>api only (backend)</td>
+<td><code>redis-cli ping</code></td>
+</tr>
+</tbody></table>
+<p>The <code>backend</code> network is internal (no route to the host or the internet).
+Postgres data lives in the named volume <code>&lt;project&gt;_db_data</code>; Redis is a cache
+with no persistence. Run every command below from this directory.</p>
+<h2>1. Startup</h2>
+<p>Prerequisites: Docker Engine with Compose v2 (<code>docker compose version</code>).</p>
+<pre><code class="language-sh">cp .env.example .env            # then set POSTGRES_PASSWORD and REDIS_PASSWORD
+chmod 600 .env
+docker compose config --quiet   # validates the file; fails if a required variable is empty
+API_TAG=$(git rev-parse --short HEAD) docker compose build
+API_TAG=$(git rev-parse --short HEAD) docker compose up -d
+</code></pre>
+<p><code>up</code> starts db and cache first, waits until their health checks pass, then
+api, then proxy once api is healthy. Startup fails (rather than half-starting)
+if a dependency never becomes healthy; see section 2 to find out why.</p>
+<p>Put <code>API_TAG=&lt;sha&gt;</code> in <code>.env</code> for the value used by later <code>docker compose</code>
+commands, so a plain <code>docker compose up -d</code> does not fall back to <code>api:dev</code>.</p>
+<p>Config-only nginx change (no downtime):</p>
+<pre><code class="language-sh">docker run --rm -v &quot;$PWD/nginx.conf:/etc/nginx/nginx.conf:ro&quot; nginx:1.28-alpine nginx -t
+docker compose exec proxy nginx -s reload
+</code></pre>
+<h2>2. Health verification</h2>
+<pre><code class="language-sh">docker compose ps                        # every service should show &quot;(healthy)&quot;
+curl -fsS &quot;http://localhost:${HTTP_PORT:-80}/healthz&quot;
+# {&quot;checks&quot;:{&quot;cache&quot;:&quot;ok&quot;,&quot;database&quot;:&quot;ok&quot;},&quot;status&quot;:&quot;ok&quot;}
+</code></pre>
+<ul>
+<li>HTTP 503 with <code>&quot;status&quot;:&quot;degraded&quot;</code> names the failing dependency; nginx
+itself answers <code>503 {&quot;error&quot;:&quot;service unavailable&quot;}</code> when the api is down.</li>
+<li>Details of a failing check: <code>docker inspect --format &#39;{{json .State.Health}}&#39; &quot;$(docker compose ps -q api)&quot;</code></li>
+<li>Logs (rotated, 3 x 10 MB per container): <code>docker compose logs --tail=100 -f api</code>
+Each request carries an <code>X-Request-ID</code> that appears in both the nginx and
+gunicorn access logs and in the response headers.</li>
+</ul>
+<h2>3. Backup and restore (Postgres)</h2>
+<p>Backups are logical dumps taken from the running database; they do not
+require downtime.</p>
+<pre><code class="language-sh">mkdir -p backups
+docker compose exec -T db sh -c &#39;pg_dump -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; -Fc&#39; \
+  &gt; &quot;backups/app-$(date +%Y%m%dT%H%M%S).dump&quot;
+</code></pre>
+<p>Schedule this (cron/systemd timer) and copy the files off the host. Verify a
+backup occasionally by restoring it into a scratch database.</p>
+<p>Restore (replaces the current contents; stop the api first so nothing writes):</p>
+<pre><code class="language-sh">docker compose stop api
+docker compose exec -T db sh -c &#39;pg_restore -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; --clean --if-exists --no-owner&#39; \
+  &lt; backups/app-&lt;timestamp&gt;.dump
+docker compose start api
+</code></pre>
+<p>Fresh host or lost volume: run <code>docker compose up -d db</code>, wait for
+<code>(healthy)</code>, then run the restore, then <code>docker compose up -d</code>.</p>
+<p>Redis holds cache data only and is not backed up.</p>
+<h2>4. Secret handling</h2>
+<ul>
+<li>Secrets live only in <code>.env</code> (git-ignored, docker-ignored, mode 600) and are
+passed to each container as environment variables; nothing is hard-coded
+in <code>compose.yaml</code> and nothing is baked into the image (<code>.dockerignore</code>).</li>
+<li>Required values use <code>${VAR:?...}</code>, so a missing secret stops startup
+instead of silently using a default.</li>
+<li>Rotating the Postgres password (the <code>POSTGRES_PASSWORD</code> variable only
+seeds the very first initialisation; afterwards the database is the source
+of truth):<pre><code class="language-sh">docker compose exec db sh -c &#39;psql -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; -c &quot;\password&quot;&#39;   # prompts, no shell history
+# set the same value in .env, then recreate the api with the new DATABASE_URL:
+docker compose up -d api
+</code></pre>
+</li>
+<li>Rotating the Redis password: change <code>REDIS_PASSWORD</code> in <code>.env</code>, then
+<code>docker compose up -d cache api</code> (the cache is emptied; it is only a cache).</li>
+<li>Anyone with access to the Docker socket can read container environments
+(<code>docker inspect</code>); restrict it to the deploy user. Where that is not
+acceptable, move to Compose <code>secrets:</code> and <code>POSTGRES_PASSWORD_FILE</code>, or an
+external secret store, without changing anything else in this stack.</li>
+</ul>
+<h2>5. Rollback</h2>
+<p>Every deploy builds an image tagged with the git SHA, so the previous image
+is still on the host until <code>docker image prune</code> removes it.</p>
+<pre><code class="language-sh">docker image ls api                       # find the previous tag
+API_TAG=&lt;previous-sha&gt; docker compose up -d --no-build api
+curl -fsS &quot;http://localhost:${HTTP_PORT:-80}/healthz&quot;
+</code></pre>
+<p>Only the api container is replaced; nginx re-resolves the <code>api</code> name from
+Docker DNS, so no proxy restart is needed. <code>--no-build</code> refuses to run if the
+tag does not exist locally rather than building something unexpected.</p>
+<ul>
+<li>Config rollback (<code>compose.yaml</code>, <code>nginx.conf</code>, <code>.env</code>): restore the previous
+file from git or a copy, run <code>docker compose config --quiet</code>, then
+<code>docker compose up -d</code> (or <code>nginx -t</code> + <code>nginx -s reload</code> for nginx alone).</li>
+<li>Database rollback: if the new version changed the schema, restore the dump
+taken before the deploy (section 3) after rolling the api back. Take that
+dump as the first step of every deploy that includes a migration.</li>
+<li>Image versions are pinned (<code>nginx:1.28</code>, <code>postgres:17</code>, <code>redis:8</code>,
+<code>python:3.13-slim</code>); bump them deliberately. A Postgres major upgrade needs
+a dump/restore, never just a tag change.</li>
+</ul>
+</div></div><div class="file" id="file-1-2" hidden><p class="path mono">fable-5.1/03-infra-management/TASK.md</p><div class="prose"><h1>Task 03 — Infrastructure management: harden a small deployment</h1>
+<p>Review and improve the supplied <code>Dockerfile</code>, <code>compose.yaml</code>, and <code>nginx.conf</code>
+for a small Python API behind nginx with Postgres and Redis. Do not add
+Kubernetes or unrelated services.</p>
+<p>Goals:</p>
+<ul>
+<li>No embedded credentials or public database/cache ports.</li>
+<li>The API runs as a non-root user with a production server and reproducible
+dependency installation.</li>
+<li>Add meaningful health checks and startup dependencies based on health.</li>
+<li>Persist Postgres data, make internal service communication explicit, and add
+sensible restart/logging/resource settings without pretending Compose is a
+full orchestrator.</li>
+<li>Proxy headers and timeouts should be appropriate for a JSON API.</li>
+<li>Keep local operation straightforward through <code>.env.example</code>.</li>
+</ul>
+<p>Deliver corrected configuration and a concise <code>RUNBOOK.md</code> covering startup,
+health verification, backup/restore, secret handling, and rollback. Write
+<code>RESPONSE.md</code> listing the highest-risk original problems and verification you
+performed. Work only in this directory; do not actually start containers.</p>
+</div></div><div class="file" id="file-1-3" hidden><p class="path mono">fable-5.1/03-infra-management/.dockerignore</p><pre><code># Keep secrets, VCS data and deployment files out of the image (COPY . .).
+.env
+.env.*
+.git
+.gitignore
+.dockerignore
+Dockerfile
+compose.yaml
+compose.override.yaml
+nginx.conf
+*.md
+backups/
+
+# Python build artefacts / local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+</code></pre></div><div class="file" id="file-1-4" hidden><p class="path mono">fable-5.1/03-infra-management/.env.example</p><pre><code># Copy this file to .env and fill in the blanks. .env is git-ignored and
+# docker-ignored: never commit it or bake it into an image.
+#
+# Generate each secret with something like:
+#   openssl rand -hex 24
+# Use only letters and digits (or - and _): the values are embedded in
+# DATABASE_URL / REDIS_URL, so other characters must be percent-encoded, and
+# a literal $ must be written as $$.
+
+# --- Postgres (required) -------------------------------------------------
+POSTGRES_USER=app
+POSTGRES_PASSWORD=
+POSTGRES_DB=app
+
+# --- Redis (required) ----------------------------------------------------
+REDIS_PASSWORD=
+
+# --- Proxy ---------------------------------------------------------------
+# The only published port. Use e.g. 8080 if 80 is taken locally.
+HTTP_PORT=80
+
+# --- API -----------------------------------------------------------------
+# Image name/tag for the api service. Deployments set API_TAG to the git SHA
+# they built (see RUNBOOK.md) so an earlier image can be rolled back to.
+API_IMAGE=api
+API_TAG=dev
+GUNICORN_WORKERS=2
+GUNICORN_THREADS=4
+LOG_LEVEL=info
+</code></pre></div><div class="file" id="file-1-5" hidden><p class="path mono">fable-5.1/03-infra-management/.gitignore</p><pre><code># Local secrets and data never go into version control.
+.env
+.env.*
+!.env.example
+backups/
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+</code></pre></div><div class="file" id="file-1-6" hidden><p class="path mono">fable-5.1/03-infra-management/app.py</p><pre><code>&quot;&quot;&quot;Minimal WSGI entrypoint for the API container.
+
+The supplied deployment had no application module in this directory. This one
+makes the stack self-consistent: gunicorn imports ``app:app`` and the health
+checks in the Dockerfile, compose.yaml and nginx.conf hit a real endpoint. If
+the real application lives elsewhere, keep its module as the gunicorn target
+and give it a ``GET /healthz`` with the same semantics.
+&quot;&quot;&quot;
+
+import os
+
+import psycopg2
+import redis
+from flask import Flask, jsonify
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+# Fail at import time (clear error in the container logs) rather than on the first request.
+DATABASE_URL = os.environ[&quot;DATABASE_URL&quot;]
+REDIS_URL = os.environ[&quot;REDIS_URL&quot;]
+CHECK_TIMEOUT_SECONDS = 2
+
+app = Flask(__name__)
+# Exactly one trusted proxy (nginx) sits in front of the API.
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
+
+@app.get(&quot;/&quot;)
+def index():
+    return jsonify(service=&quot;api&quot;, status=&quot;ok&quot;)
+
+
+def _check_database():
+    conn = psycopg2.connect(DATABASE_URL, connect_timeout=CHECK_TIMEOUT_SECONDS)
+    try:
+        with conn.cursor() as cur:
+            cur.execute(&quot;SELECT 1&quot;)
+            cur.fetchone()
+    finally:
+        conn.close()
+
+
+def _check_cache():
+    client = redis.Redis.from_url(
+        REDIS_URL,
+        socket_connect_timeout=CHECK_TIMEOUT_SECONDS,
+        socket_timeout=CHECK_TIMEOUT_SECONDS,
+    )
+    try:
+        client.ping()
+    finally:
+        client.close()
+
+
+@app.get(&quot;/healthz&quot;)
+def healthz():
+    &quot;&quot;&quot;Readiness-style check: the process serves requests and its dependencies answer.
+
+    Failure details are logged, not returned, so connection strings never leak.
+    &quot;&quot;&quot;
+    checks = {}
+    for name, check in ((&quot;database&quot;, _check_database), (&quot;cache&quot;, _check_cache)):
+        try:
+            check()
+            checks[name] = &quot;ok&quot;
+        except Exception as exc:  # noqa: BLE001 - any failure must yield 503, never a crash
+            app.logger.warning(&quot;health check %s failed: %s&quot;, name, type(exc).__name__)
+            checks[name] = &quot;error&quot;
+    healthy = all(state == &quot;ok&quot; for state in checks.values())
+    body = jsonify(status=&quot;ok&quot; if healthy else &quot;degraded&quot;, checks=checks)
+    return body, (200 if healthy else 503)
+</code></pre></div><div class="file" id="file-1-7" hidden><p class="path mono">fable-5.1/03-infra-management/compose.yaml</p><pre><code># Small Python API behind nginx, with Postgres and Redis.
+#
+# Secrets and per-environment values come from ./.env (copy .env.example).
+# Variables written as ${VAR:?message} are required: `docker compose config`
+# and `docker compose up` fail early with that message instead of starting
+# with a default password.
+#
+# Only the proxy publishes a port. Services talk over two explicit networks:
+#   frontend: proxy &lt;-&gt; api
+#   backend : api &lt;-&gt; db, cache   (internal: no route to the host or internet)
+#
+# Restart policies, log rotation and resource limits are the sensible defaults
+# a single Compose host can enforce; anything beyond that (rolling deploys,
+# multi-node scheduling, secret distribution) is out of scope for Compose.
+
+x-logging: &amp;default-logging
+  driver: json-file
+  options:
+    max-size: &quot;10m&quot;
+    max-file: &quot;3&quot;
+
+services:
+  proxy:
+    image: nginx:1.28-alpine
+    restart: unless-stopped
+    ports:
+      - &quot;${HTTP_PORT:-80}:80&quot;
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      # Goes through nginx to the API, so &quot;healthy&quot; means requests are actually served.
+      test: [&quot;CMD&quot;, &quot;wget&quot;, &quot;-q&quot;, &quot;--spider&quot;, &quot;-T&quot;, &quot;5&quot;, &quot;http://127.0.0.1/healthz&quot;]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;0.50&quot;
+          memory: 128M
+    logging: *default-logging
+
+  api:
+    build:
+      context: .
+    # Tag builds (e.g. with the git SHA) so a previous image can be rolled back to.
+    image: ${API_IMAGE:-api}:${API_TAG:-dev}
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+    expose:
+      - &quot;8000&quot;
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:?set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?set POSTGRES_DB in .env}
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@cache:6379/0
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-4}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    # healthcheck: inherited from the image (HEALTHCHECK in the Dockerfile, GET /healthz).
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    stop_grace_period: 30s   # matches gunicorn graceful_timeout
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;1.0&quot;
+          memory: 256M
+          pids: 256
+    logging: *default-logging
+
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      # -h forces a TCP check: the entrypoint&#39;s temporary init-time server only
+      # listens on a unix socket, so this cannot report healthy too early.
+      test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -h 127.0.0.1 -U \&quot;$$POSTGRES_USER\&quot; -d \&quot;$$POSTGRES_DB\&quot;&quot;]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    shm_size: 256m           # parallel queries; Docker&#39;s 64m default is too small
+    stop_signal: SIGINT      # postgres &quot;fast&quot; shutdown: clean, does not wait for idle clients
+    stop_grace_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;1.0&quot;
+          memory: 512M
+    logging: *default-logging
+
+  cache:
+    image: redis:8-alpine
+    restart: unless-stopped
+    # Used as a cache: bounded memory with LRU eviction and no disk persistence.
+    # If it is ever used as a queue/session store, switch the policy to noeviction
+    # and enable appendonly with a volume.
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+      - --maxmemory
+      - 128mb
+      - --maxmemory-policy
+      - allkeys-lru
+      - --save
+      - &quot;&quot;
+      - --appendonly
+      - &quot;no&quot;
+    environment:
+      # Read by redis-cli in the healthcheck; avoids putting the password on its command line.
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    networks:
+      - backend
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;redis-cli ping | grep -q PONG&quot;]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;0.50&quot;
+          memory: 192M       # maxmemory 128mb plus overhead
+    logging: *default-logging
+
+networks:
+  frontend:
+  backend:
+    internal: true
+
+volumes:
+  db_data:
+</code></pre></div><div class="file" id="file-1-8" hidden><p class="path mono">fable-5.1/03-infra-management/Dockerfile</p><pre><code># syntax=docker/dockerfile:1
+
+# API image: pinned slim base, dependencies installed only from the pinned
+# requirements.txt, production WSGI server (gunicorn), unprivileged runtime user.
+#
+# For fully reproducible builds also pin the base image to a digest:
+#   docker buildx imagetools inspect python:3.13-slim     # copy the sha256
+#   ARG PYTHON_IMAGE=python:3.13-slim@sha256:&lt;digest&gt;
+ARG PYTHON_IMAGE=python:3.13-slim
+
+# ---------------------------------------------------------------------------
+# builder: self-contained virtualenv with the pinned dependencies
+# ---------------------------------------------------------------------------
+FROM ${PYTHON_IMAGE} AS builder
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+RUN python -m venv /opt/venv
+ENV PATH=&quot;/opt/venv/bin:$PATH&quot;
+
+# Only requirements.txt is copied here, so this layer stays cached until the
+# pinned dependency set changes. It is the single source of truth for what is
+# installed; nothing is installed ad hoc.
+WORKDIR /build
+COPY requirements.txt ./
+RUN pip install --require-virtualenv -r requirements.txt
+
+# ---------------------------------------------------------------------------
+# runtime: no build tooling, non-root service account
+# ---------------------------------------------------------------------------
+FROM ${PYTHON_IMAGE} AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH=&quot;/opt/venv/bin:$PATH&quot;
+
+# Fixed uid/gid so ownership is predictable if a volume is ever mounted.
+RUN groupadd --system --gid 10001 app \
+ &amp;&amp; useradd --system --uid 10001 --gid app --home-dir /app --no-create-home \
+      --shell /usr/sbin/nologin app
+
+WORKDIR /app
+COPY --from=builder /opt/venv /opt/venv
+# Application code stays root-owned (read-only for the service account).
+# .dockerignore keeps .env, .git, docs and the compose/nginx files out of the image.
+COPY . .
+
+USER app
+
+EXPOSE 8000
+
+# Same endpoint nginx and Compose rely on; stdlib only, so no curl/wget needed.
+# A non-2xx response raises in urlopen and the check exits non-zero.
+HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 \
+  CMD [&quot;python&quot;, &quot;-c&quot;, &quot;import urllib.request; urllib.request.urlopen(&#39;http://127.0.0.1:8000/healthz&#39;, timeout=4)&quot;]
+
+# Worker count, timeouts and logging are set in gunicorn.conf.py.
+CMD [&quot;gunicorn&quot;, &quot;--config&quot;, &quot;gunicorn.conf.py&quot;, &quot;app:app&quot;]
+</code></pre></div><div class="file" id="file-1-9" hidden><p class="path mono">fable-5.1/03-infra-management/gunicorn.conf.py</p><pre><code>&quot;&quot;&quot;Gunicorn configuration for the API container.
+
+Values can be overridden per environment through the variables read below
+(see .env.example); everything else keeps gunicorn&#39;s defaults.
+&quot;&quot;&quot;
+
+import os
+
+bind = &quot;0.0.0.0:8000&quot;
+
+# Threaded workers suit a small I/O-bound JSON API (database and Redis round trips).
+worker_class = &quot;gthread&quot;
+workers = int(os.environ.get(&quot;GUNICORN_WORKERS&quot;, &quot;2&quot;))
+threads = int(os.environ.get(&quot;GUNICORN_THREADS&quot;, &quot;4&quot;))
+
+# Request limits. nginx&#39;s proxy_read_timeout is aligned with `timeout`.
+timeout = int(os.environ.get(&quot;GUNICORN_TIMEOUT&quot;, &quot;30&quot;))
+graceful_timeout = 30
+keepalive = 5
+max_requests = 1000  # recycle workers periodically to bound slow leaks
+max_requests_jitter = 100
+
+# Worker heartbeat files go on tmpfs; the container filesystem is read-only.
+worker_tmp_dir = &quot;/dev/shm&quot;
+
+# Log to stdout/stderr so Docker&#39;s logging driver collects everything.
+accesslog = &quot;-&quot;
+errorlog = &quot;-&quot;
+loglevel = os.environ.get(&quot;LOG_LEVEL&quot;, &quot;info&quot;)
+access_log_format = (
+    &#39;%({x-forwarded-for}i)s %(l)s %(u)s %(t)s &quot;%(r)s&quot; %(s)s %(b)s &#39;
+    &#39;&quot;%(f)s&quot; &quot;%(a)s&quot; %(L)s req_id=%({x-request-id}i)s&#39;
+)
+
+# The API port is never published; only the nginx container on the internal
+# network can reach it, so its X-Forwarded-* headers are trusted.
+forwarded_allow_ips = os.environ.get(&quot;FORWARDED_ALLOW_IPS&quot;, &quot;*&quot;)
+</code></pre></div><div class="file" id="file-1-10" hidden><p class="path mono">fable-5.1/03-infra-management/nginx.conf</p><pre><code># Reverse proxy for the JSON API. Mounted read-only at /etc/nginx/nginx.conf.
+# This is the only container that publishes a port.
+
+worker_processes auto;
+pid /var/run/nginx.pid;
+
+# The official image links both log files to the container&#39;s stdout/stderr.
+error_log /var/log/nginx/error.log warn;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    log_format main &#39;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#39;
+                    &#39;$status $body_bytes_sent &quot;$http_referer&quot; &quot;$http_user_agent&quot; &#39;
+                    &#39;rt=$request_time urt=$upstream_response_time req_id=$request_id&#39;;
+    access_log /var/log/nginx/access.log main;
+
+    sendfile on;
+    tcp_nopush on;
+    keepalive_timeout 65s;
+    server_tokens off;
+
+    # JSON API: bodies are small and clients should not be able to hold
+    # connections open slowly. Raise client_max_body_size if uploads are added.
+    client_max_body_size 1m;
+    client_body_timeout 15s;
+    client_header_timeout 15s;
+    send_timeout 15s;
+
+    gzip on;
+    gzip_types application/json;
+    gzip_min_length 1k;
+
+    # Resolve the api service through Docker&#39;s embedded DNS at request time (a
+    # variable in proxy_pass triggers this). A recreated api container with a
+    # new address then keeps working without restarting nginx.
+    resolver 127.0.0.11 valid=10s ipv6=off;
+
+    server {
+        listen 80 default_server;
+        server_name _;
+
+        set $api_upstream http://api:8000;
+
+        # Headers the API needs to see the real client (Flask ProxyFix trusts one hop).
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host  $host;
+        proxy_set_header X-Request-ID      $request_id;
+
+        # Upstream timeouts aligned with gunicorn&#39;s 30s request timeout.
+        proxy_connect_timeout 5s;
+        proxy_send_timeout    30s;
+        proxy_read_timeout    30s;
+
+        add_header X-Content-Type-Options nosniff always;
+        add_header X-Request-ID $request_id always;
+
+        # nginx-generated gateway errors answer in JSON like the API does.
+        error_page 502 504 @upstream_unavailable;
+
+        location = /healthz {
+            access_log off;
+            proxy_read_timeout 5s;
+            proxy_send_timeout 5s;
+            proxy_pass $api_upstream;
+        }
+
+        location / {
+            proxy_pass $api_upstream;
+        }
+
+        location @upstream_unavailable {
+            default_type application/json;
+            return 503 &#39;{&quot;error&quot;:&quot;service unavailable&quot;}&#39;;
+        }
+    }
+}
+</code></pre></div><div class="file" id="file-1-11" hidden><p class="path mono">fable-5.1/03-infra-management/requirements.txt</p><pre><code>Flask==3.1.2
+gunicorn==23.0.0
+psycopg2-binary==2.9.10
+redis==6.4.0
+
+</code></pre></div></section></div><div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">8.5 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
+        <p>C is a solid, well-reasoned configuration. It has an nginx 1.28 upstream with <code>resolve</code> plus keepalive, a gunicorn.conf.py with an APP_MODULE override, internal networking, a loopback-bound proxy and health-gated startup. The main security weakness is that .env.example ships <code>change-me</code> passwords: the ${VAR:?} guard passes, so the stack can start with weak default credentials. The runbook is careful about container-side variable expansion, but its config rollback relies on nginx reload or <code>compose up -d</code>, which can leave a stale bind mount.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Uses <code>server api:8000 resolve</code> with a zone and keepalive in the upstream block; correctly notes this needs nginx 1.27.3 or later and pins 1.28</li><li>Overwrites XFF, uses proxy_next_upstream off, returns JSON 503 with the request_id, sends a JSON access log to stdout, and sets API security headers</li><li>Redis starts through the image entrypoint with sh -c and a $$REDIS_PASSWORD reference, so it still drops privileges and the password stays out of the compose command</li><li>Runbook commands expand variables inside the container (sh -c with single quotes); restore uses --single-transaction; it covers the Postgres 18 data-path change</li><li>RESPONSE honestly lists what was not verified and what it assumed, including Redis password visibility</li></ul></div><div><h4>Weaknesses</h4><ul><li><code>docker compose --env-file .env.example config</code> succeeds with POSTGRES_PASSWORD=change-me and REDIS_PASSWORD=change-me, so the fail-fast guard does not catch placeholder credentials</li><li>The proxy healthcheck (/nginx-health) and api health (liveness only, by assumption) never verify the path from nginx to the api or from the api to the database</li><li>Config rollback (<code>git checkout</code> then <code>compose up -d</code>, or <code>nginx -s reload</code>) can serve a stale single-file bind mount</li><li>The proxy has no read_only or cap_drop; there is no init</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>C/.env.example:11,15: <code>POSTGRES_PASSWORD=change-me</code>, <code>REDIS_PASSWORD=change-me</code>; <code>docker compose --env-file .env.example config -q</code> exits 0</li><li>C/nginx.conf:52-57: upstream with zone, <code>server api:8000 resolve</code>, keepalive 16</li><li>C/nginx.conf:82: X-Forwarded-For $remote_addr; C/nginx.conf:111-116: JSON 503 error location</li><li>C/compose.yaml:137-146: Redis started via <code>exec docker-entrypoint.sh redis-server --requirepass &amp;quot;$$REDIS_PASSWORD&amp;quot;</code></li><li>C/gunicorn.conf.py:9: <code>wsgi_app</code> from APP_MODULE; keepalive 65 is greater than nginx upstream keepalive_timeout 60</li><li>C/RUNBOOK.md:132-135: config rollback through <code>up -d</code> or <code>nginx -s reload</code></li></ul></details>
+        <h4>Objective checks</h4>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="2-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="2-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="2-2" aria-selected="false">TASK.md</button><button role="tab" data-file="2-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="2-4" aria-selected="false">.env.example</button><button role="tab" data-file="2-5" aria-selected="false">.gitignore</button><button role="tab" data-file="2-6" aria-selected="false">compose.yaml</button><button role="tab" data-file="2-7" aria-selected="false">Dockerfile</button><button role="tab" data-file="2-8" aria-selected="false">gunicorn.conf.py</button><button role="tab" data-file="2-9" aria-selected="false">nginx.conf</button><button role="tab" data-file="2-10" aria-selected="false">requirements.txt</button></div>
+        <div class="file" id="file-2-0" ><p class="path mono">opus-5.5/03-infra-management/RESPONSE.md</p><div class="prose"><h1>Response: hardening the API deployment</h1>
+<h2>Highest-risk original problems (most severe first)</h2>
+<ol>
+<li><strong>Database and cache open to the network.</strong> Postgres (<code>5432</code>) and Redis
+(<code>6379</code>) were published on all host interfaces. Redis had no password, so
+anyone who could reach the host could read and write the cache and run
+commands like <code>CONFIG SET</code>.</li>
+<li><strong>Hard-coded credentials.</strong> <code>admin:password</code> appeared in <code>compose.yaml</code>,
+both in <code>POSTGRES_*</code> and in <code>DATABASE_URL</code>. <code>.env.example</code> existed, but
+nothing read from it.</li>
+<li><strong>Secrets baked into the image.</strong> <code>COPY . .</code> with no <code>.dockerignore</code> would
+have copied <code>.env</code>, <code>.git</code> and any backups into the image layers.</li>
+<li><strong>Development server in production.</strong> The API ran <code>flask run</code> with
+<code>FLASK_ENV=development</code>. It also ran as root, and the API port <code>5000</code> was
+published directly, so clients could bypass nginx.</li>
+<li><strong>Data loss on recreate.</strong> Postgres had no volume, so
+<code>docker compose down</code> or <code>docker compose up --force-recreate</code> would delete
+the database.</li>
+<li><strong>Unreproducible builds.</strong> The Dockerfile ignored the pinned
+<code>requirements.txt</code> and installed unpinned <code>flask psycopg2 redis</code>.
+<code>psycopg2</code> from source also needs a compiler and libpq headers, and gunicorn
+was never installed. Every image used <code>:latest</code>, and an unexpected Postgres
+major version change on an existing volume stops the database from starting.</li>
+<li><strong>No health checks.</strong> <code>depends_on</code> only ordered container start, so the API
+could start before Postgres accepted connections. There was no restart
+policy and no log rotation, so disks could fill.</li>
+<li><strong>Weak proxy setup.</strong> nginx set no forwarding headers (<code>Host</code>,
+<code>X-Forwarded-*</code>), used default timeouts and body size, returned HTML error
+pages to JSON clients, and exposed its version.</li>
+</ol>
+<h2>What changed</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Dockerfile</code></td>
+<td><code>python:3.13-slim</code>. Dependencies install only from <code>requirements.txt</code>, in a cached layer. Non-root UID 10001. Runs gunicorn through <code>gunicorn.conf.py</code> on port 8000.</td>
+</tr>
+<tr>
+<td><code>gunicorn.conf.py</code> (new)</td>
+<td>Settings come from env vars: <code>gthread</code> workers, 30s timeout, graceful shutdown, <code>max_requests</code> worker recycling, logs to stdout, worker temp dir on tmpfs (needed for the read-only root filesystem), and <code>APP_MODULE</code> to name the app.</td>
+</tr>
+<tr>
+<td><code>.dockerignore</code> / <code>.gitignore</code> (new)</td>
+<td>Keep <code>.env</code>, <code>.git</code> and <code>backups/</code> out of the image and out of VCS.</td>
+</tr>
+<tr>
+<td><code>compose.yaml</code></td>
+<td>Details in the list below.</td>
+</tr>
+<tr>
+<td><code>nginx.conf</code></td>
+<td>Details in the list below.</td>
+</tr>
+<tr>
+<td><code>.env.example</code></td>
+<td>Every variable Compose reads, <code>change-me</code> placeholders, and instructions for generating secrets.</td>
+</tr>
+<tr>
+<td><code>RUNBOOK.md</code> (new)</td>
+<td>Startup, health checks, backup and restore, secret handling and rotation, deploy and rollback.</td>
+</tr>
+</tbody></table>
+<p><strong><code>compose.yaml</code> changes:</strong></p>
+<ul>
+<li>Images are pinned: <code>nginx:1.28-alpine</code>, <code>postgres:17-alpine</code>, <code>redis:7.4-alpine</code>.</li>
+<li>No inline secrets. <code>${VAR:?}</code> makes startup fail fast when a secret is missing.</li>
+<li>Only the proxy is published, on <code>127.0.0.1</code> by default.</li>
+<li>Two networks: <code>edge</code> (proxy and api) and <code>backend</code> (api, db, cache), with <code>backend</code> marked <code>internal</code>.</li>
+<li>Health checks on all four services, and <code>depends_on: condition: service_healthy</code>.</li>
+<li>Postgres data lives in the named volume <code>pgdata</code>.</li>
+<li>Redis needs a password, keeps nothing on disk, and has a memory limit with LRU eviction. It still starts through the image entrypoint, so it drops root.</li>
+<li><code>restart: unless-stopped</code> on every service.</li>
+<li><code>json-file</code> log rotation.</li>
+<li>CPU, memory and pids limits.</li>
+<li>The API has a read-only root filesystem, <code>cap_drop: ALL</code> and <code>no-new-privileges</code>.</li>
+<li>Stop grace periods are set.</li>
+</ul>
+<p><strong><code>nginx.conf</code> changes:</strong></p>
+<ul>
+<li>An upstream with keepalive, re-resolved through Docker DNS, so a recreated API container is picked up without restarting nginx.</li>
+<li>Forwarding headers set by nginx as the edge proxy: <code>Host</code> and <code>X-Forwarded-*</code>. Client values for <code>X-Forwarded-For</code> are overwritten, not appended, so they cannot be spoofed.</li>
+<li>A request ID is created and passed through.</li>
+<li>Timeouts: connect 5s, read and send 35s, which is just above gunicorn&#39;s 30s.</li>
+<li><code>client_max_body_size 1m</code>.</li>
+<li>No retries of non-idempotent requests.</li>
+<li>gzip for JSON.</li>
+<li>A JSON 503 body when the upstream is unreachable.</li>
+<li><code>server_tokens off</code> and API-appropriate security headers.</li>
+<li>JSON access logs to stdout.</li>
+<li>A <code>/nginx-health</code> endpoint.</li>
+</ul>
+<h2>Verification performed</h2>
+<p>I did not start any containers, as instructed. There was also no Docker daemon
+and no network access.</p>
+<ul>
+<li><code>docker compose config -q</code> with no <code>.env</code> fails as intended:
+<code>required variable REDIS_PASSWORD is missing a value</code>.</li>
+<li><code>docker compose --env-file .env.example config</code> succeeds (Compose v5.1.1). The
+rendered output shows the following:<ul>
+<li>Only <code>proxy</code> has a port, bound to <code>127.0.0.1:8080</code>.</li>
+<li><code>backend</code> is <code>internal: true</code>.</li>
+<li>Every <code>depends_on</code> uses <code>service_healthy</code>.</li>
+<li><code>pgdata</code> is mounted at <code>/var/lib/postgresql/data</code>.</li>
+<li>Container-side <code>$$VAR</code> references are kept, so Compose does not expand them on the host.</li>
+</ul>
+</li>
+<li><code>gunicorn.conf.py</code> compiles, and evaluating it with <code>APP_MODULE=x:y</code> gives
+the expected values: <code>wsgi_app</code>, bind <code>0.0.0.0:8000</code>, timeout 30, keepalive 65.</li>
+<li><code>nginx.conf</code>: I checked brace balance by script and reviewed each directive by
+hand. I could not run <code>nginx -t</code> because no nginx binary or image is available.</li>
+</ul>
+<h2>Not verified and assumptions</h2>
+<ul>
+<li><strong>Not run:</strong> <code>nginx -t</code>, <code>docker build</code>, hadolint, and the health checks
+themselves. Run <code>docker compose build</code> and <code>docker compose up -d</code>, then the
+checks in RUNBOOK section 2, before production use.</li>
+<li><strong>nginx version:</strong> <code>server api:8000 resolve</code> in an <code>upstream</code> block needs
+nginx 1.27.3 or later. The pinned 1.28 meets this.</li>
+<li><strong>Image tags:</strong> I could not confirm offline that the pinned tags exist today.
+Pin by digest in CI.</li>
+<li><strong>No application code was supplied.</strong> I assumed:<ul>
+<li>The WSGI callable is <code>app:app</code>. Change it with <code>APP_MODULE</code>.</li>
+<li>The app serves <code>GET /healthz</code> and returns 200 without touching the DB.</li>
+<li>The app reads <code>DATABASE_URL</code> and <code>REDIS_URL</code>.</li>
+<li>To log real client IPs, the app wraps itself in Werkzeug <code>ProxyFix(x_for=1, x_proto=1, x_host=1)</code>.</li>
+</ul>
+</li>
+<li><strong>Dependency hashes:</strong> <code>requirements.txt</code> pins versions but not hashes. For
+fully reproducible installs, generate a hash-locked file with
+<code>pip-compile --generate-hashes</code> and install with <code>--require-hashes</code>. This
+needs network access, so I did not do it here.</li>
+<li><strong>Redis as a cache only:</strong> Redis is treated as a disposable cache. If the app
+keeps sessions or queues in it, turn persistence back on (AOF) and add a
+volume.</li>
+<li><strong>Redis password visibility:</strong> the Redis password is passed as a
+<code>redis-server</code> argument, so it is visible to processes inside that container.
+A config-file secret would avoid this.</li>
+<li><strong>TLS:</strong> TLS termination is out of scope. Add a 443 server block and HSTS, or
+terminate at a load balancer and enable <code>realip</code>.</li>
+</ul>
+</div></div><div class="file" id="file-2-1" hidden><p class="path mono">opus-5.5/03-infra-management/RUNBOOK.md</p><div class="prose"><h1>Runbook: API stack (nginx, gunicorn/Flask, Postgres, Redis)</h1>
+<p>Single host, Docker Compose v2. Only <code>proxy</code> publishes a port, by default on
+<code>127.0.0.1:8080</code>. <code>db</code> and <code>cache</code> sit on the <code>backend</code> network, which is
+marked <code>internal</code> and has no published ports.</p>
+<p>Compose restarts containers that crash (<code>restart: unless-stopped</code>) and starts
+them in health order. It does <strong>not</strong> restart containers that become
+<em>unhealthy</em>, do rolling updates, or fail over between hosts. Those jobs belong
+to an operator or to monitoring.</p>
+<h2>1. Startup</h2>
+<p>Prerequisites: the app must serve <code>GET /healthz</code> and return 200 (a cheap
+liveness check with no DB call), and <code>APP_MODULE</code> must point at the WSGI
+callable.</p>
+<pre><code class="language-sh">cp .env.example .env &amp;&amp; chmod 600 .env
+# Replace every change-me value. Use URL-safe secrets:
+openssl rand -hex 32            # run once per password
+
+docker compose config -q        # fails if a required secret is missing
+docker compose build --pull
+docker compose up -d
+docker compose ps               # every service should reach &quot;healthy&quot;
+</code></pre>
+<p>Startup order is enforced by health: <code>db</code> and <code>cache</code> become healthy, then
+<code>api</code>, then <code>proxy</code>. On first start Postgres initialises the <code>pgdata</code> volume
+from <code>POSTGRES_*</code>. Those variables are ignored on every later start.</p>
+<p>Stop with <code>docker compose down</code>, which keeps data. <strong>Never</strong> run
+<code>down -v</code> unless you mean to delete the database volume.</p>
+<h2>2. Health verification</h2>
+<pre><code class="language-sh">docker compose ps                                    # STATUS column shows (healthy)
+curl -fsS http://127.0.0.1:8080/nginx-health         # nginx itself
+curl -fsS http://127.0.0.1:8080/healthz              # end to end through the proxy to the API
+docker compose exec db sh -c &#39;pg_isready -h 127.0.0.1 -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot;&#39;
+docker compose exec cache sh -c &#39;REDISCLI_AUTH=&quot;$REDIS_PASSWORD&quot; redis-cli ping&#39;
+docker inspect --format &#39;{{json .State.Health}}&#39; &quot;$(docker compose ps -q api)&quot;   # last check output
+docker compose logs --tail=100 api proxy
+</code></pre>
+<p>If a service shows <code>unhealthy</code>, read its logs and the <code>State.Health</code> output,
+then run <code>docker compose restart &lt;service&gt;</code> yourself. Compose will not restart
+it for you. A 503 body <code>{&quot;error&quot;:&quot;service_unavailable&quot;}</code> means nginx could not
+reach the API or timed out after 35s.</p>
+<p>Logs use the <code>json-file</code> driver capped at 5 x 10 MB per container. Ship them
+elsewhere if you need longer retention.</p>
+<h2>3. Backup and restore (Postgres)</h2>
+<p>Redis runs as a pure cache (no persistence) and needs no backup.</p>
+<p><strong>Backup</strong> (logical, custom format, consistent without stopping the app):</p>
+<pre><code class="language-sh">mkdir -p backups
+docker compose exec -T db sh -c &#39;pg_dump -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; -Fc&#39; \
+  &gt; &quot;backups/app-$(date -u +%Y%m%dT%H%M%SZ).dump&quot;
+docker compose exec -T db pg_restore --list &lt; backups/&lt;file&gt;.dump &gt; /dev/null &amp;&amp; echo OK
+</code></pre>
+<p>Copy the dumps off the host (they contain all application data), encrypt them
+at rest, and schedule the backup with cron or a systemd timer. Test a restore
+into a scratch database on a regular schedule.</p>
+<p><strong>Restore</strong> (this overwrites the current data, so take a fresh backup first):</p>
+<pre><code class="language-sh">docker compose stop proxy api                 # stop writers
+docker compose exec -T db sh -c \
+  &#39;pg_restore -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; --clean --if-exists --no-owner --single-transaction&#39; \
+  &lt; backups/&lt;file&gt;.dump
+docker compose start api proxy
+curl -fsS http://127.0.0.1:8080/healthz
+</code></pre>
+<p><strong>Postgres major upgrades</strong> (for example 17 to 18) need a dump and restore into
+a new volume. The <code>postgres:18</code> image also moves the data mount to
+<code>/var/lib/postgresql</code>. Never change the major version tag on an existing volume.</p>
+<h2>4. Secret handling</h2>
+<ul>
+<li>Secrets live only in <code>.env</code> (mode 600, listed in <code>.gitignore</code>).
+<code>.dockerignore</code> keeps <code>.env</code> out of the image build context. Nothing is
+hard-coded in <code>compose.yaml</code>, and <code>${VAR:?}</code> makes Compose refuse to start
+when a secret is missing.</li>
+<li>Passwords are placed into <code>DATABASE_URL</code> and <code>REDIS_URL</code>, so they must be
+URL-safe. Use hex output from <code>openssl rand -hex 32</code>.</li>
+<li>Anyone who can run <code>docker inspect</code> or <code>docker compose config</code> can read these
+values. Docker access is equivalent to root, so limit the <code>docker</code> group.
+For stricter handling, move to Compose <code>secrets:</code> with <code>POSTGRES_PASSWORD_FILE</code>
+and have the app read its password from a file.</li>
+<li><strong>Rotate the Postgres password.</strong> <code>POSTGRES_PASSWORD</code> only applies at first
+init, so change the role password in the database too:<pre><code class="language-sh">docker compose exec db sh -c &#39;psql -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; -c &quot;\password $POSTGRES_USER&quot;&#39;
+# then update POSTGRES_PASSWORD in .env to match and recreate dependants:
+docker compose up -d --force-recreate db api
+</code></pre>
+</li>
+<li><strong>Rotate the Redis password.</strong> Update <code>REDIS_PASSWORD</code> in <code>.env</code>, then run
+<code>docker compose up -d --force-recreate cache api</code>. The cache contents are
+lost, which is expected.</li>
+<li>If a secret leaks, rotate it immediately and check the Postgres logs for
+unexpected connections.</li>
+</ul>
+<h2>5. Deploy and rollback</h2>
+<p>Tag every API build with a release identifier so the previous image stays
+available locally:</p>
+<pre><code class="language-sh">git rev-parse --short HEAD                    # e.g. 1a2b3c4
+API_TAG=1a2b3c4 docker compose build api
+API_TAG=1a2b3c4 docker compose up -d --no-deps api   # then persist API_TAG in .env
+curl -fsS http://127.0.0.1:8080/healthz
+</code></pre>
+<p>The API is recreated in place, so expect a few seconds of 503s. nginx
+re-resolves <code>api</code> through Docker DNS and needs no restart.</p>
+<p><strong>Roll back the application:</strong> set <code>API_TAG</code> back to the last known-good tag in
+<code>.env</code>, then run <code>docker compose up -d --no-build --no-deps api</code>. Do not prune
+old images until the new release has proved itself.</p>
+<p><strong>Roll back configuration</strong> (<code>compose.yaml</code>, <code>nginx.conf</code>, <code>.env</code>): run
+<code>git checkout &lt;good-rev&gt; -- &lt;file&gt;</code> and then <code>docker compose up -d</code>. After an
+nginx-only change you can reload instead:
+<code>docker compose exec proxy nginx -t &amp;&amp; docker compose exec proxy nginx -s reload</code>.</p>
+<p><strong>Database changes:</strong> keep migrations backward-compatible (expand, then
+contract) so the previous image still works against the new schema. If a
+migration cannot be undone, the rollback is a restore from the backup taken
+just before the deploy (section 3). Always take one before migrating.</p>
+</div></div><div class="file" id="file-2-2" hidden><p class="path mono">opus-5.5/03-infra-management/TASK.md</p><div class="prose"><h1>Task 03 — Infrastructure management: harden a small deployment</h1>
+<p>Review and improve the supplied <code>Dockerfile</code>, <code>compose.yaml</code>, and <code>nginx.conf</code>
+for a small Python API behind nginx with Postgres and Redis. Do not add
+Kubernetes or unrelated services.</p>
+<p>Goals:</p>
+<ul>
+<li>No embedded credentials or public database/cache ports.</li>
+<li>The API runs as a non-root user with a production server and reproducible
+dependency installation.</li>
+<li>Add meaningful health checks and startup dependencies based on health.</li>
+<li>Persist Postgres data, make internal service communication explicit, and add
+sensible restart/logging/resource settings without pretending Compose is a
+full orchestrator.</li>
+<li>Proxy headers and timeouts should be appropriate for a JSON API.</li>
+<li>Keep local operation straightforward through <code>.env.example</code>.</li>
+</ul>
+<p>Deliver corrected configuration and a concise <code>RUNBOOK.md</code> covering startup,
+health verification, backup/restore, secret handling, and rollback. Write
+<code>RESPONSE.md</code> listing the highest-risk original problems and verification you
+performed. Work only in this directory; do not actually start containers.</p>
+</div></div><div class="file" id="file-2-3" hidden><p class="path mono">opus-5.5/03-infra-management/.dockerignore</p><pre><code># Keep secrets, VCS data and deployment files out of the image build context.
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+backups/
+*.dump
+*.sql
+*.sql.gz
+compose.yaml
+nginx.conf
+*.md
+Dockerfile
+.dockerignore
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+</code></pre></div><div class="file" id="file-2-4" hidden><p class="path mono">opus-5.5/03-infra-management/.env.example</p><pre><code># Copy to .env (never commit .env) and replace every &quot;change-me&quot; value:
+#   cp .env.example .env &amp;&amp; chmod 600 .env
+# Generate URL-safe secrets with:  openssl rand -hex 32
+# Passwords are embedded in DATABASE_URL/REDIS_URL, so keep them URL-safe
+# (hex or [A-Za-z0-9] only).
+
+COMPOSE_PROJECT_NAME=api
+
+# --- Postgres (required) ---
+POSTGRES_USER=app
+POSTGRES_PASSWORD=change-me
+POSTGRES_DB=app
+
+# --- Redis (required) ---
+REDIS_PASSWORD=change-me
+
+# --- API ---
+# WSGI entry point served by gunicorn, &quot;module:callable&quot;.
+APP_MODULE=app:app
+GUNICORN_WORKERS=2
+GUNICORN_THREADS=4
+# Image name/tag built and run by compose; set API_TAG to a release (e.g. git SHA) for rollbacks.
+API_IMAGE=api
+API_TAG=local
+
+# --- Proxy ---
+# 127.0.0.1 keeps the stack local-only; use 0.0.0.0 to serve other hosts.
+PROXY_BIND_ADDRESS=127.0.0.1
+PROXY_PORT=8080
+</code></pre></div><div class="file" id="file-2-5" hidden><p class="path mono">opus-5.5/03-infra-management/.gitignore</p><pre><code>.env
+backups/
+</code></pre></div><div class="file" id="file-2-6" hidden><p class="path mono">opus-5.5/03-infra-management/compose.yaml</p><pre><code># Single-host deployment: nginx -&gt; gunicorn/Flask API -&gt; Postgres + Redis.
+#
+# Compose restarts crashed containers and orders startup by health, but it does
+# NOT restart containers that turn &quot;unhealthy&quot;, reschedule across hosts, or do
+# rolling updates. See RUNBOOK.md for the operational procedures.
+#
+# All credentials come from .env (copy .env.example); `${VAR:?}` makes Compose
+# refuse to start if a required secret is missing instead of using a default.
+
+name: ${COMPOSE_PROJECT_NAME:-api}
+
+x-logging: &amp;default-logging
+  driver: json-file
+  options:
+    max-size: &quot;10m&quot;
+    max-file: &quot;5&quot;
+
+services:
+  proxy:
+    image: nginx:1.28-alpine
+    restart: unless-stopped
+    # The only published port. Bound to localhost by default; set
+    # PROXY_BIND_ADDRESS=0.0.0.0 (or a specific interface) to expose it.
+    ports:
+      - &quot;${PROXY_BIND_ADDRESS:-127.0.0.1}:${PROXY_PORT:-8080}:80&quot;
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - edge
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;wget -q -O /dev/null http://127.0.0.1/nginx-health || exit 1&quot;]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;0.50&quot;
+          memory: 128M
+    logging: *default-logging
+
+  api:
+    build:
+      context: .
+    image: ${API_IMAGE:-api}:${API_TAG:-local}
+    restart: unless-stopped
+    environment:
+      APP_MODULE: ${APP_MODULE:-app:app}
+      FLASK_DEBUG: &quot;0&quot;
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-4}
+      # Hostnames are compose service names on the internal &quot;backend&quot; network.
+      # Passwords must be URL-safe (see RUNBOOK.md, &quot;Secret handling&quot;).
+      DATABASE_URL: postgresql://${POSTGRES_USER:?set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?set POSTGRES_DB in .env}
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@cache:6379/0
+    # No published ports: only reachable through the proxy.
+    expose:
+      - &quot;8000&quot;
+    networks:
+      - edge
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    healthcheck:
+      # Liveness of the app process. Requires the app to serve GET /healthz -&gt; 200.
+      test:
+        - CMD
+        - python
+        - -c
+        - &quot;import urllib.request; urllib.request.urlopen(&#39;http://127.0.0.1:8000/healthz&#39;, timeout=3)&quot;
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;1.0&quot;
+          memory: 512M
+          pids: 256
+    logging: *default-logging
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+    volumes:
+      # postgres:17 keeps data in /var/lib/postgresql/data. postgres:18+ uses
+      # /var/lib/postgresql instead -- see RUNBOOK.md before a major upgrade.
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      # -h 127.0.0.1 so the check fails during first-run init, when the
+      # entrypoint&#39;s temporary server only listens on the Unix socket.
+      test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -h 127.0.0.1 -U \&quot;$${POSTGRES_USER}\&quot; -d \&quot;$${POSTGRES_DB}\&quot;&quot;]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    shm_size: 128m
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;1.0&quot;
+          memory: 1G
+    logging: *default-logging
+
+  cache:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    # Run through the image entrypoint so Redis still drops to the &quot;redis&quot; user.
+    # Pure cache: no persistence, bounded memory with LRU eviction.
+    command:
+      - sh
+      - -c
+      - &gt;-
+        exec docker-entrypoint.sh redis-server
+        --requirepass &quot;$$REDIS_PASSWORD&quot;
+        --maxmemory 200mb
+        --maxmemory-policy allkeys-lru
+        --save &quot;&quot;
+        --appendonly no
+    networks:
+      - backend
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;REDISCLI_AUTH=\&quot;$${REDIS_PASSWORD}\&quot; redis-cli ping | grep -q PONG&quot;]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;0.50&quot;
+          memory: 256M
+    logging: *default-logging
+
+networks:
+  # Proxy &lt;-&gt; API only.
+  edge:
+  # API &lt;-&gt; Postgres/Redis. internal: no route to the outside world and no
+  # way to publish ports from it.
+  backend:
+    internal: true
+
+volumes:
+  pgdata:
+</code></pre></div><div class="file" id="file-2-7" hidden><p class="path mono">opus-5.5/03-infra-management/Dockerfile</p><pre><code># syntax=docker/dockerfile:1
+#
+# Production image for the Python (Flask) API.
+# - slim, pinned base (bump deliberately; pin by digest in CI for full reproducibility)
+# - dependencies installed only from the pinned requirements.txt, in their own layer
+# - runs as an unprivileged user under gunicorn (not the Flask dev server)
+
+ARG PYTHON_VERSION=3.13
+FROM python:${PYTHON_VERSION}-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Fixed UID/GID so volume ownership and security policies are predictable.
+RUN groupadd --system --gid 10001 app \
+ &amp;&amp; useradd --system --uid 10001 --gid app --no-create-home --home-dir /nonexistent --shell /usr/sbin/nologin app
+
+WORKDIR /app
+
+# Install dependencies before copying source so code changes do not bust this layer.
+# requirements.txt pins exact versions; psycopg2-binary ships wheels, so no compiler is needed.
+COPY requirements.txt .
+RUN pip install --no-cache-dir --no-compile -r requirements.txt
+
+# Application code is owned by root and only readable by the app user.
+# .dockerignore keeps .env, VCS data and backups out of the build context.
+COPY . .
+
+USER app:app
+
+EXPOSE 8000
+
+# Gunicorn settings (bind, workers, timeouts, logging, app module) live in gunicorn.conf.py
+# and can be tuned through environment variables without rebuilding.
+CMD [&quot;gunicorn&quot;, &quot;--config&quot;, &quot;/app/gunicorn.conf.py&quot;]
+</code></pre></div><div class="file" id="file-2-8" hidden><p class="path mono">opus-5.5/03-infra-management/gunicorn.conf.py</p><pre><code>&quot;&quot;&quot;Gunicorn configuration for the API container.
+
+Every value can be overridden with an environment variable so compose/.env can
+tune the service without rebuilding the image.
+&quot;&quot;&quot;
+import os
+
+# WSGI entry point, e.g. &quot;app:app&quot; or &quot;myservice.wsgi:application&quot;.
+wsgi_app = os.environ.get(&quot;APP_MODULE&quot;, &quot;app:app&quot;)
+
+bind = os.environ.get(&quot;GUNICORN_BIND&quot;, &quot;0.0.0.0:8000&quot;)
+workers = int(os.environ.get(&quot;GUNICORN_WORKERS&quot;, &quot;2&quot;))
+threads = int(os.environ.get(&quot;GUNICORN_THREADS&quot;, &quot;4&quot;))
+worker_class = &quot;gthread&quot;
+
+# Worker timeout sits just below nginx&#39;s proxy_read_timeout (35s) so a stuck
+# request is killed by gunicorn and logged here, not silently cut by the proxy.
+timeout = int(os.environ.get(&quot;GUNICORN_TIMEOUT&quot;, &quot;30&quot;))
+graceful_timeout = int(os.environ.get(&quot;GUNICORN_GRACEFUL_TIMEOUT&quot;, &quot;20&quot;))
+keepalive = int(os.environ.get(&quot;GUNICORN_KEEPALIVE&quot;, &quot;65&quot;))  # &gt; nginx upstream keepalive_timeout
+
+# Recycle workers periodically to contain slow memory leaks.
+max_requests = int(os.environ.get(&quot;GUNICORN_MAX_REQUESTS&quot;, &quot;1000&quot;))
+max_requests_jitter = int(os.environ.get(&quot;GUNICORN_MAX_REQUESTS_JITTER&quot;, &quot;100&quot;))
+
+# The container root filesystem is read-only; heartbeat files go to tmpfs.
+worker_tmp_dir = &quot;/dev/shm&quot;
+
+# Only the nginx container talks to gunicorn; trust X-Forwarded-Proto from the
+# private compose network. Override with a narrower CIDR if you pin subnets.
+forwarded_allow_ips = os.environ.get(&quot;FORWARDED_ALLOW_IPS&quot;, &quot;*&quot;)
+
+# Log to stdout/stderr so Docker&#39;s logging driver captures everything.
+accesslog = &quot;-&quot;
+errorlog = &quot;-&quot;
+loglevel = os.environ.get(&quot;GUNICORN_LOG_LEVEL&quot;, &quot;info&quot;)
+</code></pre></div><div class="file" id="file-2-9" hidden><p class="path mono">opus-5.5/03-infra-management/nginx.conf</p><pre><code># Reverse proxy for the JSON API. nginx is the edge: it terminates client
+# connections and forwards to gunicorn on the private &quot;edge&quot; network.
+# TLS is expected to be terminated here or by an upstream load balancer;
+# add a 443 server block (and HSTS) when certificates are available.
+
+user nginx;
+worker_processes auto;
+pid /var/run/nginx.pid;
+error_log /dev/stderr warn;
+
+events {
+  worker_connections 1024;
+}
+
+http {
+  include /etc/nginx/mime.types;
+  default_type application/json;
+
+  server_tokens off;
+  sendfile on;
+  tcp_nopush on;
+
+  # Structured access log with request id and upstream timing.
+  log_format json_combined escape=json
+    &#39;{&quot;time&quot;:&quot;$time_iso8601&quot;,&quot;request_id&quot;:&quot;$request_id&quot;,&#39;
+    &#39;&quot;remote_addr&quot;:&quot;$remote_addr&quot;,&quot;method&quot;:&quot;$request_method&quot;,&#39;
+    &#39;&quot;uri&quot;:&quot;$request_uri&quot;,&quot;status&quot;:$status,&quot;bytes_sent&quot;:$body_bytes_sent,&#39;
+    &#39;&quot;request_time&quot;:$request_time,&quot;upstream_status&quot;:&quot;$upstream_status&quot;,&#39;
+    &#39;&quot;upstream_response_time&quot;:&quot;$upstream_response_time&quot;,&#39;
+    &#39;&quot;user_agent&quot;:&quot;$http_user_agent&quot;}&#39;;
+  access_log /dev/stdout json_combined;
+
+  # Client-side limits and timeouts sized for small JSON requests.
+  client_max_body_size 1m;
+  client_body_buffer_size 64k;
+  client_header_timeout 10s;
+  client_body_timeout 10s;
+  send_timeout 30s;
+  keepalive_timeout 30s;
+
+  gzip on;
+  gzip_types application/json application/problem+json;
+  gzip_min_length 1024;
+  gzip_proxied any;
+  gzip_vary on;
+
+  # Docker&#39;s embedded DNS. Re-resolving &quot;api&quot; means a recreated API container
+  # (new IP) is picked up without restarting nginx.
+  resolver 127.0.0.11 valid=10s ipv6=off;
+  resolver_timeout 5s;
+
+  upstream api_backend {
+    zone api_backend 64k;
+    server api:8000 resolve;
+    keepalive 16;
+    keepalive_timeout 60s;
+  }
+
+  server {
+    listen 80 default_server;
+    server_name _;
+
+    # nginx&#39;s own liveness endpoint (used by the compose healthcheck).
+    location = /nginx-health {
+      access_log off;
+      return 200 &#39;{&quot;status&quot;:&quot;ok&quot;}\n&#39;;
+    }
+
+    location / {
+      proxy_pass http://api_backend;
+
+      # HTTP/1.1 + empty Connection header enables upstream keepalive.
+      proxy_http_version 1.1;
+      proxy_set_header Connection &quot;&quot;;
+
+      proxy_set_header Host $host;
+      proxy_set_header X-Request-ID $request_id;
+      # nginx is the edge: overwrite (not append) client-supplied values so
+      # X-Forwarded-For cannot be spoofed. If another proxy/LB sits in front,
+      # configure ngx_http_realip_module and switch to $proxy_add_x_forwarded_for.
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $remote_addr;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_set_header X-Forwarded-Port $server_port;
+
+      # Upstream timeouts. Read timeout is slightly above gunicorn&#39;s 30s
+      # worker timeout so the app, not the proxy, decides when a request dies.
+      proxy_connect_timeout 5s;
+      proxy_send_timeout 35s;
+      proxy_read_timeout 35s;
+
+      # Do not replay requests (e.g. POSTs) against the single upstream.
+      proxy_next_upstream off;
+
+      proxy_buffering on;
+      proxy_buffer_size 16k;
+      proxy_buffers 8 16k;
+
+      proxy_hide_header X-Powered-By;
+
+      add_header X-Request-ID $request_id always;
+      add_header X-Content-Type-Options nosniff always;
+      add_header X-Frame-Options DENY always;
+      add_header Referrer-Policy no-referrer always;
+      add_header Content-Security-Policy &quot;default-src &#39;none&#39;; frame-ancestors &#39;none&#39;&quot; always;
+    }
+
+    # Return JSON (not nginx HTML) when the API is down or times out.
+    # Application-generated 5xx responses pass through unchanged.
+    error_page 502 503 504 @upstream_unavailable;
+    location @upstream_unavailable {
+      default_type application/json;
+      add_header X-Request-ID $request_id always;
+      return 503 &#39;{&quot;error&quot;:&quot;service_unavailable&quot;,&quot;request_id&quot;:&quot;$request_id&quot;}\n&#39;;
+    }
+  }
+}
+</code></pre></div><div class="file" id="file-2-10" hidden><p class="path mono">opus-5.5/03-infra-management/requirements.txt</p><pre><code>Flask==3.1.2
+gunicorn==23.0.0
+psycopg2-binary==2.9.10
+redis==6.4.0
+
+</code></pre></div></section></div><div role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">7 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
+        <p>D has the most extensive hardening: unprivileged nginx on 8080, cap_drop ALL on every service, scram-sha-256 authentication, rate limiting, JSON error pages and a runnable 69-check verify script. That breadth introduced real operational bugs. POSTGRES_INITDB_ARGS sets <code>--auth-local=scram-sha-256</code> and PGPASSWORD is never provided, so the runbook&#39;s <code>docker compose exec db pg_dump/psql/dropdb</code> backup, restore and rotation commands would fail on password authentication. Several runbook commands also expand $REDIS_PASSWORD or $POSTGRES_USER in the host shell. nginx resolves the api only once at startup, so every rollback needs a manual proxy restart.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>nginxinc/nginx-unprivileged runs as uid 101 on 8080 with read_only, tmpfs temp paths and cap_drop ALL; the proxy is only on the edge network</li><li>cap_drop ALL with minimal add-backs and no-new-privileges on all services; backend is internal; the named pgdata volume uses a PGDATA subdirectory</li><li>Detailed RESPONSE ranking of the original risks; verify_config.py runs and reports 0 failures, including checking that the <code>${VAR:?}</code> guard fails when variables are unset</li><li>Liveness /healthz is kept separate from dependency readiness, with a clear rationale; gunicorn and nginx keepalive and timeouts are deliberately coordinated</li></ul></div><div><h4>Weaknesses</h4><ul><li><code>--auth-local=scram-sha-256</code> makes socket connections require a password, and no PGPASSWORD is set, so the runbook&#39;s backup, restore, password rotation and psql commands fail non-interactively; RESPONSE still calls the dump/restore procedure &#39;tested&#39;</li><li>Runbook commands such as <code>redis-cli -a &amp;quot;$REDIS_PASSWORD&amp;quot;</code>, <code>pg_isready -U &amp;quot;$POSTGRES_USER&amp;quot;</code> and <code>psql -U &amp;quot;$POSTGRES_USER&amp;quot;</code> are expanded by the host shell, where these variables are not set</li><li>The upstream is resolved once at startup (it does not use <code>resolve</code> or a variable), so a recreated api after a deploy or rollback can give 502s until the proxy is restarted (documented, but A, B and C solved this)</li><li>Password rotation puts the new password in shell history and in the sed command; the ./backups bind mount into db is unused by the documented procedure; the CMD hardcodes <code>wsgi:app</code> with no environment override</li><li>The .env.example <code>change-me</code> values pass the ${VAR:?} guard; the 217-line runbook plus verify script and rate limiting stretch &#39;concise&#39;; cap_drop on the postgres and redis images is unverified</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>D/compose.yaml:138: <code>POSTGRES_INITDB_ARGS: &amp;quot;--auth-host=scram-sha-256 --auth-local=scram-sha-256&amp;quot;</code>; grep finds no PGPASSWORD anywhere in D</li><li>D/RUNBOOK.md:96-98, 112-117, 148-149: exec-based pg_dump, pg_restore, dropdb and psql with no password supplied</li><li>D/RUNBOOK.md:66-67, 196: host-expanded $POSTGRES_USER and $REDIS_PASSWORD</li><li>D/nginx.conf:81-84: <code>server api:8000 max_fails=3 fail_timeout=10s;</code> with the comment &#39;Resolved once at startup&#39;; D/RUNBOOK.md:176-181: proxy restart needed</li><li>D/compose.yaml:34-45: nginx-unprivileged, read_only, cap_drop; D/compose.yaml:144: unused <code>./backups:/backups</code> mount</li><li>D/Dockerfile:67: <code>CMD [... &amp;quot;wsgi:app&amp;quot;]</code></li><li><code>python3 verify_config.py</code> prints <code>FAILURES: 0</code>; <code>docker compose --env-file .env.example config -q</code> exits 0 with change-me passwords</li></ul></details>
+        <h4>Objective checks</h4>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="3-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="3-1" aria-selected="false">RUNBOOK.md</button><button role="tab" data-file="3-2" aria-selected="false">TASK.md</button><button role="tab" data-file="3-3" aria-selected="false">.dockerignore</button><button role="tab" data-file="3-4" aria-selected="false">.env.example</button><button role="tab" data-file="3-5" aria-selected="false">.gitignore</button><button role="tab" data-file="3-6" aria-selected="false">backups/.gitkeep</button><button role="tab" data-file="3-7" aria-selected="false">compose.yaml</button><button role="tab" data-file="3-8" aria-selected="false">Dockerfile</button><button role="tab" data-file="3-9" aria-selected="false">gunicorn.conf.py</button><button role="tab" data-file="3-10" aria-selected="false">nginx.conf</button><button role="tab" data-file="3-11" aria-selected="false">requirements.txt</button><button role="tab" data-file="3-12" aria-selected="false">verify_config.py</button></div>
+        <div class="file" id="file-3-0" ><p class="path mono">mimo/03-infra-management/RESPONSE.md</p><div class="prose"><h1>RESPONSE — hardening the nginx / API / Postgres / Redis stack</h1>
+<p>Changed: <code>Dockerfile</code>, <code>compose.yaml</code>, <code>nginx.conf</code>, <code>.env.example</code>.
+Added: <code>gunicorn.conf.py</code>, <code>RUNBOOK.md</code>, <code>.dockerignore</code>, <code>.gitignore</code>,
+<code>verify_config.py</code>, <code>backups/</code>. <code>requirements.txt</code> was already pinned and is
+untouched. No containers were started.</p>
+<h2>Highest-risk problems in the original</h2>
+<ol>
+<li><p><strong>Database credentials committed in <code>compose.yaml</code>.</strong>
+<code>DATABASE_URL: postgres://admin:password@db:5432/app</code> plus
+<code>POSTGRES_PASSWORD: password</code>. The credential is in version control, in
+<code>docker inspect</code>, and in every developer&#39;s shell history. Rotation means a
+commit. Now: every value comes from a git-ignored <code>.env</code> through
+<code>${VAR:?message}</code>, so a missing secret aborts <code>up</code> instead of silently
+starting with a default.</p>
+</li>
+<li><p><strong>Postgres and Redis published on all host interfaces.</strong>
+<code>5432:5432</code> and <code>6379:6379</code> bind <code>0.0.0.0</code>. Postgres was reachable with
+<code>admin</code>/<code>password</code>; Redis had no password at all, and a reachable
+unauthenticated Redis is remote code execution (<code>CONFIG SET dir</code> +
+<code>dbfilename</code> writes arbitrary files). Now: neither service publishes a port,
+both sit on an <code>internal: true</code> network with no gateway, Redis requires a
+password, and the proxy — the only internet-facing container — is not even on
+that network.</p>
+</li>
+<li><p><strong>API exposed on <code>5000:5000</code>, bypassing the proxy.</strong>
+Every proxy-level control (rate limiting, header normalisation, body size
+cap, timeouts) could be skipped by talking to port 5000 directly. Now the API
+publishes nothing and is reachable only through nginx.</p>
+</li>
+<li><p><strong>Flask development server, as root, with <code>FLASK_ENV=development</code>.</strong>
+The dev server is single-threaded and explicitly not for production; the
+development config enables the reloader and the Werkzeug debugger, which is
+an RCE console if it is ever reachable. The container also ran as UID 0 on
+the full <code>python:3.13</code> image (~1 GB, full toolchain). Now: gunicorn
+(<code>gthread</code>, tuned in <code>gunicorn.conf.py</code>) on <code>python:3.13-slim</code>, as UID 10001,
+read-only root filesystem, <code>cap_drop: ALL</code>, <code>no-new-privileges</code>.</p>
+</li>
+<li><p><strong>The database had no persistent volume.</strong>
+<code>postgres:latest</code> with no <code>volumes:</code> writes to an anonymous volume that
+<code>docker compose down -v</code> (or a stray <code>docker volume prune</code>) removes, and that
+no backup procedure knows about. Now: a named <code>pgdata</code> volume, a <code>./backups</code>
+bind mount, and a tested dump/restore procedure in <code>RUNBOOK.md</code>.</p>
+</li>
+<li><p><strong>Builds were not reproducible.</strong>
+<code>pip install flask psycopg2 redis</code> resolved to whatever was newest at build
+time (and <code>psycopg2</code> needs a C toolchain, unlike the pinned
+<code>psycopg2-binary</code>), and <code>COPY . .</code> before the install invalidated the
+dependency layer on every source edit. Every image was <code>:latest</code>, so there
+was no tag to roll back to. Now: pinned <code>requirements.txt</code> installed in a
+builder stage before the source copy, <code>pip check</code> gating the build, and the
+API image tagged <code>smallapi/api:${APP_VERSION}</code> — rollback is one variable.</p>
+</li>
+<li><p><strong><code>depends_on</code> without health conditions, and no healthchecks anywhere.</strong>
+Compose only waited for containers to be <em>created</em>, so the API raced Postgres
+on every start and crash-looped until <code>restart</code> policy… which did not exist
+either. Now every service has a real probe (<code>pg_isready</code>, <code>redis-cli ping</code>,
+<code>GET /healthz</code>, nginx&#39;s own <code>/nginx-health</code>), the API waits for <code>db</code> and
+<code>cache</code> to be healthy, and the proxy waits for the API.</p>
+</li>
+<li><p><strong>nginx passed requests through almost unconfigured.</strong>
+No <code>proxy_set_header</code>, so the application saw nginx&#39;s IP as the client and
+could not tell HTTP from HTTPS; HTTP/1.0 upstream with a new TCP connection
+per request; no connect/read/send timeouts (a hung upstream pins a worker for
+60s by default); no <code>client_max_body_size</code> or slow-body timeouts; no rate or
+connection limits; the version banner exposed; the config mounted writable;
+and the master process running as root on port 80. Now: unprivileged nginx on
+8080, <code>Host</code>/<code>X-Real-IP</code>/<code>X-Forwarded-*</code>/<code>X-Request-Id</code> set explicitly,
+keepalive pool to gunicorn, 5s connect / 30s read/send timeouts coordinated
+with gunicorn&#39;s 30s worker timeout, 1 MB body cap, per-IP rate and connection
+limits, JSON access logs, and JSON error bodies so a client of a JSON API
+never gets an HTML error page.</p>
+</li>
+<li><p><strong>No restart policy, no log rotation, no resource limits.</strong>
+Nothing survived a host reboot; the default <code>json-file</code> driver grows until the
+disk is full; any one service could take the host down by consuming all CPU or
+RAM. Now: <code>restart: unless-stopped</code>, 10 MB × 5 rotated logs, and explicit
+cpu/memory/pids limits per service. These are single-host controls — they are
+not failover, and <code>RUNBOOK.md</code> §7 states plainly what this setup cannot do.</p>
+</li>
+<li><p><strong>No network segmentation.</strong> Everything shared the implicit default network,
+so any container could reach any other. Now: <code>edge</code> (proxy ↔ api) and
+<code>backend</code> (api ↔ db/cache, <code>internal</code>), with the API as the only bridge.</p>
+</li>
+</ol>
+<h2>Verification performed</h2>
+<p><code>python3 verify_config.py</code> — 69 structural checks, all passing, no containers
+started. It re-runs any time and covers:</p>
+<ul>
+<li><code>docker compose config</code> renders successfully; <code>docker compose config</code> with the
+credential variables unset <strong>fails</strong>, proving the fail-fast interpolation.</li>
+<li>Against the rendered JSON: only <code>proxy</code> publishes a port (and on <code>127.0.0.1</code>
+by default); <code>db</code>/<code>cache</code> publish nothing; all four services have
+healthchecks, <code>restart: unless-stopped</code>, log caps, cpu/memory/pids limits,
+<code>cap_drop: ALL</code> and <code>no-new-privileges</code>; <code>api</code> waits on <code>db</code>+<code>cache</code> health and
+<code>proxy</code> waits on <code>api</code> health; <code>backend</code> is <code>internal</code>; <code>proxy</code> is not on
+<code>backend</code>; <code>pgdata</code> is a named volume; <code>nginx.conf</code> is mounted read-only.</li>
+<li>Secret hygiene: no credential literal anywhere in <code>compose.yaml</code>, the <code>.env</code>
+value demonstrably reaches <code>DATABASE_URL</code> in the rendered config, <code>.env</code> is in
+<code>.gitignore</code> and <code>.dockerignore</code>, and <code>.env.example</code> names every required
+variable.</li>
+<li><code>Dockerfile</code>: exec-form <code>CMD</code>/<code>HEALTHCHECK</code> parse as JSON, <code>USER</code> precedes
+<code>CMD</code>, every <code>--from=</code> names a defined stage, no <code>flask run</code>/<code>FLASK_ENV</code>, no
+unpinned <code>pip install</code>.</li>
+<li><code>nginx.conf</code>: a brace/directive parser confirms balanced blocks and terminated
+directives, every <code>error_page</code> target resolves to an existing named location,
+it listens on 8080 with pid/temp paths under <code>/tmp</code>, and the keepalive pool is
+paired with the required empty <code>Connection</code> header.</li>
+<li>Cross-component timing invariants that are easy to get wrong:
+gunicorn <code>keepalive</code> (75s) &gt; nginx upstream <code>keepalive_timeout</code> (60s), and
+gunicorn <code>timeout</code> (30s) ≤ nginx <code>proxy_read_timeout</code> (30s) ≤ compose
+<code>stop_grace_period</code> (30s).</li>
+<li>The API healthcheck command was executed for real against a local stub HTTP
+server: exit 0 against a 200 on <code>/healthz</code>, non-zero once the server stopped.</li>
+</ul>
+<p><strong>Not run, and why:</strong> no <code>docker compose up</code>/<code>build</code> and no <code>nginx -t</code>, because
+the task forbids starting containers — <code>nginx -t</code> needs one, and the build needs
+the application source that is not in this directory. Before a first deploy,
+run <code>docker run --rm -v &quot;$PWD/nginx.conf:/etc/nginx/nginx.conf:ro&quot; nginxinc/nginx-unprivileged:1.27-alpine nginx -t</code> and <code>docker compose build</code>.</p>
+<h2>Assumptions</h2>
+<ul>
+<li>The WSGI callable is <code>app</code> in <code>wsgi.py</code> (<code>wsgi:app</code>); the original <code>flask run</code>
+relied on the same implicit discovery. Change the <code>CMD</code> target if it differs.</li>
+<li>The application serves <code>GET /healthz</code> cheaply (process liveness only).
+Dependency checks belong on a separate <code>/readyz</code> — folding them into
+<code>/healthz</code> lets a slow database restart-loop a healthy API.</li>
+<li>TLS terminates upstream of this stack; <code>RUNBOOK.md</code> §7 covers terminating it
+here instead.</li>
+<li>Image tags are pinned to a minor version, not a digest. For a real deployment,
+pin digests once images are mirrored, and generate a hash-pinned lockfile
+(<code>pip-compile --generate-hashes</code>) to make the dependency install fully
+reproducible rather than merely pinned.</li>
+</ul>
+</div></div><div class="file" id="file-3-1" hidden><p class="path mono">mimo/03-infra-management/RUNBOOK.md</p><div class="prose"><h1>RUNBOOK — small JSON API on one Docker host</h1>
+<p>Stack: <code>proxy</code> (nginx, unprivileged) → <code>api</code> (gunicorn) → <code>db</code> (Postgres) +
+<code>cache</code> (Redis). Compose here is a process supervisor for a single host, not an
+orchestrator: no rolling updates, no failover, no rescheduling. Plan downtime
+accordingly.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Image</th>
+<th>Listens</th>
+<th>Network(s)</th>
+<th>Published</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>proxy</td>
+<td>nginx-unprivileged 1.27</td>
+<td>8080</td>
+<td><code>edge</code></td>
+<td><code>${HTTP_BIND_ADDR}:${HTTP_PORT}</code></td>
+</tr>
+<tr>
+<td>api</td>
+<td>built from <code>Dockerfile</code></td>
+<td>8000</td>
+<td><code>edge</code>, <code>backend</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td>db</td>
+<td>postgres:17-alpine</td>
+<td>5432</td>
+<td><code>backend</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td>cache</td>
+<td>redis:8-alpine</td>
+<td>6379</td>
+<td><code>backend</code></td>
+<td>no</td>
+</tr>
+</tbody></table>
+<p><code>backend</code> is an <code>internal</code> network: no default gateway, no route off the host.
+Reach the database and cache through <code>docker compose exec</code>, never through a
+published port.</p>
+<p><strong>Contract the application must satisfy</strong></p>
+<ul>
+<li>WSGI callable <code>app</code> in module <code>wsgi</code> (<code>/app/wsgi.py</code>); override the <code>CMD</code>
+target in <code>Dockerfile</code> if the module is named differently.</li>
+<li><code>GET /healthz</code> → 200 when the process can serve traffic. Keep it cheap:
+process liveness only. It is the api container healthcheck and is neither
+rate-limited nor access-logged at the proxy.</li>
+<li>Optional <code>GET /readyz</code> for dependency checks (db/redis reachable). Do <strong>not</strong>
+fold those into <code>/healthz</code>, or a slow database will loop-restart the API.</li>
+</ul>
+<hr>
+<h2>1. Startup</h2>
+<pre><code class="language-bash">cp .env.example .env          # never commit .env; fill in real values
+chmod 600 .env
+$EDITOR .env                  # set POSTGRES_PASSWORD and REDIS_PASSWORD
+
+docker compose config --quiet # renders and validates; fails if a var is unset
+docker compose build          # or: docker pull the release tag
+docker compose up -d
+docker compose ps             # wait for db/cache healthy → api healthy → proxy
+</code></pre>
+<p>Start order is enforced by health, not by guesswork: <code>db</code>+<code>cache</code> must report
+healthy before <code>api</code> starts, and <code>api</code> must be healthy before <code>proxy</code> starts.
+First <code>up</code> takes ~30-60s because Postgres runs <code>initdb</code>.</p>
+<p>Stop / start / full teardown:</p>
+<pre><code class="language-bash">docker compose stop                 # keeps containers and data
+docker compose down                 # removes containers, KEEPS the pgdata volume
+docker compose down -v              # also DELETES the database volume — back up first
+</code></pre>
+<h2>2. Health verification</h2>
+<pre><code class="language-bash">docker compose ps --format &#39;table {{.Service}}\t{{.Status}}&#39;   # all &quot;(healthy)&quot;
+docker inspect --format &#39;{{json .State.Health}}&#39; $(docker compose ps -q api) | jq
+
+curl -fsS http://127.0.0.1:8080/nginx-health   # proxy itself: {&quot;status&quot;:&quot;ok&quot;}
+curl -fsS http://127.0.0.1:8080/healthz        # through the proxy to the API
+curl -si  http://127.0.0.1:8080/ | head -20    # check headers + status
+
+docker compose exec db    pg_isready -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot;
+docker compose exec cache redis-cli --no-auth-warning -a &quot;$REDIS_PASSWORD&quot; ping
+</code></pre>
+<p>Confirm the isolation that matters, from the host:</p>
+<pre><code class="language-bash">docker compose port db 5432 || echo &quot;db not published (expected)&quot;
+nc -z 127.0.0.1 5432 || echo &quot;5432 closed on the host (expected)&quot;
+nc -z 127.0.0.1 6379 || echo &quot;6379 closed on the host (expected)&quot;
+</code></pre>
+<p>Logs (bounded to 10 MB × 5 per service):</p>
+<pre><code class="language-bash">docker compose logs -f --tail=100 api
+docker compose logs --since=15m proxy | jq -c &#39;select(.status &gt;= 500)&#39;
+</code></pre>
+<p><code>request_id</code> appears in both the nginx access log and the gunicorn access log
+(<code>X-Request-Id</code>), so a slow or failed request can be followed across the hop.</p>
+<h2>3. Backup and restore</h2>
+<p>Backups are written to <code>./backups</code>, which is bind-mounted into <code>db</code> at
+<code>/backups</code>. Store copies off-host; a volume on the same disk is not a backup.</p>
+<p><strong>Backup (logical, per database):</strong></p>
+<pre><code class="language-bash">docker compose exec -T db sh -c \
+  &#39;pg_dump -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; -Fc&#39; \
+  &gt; &quot;backups/app-$(date +%Y%m%dT%H%M%S).dump&quot;
+</code></pre>
+<p>Verify the dump is readable before trusting it:</p>
+<pre><code class="language-bash">pg_restore --list backups/app-&lt;stamp&gt;.dump | head
+</code></pre>
+<p><strong>Restore into a clean database</strong> (destructive — the API must be stopped so it
+cannot write during the restore):</p>
+<pre><code class="language-bash">docker compose stop api proxy
+docker compose exec -T db sh -c \
+  &#39;dropdb -U &quot;$POSTGRES_USER&quot; --if-exists &quot;$POSTGRES_DB&quot; \
+   &amp;&amp; createdb -U &quot;$POSTGRES_USER&quot; &quot;$POSTGRES_DB&quot;&#39;
+docker compose exec -T db sh -c \
+  &#39;pg_restore -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; --no-owner&#39; \
+  &lt; backups/app-&lt;stamp&gt;.dump
+docker compose start api proxy
+docker compose ps        # wait for healthy
+</code></pre>
+<p><strong>Whole-volume snapshot</strong> (faster for large data; the database must be stopped):</p>
+<pre><code class="language-bash">docker compose stop
+docker run --rm -v smallapi_pgdata:/data:ro -v &quot;$PWD/backups:/backups&quot; \
+  alpine tar czf /backups/pgdata-$(date +%Y%m%d).tgz -C /data .
+docker compose up -d
+</code></pre>
+<p>Redis is a cache and is intentionally not persisted (<code>--save &quot;&quot; --appendonly no</code>). After a restart it is empty; the application must treat a cache miss as
+normal. Nothing to back up.</p>
+<p>Retention: keep 7 daily + 4 weekly dumps, and test a restore into a scratch
+database at least quarterly. An untested backup is a guess.</p>
+<h2>4. Secret handling</h2>
+<ul>
+<li><p>Credentials live only in <code>.env</code> (git-ignored, <code>chmod 600</code>) and are injected as
+environment variables. <code>compose.yaml</code> contains no secret values — only
+<code>${VAR:?...}</code> references, which abort <code>up</code> when a variable is missing.</p>
+</li>
+<li><p>Never pass secrets as build args or bake them into the image; the build
+context excludes <code>.env</code> via <code>.dockerignore</code>.</p>
+</li>
+<li><p>Rotate the database password:</p>
+<pre><code class="language-bash">docker compose exec db psql -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot; \
+  -c &quot;ALTER USER $POSTGRES_USER PASSWORD &#39;NEW&#39;;&quot;
+sed -i &#39;s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=NEW/&#39; .env
+docker compose up -d api          # picks up the new DATABASE_URL
+</code></pre>
+<p>Redis: change <code>REDIS_PASSWORD</code> in <code>.env</code>, then <code>docker compose up -d cache api</code>
+(the cache restarts empty, which is fine).</p>
+</li>
+<li><p>Passwords with <code>@ : / ?</code> must be percent-encoded inside <code>DATABASE_URL</code>; the
+simplest fix is to generate alphanumeric passwords (see <code>.env.example</code>).</p>
+</li>
+<li><p>A compromised value is compromised for the whole stack: rotate, then
+<code>docker compose up -d</code> and confirm <code>docker compose logs db | grep -i auth</code> is
+clean.</p>
+</li>
+<li><p>Next step when this outgrows one host: move to Docker/Swarm <code>secrets:</code> or a
+secret manager (Vault, SOPS-encrypted files, cloud secret manager) and read
+them from files rather than the environment — env vars are visible in
+<code>docker inspect</code> to anyone in the <code>docker</code> group.</p>
+</li>
+</ul>
+<h2>5. Rollback</h2>
+<p>Images are tagged <code>smallapi/api:${APP_VERSION}</code>, so rollback is a tag change.</p>
+<pre><code class="language-bash">docker image ls smallapi/api                 # find the last good tag
+APP_VERSION=&lt;last-good&gt; docker compose up -d api
+docker compose ps &amp;&amp; curl -fsS http://127.0.0.1:8080/healthz
+</code></pre>
+<p>Persist it by setting <code>APP_VERSION=&lt;last-good&gt;</code> in <code>.env</code>. If the proxy holds a
+stale upstream IP after the api container is recreated:</p>
+<pre><code class="language-bash">docker compose restart proxy     # nginx resolves `api` only at startup
+</code></pre>
+<p>Rolling back configuration (<code>nginx.conf</code>, <code>compose.yaml</code>): revert in git, then
+<code>docker compose up -d</code>; for proxy-only changes <code>docker compose restart proxy</code>.</p>
+<p>Rolling back a <strong>database migration</strong> is not a container operation. Either apply
+the down-migration, or restore the pre-deploy dump from §3 and roll the image
+back to the matching version. Always take a dump immediately before a deploy
+that migrates.</p>
+<h2>6. Routine operations</h2>
+<pre><code class="language-bash">docker compose pull &amp;&amp; docker compose up -d      # base image updates
+docker compose exec db psql -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot;
+docker compose exec cache redis-cli --no-auth-warning -a &quot;$REDIS_PASSWORD&quot; info memory
+docker stats --no-stream                         # check against the deploy limits
+docker system df                                 # disk pressure
+</code></pre>
+<p>Capacity: <code>api</code> is capped at 1.5 CPU / 512 MB, <code>db</code> at 1.5 CPU / 1 GB, <code>cache</code>
+at 320 MB with <code>allkeys-lru</code>. A container that is OOM-killed shows
+<code>State.OOMKilled=true</code> in <code>docker inspect</code>; raise the limit in <code>compose.yaml</code>
+rather than removing it.</p>
+<h2>7. Known limits of this setup</h2>
+<ul>
+<li>Single host: <code>restart: unless-stopped</code> covers process and host restarts, not
+hardware failure. There is no HA here.</li>
+<li>Redeploying <code>api</code> drops in-flight connections for up to <code>stop_grace_period</code>
+(30s drain, then kill). There is no zero-downtime rolling update in Compose.</li>
+<li>nginx resolves the <code>api</code> upstream once at startup (see §5).</li>
+<li>TLS terminates upstream of this stack (host reverse proxy, load balancer or
+tunnel). If this host must terminate TLS, add certificates and a <code>listen 8443 ssl</code> server block to <code>nginx.conf</code> and publish that port too.</li>
+<li>The rate limits in <code>nginx.conf</code> (20 r/s, burst 40, 32 conns per IP) are
+starting values; tune them from real traffic.</li>
+</ul>
+</div></div><div class="file" id="file-3-2" hidden><p class="path mono">mimo/03-infra-management/TASK.md</p><div class="prose"><h1>Task 03 — Infrastructure management: harden a small deployment</h1>
+<p>Review and improve the supplied <code>Dockerfile</code>, <code>compose.yaml</code>, and <code>nginx.conf</code>
+for a small Python API behind nginx with Postgres and Redis. Do not add
+Kubernetes or unrelated services.</p>
+<p>Goals:</p>
+<ul>
+<li>No embedded credentials or public database/cache ports.</li>
+<li>The API runs as a non-root user with a production server and reproducible
+dependency installation.</li>
+<li>Add meaningful health checks and startup dependencies based on health.</li>
+<li>Persist Postgres data, make internal service communication explicit, and add
+sensible restart/logging/resource settings without pretending Compose is a
+full orchestrator.</li>
+<li>Proxy headers and timeouts should be appropriate for a JSON API.</li>
+<li>Keep local operation straightforward through <code>.env.example</code>.</li>
+</ul>
+<p>Deliver corrected configuration and a concise <code>RUNBOOK.md</code> covering startup,
+health verification, backup/restore, secret handling, and rollback. Write
+<code>RESPONSE.md</code> listing the highest-risk original problems and verification you
+performed. Work only in this directory; do not actually start containers.</p>
+</div></div><div class="file" id="file-3-3" hidden><p class="path mono">mimo/03-infra-management/.dockerignore</p><pre><code># Keep the build context small, and keep secrets and host state out of the image.
+.env
+.env.*
+!.env.example
+secrets/
+backups/
+
+.git
+.gitignore
+.dockerignore
+
+# Stack/runtime files are not application code.
+compose.yaml
+compose.*.yaml
+nginx.conf
+*.md
+
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+.venv/
+venv/
+*.sqlite3
+*.log
+</code></pre></div><div class="file" id="file-3-4" hidden><p class="path mono">mimo/03-infra-management/.env.example</p><pre><code># Copy to .env and fill in real values:  cp .env.example .env
+# .env is git-ignored and is the ONLY place credentials live for a local or
+# single-host run. `docker compose up` fails fast if a required value is unset.
+#
+# Generate strong values:
+#   POSTGRES_PASSWORD=$(openssl rand -base64 32 | tr -d &#39;\n/+=&#39; | cut -c1-32)
+#   REDIS_PASSWORD=$(openssl rand -base64 32 | tr -d &#39;\n/+=&#39; | cut -c1-32)
+
+# --- Postgres (required) ----------------------------------------------------
+POSTGRES_USER=app
+POSTGRES_PASSWORD=change-me
+POSTGRES_DB=app
+
+# --- Redis (required) -------------------------------------------------------
+REDIS_PASSWORD=change-me
+REDIS_MAXMEMORY=256mb
+
+# --- Edge ------------------------------------------------------------------
+# Loopback by default so a laptop never exposes the stack to the LAN.
+# Set to 0.0.0.0 (or a specific host IP) on a server that should serve traffic.
+HTTP_BIND_ADDR=127.0.0.1
+HTTP_PORT=8080
+
+# --- Application ------------------------------------------------------------
+# Image tag built and run by compose. Use a release tag (e.g. 2026.09.23-1) in
+# production so `docker compose up -d` can roll back by changing one value.
+APP_VERSION=dev
+APP_ENV=production
+LOG_LEVEL=info
+GUNICORN_WORKERS=2
+GUNICORN_THREADS=4
+GUNICORN_TIMEOUT=30
+</code></pre></div><div class="file" id="file-3-5" hidden><p class="path mono">mimo/03-infra-management/.gitignore</p><pre><code># Real secrets never enter git; .env.example is the template that does.
+.env
+.env.*
+!.env.example
+secrets/
+backups/*
+!backups/.gitkeep
+__pycache__/
+*.py[cod]
+.venv/
+</code></pre></div><div class="file" id="file-3-6" hidden><p class="path mono">mimo/03-infra-management/backups/.gitkeep</p><pre><code></code></pre></div><div class="file" id="file-3-7" hidden><p class="path mono">mimo/03-infra-management/compose.yaml</p><pre><code># Small single-host deployment: nginx -&gt; gunicorn API -&gt; Postgres + Redis.
+#
+# Compose is not an orchestrator: there is no rolling update, no rescheduling,
+# no multi-host failover and no quorum here. What a single Docker host can
+# honestly provide is below - restart policy, health-gated startup, bounded
+# logs and bounded resources. Operations live in RUNBOOK.md.
+
+name: smallapi
+
+# ---------------------------------------------------------------------------
+# shared fragments
+# ---------------------------------------------------------------------------
+x-logging: &amp;logging
+  driver: json-file
+  options:
+    max-size: &quot;10m&quot;      # the default is unbounded and eventually fills the disk
+    max-file: &quot;5&quot;
+    compress: &quot;true&quot;
+
+x-hardening: &amp;hardening
+  restart: unless-stopped   # survive host reboot / crash, but respect `compose stop`
+  security_opt:
+    - no-new-privileges:true
+  logging: *logging
+
+services:
+  # -------------------------------------------------------------------------
+  # Edge proxy - the only service with a published port.
+  # -------------------------------------------------------------------------
+  proxy:
+    &lt;&lt;: *hardening
+    # Unprivileged variant: runs as uid 101 and listens on 8080, so there is no
+    # root master process and no CAP_NET_BIND_SERVICE. Pin to a digest in prod.
+    image: nginxinc/nginx-unprivileged:1.27-alpine
+    user: &quot;101:101&quot;
+    ports:
+      # Loopback by default so a laptop never publishes the stack to the LAN;
+      # set HTTP_BIND_ADDR=0.0.0.0 (or a host IP) on a real server.
+      - &quot;${HTTP_BIND_ADDR:-127.0.0.1}:${HTTP_PORT:-8080}:8080&quot;
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    read_only: true
+    tmpfs:
+      - /tmp:mode=1777,size=64m     # pid file + proxy temp paths
+    cap_drop: [ALL]
+    networks:
+      # Edge only: the proxy has no route to db or cache at all. Docker&#39;s
+      # embedded DNS resolves `api` to its address on this shared network.
+      - edge
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      # Checks nginx itself, not the upstream: a healthy proxy must not be
+      # restarted just because the API is sick - it still serves 502/504 JSON.
+      test: [&quot;CMD-SHELL&quot;, &quot;wget -q -O /dev/null http://127.0.0.1:8080/nginx-health || exit 1&quot;]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    stop_grace_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;0.50&quot;
+          memory: 128M
+          pids: 200
+        reservations:
+          memory: 32M
+
+  # -------------------------------------------------------------------------
+  # Application - no published port, reachable only through the proxy.
+  # -------------------------------------------------------------------------
+  api:
+    &lt;&lt;: *hardening
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Tagged image: `APP_VERSION=&lt;previous&gt; docker compose up -d api` is the
+    # rollback path (RUNBOOK.md).
+    image: smallapi/api:${APP_VERSION:-dev}
+    expose:
+      - &quot;8000&quot;          # documentation only; no host port is published
+    environment:
+      # Credentials come from the git-ignored .env, never from this file.
+      # `:?` aborts `compose up` instead of starting a half-configured service.
+      DATABASE_URL: postgresql://${POSTGRES_USER:?set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?set POSTGRES_DB in .env}
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@cache:6379/0
+      APP_PORT: &quot;8000&quot;
+      APP_ENV: ${APP_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-4}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-30}
+    read_only: true
+    tmpfs:
+      - /tmp:mode=1777,size=64m     # gunicorn worker heartbeat files
+    cap_drop: [ALL]
+    init: true                      # reap zombies if the app shells out
+    networks:
+      - edge        # accepts connections from the proxy
+      - backend     # reaches db and cache
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true               # recreate-safe: follow a restarted database
+      cache:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      # /healthz must answer from the process itself. Keep dependency probing on
+      # a separate /readyz so a slow database cannot loop-restart the API.
+      test: [&quot;CMD&quot;, &quot;python&quot;, &quot;-c&quot;, &quot;import sys, urllib.request; sys.exit(0 if urllib.request.urlopen(&#39;http://127.0.0.1:8000/healthz&#39;, timeout=4).status == 200 else 1)&quot;]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 30s          # &gt;= gunicorn graceful_timeout, so requests drain
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;1.50&quot;
+          memory: 512M
+          pids: 200
+        reservations:
+          memory: 128M
+
+  # -------------------------------------------------------------------------
+  # Postgres - internal network only, data on a named volume.
+  # -------------------------------------------------------------------------
+  db:
+    &lt;&lt;: *hardening
+    image: postgres:17-alpine       # pin to a digest in production
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+      POSTGRES_INITDB_ARGS: &quot;--auth-host=scram-sha-256 --auth-local=scram-sha-256&quot;
+      PGDATA: /var/lib/postgresql/data/pgdata
+    # No `ports:` - 5432 is unreachable from outside the compose network.
+    # Use `docker compose exec db psql` or an SSH tunnel for admin access.
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # survives `down`, unlike the old anonymous volume
+      - ./backups:/backups                # pg_dump target, see RUNBOOK.md
+    cap_drop: [ALL]
+    cap_add:
+      # The entrypoint starts as root, fixes data-dir ownership, then drops to
+      # the `postgres` user. Dropping these four breaks first-run initdb.
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+    shm_size: 256mb                 # default 64m is too small for real queries
+    networks:
+      - backend
+    healthcheck:
+      # $$ escapes compose interpolation: expanded by the container&#39;s shell.
+      test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -q -h 127.0.0.1 -U $${POSTGRES_USER} -d $${POSTGRES_DB}&quot;]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    stop_grace_period: 60s          # allow a clean shutdown checkpoint
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;1.50&quot;
+          memory: 1G
+          pids: 200
+        reservations:
+          memory: 256M
+
+  # -------------------------------------------------------------------------
+  # Redis - used as a cache, therefore deliberately not persisted.
+  # -------------------------------------------------------------------------
+  cache:
+    &lt;&lt;: *hardening
+    image: redis:8-alpine           # pin to a digest in production
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+      - --save
+      - &quot;&quot;                          # cache contents are disposable: no RDB
+      - --appendonly
+      - &quot;no&quot;
+      - --maxmemory
+      - ${REDIS_MAXMEMORY:-256mb}
+      - --maxmemory-policy
+      - allkeys-lru                 # evict instead of returning OOM errors
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}   # healthcheck only
+    # No `ports:` - a reachable unauthenticated Redis is remote code execution.
+    cap_drop: [ALL]
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+    networks:
+      - backend
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;redis-cli --no-auth-warning -a \&quot;$${REDIS_PASSWORD}\&quot; ping | grep -q PONG&quot;]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    stop_grace_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;0.50&quot;
+          memory: 320M              # maxmemory + process overhead
+          pids: 100
+        reservations:
+          memory: 64M
+
+networks:
+  # Published segment: proxy &lt;-&gt; api.
+  edge:
+    driver: bridge
+  # Data segment. `internal: true` removes the default gateway, so db and cache
+  # cannot reach (or be reached from) anything off this host.
+  backend:
+    driver: bridge
+    internal: true
+
+volumes:
+  pgdata:
+</code></pre></div><div class="file" id="file-3-8" hidden><p class="path mono">mimo/03-infra-management/Dockerfile</p><pre><code># syntax=docker/dockerfile:1
+
+# Pinned minor version keeps rebuilds reproducible; replace with a digest
+# (python:3.13-slim@sha256:...) once base images are mirrored internally.
+FROM python:3.13-slim AS base
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_ROOT_USER_ACTION=ignore
+
+# ---------------------------------------------------------------------------
+# builder: install dependencies once into a self-contained virtualenv, so the
+# runtime image carries no pip cache and no build toolchain.
+# ---------------------------------------------------------------------------
+FROM base AS builder
+
+RUN python -m venv /opt/venv
+ENV PATH=&quot;/opt/venv/bin:$PATH&quot;
+
+WORKDIR /app
+# Only requirements.txt busts this layer, not application edits.
+COPY requirements.txt ./
+# Pinned requirements instead of the original `pip install flask psycopg2
+# redis`, which floated to whatever was newest on every build and needed a C
+# toolchain for psycopg2. `pip check` fails the build on an inconsistent graph.
+RUN pip install --no-cache-dir -r requirements.txt \
+ &amp;&amp; pip check
+
+# ---------------------------------------------------------------------------
+# runtime
+# ---------------------------------------------------------------------------
+FROM base AS runtime
+
+# Fixed high UID/GID: predictable ownership for volumes and host audit rules.
+RUN groupadd --gid 10001 app \
+ &amp;&amp; useradd --uid 10001 --gid 10001 --no-create-home --shell /usr/sbin/nologin app
+
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH=&quot;/opt/venv/bin:$PATH&quot;
+
+WORKDIR /app
+# Code stays owned by root and is only readable by the service account, so a
+# compromised process cannot rewrite its own source.
+COPY --chown=root:root . /app
+
+ENV APP_PORT=8000 \
+    GUNICORN_WORKERS=2 \
+    GUNICORN_THREADS=4 \
+    GUNICORN_TIMEOUT=30
+
+USER 10001:10001
+EXPOSE 8000
+
+# Shipped with the image so plain `docker run` gets it too; compose tunes the
+# interval and start period per environment.
+HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
+  CMD [&quot;python&quot;, &quot;-c&quot;, &quot;import os, sys, urllib.request; sys.exit(0 if urllib.request.urlopen(&#39;http://127.0.0.1:&#39; + os.environ.get(&#39;APP_PORT&#39;, &#39;8000&#39;) + &#39;/healthz&#39;, timeout=4).status == 200 else 1)&quot;]
+
+# Production WSGI server instead of the Flask development server, in exec form
+# so gunicorn is PID 1 and SIGTERM drains in-flight requests instead of killing
+# a shell. FLASK_ENV=development (debugger + reloader) is gone: it is remote
+# code execution if the debug console is ever reachable.
+# `wsgi:app` is the entrypoint the original `flask run` discovered implicitly;
+# adjust if the application module is named differently.
+CMD [&quot;gunicorn&quot;, &quot;--config&quot;, &quot;/app/gunicorn.conf.py&quot;, &quot;wsgi:app&quot;]
+</code></pre></div><div class="file" id="file-3-9" hidden><p class="path mono">mimo/03-infra-management/gunicorn.conf.py</p><pre><code>&quot;&quot;&quot;Gunicorn settings for the API container.
+
+Every knob is env-overridable so one image runs unchanged in local and
+production environments; the defaults suit a small JSON API on one host.
+&quot;&quot;&quot;
+
+import os
+
+
+def _int(name: str, default: int) -&gt; int:
+    try:
+        return int(os.environ[name])
+    except (KeyError, ValueError):
+        return default
+
+
+bind = f&quot;0.0.0.0:{os.environ.get(&#39;APP_PORT&#39;, &#39;8000&#39;)}&quot;
+
+# gthread: this API is I/O-bound on Postgres and Redis, and threads keep the
+# resident set inside the container memory limit set in compose.yaml.
+worker_class = &quot;gthread&quot;
+workers = _int(&quot;GUNICORN_WORKERS&quot;, 2)
+threads = _int(&quot;GUNICORN_THREADS&quot;, 4)
+
+# Keep at or below nginx&#39;s proxy_read_timeout (30s) so a stuck request surfaces
+# as a clean 504 at the proxy instead of a silently killed worker.
+timeout = _int(&quot;GUNICORN_TIMEOUT&quot;, 30)
+graceful_timeout = 30
+
+# Longer than nginx&#39;s upstream keepalive_timeout (60s) so gunicorn never closes
+# a pooled connection that nginx still considers usable.
+keepalive = 75
+
+# Cheap guard against slow leaks; jitter avoids recycling all workers at once.
+max_requests = 1000
+max_requests_jitter = 100
+
+# The API port is not published and only the proxy shares a network with this
+# container, so the single X-Forwarded-* hop is trusted. nginx overwrites those
+# headers on every request, so clients cannot forge them.
+forwarded_allow_ips = os.environ.get(&quot;FORWARDED_ALLOW_IPS&quot;, &quot;*&quot;)
+
+# Logs to stdout/stderr, collected by the container runtime (bounded json-file
+# driver in compose.yaml). JSON access lines carry the proxy&#39;s request id.
+accesslog = &quot;-&quot;
+errorlog = &quot;-&quot;
+loglevel = os.environ.get(&quot;LOG_LEVEL&quot;, &quot;info&quot;)
+access_log_format = (
+    &#39;{&quot;remote&quot;:&quot;%({x-forwarded-for}i)s&quot;,&quot;method&quot;:&quot;%(m)s&quot;,&quot;path&quot;:&quot;%(U)s&quot;,&#39;
+    &#39;&quot;query&quot;:&quot;%(q)s&quot;,&quot;status&quot;:&quot;%(s)s&quot;,&quot;bytes&quot;:&quot;%(B)s&quot;,&quot;duration_ms&quot;:&quot;%(M)s&quot;,&#39;
+    &#39;&quot;request_id&quot;:&quot;%({x-request-id}i)s&quot;,&quot;user_agent&quot;:&quot;%(a)s&quot;}&#39;
+)
+
+# The container root filesystem is read-only; compose mounts a tmpfs here.
+worker_tmp_dir = &quot;/tmp&quot;
+</code></pre></div><div class="file" id="file-3-10" hidden><p class="path mono">mimo/03-infra-management/nginx.conf</p><pre><code># Full main configuration: this file replaces /etc/nginx/nginx.conf, so it must
+# declare the main-context directives the stock file provides.
+#
+# Runs on nginxinc/nginx-unprivileged (uid 101, listens on 8080): no master
+# process as root, no CAP_NET_BIND_SERVICE needed, and the container can run
+# with a read-only root filesystem.
+
+worker_processes  auto;
+pid               /tmp/nginx.pid;
+error_log         /dev/stderr  warn;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/json;   # JSON API: sane default for generated bodies
+
+    # Writable locations for an unprivileged user on a read-only rootfs.
+    client_body_temp_path  /tmp/nginx-client;
+    proxy_temp_path        /tmp/nginx-proxy;
+    fastcgi_temp_path      /tmp/nginx-fastcgi;
+    uwsgi_temp_path        /tmp/nginx-uwsgi;
+    scgi_temp_path         /tmp/nginx-scgi;
+
+    # ---- logging ----------------------------------------------------------
+    # Structured access logs to stdout so `docker compose logs` and any log
+    # shipper get parseable records; request_id ties proxy and API logs together.
+    log_format json_access escape=json
+        &#39;{&#39;
+        &#39;&quot;time&quot;:&quot;$time_iso8601&quot;,&#39;
+        &#39;&quot;request_id&quot;:&quot;$request_id&quot;,&#39;
+        &#39;&quot;remote_addr&quot;:&quot;$remote_addr&quot;,&#39;
+        &#39;&quot;method&quot;:&quot;$request_method&quot;,&#39;
+        &#39;&quot;path&quot;:&quot;$uri&quot;,&#39;
+        &#39;&quot;query&quot;:&quot;$args&quot;,&#39;
+        &#39;&quot;status&quot;:$status,&#39;
+        &#39;&quot;bytes_sent&quot;:$body_bytes_sent,&#39;
+        &#39;&quot;request_time&quot;:$request_time,&#39;
+        &#39;&quot;upstream_addr&quot;:&quot;$upstream_addr&quot;,&#39;
+        &#39;&quot;upstream_status&quot;:&quot;$upstream_status&quot;,&#39;
+        &#39;&quot;upstream_time&quot;:&quot;$upstream_response_time&quot;,&#39;
+        &#39;&quot;user_agent&quot;:&quot;$http_user_agent&quot;&#39;
+        &#39;}&#39;;
+    access_log  /dev/stdout  json_access;
+
+    # ---- general ----------------------------------------------------------
+    server_tokens        off;          # do not advertise the nginx version
+    sendfile             on;
+    tcp_nopush           on;
+    tcp_nodelay          on;
+    keepalive_timeout    65s;
+    keepalive_requests   1000;
+    reset_timedout_connection on;
+
+    # A JSON API does not accept uploads; cap the body and the time a client
+    # may take to send it (slowloris).
+    client_max_body_size    1m;
+    client_body_timeout     10s;
+    client_header_timeout   10s;
+    send_timeout            30s;
+    client_body_buffer_size 16k;
+
+    gzip              on;
+    gzip_vary         on;
+    gzip_proxied      any;
+    gzip_min_length   1024;
+    gzip_comp_level   5;
+    gzip_types        application/json application/problem+json text/plain;
+
+    # ---- abuse limits -----------------------------------------------------
+    # Per-client budget, generous enough for normal API use. Tune from real
+    # traffic; these are defaults, not a substitute for an edge WAF.
+    limit_req_zone   $binary_remote_addr  zone=api_rate:10m  rate=20r/s;
+    limit_conn_zone  $binary_remote_addr  zone=api_conn:10m;
+    limit_req_status  429;
+    limit_conn_status 429;
+
+    # ---- upstream ---------------------------------------------------------
+    upstream api_backend {
+        # Resolved once at startup. After `docker compose up -d --force-recreate
+        # api` the container IP can change, so restart the proxy too (RUNBOOK).
+        server api:8000  max_fails=3  fail_timeout=10s;
+
+        # Connection pool to gunicorn; requires HTTP/1.1 + empty Connection
+        # header below. gunicorn&#39;s keepalive (75s) is deliberately longer.
+        keepalive             32;
+        keepalive_timeout     60s;
+        keepalive_requests    1000;
+    }
+
+    server {
+        listen       8080;
+        server_name  _;
+
+        # Baseline response headers for an API (no cookies, no framing).
+        add_header X-Content-Type-Options  &quot;nosniff&quot;        always;
+        add_header X-Frame-Options         &quot;DENY&quot;           always;
+        add_header Referrer-Policy         &quot;no-referrer&quot;    always;
+        add_header X-Request-Id            $request_id      always;
+
+        # Proxy behaviour shared by every proxied location.
+        proxy_http_version 1.1;
+        proxy_set_header Connection        &quot;&quot;;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        # Overwritten, not appended: with no trusted L7 hop in front of nginx,
+        # a client-supplied X-Forwarded-For chain would be forgeable. If a real
+        # load balancer is added, configure set_real_ip_from/real_ip_header and
+        # switch this to $proxy_add_x_forwarded_for.
+        proxy_set_header X-Forwarded-For   $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host  $host;
+        proxy_set_header X-Forwarded-Port  $server_port;
+        proxy_set_header X-Request-Id      $request_id;
+
+        # Small JSON payloads: fail fast on connect, allow a normal request to
+        # finish, and stay under gunicorn&#39;s 30s worker timeout so a stuck
+        # request surfaces as a 504 here rather than a killed worker there.
+        proxy_connect_timeout  5s;
+        proxy_send_timeout     30s;
+        proxy_read_timeout     30s;
+
+        # Retry only when the request was provably not processed.
+        proxy_next_upstream          error timeout http_502 http_503 http_504;
+        proxy_next_upstream_tries    2;
+        proxy_next_upstream_timeout  10s;
+
+        proxy_buffering          on;
+        proxy_buffers            8 16k;
+        proxy_buffer_size        16k;
+        proxy_busy_buffers_size  32k;
+        proxy_redirect           off;
+
+        # nginx&#39;s own liveness, answered without touching the API. Used by the
+        # proxy container healthcheck.
+        location = /nginx-health {
+            access_log off;
+            return 200 &#39;{&quot;status&quot;:&quot;ok&quot;,&quot;component&quot;:&quot;proxy&quot;}&#39;;
+        }
+
+        # Application health: proxied, but never rate limited or logged so a
+        # probe loop cannot exhaust the client budget or flood the logs.
+        location = /healthz {
+            access_log off;
+            proxy_pass http://api_backend;
+        }
+
+        location / {
+            limit_req   zone=api_rate burst=40 nodelay;
+            limit_conn  api_conn 32;
+            proxy_pass  http://api_backend;
+        }
+
+        # Always answer with JSON, including nginx-generated errors.
+        error_page 429 = @rate_limited;
+        error_page 502 = @upstream_error;
+        error_page 503 = @upstream_unavailable;
+        error_page 504 = @upstream_timeout;
+
+        location @rate_limited {
+            return 429 &#39;{&quot;error&quot;:&quot;rate_limited&quot;,&quot;request_id&quot;:&quot;$request_id&quot;}&#39;;
+        }
+        location @upstream_error {
+            return 502 &#39;{&quot;error&quot;:&quot;bad_gateway&quot;,&quot;request_id&quot;:&quot;$request_id&quot;}&#39;;
+        }
+        location @upstream_unavailable {
+            return 503 &#39;{&quot;error&quot;:&quot;service_unavailable&quot;,&quot;request_id&quot;:&quot;$request_id&quot;}&#39;;
+        }
+        location @upstream_timeout {
+            return 504 &#39;{&quot;error&quot;:&quot;gateway_timeout&quot;,&quot;request_id&quot;:&quot;$request_id&quot;}&#39;;
+        }
+    }
+}
+</code></pre></div><div class="file" id="file-3-11" hidden><p class="path mono">mimo/03-infra-management/requirements.txt</p><pre><code>Flask==3.1.2
+gunicorn==23.0.0
+psycopg2-binary==2.9.10
+redis==6.4.0
+
+</code></pre></div><div class="file" id="file-3-12" hidden><p class="path mono">mimo/03-infra-management/verify_config.py</p><pre><code>&quot;&quot;&quot;Structural verification for this stack. Starts no containers.
+
+Usage:  python3 verify_config.py   (exit 0 = all checks pass)
+&quot;&quot;&quot;
+import json, os, re, subprocess, sys
+
+fails = []
+def check(name, cond, detail=&quot;&quot;):
+    print((&quot;PASS  &quot; if cond else &quot;FAIL  &quot;) + name + ((&quot;   -- &quot; + str(detail)) if not cond else &quot;&quot;))
+    if not cond:
+        fails.append(name)
+
+def strip_comments(text):
+    return re.sub(r&#39;(?m)#[^\n]*&#39;, &#39;&#39;, text)
+
+# ---------- Dockerfile ----------
+df_raw = open(&quot;Dockerfile&quot;).read()
+df = strip_comments(df_raw)
+exec_forms = re.findall(r&#39;^(?:CMD|HEALTHCHECK[^\n]*?\n\s*CMD)\s+(\[.*\])\s*$&#39;, df_raw, re.M)
+ok_json = True
+for e in exec_forms:
+    try: json.loads(e)
+    except Exception: ok_json = False
+check(&quot;Dockerfile: exec-form CMD/HEALTHCHECK are valid JSON arrays&quot;, ok_json and len(exec_forms) == 2, exec_forms)
+check(&quot;Dockerfile: no Flask dev server / FLASK_ENV=development&quot;, &quot;flask run&quot; not in df and &quot;FLASK_ENV&quot; not in df)
+check(&quot;Dockerfile: gunicorn is the process&quot;, &quot;gunicorn&quot; in df)
+check(&quot;Dockerfile: unpinned `pip install &lt;pkgs&gt;` is gone&quot;, re.search(r&#39;pip install (?!--)(?!-r)\S&#39;, df) is None)
+check(&quot;Dockerfile: installs from pinned requirements.txt&quot;, &quot;-r requirements.txt&quot; in df)
+check(&quot;Dockerfile: slim base image&quot;, &quot;python:3.13-slim&quot; in df)
+check(&quot;Dockerfile: multi-stage (builder + runtime)&quot;, len(re.findall(r&#39;(?m)^FROM &#39;, df)) &gt;= 3)
+check(&quot;Dockerfile: runs as a non-root UID&quot;, re.search(r&#39;(?m)^USER 10001:10001$&#39;, df) is not None)
+check(&quot;Dockerfile: USER precedes CMD&quot;, df.index(&quot;USER 10001&quot;) &lt; df.rindex(&quot;CMD [&quot;))
+stages = set(re.findall(r&#39;(?m)^FROM \S+ AS (\S+)&#39;, df))
+refs = set(re.findall(r&#39;--from=(\S+)&#39;, df))
+check(&quot;Dockerfile: every --from= names a defined stage&quot;, refs &lt;= stages, f&quot;{refs} vs {stages}&quot;)
+check(&quot;Dockerfile: image-level HEALTHCHECK present&quot;, &quot;HEALTHCHECK&quot; in df)
+
+# ---------- gunicorn.conf.py ----------
+g = open(&quot;gunicorn.conf.py&quot;).read()
+ns = {}
+os.environ.pop(&quot;APP_PORT&quot;, None)
+exec(compile(g, &quot;gunicorn.conf.py&quot;, &quot;exec&quot;), ns)
+check(&quot;gunicorn.conf.py: imports and evaluates&quot;, True)
+check(&quot;gunicorn.conf.py: default bind 0.0.0.0:8000&quot;, ns[&quot;bind&quot;] == &quot;0.0.0.0:8000&quot;, ns[&quot;bind&quot;])
+check(&quot;gunicorn.conf.py: keepalive(75s) &gt; nginx upstream keepalive_timeout(60s)&quot;, ns[&quot;keepalive&quot;] &gt; 60, ns[&quot;keepalive&quot;])
+check(&quot;gunicorn.conf.py: timeout(30s) &lt;= nginx proxy_read_timeout(30s)&quot;, ns[&quot;timeout&quot;] &lt;= 30, ns[&quot;timeout&quot;])
+check(&quot;gunicorn.conf.py: graceful_timeout &lt;= compose stop_grace_period(30s)&quot;, ns[&quot;graceful_timeout&quot;] &lt;= 30, ns[&quot;graceful_timeout&quot;])
+check(&quot;gunicorn.conf.py: worker_tmp_dir on the tmpfs&quot;, ns[&quot;worker_tmp_dir&quot;] == &quot;/tmp&quot;, ns[&quot;worker_tmp_dir&quot;])
+check(&quot;gunicorn.conf.py: logs to stdout/stderr&quot;, ns[&quot;accesslog&quot;] == &quot;-&quot; and ns[&quot;errorlog&quot;] == &quot;-&quot;)
+
+# ---------- nginx.conf (structural parse) ----------
+nx = open(&quot;nginx.conf&quot;).read()
+body = strip_comments(nx)
+depth, buf, quote, errors = 0, &quot;&quot;, None, []
+for ch in body:
+    if quote:
+        buf += ch
+        if ch == quote: quote = None
+        continue
+    if ch in &quot;&#39;\&quot;&quot;:
+        quote = ch; buf += ch; continue
+    if ch == &quot;;&quot;:
+        buf = &quot;&quot;
+    elif ch == &quot;{&quot;:
+        depth += 1; buf = &quot;&quot;
+    elif ch == &quot;}&quot;:
+        if buf.strip(): errors.append(&quot;unterminated directive before &#39;}&#39;: &quot; + buf.strip()[:60])
+        depth -= 1; buf = &quot;&quot;
+        if depth &lt; 0: errors.append(&quot;unbalanced closing brace&quot;)
+    else:
+        buf += ch
+check(&quot;nginx.conf: blocks balanced and every directive terminated&quot;, depth == 0 and not errors and not buf.strip(),
+      errors or f&quot;depth={depth} trailing={buf.strip()[:60]!r}&quot;)
+named = set(re.findall(r&#39;location (@\w+)&#39;, nx))
+referenced = set(re.findall(r&#39;error_page [^;]*?=\s*(@\w+);&#39;, nx))
+check(&quot;nginx.conf: every error_page target has a named location&quot;, referenced &lt;= named and referenced, referenced - named)
+check(&quot;nginx.conf: pid/temp paths under /tmp (unprivileged + read-only rootfs)&quot;,
+      &quot;/tmp/nginx.pid&quot; in nx and nx.count(&quot;_temp_path      /tmp&quot;) + nx.count(&quot;_temp_path  /tmp&quot;) + nx.count(&quot;_temp_path        /tmp&quot;) &gt;= 1)
+check(&quot;nginx.conf: listens on 8080 (no privileged port)&quot;, re.search(r&#39;listen\s+8080;&#39;, nx) is not None and not re.search(r&#39;listen\s+80;&#39;, nx))
+for token, label in [(&quot;proxy_connect_timeout&quot;, &quot;connect timeout&quot;), (&quot;proxy_read_timeout&quot;, &quot;read timeout&quot;),
+                     (&quot;proxy_send_timeout&quot;, &quot;send timeout&quot;), (&quot;client_max_body_size&quot;, &quot;body size cap&quot;),
+                     (&quot;client_body_timeout&quot;, &quot;slow-body timeout&quot;), (&quot;limit_req_zone&quot;, &quot;rate limit&quot;),
+                     (&quot;limit_conn_zone&quot;, &quot;connection limit&quot;), (&quot;server_tokens&quot;, &quot;version hiding&quot;),
+                     (&quot;proxy_http_version&quot;, &quot;HTTP/1.1 upstream&quot;), (&quot;X-Forwarded-Proto&quot;, &quot;proto header&quot;),
+                     (&quot;X-Real-IP&quot;, &quot;real ip header&quot;), (&quot;X-Request-Id&quot;, &quot;request id&quot;),
+                     (&quot;X-Content-Type-Options&quot;, &quot;nosniff&quot;)]:
+    check(f&quot;nginx.conf: {label} configured ({token})&quot;, token in nx)
+check(&quot;nginx.conf: keepalive upstream pool needs empty Connection header&quot;,
+      re.search(r&#39;keepalive\s+32;&#39;, nx) is not None and re.search(r&#39;proxy_set_header Connection\s+&quot;&quot;;&#39;, nx) is not None)
+check(&quot;nginx.conf: X-Forwarded-For is overwritten, not appended (no client spoofing)&quot;,
+      &quot;proxy_set_header X-Forwarded-For   $remote_addr;&quot; in nx and &quot;$proxy_add_x_forwarded_for&quot; not in strip_comments(nx))
+check(&quot;nginx.conf: health endpoints are not rate limited&quot;,
+      re.search(r&#39;location = /healthz \{[^}]*access_log off;[^}]*\}&#39;, nx, re.S) is not None)
+
+# ---------- compose ----------
+env = dict(os.environ, POSTGRES_USER=&quot;app&quot;, POSTGRES_PASSWORD=&quot;validate-only&quot;,
+           POSTGRES_DB=&quot;app&quot;, REDIS_PASSWORD=&quot;validate-only&quot;)
+out = subprocess.run([&quot;docker&quot;, &quot;compose&quot;, &quot;config&quot;, &quot;--format&quot;, &quot;json&quot;], capture_output=True, text=True, env=env)
+check(&quot;compose: `docker compose config` renders without error&quot;, out.returncode == 0, out.stderr.strip()[:300])
+missing = subprocess.run([&quot;docker&quot;, &quot;compose&quot;, &quot;config&quot;, &quot;--quiet&quot;], capture_output=True, text=True,
+                         env={k: v for k, v in os.environ.items() if not k.startswith((&quot;POSTGRES_&quot;, &quot;REDIS_&quot;))})
+check(&quot;compose: missing credentials abort the run (fail fast)&quot;, missing.returncode != 0, missing.stdout[:200])
+cfg = json.loads(out.stdout); svcs = cfg[&quot;services&quot;]
+check(&quot;compose: same four services, nothing added&quot;, set(svcs) == {&quot;proxy&quot;, &quot;api&quot;, &quot;db&quot;, &quot;cache&quot;}, set(svcs))
+pub = {n: [p.get(&quot;published&quot;) for p in s.get(&quot;ports&quot;, [])] for n, s in svcs.items()}
+check(&quot;compose: only the proxy publishes a host port&quot;, [n for n, p in pub.items() if p] == [&quot;proxy&quot;], pub)
+check(&quot;compose: proxy binds loopback by default&quot;, svcs[&quot;proxy&quot;][&quot;ports&quot;][0][&quot;host_ip&quot;] == &quot;127.0.0.1&quot;, svcs[&quot;proxy&quot;][&quot;ports&quot;])
+check(&quot;compose: Postgres 5432 not published&quot;, not svcs[&quot;db&quot;].get(&quot;ports&quot;))
+check(&quot;compose: Redis 6379 not published&quot;, not svcs[&quot;cache&quot;].get(&quot;ports&quot;))
+check(&quot;compose: all four services have healthchecks&quot;, all(&quot;healthcheck&quot; in s for s in svcs.values()))
+check(&quot;compose: api starts only when db and cache are healthy&quot;,
+      all(svcs[&quot;api&quot;][&quot;depends_on&quot;][d][&quot;condition&quot;] == &quot;service_healthy&quot; for d in (&quot;db&quot;, &quot;cache&quot;)))
+check(&quot;compose: proxy starts only when api is healthy&quot;, svcs[&quot;proxy&quot;][&quot;depends_on&quot;][&quot;api&quot;][&quot;condition&quot;] == &quot;service_healthy&quot;)
+check(&quot;compose: restart policy on every service&quot;, all(s.get(&quot;restart&quot;) == &quot;unless-stopped&quot; for s in svcs.values()))
+check(&quot;compose: log rotation on every service&quot;, all(s[&quot;logging&quot;][&quot;options&quot;][&quot;max-size&quot;] == &quot;10m&quot; for s in svcs.values()))
+check(&quot;compose: cpu/memory/pids limits on every service&quot;,
+      all({&quot;cpus&quot;, &quot;memory&quot;, &quot;pids&quot;} &lt;= set(s[&quot;deploy&quot;][&quot;resources&quot;][&quot;limits&quot;]) for s in svcs.values()))
+check(&quot;compose: no-new-privileges on every service&quot;, all(&quot;no-new-privileges:true&quot; in s.get(&quot;security_opt&quot;, []) for s in svcs.values()))
+check(&quot;compose: capabilities dropped on every service&quot;, all(s.get(&quot;cap_drop&quot;) == [&quot;ALL&quot;] for s in svcs.values()))
+check(&quot;compose: Postgres data on the named volume `pgdata`&quot;,
+      any(v.get(&quot;source&quot;) == &quot;pgdata&quot; and v[&quot;target&quot;].startswith(&quot;/var/lib/postgresql&quot;) for v in svcs[&quot;db&quot;][&quot;volumes&quot;])
+      and &quot;pgdata&quot; in cfg.get(&quot;volumes&quot;, {}))
+check(&quot;compose: data network is `internal: true`&quot;, cfg[&quot;networks&quot;][&quot;backend&quot;][&quot;internal&quot;] is True)
+check(&quot;compose: proxy has no route to db/cache&quot;, set(svcs[&quot;proxy&quot;][&quot;networks&quot;]) == {&quot;edge&quot;}, list(svcs[&quot;proxy&quot;][&quot;networks&quot;]))
+check(&quot;compose: db and cache are on the data network only&quot;,
+      set(svcs[&quot;db&quot;][&quot;networks&quot;]) == {&quot;backend&quot;} and set(svcs[&quot;cache&quot;][&quot;networks&quot;]) == {&quot;backend&quot;})
+check(&quot;compose: api is the only bridge between segments&quot;, set(svcs[&quot;api&quot;][&quot;networks&quot;]) == {&quot;edge&quot;, &quot;backend&quot;})
+check(&quot;compose: api and proxy filesystems are read-only&quot;, svcs[&quot;api&quot;][&quot;read_only&quot;] and svcs[&quot;proxy&quot;][&quot;read_only&quot;])
+check(&quot;compose: nginx.conf is mounted read-only&quot;, all(v.get(&quot;read_only&quot;) for v in svcs[&quot;proxy&quot;][&quot;volumes&quot;]))
+check(&quot;compose: api drain window &gt;= gunicorn graceful_timeout&quot;, svcs[&quot;api&quot;][&quot;stop_grace_period&quot;] in (&quot;30s&quot;, &quot;0m30s&quot;), svcs[&quot;api&quot;][&quot;stop_grace_period&quot;])
+check(&quot;compose: redis requires a password and evicts instead of OOM&quot;,
+      &quot;--requirepass&quot; in &quot; &quot;.join(svcs[&quot;cache&quot;][&quot;command&quot;]) and &quot;allkeys-lru&quot; in &quot; &quot;.join(svcs[&quot;cache&quot;][&quot;command&quot;]))
+
+# ---------- secret hygiene ----------
+src = open(&quot;compose.yaml&quot;).read()
+check(&quot;source: no credential literals in compose.yaml&quot;,
+      &quot;admin:password&quot; not in src and &quot;POSTGRES_PASSWORD: password&quot; not in src and &quot;@db:5432&quot; in src)
+check(&quot;source: every credential is a ${...} reference with a fail-fast default&quot;,
+      src.count(&quot;POSTGRES_PASSWORD:?&quot;) &gt;= 2 and src.count(&quot;REDIS_PASSWORD:?&quot;) &gt;= 2)
+check(&quot;rendered: .env value flows into DATABASE_URL&quot;, &quot;validate-only@db:5432&quot; in out.stdout)
+gi, di = open(&quot;.gitignore&quot;).read(), open(&quot;.dockerignore&quot;).read()
+check(&quot;.gitignore excludes .env and secrets&quot;, &quot;.env&quot; in gi and &quot;secrets/&quot; in gi and &quot;!.env.example&quot; in gi)
+check(&quot;.dockerignore excludes .env, .git, secrets, backups&quot;,
+      all(x in di for x in (&quot;.env&quot;, &quot;.git&quot;, &quot;secrets/&quot;, &quot;backups/&quot;)))
+check(&quot;.env.example documents every required variable&quot;,
+      all(k in open(&quot;.env.example&quot;).read() for k in (&quot;POSTGRES_USER&quot;, &quot;POSTGRES_PASSWORD&quot;, &quot;POSTGRES_DB&quot;, &quot;REDIS_PASSWORD&quot;, &quot;HTTP_BIND_ADDR&quot;, &quot;APP_VERSION&quot;)))
+check(&quot;no .env checked in beside the example&quot;, not os.path.exists(&quot;.env&quot;))
+
+print(&quot;FAILURES: %d&quot; % len(fails))
+for f in fails: print(&quot;  -&quot;, f)
+sys.exit(1 if fails else 0)
+</code></pre></div></section></div></section></main><script src="../app.js"></script></body></html>

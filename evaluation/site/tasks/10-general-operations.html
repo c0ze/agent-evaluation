@@ -1,0 +1,2792 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10 General operations · Agent evaluation</title><link rel="stylesheet" href="../style.css"></head>
+<body><header class="top"><a class="brand" href="../index.html">Agent evaluation</a>
+<nav aria-label="Tasks"><a href="../tasks/01-feature-building.html" title="Feature building">01</a><a href="../tasks/02-bug-fixing.html" title="Bug fixing">02</a><a href="../tasks/03-infra-management.html" title="Infra management">03</a><a href="../tasks/04-project-maintenance.html" title="Project maintenance">04</a><a href="../tasks/05-technical-writing.html" title="Technical writing">05</a><a href="../tasks/06-product-planning.html" title="Product planning">06</a><a href="../tasks/07-creative-writing.html" title="Creative writing">07</a><a href="../tasks/08-social-media.html" title="Social media">08</a><a href="../tasks/09-incident-analysis.html" title="Incident analysis">09</a><a href="../tasks/10-general-operations.html" title="General operations">10</a><a href="../tasks/11-frontend-operations.html" title="Frontend operations">11</a><a href="../tasks/12-frontend-editorial.html" title="Frontend editorial">12</a><a href="../tasks/13-frontend-playful.html" title="Frontend playful">13</a></nav></header>
+<main><section class="hero"><p class="muted">Task 10</p><h1>General operations</h1></section>
+    <details class="card brief" open><summary>The brief</summary><div class="prose"><h1>Task 10 — General agent work: synthesize a messy operating week</h1>
+<p>Read <code>INBOX.md</code>. Produce:</p>
+<ul>
+<li><code>WEEK_PLAN.md</code>: prioritized plan for Monday–Friday with dependencies, focus
+blocks, deadlines, and contingency space.</li>
+<li><code>DECISIONS.md</code>: confirmed decisions, unresolved contradictions, and questions
+assigned to the right person.</li>
+<li><code>DRAFT_REPLY.md</code>: one concise message to the team aligning expectations and
+surfacing the decisions needed. It should sound human and avoid overpromising.</li>
+</ul>
+<p>Respect stated working hours and do not silently invent availability. Distinguish
+hard deadlines from preferences. Write <code>RESPONSE.md</code> with the reasoning behind
+your top three priorities. Work only in this directory.</p>
+</div>
+      <p class="muted">Inputs given: <a href="../../../_templates/10-general-operations/INBOX.md" target="_blank" rel="noopener" class="mono">INBOX.md</a></p></details>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">mimo</th></tr>
+    <tr><th scope="row">scheduling feasibility <span class="muted">(4)</span></th><td class="num heat" style="--h:1.00">4</td><td class="num heat" style="--h:1.00">4</td><td class="num heat" style="--h:0.79">3.5</td><td class="num heat" style="--h:0.58">3</td></tr><tr><th scope="row">prioritization <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:0.58">1.5</td></tr><tr><th scope="row">contradiction handling <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.58">1.5</td></tr><tr><th scope="row">team communication <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.58">1.5</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">10</td><td class="num">9.5</td><td class="num">9</td><td class="num">7.5</td></tr></table></div>
+    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = Sonnet 5.5, B = mimo, C = Fable 5.1, D = Opus 5.5.</p><div class="prose"><p>Constraints: hours 09:30-17:30 Mon-Fri; Wed 13:00-17:30 unavailable. Recurring meetings Mon 10:00-10:30, Tue 16:00-17:00, Thu 09:30-10:00. Preferences: at most 4h of meetings a day, lunch at least 45 min. Board numbers are a hard deadline, Thu 12:00, and need 2 uninterrupted hours after Lina&#39;s corrections (Tue by 11:00; the vendor-delay status is known Mon 15:00). Demo: Wed 15:00 is preferred but falls inside the user&#39;s unavailability (contradiction), Thu 16:00 is the alternative; the 90-min rehearsal needs Sam, who is unavailable Tue and available Wed 10:00-12:00, so the Wednesday morning can never give 2 contiguous free hours. Security patch is a hard deadline, Fri 16:00: review 60-90 min, then QA half day (QA out Thu), then a 30-min change window. CEO outline: &#39;early this week&#39;, 3 focused hours, must be sent by Tue 14:00 for the Tue 16:00 review (soft). Support: renewals response Monday (hard), two others with Wed SLAs (times unstated), 45 min each. Ambiguities: whether the Tue 16:00 leadership meeting is the recurring one; whether the user or Sam must attend the demo; the demo length; QA&#39;s actual free days; whether the change window needs the user. All four submissions avoid hard slot conflicts on their main path. The differences are in the fallback plans (B&#39;s fragmented board recovery, D&#39;s reliance on skipping the Thursday meeting), the depth of the contradictions surfaced, and how well each draft reply handles length and honesty.</p>
+</div></details></section>
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">10</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9.5</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">7.5</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
+        <p>I found no conflicts in the schedule. The renewals escalation is on Monday, the patch review on Monday, the 3h strategy draft on Monday afternoon, and the board block is Tue 11:00-13:00 with a real 2h fallback on Tue 13:45-15:45 and a Thu 10:00-12:00 reserve. The rehearsal is Wed 10:00-11:30 and the demo is proposed for Thu 16:00. The ranking and its reasoning are sound (board first because it has the weakest fallback). Contradictions are listed thoroughly with named owners, and the draft reply is short and honest.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Every slot sits inside working hours, Wed 13:00+ is untouched, lunch is 45 min every day and the meeting peak is 1.5h</li><li>Correctly shows that Wednesday cannot hold 2 uninterrupted hours, so it keeps a real 2h fallback on Tue 13:45-15:45 and on Thu 10:00-12:00</li><li>Separates ranking from running order: the renewals escalation ranks third but is scheduled first because it is due Monday</li><li>Flags less obvious ambiguities: whether the Tue 16:00 leadership meeting is the recurring one, whether Sam must attend the demo, the demo length, and the SLA cut-off times</li><li>The draft reply is concise and states plainly: &#39;I can&#39;t promise it all fits if the corrections or QA slip&#39;</li></ul></div><div><h4>Weaknesses</h4><ul><li>Proposes a Wed 09:30 change window just before a stretch of unavailability, though it flags this risk itself (X8)</li><li>Some of the documents are long</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Mon 10:30-11:15 renewals escalation (Monday hard deadline met); Mon 11:15-12:45 patch review; Mon 13:30-15:00 and 15:15-16:45 strategy (3h)</li><li>Tue 11:00-13:00 board block after Lina&#39;s 11:00 corrections; Tue 13:45-15:45 fallback is a full 2h block before the 16:00 meeting</li><li>Wed 10:00-11:30 rehearsal inside Sam&#39;s 10:00-12:00 window; Wed lunch 12:00-12:45; nothing after 13:00</li><li>Thu 09:30 recurring meeting, 10:00-12:00 board reserve, 16:00 demo; Fri change window latest start 14:30</li></ul></details>
+        <h4>Objective checks</h4>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="0-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="0-1" aria-selected="false">DECISIONS.md</button><button role="tab" data-file="0-2" aria-selected="false">DRAFT_REPLY.md</button><button role="tab" data-file="0-3" aria-selected="false">INBOX.md</button><button role="tab" data-file="0-4" aria-selected="false">TASK.md</button><button role="tab" data-file="0-5" aria-selected="false">WEEK_PLAN.md</button></div>
+        <div class="file" id="file-0-0" ><p class="path mono">sonnet-5.5/10-general-operations/RESPONSE.md</p><div class="prose"><h1>Reasoning Behind the Top Three Priorities</h1>
+<p>I ranked by four things: how hard the deadline is, how little slack the work has, how much of it depends on people I do not control, and how expensive a miss would be. The ranking is not the same as the running order. Monday&#39;s order is set by which item is earliest and smallest.</p>
+<h2>1. Board numbers final by Thursday 12:00</h2>
+<ul>
+<li><strong>Hard and unforgiving.</strong> Finance says &quot;must&quot;, and the notes give no fallback.</li>
+<li><strong>Externally gated.</strong> I cannot start until Lina&#39;s corrections land (Tuesday by 11:00, unless the vendor export is late). I will not know whether they are late until Monday 15:00.</li>
+<li><strong>It has the worst fallback.</strong> Wednesday cannot hold 2 uninterrupted hours. The rehearsal splits the morning and the afternoon is unavailable. If the corrections slip past Tuesday, the only clean window is Thursday 10:00-12:00, right after a 09:30 meeting and with zero slack.</li>
+<li><strong>What I did about it.</strong> I protected Tuesday 11:00-13:00 above everything else. I left Tuesday 13:45-15:45 open as a fallback for late corrections. I held Thursday 10:00-12:00 as reserve even if the numbers are finished early. I also put the Monday 15:00 checkpoint in the plan, so a late export is handled Monday, not Thursday.</li>
+</ul>
+<h2>2. Security patch live by Friday 16:00</h2>
+<ul>
+<li><strong>Hard, and it has the longest chain.</strong> Review (60-90 min), then half a day of QA, then a 30 min change window. Three steps, with QA out on Thursday. That leaves QA on Monday, Tuesday, Wednesday or Friday.</li>
+<li><strong>Each day of delay removes options.</strong> If QA slips to Friday, there is no retry before 16:00. This is the only priority where an early small action, the Monday review, buys a lot of later safety.</li>
+<li><strong>What I did about it.</strong> I put the review Monday 11:15-12:45, budgeted at the 90 min upper bound, so QA can start as early as possible. The Monday 09:30 triage includes asking Engineering to book QA. I set Friday 14:30 as the latest change-window start, so 90 min is left for a retry or rollback.</li>
+<li><strong>Why it is not first.</strong> Its deadline is later than the board numbers, and it has one more fallback day (Friday). If both were at risk at once, I would protect the board numbers first, because they have less slack.</li>
+</ul>
+<h2>3. Renewals escalation response on Monday</h2>
+<ul>
+<li><strong>Earliest hard deadline in the week, and small.</strong> It takes about 45 min and has revenue impact. Missing it costs a lot relative to the effort.</li>
+<li><strong>Why it is ranked third but scheduled first.</strong> It is the least difficult and least uncertain of the three, so it ranks lowest. Because it is due Monday and costs only 45 min, I do it at 10:30, right after the recurring meeting, before anything can push it out.</li>
+<li><strong>The other two escalations</strong> have Wednesday SLAs. I schedule both by Tuesday 11:00, because I am gone after 13:00 Wednesday and the SLA times are unknown.</li>
+</ul>
+<h2>What I deliberately ranked lower</h2>
+<ul>
+<li><strong>Strategy outline.</strong> It is a soft ask (&quot;early this week&quot;). The 14:00 Tuesday cut-off only matters if the outline is to be reviewed at the 16:00 meeting. It is still the largest block of time (3 h), and Monday afternoon is the only place it fits, because Tuesday morning cannot hold 3 focused hours before 14:00. So it is scheduled, but it is the first thing I would send as a rough draft if the week goes wrong.</li>
+<li><strong>Customer demo.</strong> The rehearsal is fixed (Wednesday 10:00-11:30, inside Sam&#39;s only stated window). The demo date is a preference, and the preferred slot, Wednesday 15:00, is inside my unavailable time. I proposed Thursday 16:00. That is Product&#39;s and the customer&#39;s decision, not something I can lock in myself.</li>
+</ul>
+<h2>What I did not invent</h2>
+<ul>
+<li>I did not assume QA&#39;s free days or hours. I did not assume Sam&#39;s availability outside Wednesday 10:00-12:00. I did not assume the demo length, the SLA cut-off times, or who attends the change window. I did not plan any work outside 09:30-17:30 or after 13:00 Wednesday.</li>
+<li>Each of these is listed as a question with a named owner in <code>DECISIONS.md</code> and appears in <code>DRAFT_REPLY.md</code>.</li>
+<li>I assumed the Tuesday 16:00 leadership meeting is the recurring Tuesday 16:00-17:00 meeting, and I flagged that as a question.</li>
+</ul>
+</div></div><div class="file" id="file-0-1" hidden><p class="path mono">sonnet-5.5/10-general-operations/DECISIONS.md</p><div class="prose"><h1>Decisions, Contradictions and Questions</h1>
+<p>Source: <code>INBOX.md</code> only. &quot;Confirmed&quot; here means stated in the notes. It does not mean agreed by the people affected. Nobody has yet confirmed the plan built on top of those facts.</p>
+<h2>1. Confirmed (stated in the notes; treated as fixed)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Fact or decision</th>
+<th>Source</th>
+<th>Consequence for the plan</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C1</td>
+<td>Working hours are 09:30-17:30, Monday to Friday.</td>
+<td>Notes</td>
+<td>Nothing planned outside them.</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>Wednesday 13:00-17:30 is unavailable.</td>
+<td>Notes</td>
+<td>Only 3.5 h usable Wednesday. Wednesday 15:00 demo is not possible for me.</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Board numbers must be final by Thursday 12:00, and need 2 uninterrupted hours after Lina&#39;s corrections.</td>
+<td>Finance</td>
+<td>Protected block Tuesday 11:00-13:00, with Thursday 10:00-12:00 held as reserve.</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>Lina&#39;s corrections are due Tuesday by 11:00, unless the vendor export is late. She will know by Monday 15:00.</td>
+<td>Lina</td>
+<td>Monday 15:00 checkpoint.</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>Sam is unavailable Tuesday. Sam can rehearse Wednesday 10:00-12:00.</td>
+<td>Sam</td>
+<td>Rehearsal Wednesday 10:00-11:30.</td>
+</tr>
+<tr>
+<td>C6</td>
+<td>The rehearsal takes 90 min and Sam must join.</td>
+<td>Product</td>
+<td>As above.</td>
+</tr>
+<tr>
+<td>C7</td>
+<td>The security patch must deploy by Friday 16:00. It needs my review (60-90 min), then QA (half a day), then a 30 min change window.</td>
+<td>Engineering</td>
+<td>Review Monday.</td>
+</tr>
+<tr>
+<td>C8</td>
+<td>QA is unavailable Thursday.</td>
+<td>Engineering</td>
+<td>No QA or re-QA on Thursday.</td>
+</tr>
+<tr>
+<td>C9</td>
+<td>The renewals escalation needs a response Monday. The other two escalations have Wednesday SLAs. Each takes about 45 min.</td>
+<td>Support</td>
+<td>Renewals Monday 10:30. The other two by Tuesday.</td>
+</tr>
+<tr>
+<td>C10</td>
+<td>The customer can do Thursday 16:00 as well as the preferred Wednesday 15:00.</td>
+<td>Product</td>
+<td>Thursday 16:00 is the only workable demo slot for me.</td>
+</tr>
+<tr>
+<td>C11</td>
+<td>The recurring meetings are Monday 10:00-10:30, Tuesday 16:00-17:00 and Thursday 09:30-10:00.</td>
+<td>Notes</td>
+<td>Fixed in the plan.</td>
+</tr>
+</tbody></table>
+<h2>2. Planning decisions I have made (mine to make; easy to reverse)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Decision</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D1</td>
+<td>Do the patch review Monday 11:15-12:45.</td>
+<td>It starts the longest chain, and Thursday is a dead day for QA.</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Do the strategy draft on Monday afternoon, in two 90 min blocks, with a 15 min break for Lina&#39;s status.</td>
+<td>Tuesday morning cannot hold 3 focused hours before the 14:00 cut-off, because the finance block starts at 11:00.</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Treat the CEO&#39;s &quot;early this week&quot; as a soft ask, and treat 14:00 Tuesday as a cut-off only for review at the 16:00 meeting.</td>
+<td>Nothing in the notes makes it a hard deadline.</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Treat Wednesday 15:00 for the demo as unavailable, and propose Thursday 16:00.</td>
+<td>Wednesday 15:00 falls in my stated unavailable time.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Clear both Wednesday SLA escalations by Tuesday 11:00.</td>
+<td>I am gone after 13:00 Wednesday and the SLA times are unknown.</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Keep Thursday 10:00-12:00 free as reserve, even if the numbers are finished Tuesday.</td>
+<td>It is the only clean fallback if corrections slip.</td>
+</tr>
+<tr>
+<td>D7</td>
+<td>Start the patch change window no later than Friday 14:30 in the fallback path.</td>
+<td>It leaves 90 min for a retry or rollback before 16:00.</td>
+</tr>
+<tr>
+<td>D8</td>
+<td>Keep meetings at 4 h a day or less, and lunch at 45 min or more, on every day.</td>
+<td>These are preferences, and the plan meets them at no cost.</td>
+</tr>
+</tbody></table>
+<h2>3. Unresolved contradictions and risks</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Why it cannot be settled from the notes</th>
+<th>Who resolves it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>X1</td>
+<td><strong>Demo timing.</strong> Product prefers Wednesday 15:00, which is inside my unavailable time. Thursday 16:00 works for the customer.</td>
+<td>It is not clear whether I must present, or whether someone else could cover Wednesday.</td>
+<td>Product</td>
+</tr>
+<tr>
+<td>X2</td>
+<td><strong>Who Sam must join.</strong> &quot;Demo environment needs a 90-minute rehearsal and Sam must join.&quot; Sam&#39;s only stated availability is Wednesday 10:00-12:00. That fits the rehearsal, but the notes do not say whether Sam is also needed at the demo.</td>
+<td>If Sam is needed at Thursday 16:00, Sam&#39;s Thursday availability is unknown.</td>
+<td>Product, then Sam</td>
+</tr>
+<tr>
+<td>X3</td>
+<td><strong>Finance depends on an external vendor.</strong> Finance needs 2 clean hours after Tuesday&#39;s corrections. Lina&#39;s date is conditional on the vendor export. If it slips, Wednesday cannot host 2 uninterrupted hours (the rehearsal splits the morning, the afternoon is unavailable). The only fallback is Thursday 10:00-12:00 with zero slack, right after the 09:30 meeting.</td>
+<td>The vendor status is unknown until Monday 15:00.</td>
+<td>Lina, then Finance</td>
+</tr>
+<tr>
+<td>X4</td>
+<td><strong>Patch chain has no stated QA schedule.</strong> QA needs half a day and is out Thursday, but the notes do not say which half days QA has free on Monday, Tuesday, Wednesday or Friday. The change window has no stated date, and I am unavailable Wednesday afternoon. If QA starts Friday there is no retry.</td>
+<td>Not stated.</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>X5</td>
+<td><strong>&quot;Tuesday 16:00 leadership meeting&quot; vs the recurring Tuesday 16:00-17:00 meeting.</strong> I assumed they are the same meeting.</td>
+<td>Not stated.</td>
+<td>CEO or the meeting organiser</td>
+</tr>
+<tr>
+<td>X6</td>
+<td><strong>Support SLAs.</strong> Cut-off times are not given for Monday&#39;s renewals response or the Wednesday SLAs. It is also unclear whether 45 min means the response or the full resolution.</td>
+<td>Not stated.</td>
+<td>Support</td>
+</tr>
+<tr>
+<td>X7</td>
+<td><strong>Demo length is not given.</strong> I held 60 min at Thursday 16:00.</td>
+<td>Not stated.</td>
+<td>Product</td>
+</tr>
+<tr>
+<td>X8</td>
+<td><strong>Deploying Wednesday morning leaves me unreachable that afternoon</strong> if a post-deploy problem appears. The alternative is a Friday deploy, which leaves no retry room. Neither is clearly better.</td>
+<td>It depends on who else can respond.</td>
+<td>Engineering</td>
+</tr>
+</tbody></table>
+<h2>4. Questions by owner</h2>
+<p><strong>Lina</strong></p>
+<ol>
+<li>Is the vendor export on track for Tuesday 11:00? Please tell me by Monday 15:00.</li>
+<li>If it is late, what is the realistic arrival time? If it is Tuesday afternoon, I can still fit the finance block by about 13:45.</li>
+</ol>
+<p><strong>Finance</strong>
+3. Is Thursday 12:00 fixed, or is there any margin?
+4. If the corrections are late, could the board numbers be final in a shorter block if I have partial data earlier?
+5. Who signs off the final numbers, and when do they need them before 12:00 Thursday?</p>
+<p><strong>Product</strong>
+6. Please confirm Thursday 16:00 with the customer, and how long the demo runs. (X1, X7)
+7. Can someone else cover Wednesday 15:00, or is my attendance required? I assume it is required, so the plan defaults to Thursday.
+8. Does Sam need to be at the demo itself, or only at the rehearsal? (X2)</p>
+<p><strong>Sam</strong>
+9. Does Wednesday 10:00-11:30 work for the rehearsal? Are you free Thursday 16:00, if that turns out to matter?</p>
+<p><strong>Engineering / QA lead</strong>
+10. Can QA start the patch Monday afternoon or Tuesday, and which half day? Wednesday morning is the fallback.
+11. When is the 30 min change window, and who needs to attend? I propose Wednesday 09:30, with Friday before 14:30 as the fallback. (X4, X8)
+12. Who is on hand if the patch causes a problem while I am unavailable Wednesday afternoon?</p>
+<p><strong>CEO</strong>
+13. Is a rough first draft acceptable for the Tuesday review? I would rather send something early than late.
+14. What form do you want the outline in (length, structure)? The 3 h estimate assumes a first draft, not a finished paper.
+15. Is the Tuesday 16:00 review the recurring leadership meeting? (X5)</p>
+<p><strong>Support</strong>
+16. What time on Monday is the renewals response due, and what are the cut-off times on Wednesday&#39;s two SLAs?
+17. Does the 45 min per escalation cover a full resolution or only the first response? Is anyone else able to pick up an escalation if Monday overruns?</p>
+<p><strong>Meeting organiser, Thursday 09:30</strong>
+18. Only if Lina&#39;s corrections are late: can this meeting be skipped or shortened, so that Thursday 10:00-12:00 is not the only clean window?</p>
+<h2>5. Decisions needed by (in order)</h2>
+<table>
+<thead>
+<tr>
+<th>By</th>
+<th>Decision</th>
+<th>From</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Monday 15:00</td>
+<td>Is the vendor export late?</td>
+<td>Lina</td>
+</tr>
+<tr>
+<td>Monday end of day</td>
+<td>QA slot booked for the patch</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>Tuesday 11:00</td>
+<td>Corrections received, or the fallback slot chosen</td>
+<td>Lina and me</td>
+</tr>
+<tr>
+<td>Wednesday 09:30</td>
+<td>Rehearsal confirmed. Change-window date confirmed. Demo slot confirmed.</td>
+<td>Sam, Engineering, Product</td>
+</tr>
+</tbody></table>
+</div></div><div class="file" id="file-0-2" hidden><p class="path mono">sonnet-5.5/10-general-operations/DRAFT_REPLY.md</p><div class="prose"><p><strong>Subject: This week: my plan, and a few things I need from you</strong></p>
+<p>Hi all,</p>
+<p>Here&#39;s how I&#39;m planning the week. I&#39;m working 09:30-17:30 as usual and offline from Wednesday 13:00.</p>
+<p>What I&#39;m aiming for:</p>
+<ul>
+<li><strong>Monday:</strong> the renewals escalation response, the security patch review, and a first draft of the strategy outline.</li>
+<li><strong>Tuesday:</strong> the outline goes out ahead of the 16:00 leadership meeting, and I do the board numbers once Lina&#39;s corrections land.</li>
+<li><strong>Wednesday morning:</strong> demo rehearsal with Sam.</li>
+<li><strong>Thursday:</strong> board numbers due at 12:00, demo at 16:00.</li>
+<li><strong>Friday:</strong> mostly kept as slack for the patch, which has to be live by 16:00.</li>
+</ul>
+<p>Where I need your help:</p>
+<ul>
+<li><strong>Lina:</strong> could you tell me by Monday 15:00 whether the vendor export is running late? If the corrections slip past Tuesday, Thursday 10:00-12:00 is the only clean two-hour window I have left, so the board numbers get very tight.</li>
+<li><strong>Product:</strong> Wednesday 15:00 falls in my time off, so I&#39;d like to lock in Thursday 16:00 with the customer. Could you confirm with them, and tell me how long it runs and whether Sam is needed at the demo itself or just the rehearsal?</li>
+<li><strong>Sam:</strong> does Wednesday 10:00-11:30 work for the rehearsal?</li>
+<li><strong>Engineering:</strong> I&#39;ll aim to finish the patch review Monday. Can QA take it Monday afternoon or Tuesday? With QA out Thursday, there&#39;s little room for a retry. Also, who needs to be in the 30 minute change window, and when?</li>
+<li><strong>Support:</strong> what times do the Wednesday SLAs land? I&#39;m planning to answer the renewals one Monday and the other two by Tuesday.</li>
+<li><strong>CEO:</strong> would a rough first draft work for Tuesday&#39;s review? I&#39;d rather send something honest and early than polished and late.</li>
+</ul>
+<p>I can&#39;t promise it all fits if the corrections or QA slip. If they do, I&#39;ll flag it Monday afternoon rather than Thursday. Tell me if I&#39;ve got anything wrong.</p>
+<p>Thanks,
+[Name]</p>
+</div></div><div class="file" id="file-0-3" hidden><p class="path mono">sonnet-5.5/10-general-operations/INBOX.md</p><div class="prose"><h1>Notes collected Friday afternoon</h1>
+<ul>
+<li>You work 09:30–17:30, Monday–Friday. Wednesday 13:00–17:30 is unavailable.</li>
+<li>Finance: “Board numbers must be final by Thursday 12:00. Need two uninterrupted
+hours after Lina sends corrections Tuesday morning.”</li>
+<li>Lina: corrections will arrive Tuesday by 11:00, unless the vendor export is
+late; she will know by Monday 15:00.</li>
+<li>Product: customer demo preferred Wednesday 15:00; the customer can also do
+Thursday 16:00. Demo environment needs a 90-minute rehearsal and Sam must join.</li>
+<li>Sam is unavailable Tuesday and can rehearse Wednesday 10:00–12:00.</li>
+<li>Engineering: security patch must deploy by Friday 16:00. It needs your review
+(60–90 min), QA (half day after review), then a 30-minute change window. QA is
+unavailable Thursday.</li>
+<li>CEO: asks for a strategy outline “early this week”; a useful first draft takes
+three focused hours. Tuesday 16:00 leadership meeting can review it if sent by
+14:00.</li>
+<li>Support: three escalations, one affects renewals and needs a response Monday;
+the other two have Wednesday SLAs. Each takes about 45 minutes.</li>
+<li>Recurring meetings: Monday 10:00–10:30, Tuesday 16:00–17:00, Thursday
+09:30–10:00.</li>
+<li>Personal preference: no more than four hours of meetings in a day; reserve at
+least 45 minutes for lunch.</li>
+</ul>
+</div></div><div class="file" id="file-0-4" hidden><p class="path mono">sonnet-5.5/10-general-operations/TASK.md</p><div class="prose"><h1>Task 10 — General agent work: synthesize a messy operating week</h1>
+<p>Read <code>INBOX.md</code>. Produce:</p>
+<ul>
+<li><code>WEEK_PLAN.md</code>: prioritized plan for Monday–Friday with dependencies, focus
+blocks, deadlines, and contingency space.</li>
+<li><code>DECISIONS.md</code>: confirmed decisions, unresolved contradictions, and questions
+assigned to the right person.</li>
+<li><code>DRAFT_REPLY.md</code>: one concise message to the team aligning expectations and
+surfacing the decisions needed. It should sound human and avoid overpromising.</li>
+</ul>
+<p>Respect stated working hours and do not silently invent availability. Distinguish
+hard deadlines from preferences. Write <code>RESPONSE.md</code> with the reasoning behind
+your top three priorities. Work only in this directory.</p>
+</div></div><div class="file" id="file-0-5" hidden><p class="path mono">sonnet-5.5/10-general-operations/WEEK_PLAN.md</p><div class="prose"><h1>Week Plan, Monday to Friday</h1>
+<p>Built only from <code>INBOX.md</code>. The notes contain no calendar dates, so days are named by weekday. Working hours are 09:30-17:30, and nothing is planned outside them. Wednesday from 13:00 is treated as fully unavailable.</p>
+<p>Anything marked <strong>(unconfirmed)</strong> depends on a person&#39;s availability that the notes do not state. I have not assumed it. The open questions are in <code>DECISIONS.md</code>.</p>
+<h2>1. Hard deadlines vs preferences</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Type</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Renewals escalation response</td>
+<td><strong>Hard</strong></td>
+<td>Monday. About 45 min. Time of day not stated.</td>
+</tr>
+<tr>
+<td>Two other support escalations</td>
+<td><strong>Hard</strong></td>
+<td>Wednesday SLAs, cut-off times not stated. About 45 min each. Since I am gone after 13:00 Wednesday, I finish both by Tuesday.</td>
+</tr>
+<tr>
+<td>Board numbers final</td>
+<td><strong>Hard</strong></td>
+<td>Thursday 12:00 (&quot;must&quot;). Needs 2 uninterrupted hours after Lina&#39;s corrections.</td>
+</tr>
+<tr>
+<td>Security patch deployed</td>
+<td><strong>Hard</strong></td>
+<td>Friday 16:00 (&quot;must&quot;). Review (60-90 min), then QA (half day), then a 30 min change window. QA is out Thursday.</td>
+</tr>
+<tr>
+<td>Demo rehearsal</td>
+<td><strong>Fixed window</strong></td>
+<td>90 min with Sam. Sam is out Tuesday. The only stated window is Wednesday 10:00-12:00.</td>
+</tr>
+<tr>
+<td>Customer demo</td>
+<td><strong>Preference</strong></td>
+<td>Wednesday 15:00 preferred, which falls in my unavailable time. Thursday 16:00 is acceptable to the customer.</td>
+</tr>
+<tr>
+<td>Strategy outline</td>
+<td><strong>Soft ask</strong></td>
+<td>CEO wants it &quot;early this week&quot;. 3 focused hours for a first draft. The 14:00 Tuesday cut-off is a condition, and it only matters if the outline is to be reviewed at the Tuesday 16:00 meeting.</td>
+</tr>
+<tr>
+<td>At most 4 h of meetings per day</td>
+<td><strong>Preference</strong></td>
+<td>The plan stays within it every day (peak is 1.5 h).</td>
+</tr>
+<tr>
+<td>At least 45 min lunch</td>
+<td><strong>Preference</strong></td>
+<td>Held every day.</td>
+</tr>
+</tbody></table>
+<h2>2. Dependencies</h2>
+<pre><code>Patch:     review (Mon) -&gt; QA half day (Tue requested; Wed AM fallback; Fri AM last resort; never Thu)
+           -&gt; 30 min change window (Wed AM proposed; Fri fallback) -&gt; live by Fri 16:00
+
+Board:     vendor export -&gt; Lina&#39;s corrections (by Tue 11:00; she knows Mon 15:00)
+           -&gt; my 2 h uninterrupted block (Tue 11:00-13:00) -&gt; final by Thu 12:00
+
+Strategy:  3 h draft (Mon) -&gt; polish and send (Tue AM, cut-off 14:00) -&gt; leadership review Tue 16:00
+
+Demo:      rehearsal with Sam (Wed 10:00-11:30) -&gt; customer demo (Thu 16:00, Product to confirm)
+
+Support:   renewals (Mon) -&gt; escalation 2 (Mon PM) -&gt; escalation 3 (Tue AM) -&gt; Wed SLAs
+</code></pre>
+<h2>3. Day by day</h2>
+<p>Legend: <strong>FIXED</strong> is an existing commitment. <strong>FOCUS</strong> is a protected work block. <strong>BUFFER</strong> is deliberately unallocated.</p>
+<h3>Monday (8 h, meetings 0.5 h)</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>What</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30-10:00</td>
+<td>Triage. Send <code>DRAFT_REPLY.md</code>. Ask Engineering to book QA.</td>
+<td>Admin</td>
+<td>The reply goes out first so answers arrive while I work.</td>
+</tr>
+<tr>
+<td>10:00-10:30</td>
+<td>Recurring meeting</td>
+<td>FIXED</td>
+<td></td>
+</tr>
+<tr>
+<td>10:30-11:15</td>
+<td>Renewals escalation response</td>
+<td><strong>FOCUS, hard</strong></td>
+<td>Earliest hard deadline. Done before anything can eat the day.</td>
+</tr>
+<tr>
+<td>11:15-12:45</td>
+<td>Security patch review</td>
+<td><strong>FOCUS, hard chain</strong></td>
+<td>Budgeted at the 90 min upper bound. Hand to QA the moment it is done. If it finishes in 60 min, the spare 30 min goes to strategy.</td>
+</tr>
+<tr>
+<td>12:45-13:30</td>
+<td>Lunch (45 min)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>13:30-15:00</td>
+<td>Strategy outline, block 1</td>
+<td>FOCUS</td>
+<td>90 min.</td>
+</tr>
+<tr>
+<td>15:00-15:15</td>
+<td>Lina checkpoint</td>
+<td>Admin</td>
+<td>She will know whether the vendor export is late. Re-plan Tuesday and Thursday now if it is.</td>
+</tr>
+<tr>
+<td>15:15-16:45</td>
+<td>Strategy outline, block 2</td>
+<td>FOCUS</td>
+<td>The 3 h first draft is complete.</td>
+</tr>
+<tr>
+<td>16:45-17:30</td>
+<td>Support escalation 2 (Wed SLA)</td>
+<td>BUFFER, spoken for</td>
+<td>First thing to bump if Monday overruns. Its fallback is Tuesday 13:45-14:30.</td>
+</tr>
+</tbody></table>
+<h3>Tuesday (8 h, meetings 1 h)</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>What</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30-10:15</td>
+<td>Polish and send strategy outline to the CEO</td>
+<td>FOCUS</td>
+<td>Target 10:15. Cut-off 14:00 for the 16:00 review.</td>
+</tr>
+<tr>
+<td>10:15-11:00</td>
+<td>Support escalation 3 (Wed SLA)</td>
+<td>FOCUS, hard</td>
+<td>After this, both Wednesday SLAs are covered.</td>
+</tr>
+<tr>
+<td>11:00-13:00</td>
+<td><strong>Board numbers, 2 h uninterrupted</strong></td>
+<td><strong>FOCUS, protected</strong></td>
+<td>Starts when Lina&#39;s corrections land. That is expected by 11:00 and possibly earlier, in which case I start earlier. Notifications off. If nothing has arrived by 11:00, chase Lina and use the time on buffer items.</td>
+</tr>
+<tr>
+<td>13:00-13:45</td>
+<td>Lunch</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>13:45-15:45</td>
+<td>Reserve</td>
+<td>BUFFER</td>
+<td>(a) Fallback slot if the corrections land late. A start by about 13:45 still gives 2 clean hours. (b) Finance overflow. (c) Demo environment pre-check. (d) Answering QA questions. (e) Escalation 2 if Monday displaced it.</td>
+</tr>
+<tr>
+<td>15:45-16:00</td>
+<td>Skim outline before the meeting</td>
+<td>Admin</td>
+<td></td>
+</tr>
+<tr>
+<td>16:00-17:00</td>
+<td>Leadership meeting (strategy review)</td>
+<td>FIXED</td>
+<td>Assumed to be the same as the recurring Tuesday 16:00 meeting.</td>
+</tr>
+<tr>
+<td>17:00-17:30</td>
+<td>Capture review actions. Tell Finance the state of the numbers.</td>
+<td>Admin</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>QA on the patch is requested to start today. That is unconfirmed.</p>
+<h3>Wednesday (available 09:30-13:00 only, 3.5 h)</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>What</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30-10:00</td>
+<td>Patch: check QA result. <strong>Proposed</strong> 30 min change window if QA passed Tuesday.</td>
+<td>FOCUS</td>
+<td>Needs Engineering to confirm the window (unconfirmed). If QA has not passed, this becomes a QA status check only.</td>
+</tr>
+<tr>
+<td>10:00-11:30</td>
+<td><strong>Demo rehearsal with Sam (90 min)</strong></td>
+<td>FIXED</td>
+<td>Sam&#39;s stated window is 10:00-12:00.</td>
+</tr>
+<tr>
+<td>11:30-12:00</td>
+<td>Rehearsal overrun or fixes</td>
+<td>BUFFER</td>
+<td>Still inside Sam&#39;s window.</td>
+</tr>
+<tr>
+<td>12:00-12:45</td>
+<td>Lunch</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>12:45-13:00</td>
+<td>Handoff note: patch, demo and board status. Set out-of-office.</td>
+<td>Admin</td>
+<td></td>
+</tr>
+<tr>
+<td>13:00-17:30</td>
+<td><strong>Unavailable</strong></td>
+<td></td>
+<td>Nothing planned.</td>
+</tr>
+</tbody></table>
+<p>Wednesday cannot host the 2 uninterrupted finance hours. The rehearsal breaks the morning into 30 min and 90 min pieces, and the afternoon is gone.</p>
+<h3>Thursday (8 h, meetings 0.5 h plus demo)</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>What</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30-10:00</td>
+<td>Recurring meeting</td>
+<td>FIXED</td>
+<td></td>
+</tr>
+<tr>
+<td>10:00-12:00</td>
+<td><strong>Board numbers, protected reserve</strong></td>
+<td><strong>HARD 12:00</strong></td>
+<td>Normal case: numbers were finished Tuesday, and this is final check and sign-off, leaving slack. Late-corrections case: this is the whole 2 h with zero slack. Do not book anything here.</td>
+</tr>
+<tr>
+<td>12:00-12:45</td>
+<td>Lunch</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>12:45-15:15</td>
+<td>Reserve</td>
+<td>BUFFER</td>
+<td>Feedback from the leadership review, demo prep, spillover. No patch work: QA is out.</td>
+</tr>
+<tr>
+<td>15:15-15:45</td>
+<td>Demo pre-flight (environment check)</td>
+<td>FOCUS</td>
+<td></td>
+</tr>
+<tr>
+<td>15:45-16:00</td>
+<td>Breather</td>
+<td>BUFFER</td>
+<td></td>
+</tr>
+<tr>
+<td>16:00-17:00</td>
+<td><strong>Customer demo</strong></td>
+<td>FIXED once confirmed</td>
+<td>Length not stated, so I hold 60 min. Depends on Product and the customer confirming.</td>
+</tr>
+<tr>
+<td>17:00-17:30</td>
+<td>Debrief and follow-ups</td>
+<td>Admin</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3>Friday (8 h)</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>What</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30-10:00</td>
+<td>Patch status check</td>
+<td>Admin</td>
+<td>If deployed, verify. If not, start the fallback path.</td>
+</tr>
+<tr>
+<td>10:00-12:00</td>
+<td>Open</td>
+<td>BUFFER</td>
+<td>Demo follow-ups, strategy revisions, spillover.</td>
+</tr>
+<tr>
+<td>12:00-12:45</td>
+<td>Lunch</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>12:45-16:00</td>
+<td>Patch reserve</td>
+<td>BUFFER</td>
+<td>Fallback: QA Friday morning, then change window. <strong>I want the change window to start no later than 14:30</strong>, to leave 90 min for a retry or rollback before 16:00.</td>
+</tr>
+<tr>
+<td>16:00</td>
+<td><strong>Patch must be live</strong></td>
+<td><strong>HARD</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>16:00-17:30</td>
+<td>Weekly wrap-up and next-week list</td>
+<td>Admin</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2>4. Contingency triggers</h2>
+<table>
+<thead>
+<tr>
+<th>If</th>
+<th>Then</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lina says at Monday 15:00 the corrections will be late</td>
+<td>Tell Finance and the CEO the same afternoon. Tuesday 13:45-15:45 becomes the finance block (if they arrive by about 13:45). Otherwise Thursday 10:00-12:00 is the only clean window, with zero slack. Ask whether the Thursday 09:30 meeting can be skipped or shortened.</td>
+</tr>
+<tr>
+<td>The renewals escalation or patch review overruns Monday</td>
+<td>Escalation 2 moves to Tuesday 13:45-14:30. Strategy block 2 can shrink and finish Tuesday 09:30.</td>
+</tr>
+<tr>
+<td>Strategy draft is not ready by Tuesday 14:00</td>
+<td>Send what exists with a &quot;rough draft&quot; label, or ask the CEO to review it at the next meeting. The board numbers do not move.</td>
+</tr>
+<tr>
+<td>QA has not started by end of Wednesday</td>
+<td>Friday becomes the only QA day, with no retry. Tell Engineering and the CEO Wednesday morning, not Friday.</td>
+</tr>
+<tr>
+<td>QA finds a defect</td>
+<td>Fix, then re-QA Wednesday morning (if QA is free) or Friday morning. Friday afternoon carries the change window.</td>
+</tr>
+<tr>
+<td>Sam or the customer cannot do Thursday 16:00</td>
+<td>Product proposes another slot. I do not commit myself to any slot outside 09:30-17:30 or after 13:00 Wednesday.</td>
+</tr>
+</tbody></table>
+<h2>5. Contingency space</h2>
+<table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Buffer or reserve</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Monday</td>
+<td>0:45</td>
+<td>Spoken for (escalation 2), and bumpable.</td>
+</tr>
+<tr>
+<td>Tuesday</td>
+<td>2:00</td>
+<td>Also the finance fallback.</td>
+</tr>
+<tr>
+<td>Wednesday</td>
+<td>0:30</td>
+<td>Only inside Sam&#39;s window.</td>
+</tr>
+<tr>
+<td>Thursday</td>
+<td>4:45</td>
+<td>Of which 2:00 (10:00-12:00) is protected for the board deadline.</td>
+</tr>
+<tr>
+<td>Friday</td>
+<td>5:15</td>
+<td>Mostly patch reserve.</td>
+</tr>
+</tbody></table>
+<p>The slack is back-loaded. Only Tuesday afternoon and Thursday 10:00-12:00 can absorb a board-numbers problem. The Thursday and Friday slack protects the patch and the demo, and it comes too late to help the board deadline.</p>
+<h2>6. Checkpoints</h2>
+<ul>
+<li><strong>Monday 15:00:</strong> Lina&#39;s vendor status. Re-plan if late.</li>
+<li><strong>Monday end of day:</strong> did QA get the patch? Is the strategy draft complete?</li>
+<li><strong>Tuesday 11:00:</strong> did the corrections land?</li>
+<li><strong>Tuesday 14:00:</strong> hard cut-off for sending the outline.</li>
+<li><strong>Wednesday 09:30:</strong> QA result.</li>
+<li><strong>Wednesday 12:45:</strong> handoff note out, since I am unavailable until Thursday.</li>
+<li><strong>Thursday 12:00:</strong> board numbers final.</li>
+<li><strong>Friday 14:30:</strong> latest start for the change window.</li>
+</ul>
+</div></div></section></div><div role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">9.5 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
+        <p>I found no conflicts in the schedule. It has a contiguous 3h strategy block Mon 13:30-16:30, board Tue 11:00-13:00 with Plan B Tue 14:00-16:00 and Plan C Thu 10:00-12:00, the rehearsal Wed 10:00-11:30, the demo proposed for Thu 16:00 and a Fri 10:00 change window. It also includes a fully worked one-loop QA retest path. The prioritization reasoning is excellent, and it lists 8 contradictions, each with a proposed resolution and a decider. The draft reply is specific and honest but noticeably long.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Contingency tables cover each failure mode (corrections late Tue, corrections on Wed, corrections after Wed, QA defect, customer can&#39;t do Thu, Sam can&#39;t do Wed) with who to tell and when</li><li>Correct capacity reasoning: there is no 2h slot on Wednesday, so board work is kept off Wednesday</li><li>Asks the sharp questions: does &#39;final&#39; mean delivered or approved, does a holding response count against the SLA, and who attends the change window</li><li>States its assumptions openly (Wednesday lunch, whether the change window needs the user, demo length)</li></ul></div><div><h4>Weaknesses</h4><ul><li>The draft reply is the longest of the four; it could be tighter</li><li>Monday has no buffer at all (acknowledged; the strategy block flexes)</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Mon 10:30-11:15 renewals, 11:15-12:45 review, 13:30-16:30 strategy (3h contiguous), 16:30-17:15 escalation #2</li><li>Tue 09:30-11:00 strategy polish and send, 11:00-13:00 board, 13:45-14:30 escalation #3; Plan B board 14:00-16:00 is a valid 2h block before the 16:00 meeting</li><li>Wed 10:00-11:30 rehearsal, 12:15-13:00 lunch, nothing after 13:00</li><li>Thu 10:00-12:00 board, 16:00-17:30 demo ends by 17:30; Fri 10:00-10:30 change window, fallback 14:00-14:30</li></ul></details>
+        <h4>Objective checks</h4>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="1-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="1-1" aria-selected="false">DECISIONS.md</button><button role="tab" data-file="1-2" aria-selected="false">DRAFT_REPLY.md</button><button role="tab" data-file="1-3" aria-selected="false">INBOX.md</button><button role="tab" data-file="1-4" aria-selected="false">TASK.md</button><button role="tab" data-file="1-5" aria-selected="false">WEEK_PLAN.md</button></div>
+        <div class="file" id="file-1-0" ><p class="path mono">fable-5.1/10-general-operations/RESPONSE.md</p><div class="prose"><h1>Why these three come first</h1>
+<p>The inbox has five competing asks and roughly 31 working hours after meetings
+and lunch (Wednesday afternoon is gone). Only four items carry a hard deadline
+someone else stated: the Monday renewals escalation, the Wednesday SLAs, board
+numbers by Thursday 12:00, and the patch by Friday 16:00. Everything else — the
+CEO&#39;s &quot;early this week&quot;, Product&#39;s preferred demo slot — is a preference with a
+stated alternative. So the top three are the hard-deadline chains, ordered by
+when their irreversible step has to happen and how fragile the chain is, not by
+who asked.</p>
+<h2>1. Start the security patch chain on Monday</h2>
+<p>The patch has the longest dependency chain: my review (60–90 min) → a QA half
+day → a 30-minute change window, deployed by Friday 16:00, with QA unavailable
+Thursday. If the review happens Monday, QA can go Tuesday, the deploy can sit
+at Friday 10:00, and there is room for exactly one fix-and-re-test loop
+(fix Wed, re-review Thu, re-test Fri morning, deploy Fri 14:00). If the review
+slips to Tuesday, that loop disappears; slip to Wednesday and Friday morning is
+the only QA day left, with the deploy at 14:00 and no margin at all. The work
+itself is small, which is exactly why it goes first: 90 minutes on Monday buys
+the most contingency of anything on the list.</p>
+<h2>2. Protect the board-numbers block and manage the Lina dependency</h2>
+<p>This is the highest-stakes item — a fixed board cutoff at Thursday 12:00 — but
+its critical action cannot start before Lina&#39;s corrections land, so its place
+in the plan is about protection rather than sequencing. The two uninterrupted
+hours are booked Tuesday 11:00–13:00 with nothing adjacent, and the only two
+remaining two-hour slots (Tuesday 14:00–16:00, Thursday 10:00–12:00) are held
+in reserve. Wednesday offers no two-hour slot at all, so the real risk is
+Lina&#39;s vendor export. That&#39;s why her Monday 15:00 status is treated as a
+checkpoint, why Finance is asked now what &quot;final&quot; means and whether a
+preliminary set helps, and why the plan refuses to put board work on Wednesday.</p>
+<h2>3. Clear the support escalations early — the renewals one first</h2>
+<p>The renewals escalation is due Monday, touches revenue, and takes 45 minutes,
+so it is the first piece of real work on Monday, before anything that could
+overrun. The two Wednesday-SLA escalations are done Monday afternoon and
+Tuesday, not Wednesday, because Wednesday morning is already the only
+rehearsal slot Sam can make and Wednesday afternoon is unavailable. Leaving
+them for Wednesday would turn a comfortable deadline into a genuine one.</p>
+<h2>Why the CEO&#39;s outline is fourth, not first</h2>
+<p>It&#39;s the most senior ask and it still gets three focused hours on Monday
+afternoon, because that is the only place three hours fit before Tuesday
+14:00. But the 14:00 is an opportunity to be reviewed at leadership, not a
+deadline the CEO set, and the CEO has an obvious fallback (async review
+Wednesday or the next meeting). If Monday&#39;s hard items overrun, the outline is
+what gives — and the draft reply says so rather than promising the slot.</p>
+<h2>Why the demo is fifth</h2>
+<p>Product&#39;s preferred slot is inside my unavailable block, and the customer has
+already offered Thursday 16:00. The rehearsal is fixed by Sam&#39;s availability
+and is booked; the demo itself is a decision for Product and the customer, so
+the plan proposes Thursday and waits rather than inventing availability for
+Sam, the customer, or me.</p>
+</div></div><div class="file" id="file-1-1" hidden><p class="path mono">fable-5.1/10-general-operations/DECISIONS.md</p><div class="prose"><h1>Decisions</h1>
+<h2>A. Confirmed decisions (proceeding on these unless someone objects by Monday 12:00)</h2>
+<ol>
+<li><strong>Security patch review: Monday 11:15–12:45.</strong> QA is off Thursday and needs a
+half day after my review; Monday is the only start that leaves a re-test
+loop before Friday 16:00.</li>
+<li><strong>Change window: Friday 10:00–10:30 by default, 14:00–14:30 as fallback.</strong>
+Engineering can pull it earlier if they want — Wednesday 09:30–10:00 is
+possible but I go straight into the rehearsal afterwards, and Thursday
+afternoon has no QA cover.</li>
+<li><strong>Board numbers block: Tuesday 11:00–13:00, do-not-disturb.</strong> Plan B Tuesday
+14:00–16:00; Plan C Thursday 10:00–12:00 (zero margin).</li>
+<li><strong>Escalation #1 (renewals) is answered Monday 10:30–11:15</strong>, before anything
+that can move.</li>
+<li><strong>Escalations #2 and #3 close Monday 16:30 and Tuesday 13:45.</strong> Not left for
+Wednesday: the morning is the only rehearsal slot and the afternoon is out.</li>
+<li><strong>Strategy outline: drafted Monday 13:30–16:30, sent Tuesday morning (target
+11:00).</strong> If it isn&#39;t ready by 13:45 Tuesday it goes Wednesday morning for
+async review rather than being rushed for the 16:00 meeting.</li>
+<li><strong>Demo rehearsal: Wednesday 10:00–11:30 with Sam</strong> — the only slot Sam gave.</li>
+<li><strong>I will not attend anything Wednesday 13:00–17:30</strong>, including a 15:00 demo.
+I&#39;m proposing Thursday 16:00 to Product.</li>
+<li><strong>Nothing outside 09:30–17:30; 45 minutes for lunch every day; no day above
+two hours of meetings</strong> (the four-hour cap is never close).</li>
+</ol>
+<h2>B. Unresolved contradictions</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Contradiction</th>
+<th>Proposed resolution</th>
+<th>Who decides</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Product prefers the demo <strong>Wed 15:00</strong>; I am <strong>unavailable Wed 13:00–17:30</strong>.</td>
+<td>Take the customer&#39;s <strong>Thu 16:00</strong> option. If Product insists on Wednesday, it runs without me — and Sam&#39;s Wednesday-afternoon availability was never stated.</td>
+<td>Product (with the customer)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Finance assumes Lina&#39;s corrections arrive <strong>Tuesday morning</strong> and wants two uninterrupted hours; Lina says <strong>&quot;unless the vendor export is late&quot;</strong>; the board cutoff (<strong>Thu 12:00</strong>) is fixed.</td>
+<td>Tue 11:00–13:00 primary; Tue 14:00–16:00 if late; Thu 10:00–12:00 last resort. There is <strong>no</strong> two-hour slot on Wednesday. Corrections later than Wednesday put Thursday 12:00 at risk.</td>
+<td>Lina (ETA, Mon 15:00); Finance (what &quot;final&quot; means; whether a preliminary set helps)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Patch needs review → QA half day → change window by <strong>Fri 16:00</strong>, and <strong>QA is off Thursday</strong>.</td>
+<td>Review Mon, QA Tue, deploy Fri 10:00. A single QA re-test loop fits only if QA can work Friday morning. Two loops do not fit.</td>
+<td>Engineering / QA</td>
+</tr>
+<tr>
+<td>4</td>
+<td>CEO wants the outline <strong>&quot;early this week&quot;</strong>, ideally by <strong>Tue 14:00</strong>; Monday is also the only day for the renewals escalation and the patch review.</td>
+<td>Draft Monday afternoon, send Tuesday morning. Tuesday 14:00 is a target, not a promise; fallback is Wednesday morning.</td>
+<td>CEO (is async/next meeting acceptable?)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Wednesday morning is over-subscribed under Plan B/C: rehearsal (fixed), Wednesday SLAs, and possibly board work.</td>
+<td>Clear both Wednesday-SLA escalations by Tuesday; never put board work on Wednesday.</td>
+<td>Me</td>
+</tr>
+<tr>
+<td>6</td>
+<td>&quot;Sam must join&quot; — the rehearsal is explicit; whether Sam must also be in the <strong>demo</strong> is not.</td>
+<td>Assume rehearsal only until told otherwise; ask.</td>
+<td>Product / Sam</td>
+</tr>
+<tr>
+<td>7</td>
+<td>45-minute lunch preference vs. a 3.5-hour Wednesday.</td>
+<td>Lunch held 12:15–13:00 inside working hours; if the afternoon block already covers lunch, that becomes buffer.</td>
+<td>Me</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Exact <strong>Wednesday SLA times</strong> are not stated; if either is before 09:30 Wednesday, Tuesday is the real deadline.</td>
+<td>Plan already closes both by Tuesday 14:30.</td>
+<td>Support (confirm times)</td>
+</tr>
+</tbody></table>
+<h2>C. Questions, by owner</h2>
+<p><strong>Lina</strong></p>
+<ul>
+<li>Your Monday 15:00 call on the vendor export: on time, or late? If late, what
+is the revised ETA (even rough)?</li>
+<li>If late, can you send a partial set of corrections so I can start?</li>
+</ul>
+<p><strong>Finance</strong></p>
+<ul>
+<li>Does &quot;final by Thursday 12:00&quot; mean delivered to you, or approved by you? If
+approved, what is your turnaround, so I know my real cutoff?</li>
+<li>If corrections slip past Tuesday, my only remaining two-hour slot is Thursday
+10:00–12:00. Would a preliminary set on Wednesday morning help, and what goes
+to the board if corrections arrive after Wednesday?</li>
+<li>Does anyone need to be in the room during the two-hour block, or is it mine
+alone?</li>
+</ul>
+<p><strong>Product</strong></p>
+<ul>
+<li>Can we take the customer&#39;s Thursday 16:00 option? Wednesday 15:00 is inside my
+unavailable block.</li>
+<li>How long is the demo? It has to end by 17:30.</li>
+<li>Must I attend the demo, or is the rehearsal my part?</li>
+<li>Is the demo environment ready before Wednesday 10:00?</li>
+</ul>
+<p><strong>Sam</strong></p>
+<ul>
+<li>Confirm Wednesday 10:00–11:30 for the rehearsal.</li>
+<li>Are you needed at (and available for) a Thursday 16:00 demo?</li>
+<li>Any Thursday time for a 15-minute pre-demo check? Not assumed.</li>
+</ul>
+<p><strong>Engineering</strong></p>
+<ul>
+<li>Does Friday 10:00–10:30 work for the change window? Do you want it earlier?</li>
+<li>Who needs to be in the window — me, QA, both?</li>
+<li>Rollback plan if the deploy misbehaves, and who owns it?</li>
+<li>If QA finds issues Tuesday, can a fix be ready Wednesday for my re-review on
+Thursday?</li>
+</ul>
+<p><strong>QA</strong></p>
+<ul>
+<li>Can you take the half day Tuesday (or Monday afternoon, if you have room)?</li>
+<li>Are you available Friday morning for a re-test if it comes to that?</li>
+</ul>
+<p><strong>CEO</strong></p>
+<ul>
+<li>Is Tuesday 14:00 a hard need, or is Wednesday morning for async review
+acceptable if Monday gets eaten by the escalation or the patch?</li>
+<li>What shape is &quot;useful first draft&quot; — one page of headings, or fuller?</li>
+</ul>
+<p><strong>Support</strong></p>
+<ul>
+<li>Exact SLA times for escalations #2 and #3 on Wednesday.</li>
+<li>Anything I need to know about the renewals one before Monday 10:30?</li>
+<li>Does a holding response count against the SLA, or does it need a full answer?</li>
+</ul>
+<h2>D. Assumptions I am making (say so if wrong)</h2>
+<ul>
+<li>The Tuesday 16:00–17:00 recurring meeting is the leadership meeting the CEO
+referred to.</li>
+<li>The 30-minute change window needs me present; I&#39;ve blocked it either way.</li>
+<li>The demo is at most 90 minutes and I&#39;m expected to attend.</li>
+<li>Lina&#39;s Monday 15:00 update reaches me without chasing; I act on it at 17:15
+the same day.</li>
+<li>&quot;Half day&quot; for QA is roughly four hours inside one calendar day.</li>
+<li>Wednesday lunch sits at 12:15–13:00 inside working hours.</li>
+</ul>
+</div></div><div class="file" id="file-1-2" hidden><p class="path mono">fable-5.1/10-general-operations/DRAFT_REPLY.md</p><div class="prose"><p><strong>Subject: This week — what&#39;s fixed, and what I need from you by Monday evening</strong></p>
+<p>Hi all,</p>
+<p>Here&#39;s how I&#39;m shaping the week so the hard things don&#39;t slip. The fixed points
+are the Monday renewals escalation, board numbers by Thursday 12:00, and the
+security patch by Friday 16:00. Everything else is arranged around those. One
+constraint to keep in mind: I&#39;m out Wednesday from 13:00, so Wednesday morning
+is my only Wednesday time.</p>
+<p><strong>Locked on my side</strong></p>
+<ul>
+<li>Monday: renewals escalation answered by 11:15; patch review done by 12:45 and
+handed to QA; strategy outline drafting in the afternoon.</li>
+<li>Tuesday 11:00–13:00: board numbers, uninterrupted. Please don&#39;t book me then.</li>
+<li>Wednesday 10:00–11:30: demo rehearsal with Sam.</li>
+<li>Friday 10:00–10:30: default change window for the patch (fallback 14:00).</li>
+</ul>
+<p><strong>Decisions I need, ideally by Monday end of day</strong></p>
+<ul>
+<li><strong>Lina</strong> — your 15:00 Monday call on the vendor export decides Tuesday. If
+it&#39;s late, a rough ETA and anything partial you can send would help a lot.</li>
+<li><strong>Finance</strong> — if corrections slip past Tuesday, my only remaining two-hour
+slot is Thursday 10:00–12:00, right against your cutoff. Would a preliminary
+set on Wednesday be useful, and does &quot;final by 12:00&quot; mean delivered to you
+or approved?</li>
+<li><strong>Product</strong> — I can&#39;t do the demo Wednesday 15:00. Can we take the customer&#39;s
+Thursday 16:00 option? If you&#39;d rather keep Wednesday, it would have to run
+without me. Also: how long is the demo, and does Sam need to be in it?</li>
+<li><strong>Sam</strong> — please confirm Wednesday 10:00–11:30 for the rehearsal. If you have
+any Thursday time for a short pre-demo check, let me know; I&#39;m not assuming it.</li>
+<li><strong>Engineering / QA</strong> — can QA take the patch Tuesday (Monday afternoon if
+there&#39;s room)? Does Friday 10:00 work for the window, and do you need me or
+QA in it? If QA finds something, the loop is: fix Wednesday, my re-review
+Thursday, QA re-test Friday morning, deploy Friday 14:00. That&#39;s tight but it
+fits. Anything beyond one loop doesn&#39;t, and I&#39;d rather we say so early.</li>
+<li><strong>CEO</strong> — I&#39;m aiming to send the strategy outline Tuesday morning so it can go
+to the 16:00 leadership meeting. If Monday gets eaten by the escalation or the
+patch, it&#39;ll be Wednesday morning instead. I&#39;d rather tell you that now than
+send something thin.</li>
+<li><strong>Support</strong> — what are the exact SLA times on the two Wednesday escalations?
+I&#39;m planning to close both by Tuesday, but I want to be sure.</li>
+</ul>
+<p>I&#39;ll confirm the Tuesday/Wednesday shape Monday evening once I&#39;ve heard from
+Lina. Shout if any of this doesn&#39;t work for you.</p>
+<p>Thanks,
+[name]</p>
+</div></div><div class="file" id="file-1-3" hidden><p class="path mono">fable-5.1/10-general-operations/INBOX.md</p><div class="prose"><h1>Notes collected Friday afternoon</h1>
+<ul>
+<li>You work 09:30–17:30, Monday–Friday. Wednesday 13:00–17:30 is unavailable.</li>
+<li>Finance: “Board numbers must be final by Thursday 12:00. Need two uninterrupted
+hours after Lina sends corrections Tuesday morning.”</li>
+<li>Lina: corrections will arrive Tuesday by 11:00, unless the vendor export is
+late; she will know by Monday 15:00.</li>
+<li>Product: customer demo preferred Wednesday 15:00; the customer can also do
+Thursday 16:00. Demo environment needs a 90-minute rehearsal and Sam must join.</li>
+<li>Sam is unavailable Tuesday and can rehearse Wednesday 10:00–12:00.</li>
+<li>Engineering: security patch must deploy by Friday 16:00. It needs your review
+(60–90 min), QA (half day after review), then a 30-minute change window. QA is
+unavailable Thursday.</li>
+<li>CEO: asks for a strategy outline “early this week”; a useful first draft takes
+three focused hours. Tuesday 16:00 leadership meeting can review it if sent by
+14:00.</li>
+<li>Support: three escalations, one affects renewals and needs a response Monday;
+the other two have Wednesday SLAs. Each takes about 45 minutes.</li>
+<li>Recurring meetings: Monday 10:00–10:30, Tuesday 16:00–17:00, Thursday
+09:30–10:00.</li>
+<li>Personal preference: no more than four hours of meetings in a day; reserve at
+least 45 minutes for lunch.</li>
+</ul>
+</div></div><div class="file" id="file-1-4" hidden><p class="path mono">fable-5.1/10-general-operations/TASK.md</p><div class="prose"><h1>Task 10 — General agent work: synthesize a messy operating week</h1>
+<p>Read <code>INBOX.md</code>. Produce:</p>
+<ul>
+<li><code>WEEK_PLAN.md</code>: prioritized plan for Monday–Friday with dependencies, focus
+blocks, deadlines, and contingency space.</li>
+<li><code>DECISIONS.md</code>: confirmed decisions, unresolved contradictions, and questions
+assigned to the right person.</li>
+<li><code>DRAFT_REPLY.md</code>: one concise message to the team aligning expectations and
+surfacing the decisions needed. It should sound human and avoid overpromising.</li>
+</ul>
+<p>Respect stated working hours and do not silently invent availability. Distinguish
+hard deadlines from preferences. Write <code>RESPONSE.md</code> with the reasoning behind
+your top three priorities. Work only in this directory.</p>
+</div></div><div class="file" id="file-1-5" hidden><p class="path mono">fable-5.1/10-general-operations/WEEK_PLAN.md</p><div class="prose"><h1>Week plan — Monday to Friday</h1>
+<p>Scope: everything in <code>INBOX.md</code>, scheduled inside stated working hours
+(09:30–17:30 Mon–Fri; Wednesday 13:00–17:30 unavailable). Every day keeps at
+least 45 minutes for lunch and stays well under the four-hour meeting cap.
+No availability is assumed for anyone beyond what they stated (me, Sam, QA,
+Lina, the customer). Where a slot depends on someone confirming, it says so.</p>
+<h2>1. Deadlines: hard vs. preference</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Type</th>
+<th>Cutoff</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Escalation #1 (renewals)</td>
+<td><strong>Hard</strong></td>
+<td>Monday</td>
+<td>Stated &quot;needs a response Monday&quot;. 45 min.</td>
+</tr>
+<tr>
+<td>Escalations #2 and #3</td>
+<td><strong>Hard</strong></td>
+<td>Wednesday (SLA; exact times TBC with Support)</td>
+<td>45 min each. Wednesday afternoon is out, so effectively due by Wed 13:00; the plan closes them Mon/Tue.</td>
+</tr>
+<tr>
+<td>Board numbers final</td>
+<td><strong>Hard</strong></td>
+<td>Thursday 12:00</td>
+<td>Two uninterrupted hours, after Lina&#39;s corrections.</td>
+</tr>
+<tr>
+<td>Security patch deployed</td>
+<td><strong>Hard</strong></td>
+<td>Friday 16:00</td>
+<td>Chain: my review (60–90 min) → QA half day (QA off Thursday) → 30-min change window.</td>
+</tr>
+<tr>
+<td>Strategy outline to CEO</td>
+<td>Preference with a soft target</td>
+<td>&quot;Early this week&quot;; sent by Tue 14:00 = reviewed at the Tue 16:00 leadership meeting</td>
+<td>The 14:00 is an opportunity the CEO offered, not a stated deadline. Three focused hours.</td>
+</tr>
+<tr>
+<td>Customer demo</td>
+<td>Preference</td>
+<td>Product prefers Wed 15:00; customer can also do Thu 16:00</td>
+<td>Wed 15:00 falls inside my unavailable block.</td>
+</tr>
+<tr>
+<td>Demo rehearsal</td>
+<td>Constraint (dependency)</td>
+<td>Wed 10:00–12:00 is Sam&#39;s only stated slot</td>
+<td>90 min; Sam must join.</td>
+</tr>
+<tr>
+<td>Working hours / Wed afternoon</td>
+<td>Hard</td>
+<td>09:30–17:30; Wed 13:00–17:30 out</td>
+<td>Nothing scheduled outside these.</td>
+</tr>
+<tr>
+<td>≤4h meetings/day, ≥45 min lunch</td>
+<td>Personal preference</td>
+<td>Daily</td>
+<td>Honoured every day below.</td>
+</tr>
+</tbody></table>
+<h2>2. Priority order</h2>
+<ol>
+<li><strong>Security patch chain, started Monday</strong> (review Mon 11:15–12:45). Longest
+chain, and QA is off Thursday — a one-day slip removes all buffer before
+Friday 16:00.</li>
+<li><strong>Board numbers by Thu 12:00.</strong> Protected two-hour block Tue 11:00–13:00
+with two fallbacks; the risk is Lina&#39;s vendor export, known Monday 15:00.</li>
+<li><strong>Support escalations.</strong> #1 Monday morning (hard, renewals); #2 Monday late
+afternoon, #3 Tuesday — both well ahead of the Wednesday SLA because
+Wednesday morning is already full and Wednesday afternoon is out.</li>
+<li><strong>Strategy outline.</strong> Three focused hours Monday afternoon; polish and send
+Tuesday morning (target 11:00, hard stop 13:45). This is the item that
+flexes if a hard deadline slips.</li>
+<li><strong>Customer demo.</strong> Rehearse Wed 10:00–11:30; propose Thu 16:00 to the
+customer, because I cannot do Wed 15:00.</li>
+</ol>
+<h2>3. Dependency chains</h2>
+<ul>
+<li>Board numbers: vendor export (status Mon 15:00) → Lina&#39;s corrections (Tue by
+11:00) → my 2h block → final by Thu 12:00.</li>
+<li>Security patch: my review (Mon) → QA half day (Tue; QA to confirm) → change
+window (Fri 10:00–10:30 default; Engineering to confirm) → deployed by Fri 16:00.</li>
+<li>Demo: demo environment ready → 90-min rehearsal with Sam (Wed 10:00–11:30) →
+demo (Thu 16:00, pending Product/customer confirmation).</li>
+<li>Strategy outline: 3h draft (Mon pm) → polish (Tue am) → send by 14:00 →
+leadership review Tue 16:00.</li>
+</ul>
+<h2>4. Day by day</h2>
+<h3>Monday — the tightest day; hard items first</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Send the team note (<code>DRAFT_REPLY.md</code>); put the asks to Product, Sam, Engineering/QA, Lina</td>
+<td>Admin</td>
+</tr>
+<tr>
+<td>10:00–10:30</td>
+<td>Recurring meeting</td>
+<td>Meeting</td>
+</tr>
+<tr>
+<td>10:30–11:15</td>
+<td>Escalation #1 (renewals) — response sent</td>
+<td><strong>Hard: Monday</strong></td>
+</tr>
+<tr>
+<td>11:15–12:45</td>
+<td><strong>Focus:</strong> security patch review (90-min budget) → hand-off notes to QA</td>
+<td>Starts the patch chain</td>
+</tr>
+<tr>
+<td>12:45–13:30</td>
+<td>Lunch</td>
+<td></td>
+</tr>
+<tr>
+<td>13:30–16:30</td>
+<td><strong>Focus:</strong> strategy outline first draft (3h, notifications off; glance at Lina&#39;s status only at the end)</td>
+<td>CEO ask</td>
+</tr>
+<tr>
+<td>16:30–17:15</td>
+<td>Escalation #2 (Wed SLA) — done early because Wednesday morning is full</td>
+<td>Hard: Wed</td>
+</tr>
+<tr>
+<td>17:15–17:30</td>
+<td>Act on Lina&#39;s 15:00 status: if the export is late, tell Finance today and switch Tuesday to Plan B</td>
+<td>Checkpoint</td>
+</tr>
+</tbody></table>
+<p>Meeting time: 0.5h. Contingency on the day: none. If the review or the
+escalation overruns, the strategy block shrinks (it continues Tuesday
+09:30–11:00 anyway) and escalation #2 moves to Tue 14:30.</p>
+<h3>Tuesday</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–11:00</td>
+<td>Strategy outline: finish, polish, send to CEO (target 11:00; latest 13:45 to make the 14:00 cut)</td>
+<td>CEO ask</td>
+</tr>
+<tr>
+<td>11:00–13:00</td>
+<td><strong>Focus:</strong> board numbers with Lina&#39;s corrections — uninterrupted, no meetings, no chat</td>
+<td><strong>Hard chain</strong></td>
+</tr>
+<tr>
+<td>13:00–13:45</td>
+<td>Lunch</td>
+<td></td>
+</tr>
+<tr>
+<td>13:45–14:30</td>
+<td>Escalation #3 (Wed SLA)</td>
+<td>Hard: Wed</td>
+</tr>
+<tr>
+<td>14:30–16:00</td>
+<td>Contingency (90 min): board spillover, QA questions on the patch, edits before leadership</td>
+<td>Buffer</td>
+</tr>
+<tr>
+<td>16:00–17:00</td>
+<td>Leadership meeting (recurring) — outline reviewed if sent by 14:00</td>
+<td>Meeting</td>
+</tr>
+<tr>
+<td>17:00–17:30</td>
+<td>Wrap: QA status on the patch; confirm demo slot with Product/Sam</td>
+<td>Admin</td>
+</tr>
+</tbody></table>
+<p>QA runs their half day on the patch Tuesday (needs QA&#39;s confirmation; if they
+can start Monday afternoon, better — not assumed).
+Plan B (corrections land after 11:00 but by 14:00): board block moves to
+14:00–16:00; escalation #3 moves to Wed 11:30–12:15.
+Meeting time: 1h.</p>
+<h3>Wednesday — morning only (13:00–17:30 unavailable)</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Check QA result; demo-environment pre-check</td>
+<td>Buffer/prep</td>
+</tr>
+<tr>
+<td>10:00–11:30</td>
+<td>Demo rehearsal with Sam (90 min)</td>
+<td>Constraint: Sam&#39;s only slot</td>
+</tr>
+<tr>
+<td>11:30–12:15</td>
+<td>Close out escalations #2/#3 (confirm SLAs met), or escalation #3 itself if it moved here under Plan B</td>
+<td>Hard: Wed</td>
+</tr>
+<tr>
+<td>12:15–13:00</td>
+<td>Lunch (see assumption)</td>
+<td></td>
+</tr>
+<tr>
+<td>13:00–17:30</td>
+<td>Unavailable — no demo, no meetings, no change window</td>
+<td>Hard</td>
+</tr>
+</tbody></table>
+<p>Assumption: I don&#39;t know whether the 13:00–17:30 block already covers lunch,
+so 12:15–13:00 is held for it. If lunch is covered by the afternoon block,
+12:15–13:00 becomes 45 min of contingency.
+Plan C (corrections land Wednesday): there is no two-hour uninterrupted slot on
+Wednesday. Board numbers go to Thu 10:00–12:00 with zero margin — Finance needs
+to know Tuesday evening at the latest.
+Meeting time: 1.5h.</p>
+<h3>Thursday</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Recurring meeting</td>
+<td>Meeting</td>
+</tr>
+<tr>
+<td>10:00–12:00</td>
+<td>Board numbers: final check and send to Finance. Also the last-resort 2h block if corrections were late</td>
+<td><strong>Hard: 12:00</strong></td>
+</tr>
+<tr>
+<td>12:00–12:45</td>
+<td>Lunch</td>
+<td></td>
+</tr>
+<tr>
+<td>12:45–14:00</td>
+<td>Patch: confirm QA sign-off, walk through deploy/rollback with Engineering. If QA found issues: my re-review here (75 min)</td>
+<td>Patch chain</td>
+</tr>
+<tr>
+<td>14:00–15:30</td>
+<td>Demo prep; short run-through with Sam only if Sam is free (not assumed)</td>
+<td>Demo</td>
+</tr>
+<tr>
+<td>15:30–16:00</td>
+<td>Buffer</td>
+<td>Buffer</td>
+</tr>
+<tr>
+<td>16:00–17:30</td>
+<td>Customer demo (proposed; length TBC with Product; must end by 17:30)</td>
+<td>Pending confirmation</td>
+</tr>
+</tbody></table>
+<p>If the board numbers were finished Tuesday, 10:30–12:00 becomes contingency.
+Meeting time: 0.5h + demo (≤1.5h) = ≤2h.</p>
+<h3>Friday</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Pre-deploy check with Engineering/QA</td>
+<td>Patch chain</td>
+</tr>
+<tr>
+<td>10:00–10:30</td>
+<td>Change window — security patch deploy (default slot; Engineering to confirm)</td>
+<td><strong>Hard: by 16:00</strong></td>
+</tr>
+<tr>
+<td>10:30–12:30</td>
+<td>Post-deploy verification / contingency (if a QA re-test is needed, QA runs it 09:30–13:00)</td>
+<td>Buffer</td>
+</tr>
+<tr>
+<td>12:30–13:15</td>
+<td>Lunch</td>
+<td></td>
+</tr>
+<tr>
+<td>13:15–14:00</td>
+<td>Demo follow-ups to Product/customer</td>
+<td>Demo</td>
+</tr>
+<tr>
+<td>14:00–14:30</td>
+<td>Fallback change window (held; last-safe start 15:00)</td>
+<td>Contingency</td>
+</tr>
+<tr>
+<td>14:30–16:00</td>
+<td>Contingency: anything that slipped; strategy outline v2 from leadership feedback</td>
+<td>Buffer</td>
+</tr>
+<tr>
+<td>16:00–17:30</td>
+<td>Week wrap-up, next-week notes</td>
+<td>Admin</td>
+</tr>
+</tbody></table>
+<p>Meeting time: 0.5h.</p>
+<h2>5. Contingency map</h2>
+<table>
+<thead>
+<tr>
+<th>If…</th>
+<th>Then…</th>
+<th>Who needs to know, when</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lina says Mon 15:00 the export is late, corrections by Tue 14:00</td>
+<td>Board block → Tue 14:00–16:00; escalation #3 → Wed 11:30</td>
+<td>Finance, Lina — Monday evening</td>
+</tr>
+<tr>
+<td>Corrections land Wednesday</td>
+<td>Board block → Thu 10:00–12:00, no margin; ask Finance whether a preliminary set on Wednesday helps</td>
+<td>Finance, Lina — Tuesday evening</td>
+</tr>
+<tr>
+<td>Corrections land after Wednesday</td>
+<td>Thu 12:00 is at risk; Finance decides what &quot;final&quot; means and what can go to the board</td>
+<td>Finance, CEO — immediately</td>
+</tr>
+<tr>
+<td>QA finds issues in the patch</td>
+<td>Engineering fix Wed; my re-review Thu 12:45–14:00; QA re-test Fri 09:30–13:00; change window Fri 14:00–14:30</td>
+<td>Engineering, QA — same day</td>
+</tr>
+<tr>
+<td>QA can&#39;t do Tuesday</td>
+<td>Wednesday is the only other pre-Friday day (QA off Thu); if QA slips to Friday morning the deploy is 14:00 with no re-test loop</td>
+<td>Engineering — Monday</td>
+</tr>
+<tr>
+<td>Customer can&#39;t do Thu 16:00</td>
+<td>Wed 15:00 only works without me; otherwise it moves to next week — Product&#39;s call</td>
+<td>Product, Sam — Monday</td>
+</tr>
+<tr>
+<td>Sam can&#39;t make Wed 10:00</td>
+<td>No stated alternative; the rehearsal has no other slot this week, so the demo date moves</td>
+<td>Product, Sam — Monday</td>
+</tr>
+<tr>
+<td>Strategy draft not ready by Tue 13:45</td>
+<td>Send Wednesday morning for async review; ask the CEO whether the next leadership meeting is acceptable</td>
+<td>CEO — Tuesday 13:45</td>
+</tr>
+<tr>
+<td>Monday overruns</td>
+<td>Strategy block shrinks; escalation #2 → Tue 14:30</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2>6. Load summary</h2>
+<table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Working time</th>
+<th>Meetings</th>
+<th>Committed work</th>
+<th>Buffer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mon</td>
+<td>8h</td>
+<td>0.5h</td>
+<td>6.75h</td>
+<td>0 (flex via the strategy block)</td>
+</tr>
+<tr>
+<td>Tue</td>
+<td>8h</td>
+<td>1h</td>
+<td>4.75h</td>
+<td>1.5h</td>
+</tr>
+<tr>
+<td>Wed</td>
+<td>3.5h</td>
+<td>1.5h (rehearsal)</td>
+<td>1.25h</td>
+<td>0 (0.75h if lunch sits in the afternoon block)</td>
+</tr>
+<tr>
+<td>Thu</td>
+<td>8h</td>
+<td>0.5h + demo ≤1.5h</td>
+<td>4.75h</td>
+<td>0.5h (+1.5h if board numbers were done Tuesday)</td>
+</tr>
+<tr>
+<td>Fri</td>
+<td>8h</td>
+<td>0.5h</td>
+<td>2.75h</td>
+<td>4h</td>
+</tr>
+</tbody></table>
+<p>Buffer across the week is about six hours, rising to eight if Tuesday goes to
+plan. It is weighted to the back half on purpose: the hard deadlines are
+front-loaded, and each one&#39;s fallback lands Thursday or Friday.</p>
+</div></div></section></div><div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">9 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
+        <p>The schedule is feasible: patch review Mon 10:30-12:00, renewals 12:00-12:45, strategy 13:30-16:30 and sent Monday evening, both SLA escalations Tue morning, board Tue 11:00-13:00, rehearsal Wed 10:00-11:30. The demo decision is escalated properly to Product rather than decided for them. The late-corrections fallback depends on skipping the fixed Thursday 09:30 recurring meeting (Thu 09:30-11:30), and Thursday assumes Finance is available for sign-off; neither has been agreed with the people involved. Ranking the demo conflict above the escalations is defensible but less clearly tied to hard deadlines. The draft reply is clear, short and honest.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Keeps the demo date undecided and asks Product whether the user must attend at all, so it neither silently picks Wed 15:00 nor silently moves it</li><li>Sends the strategy outline Monday evening, a day ahead of the Tue 14:00 cut-off</li><li>Correctly notes that Wednesday offers at most 1.5h in one piece, so it cannot host the board block</li><li>The draft reply is concise, gives the risk heads-up honestly and hedges &#39;first draft, not a finished strategy&#39;</li></ul></div><div><h4>Weaknesses</h4><ul><li>Contingency A&#39;s primary late fallback is Thu 09:30-11:30, which overlaps the fixed recurring meeting; it says it will skip that meeting without asking the organiser</li><li>Thu 10:00-11:30 &#39;sign-off with Finance&#39; assumes Finance is available, which the notes don&#39;t state</li><li>Top-3 ranks the demo conflict (a preference) third ahead of the hard renewals escalation; the reasoning is plausible but weaker</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Mon 10:30-12:00 review, 12:00-12:45 renewals (same-day hard met), 12:45-13:30 lunch, 13:30-16:30 strategy, 17:00-17:30 send outline</li><li>Tue 09:30-10:15 and 10:15-11:00 escalations #2/#3, 11:00-13:00 board, 13:45-16:00 contingency (valid 2h fallback)</li><li>Wed 10:00-11:30 rehearsal, 12:15-13:00 lunch, unavailable after 13:00</li><li>Contingency A: &#39;Thu 09:30–11:30 ... only works if I skip the Thursday recurring meeting&#39; conflicts with the fixed Thu 09:30-10:00 meeting</li><li>Fri latest change window 14:30-15:00 leaves 1h before the 16:00 deadline</li></ul></details>
+        <h4>Objective checks</h4>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="2-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="2-1" aria-selected="false">DECISIONS.md</button><button role="tab" data-file="2-2" aria-selected="false">DRAFT_REPLY.md</button><button role="tab" data-file="2-3" aria-selected="false">INBOX.md</button><button role="tab" data-file="2-4" aria-selected="false">TASK.md</button><button role="tab" data-file="2-5" aria-selected="false">WEEK_PLAN.md</button></div>
+        <div class="file" id="file-2-0" ><p class="path mono">opus-5.5/10-general-operations/RESPONSE.md</p><div class="prose"><h1>Reasoning Behind the Top Three Priorities</h1>
+<p>I ranked by how likely each item is to miss a hard deadline and how bad a miss would be. I didn&#39;t rank by who asked or who is loudest. Sequence is different from priority: the renewal escalation goes first on Monday because it&#39;s short and due that day, but it&#39;s low-risk once it&#39;s scheduled.</p>
+<h2>1. Security patch review, Monday morning</h2>
+<ul>
+<li><strong>Hard deadline</strong> (Fri 16:00) and the <strong>longest chain</strong>: my review (up to 90 min), then half a day of QA, then a 30-minute change window.</li>
+<li><strong>QA is out Thursday.</strong> A review done after Wednesday would push QA to Friday, and a single defect would then blow the deadline. Reviewing Monday gives QA Mon/Tue/Wed for the first pass and keeps Friday as a real fallback.</li>
+<li>It&#39;s also the item I control fully. Nothing blocks me from starting, so a delay would be purely my own.</li>
+</ul>
+<h2>2. Board numbers: protect Tue 11:00–13:00 and settle the fallback on Monday</h2>
+<ul>
+<li><strong>Hard deadline</strong> (Thu 12:00) that depends on someone else&#39;s upstream work (vendor export, then Lina).</li>
+<li>The risk shows up Monday 15:00, but it costs the most on Thursday. If the corrections slip past Tuesday afternoon, my calendar has only one more 2-hour slot, Thu 09:30–11:30, with a 30-minute margin. Wednesday&#39;s short day and the rehearsal break up the rest of the week.</li>
+<li>So it&#39;s priority #2 even though the work happens Tuesday. The real action is getting Finance&#39;s call on the fallback <strong>on Monday</strong>, while there&#39;s still room to change the approach.</li>
+</ul>
+<h2>3. Resolve the demo conflict and lock the rehearsal with Sam</h2>
+<ul>
+<li>The demo time is a <strong>preference</strong>, but it currently <strong>conflicts with my stated unavailability</strong> (Wed 13:00–17:30). I haven&#39;t quietly accepted a slot I can&#39;t make, and I haven&#39;t quietly moved it either. Product owns the call, so I surfaced it.</li>
+<li>The rehearsal is the fragile part. Sam&#39;s only confirmed window is Wed 10:00–12:00, and his other days are unknown. The 90-minute rehearsal has to happen there whichever demo date wins, so I&#39;m asking him to hold it now.</li>
+<li>It&#39;s a customer-facing commitment, and a Thu 16:00 booking gets harder to secure the longer we wait.</li>
+</ul>
+<h2>Why the others ranked lower</h2>
+<ul>
+<li><strong>CEO outline:</strong> &quot;early this week&quot; is a preference, and the only real cutoff is Tue 14:00. Three focused hours Monday afternoon cover it with a day of slack, so it&#39;s important but low-risk once scheduled.</li>
+<li><strong>Escalations:</strong> the renewal one is time-bound and handled Monday. I moved the two Wednesday-SLA ones to Tuesday because Wednesday is a half day with an unknown SLA time. That&#39;s about 2.25 h in total, scheduled and low-risk.</li>
+</ul>
+<h2>Constraints I held to</h2>
+<ul>
+<li>I only scheduled my own time inside 09:30–17:30, and nothing on Wednesday after 13:00.</li>
+<li>Lunch is at least 45 min every day. Meetings peak at about 2 h/day (Thursday if the demo moves), well under the 4 h cap.</li>
+<li>I didn&#39;t assume anyone else&#39;s availability (QA&#39;s hours, Sam outside Wednesday, the change-window owner). Each gap is a named question in DECISIONS.md.</li>
+</ul>
+</div></div><div class="file" id="file-2-1" hidden><p class="path mono">opus-5.5/10-general-operations/DECISIONS.md</p><div class="prose"><h1>Decisions, Contradictions, and Open Questions</h1>
+<h2>Confirmed (stated by the owner, no action needed)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Fact / decision</th>
+<th>Owner</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C1</td>
+<td>Board numbers must be final by <strong>Thu 12:00</strong> (hard)</td>
+<td>Finance</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>Board work needs 2 uninterrupted hours <em>after</em> Lina&#39;s corrections</td>
+<td>Finance</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Corrections are due Tue by 11:00; Lina will flag a vendor-export delay by Mon 15:00</td>
+<td>Lina</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>Security patch must deploy by <strong>Fri 16:00</strong> (hard). Order: review (60–90 min) → QA (half day) → 30-min change window</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>QA is unavailable Thursday</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>C6</td>
+<td>Demo rehearsal takes 90 min and Sam must join. Sam is out Tuesday and can do Wed 10:00–12:00</td>
+<td>Product / Sam</td>
+</tr>
+<tr>
+<td>C7</td>
+<td>Customer can do Wed 15:00 (preferred) or Thu 16:00</td>
+<td>Product</td>
+</tr>
+<tr>
+<td>C8</td>
+<td>Renewal-affecting escalation needs a response Monday. The other two have Wednesday SLAs. About 45 min each</td>
+<td>Support</td>
+</tr>
+<tr>
+<td>C9</td>
+<td>Leadership meeting Tue 16:00 can review the CEO outline if it&#39;s sent by 14:00</td>
+<td>CEO</td>
+</tr>
+<tr>
+<td>C10</td>
+<td>I&#39;m unavailable Wed 13:00–17:30</td>
+<td>Me</td>
+</tr>
+</tbody></table>
+<h2>Planning decisions I&#39;m making (can be changed if someone objects)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Decision</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1</td>
+<td>Security review first thing Monday (10:30–12:00)</td>
+<td>Longest chain, and QA is out Thursday, so a late start leaves no room for a second QA pass</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Board numbers get a protected block Tue 11:00–13:00 with no meetings</td>
+<td>Matches Finance&#39;s ask and Lina&#39;s ETA</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>CEO outline drafted Mon afternoon and sent Mon end of day</td>
+<td>Meets &quot;early this week&quot; and clears the Tue 14:00 cutoff with a day to spare</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Both Wednesday-SLA escalations handled Tuesday morning</td>
+<td>Wednesday is a half day, mostly taken by rehearsal, and the SLA times are unknown</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>Rehearsal held at Wed 10:00–11:30 whatever the demo date</td>
+<td>Sam&#39;s only confirmed window</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>Friday morning kept free as security buffer</td>
+<td>Covers the case where QA&#39;s re-run falls on Friday</td>
+</tr>
+</tbody></table>
+<h2>Unresolved contradictions</h2>
+<p><strong>D1 — Demo Wed 15:00 vs. my Wednesday afternoon unavailability.</strong>
+Product prefers Wed 15:00, but I&#39;m out Wed 13:00–17:30. If I need to be at the demo, it has to be <strong>Thu 16:00</strong>. If I don&#39;t, Wed 15:00 can stand, but someone else has to own it. Sam&#39;s Wednesday afternoon availability is also unknown. <em>Decision needed from Product by Monday end of day.</em></p>
+<p><strong>D2 — Board deadline vs. the late-export risk.</strong>
+Finance wants 2 uninterrupted hours after the corrections, and the corrections could slip. If they come in after ~13:45 Tuesday, my next 2-hour slot is Thu 09:30–11:30, and only if I skip the Thursday recurring meeting. That leaves a 30-minute margin before a hard deadline. <em>Finance should decide on Monday whether that&#39;s acceptable or whether to change scope or sequencing.</em></p>
+<p><strong>D3 — &quot;Early this week&quot; vs. the Tue 14:00 cutoff.</strong>
+Probably not a real conflict, but &quot;early this week&quot; is undefined. I&#39;m assuming Monday end of day is enough and that the Tuesday leadership review is the review the CEO wants. <em>Confirm with the CEO.</em></p>
+<p><strong>D4 — Security has only one QA retry path.</strong>
+QA is out Thursday. If QA finds an issue on Wednesday, the re-run is Friday, and the change window has to happen by ~14:30 to protect the 16:00 deadline. That works only if QA is available Friday morning, which nobody has confirmed. <em>Confirm with Engineering.</em></p>
+<h2>Questions, by owner</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>To</th>
+<th>Question</th>
+<th>Needed by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Q1</td>
+<td><strong>Product</strong></td>
+<td>Do I need to attend the customer demo? If yes, can we book Thu 16:00 now? How long is the demo, and does Sam need to be there?</td>
+<td>Mon EOD</td>
+</tr>
+<tr>
+<td>Q2</td>
+<td><strong>Lina</strong></td>
+<td>At 15:00 Monday: is the vendor export on time? If not, what&#39;s the new ETA for the corrections?</td>
+<td>Mon 15:00</td>
+</tr>
+<tr>
+<td>Q3</td>
+<td><strong>Finance</strong></td>
+<td>If the corrections slip past Tue ~13:45, is Thu 09:30–11:30 (30 min margin) acceptable? Is there anything we can pre-build before the corrections land to shorten the 2 hours?</td>
+<td>Mon EOD</td>
+</tr>
+<tr>
+<td>Q4</td>
+<td><strong>Engineering</strong></td>
+<td>When exactly is QA available Mon/Tue/Wed and Fri? Can QA start the day my review lands (Mon afternoon or Tue)? When is the change window, and do I need to be present? Is QA available Friday morning for a re-run?</td>
+<td>Mon midday</td>
+</tr>
+<tr>
+<td>Q5</td>
+<td><strong>CEO</strong></td>
+<td>Is Monday end of day early enough, and is Tuesday&#39;s leadership meeting the review you want? Any scope limits for the outline?</td>
+<td>Mon</td>
+</tr>
+<tr>
+<td>Q6</td>
+<td><strong>Sam</strong></td>
+<td>Please hold Wed 10:00–11:30 for the rehearsal. Just in case: do you have a backup slot Mon, Thu or Fri?</td>
+<td>Mon</td>
+</tr>
+<tr>
+<td>Q7</td>
+<td><strong>Support</strong></td>
+<td>What time is Monday&#39;s renewal response due, and what are the exact Wednesday SLA times?</td>
+<td>Mon morning</td>
+</tr>
+</tbody></table>
+</div></div><div class="file" id="file-2-2" hidden><p class="path mono">opus-5.5/10-general-operations/DRAFT_REPLY.md</p><div class="prose"><p>Subject: This week — plan, and a few decisions I need from you</p>
+<p>Hi all,</p>
+<p>Here&#39;s how I&#39;m planning the week. I need a few answers by Monday end of day so nothing slips.</p>
+<p><strong>What I&#39;m committing to</strong></p>
+<ul>
+<li><strong>Security patch:</strong> I&#39;ll review it Monday morning and hand it to QA by about noon. Engineering, since QA is out Thursday, can we get the half-day of QA booked for Mon afternoon or Tue? Please also tell me when the change window is and whether you need me there. I&#39;m keeping Friday morning free in case we need a second pass.</li>
+<li><strong>Board numbers:</strong> I&#39;ve blocked Tuesday 11:00–13:00 with no meetings for Lina&#39;s corrections. Lina, please tell me at 15:00 Monday if the vendor export is late. If it is, my next 2-hour block is Thursday 09:30–11:30. Finance, that&#39;s cutting it close to 12:00, so let&#39;s decide Monday whether it&#39;s acceptable or whether we change the approach.</li>
+<li><strong>Strategy outline:</strong> I&#39;ll draft it Monday afternoon and aim to send it Monday evening, so it&#39;s in hand well before Tuesday&#39;s leadership meeting. It&#39;ll be a first draft, not a finished strategy.</li>
+<li><strong>Escalations:</strong> the renewal one gets a response Monday. The two with Wednesday SLAs I&#39;ll handle Tuesday morning. Support, please send me the exact SLA times.</li>
+</ul>
+<p><strong>Decisions I need</strong></p>
+<ol>
+<li><strong>Product — demo timing.</strong> I&#39;m unavailable Wednesday from 13:00, so I can&#39;t join a 15:00 demo that day. If I need to be there, let&#39;s book Thursday 16:00 now. If I don&#39;t, who&#39;s running it, and does Sam need to be there? The rehearsal stays Wednesday 10:00–11:30 either way.</li>
+<li><strong>Sam:</strong> can you hold Wed 10:00–11:30? If that slot falls through we don&#39;t have a backup, so tell me if you have any other time.</li>
+<li><strong>Finance:</strong> Thursday&#39;s fallback, as above.</li>
+</ol>
+<p>A heads-up: the plan has some slack, but not much, if the vendor export and a security re-test both go wrong in the same week. If that happens I&#39;ll flag it right away rather than hope it works out.</p>
+<p>Thanks,
+[Name]</p>
+</div></div><div class="file" id="file-2-3" hidden><p class="path mono">opus-5.5/10-general-operations/INBOX.md</p><div class="prose"><h1>Notes collected Friday afternoon</h1>
+<ul>
+<li>You work 09:30–17:30, Monday–Friday. Wednesday 13:00–17:30 is unavailable.</li>
+<li>Finance: “Board numbers must be final by Thursday 12:00. Need two uninterrupted
+hours after Lina sends corrections Tuesday morning.”</li>
+<li>Lina: corrections will arrive Tuesday by 11:00, unless the vendor export is
+late; she will know by Monday 15:00.</li>
+<li>Product: customer demo preferred Wednesday 15:00; the customer can also do
+Thursday 16:00. Demo environment needs a 90-minute rehearsal and Sam must join.</li>
+<li>Sam is unavailable Tuesday and can rehearse Wednesday 10:00–12:00.</li>
+<li>Engineering: security patch must deploy by Friday 16:00. It needs your review
+(60–90 min), QA (half day after review), then a 30-minute change window. QA is
+unavailable Thursday.</li>
+<li>CEO: asks for a strategy outline “early this week”; a useful first draft takes
+three focused hours. Tuesday 16:00 leadership meeting can review it if sent by
+14:00.</li>
+<li>Support: three escalations, one affects renewals and needs a response Monday;
+the other two have Wednesday SLAs. Each takes about 45 minutes.</li>
+<li>Recurring meetings: Monday 10:00–10:30, Tuesday 16:00–17:00, Thursday
+09:30–10:00.</li>
+<li>Personal preference: no more than four hours of meetings in a day; reserve at
+least 45 minutes for lunch.</li>
+</ul>
+</div></div><div class="file" id="file-2-4" hidden><p class="path mono">opus-5.5/10-general-operations/TASK.md</p><div class="prose"><h1>Task 10 — General agent work: synthesize a messy operating week</h1>
+<p>Read <code>INBOX.md</code>. Produce:</p>
+<ul>
+<li><code>WEEK_PLAN.md</code>: prioritized plan for Monday–Friday with dependencies, focus
+blocks, deadlines, and contingency space.</li>
+<li><code>DECISIONS.md</code>: confirmed decisions, unresolved contradictions, and questions
+assigned to the right person.</li>
+<li><code>DRAFT_REPLY.md</code>: one concise message to the team aligning expectations and
+surfacing the decisions needed. It should sound human and avoid overpromising.</li>
+</ul>
+<p>Respect stated working hours and do not silently invent availability. Distinguish
+hard deadlines from preferences. Write <code>RESPONSE.md</code> with the reasoning behind
+your top three priorities. Work only in this directory.</p>
+</div></div><div class="file" id="file-2-5" hidden><p class="path mono">opus-5.5/10-general-operations/WEEK_PLAN.md</p><div class="prose"><h1>Week Plan — Monday to Friday</h1>
+<p>Working hours: 09:30–17:30, Mon–Fri. <strong>Wednesday 13:00–17:30 is unavailable</strong> (Wednesday is a 3.5-hour day).
+Constraints I applied every day: at least 45 min lunch, no more than 4 h of meetings.</p>
+<h2>1. Deadlines: hard vs. preferred</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Type</th>
+<th>When</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Board numbers final</td>
+<td><strong>Hard</strong></td>
+<td>Thu 12:00</td>
+<td>Finance</td>
+</tr>
+<tr>
+<td>Security patch deployed</td>
+<td><strong>Hard</strong></td>
+<td>Fri 16:00</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>Renewal-risk escalation response</td>
+<td><strong>Hard</strong> (same-day)</td>
+<td>Mon, time not stated → aim for before lunch</td>
+<td>Support</td>
+</tr>
+<tr>
+<td>Two other escalations</td>
+<td><strong>Hard</strong> (SLA)</td>
+<td>Wed, SLA time not stated → finish Tue</td>
+<td>Support</td>
+</tr>
+<tr>
+<td>Strategy outline to CEO</td>
+<td>Preference (&quot;early this week&quot;) + one real cutoff: <strong>send by Tue 14:00</strong> to get it reviewed at Tue 16:00 leadership</td>
+<td>Target Mon end of day</td>
+<td>CEO</td>
+</tr>
+<tr>
+<td>Customer demo</td>
+<td>Preference Wed 15:00; alternative Thu 16:00</td>
+<td><strong>Not decided</strong> (see DECISIONS.md, D1)</td>
+<td>Product</td>
+</tr>
+<tr>
+<td>Demo rehearsal (90 min, Sam must join)</td>
+<td>Hard prerequisite of the demo</td>
+<td>Wed 10:00–11:30 (Sam&#39;s only stated window)</td>
+<td>Product / Sam</td>
+</tr>
+</tbody></table>
+<h2>2. Dependency chains</h2>
+<pre><code>Security:  My review (60–90 min, Mon) -&gt; QA half day (not Thu; QA hours otherwise unconfirmed)
+           -&gt; 30-min change window -&gt; deployed by Fri 16:00
+Board:     Vendor export -&gt; Lina corrections (Tue by 11:00; she knows about delays by Mon 15:00)
+           -&gt; 2 uninterrupted hours of my time -&gt; final by Thu 12:00
+Demo:      Rehearsal with Sam (Wed 10:00-11:30) -&gt; demo (Wed 15:00 or Thu 16:00)
+CEO:       3 focused hours of drafting -&gt; send by Tue 14:00 -&gt; leadership review Tue 16:00
+</code></pre>
+<p>The security chain is the longest and has a gap in the middle (QA is out Thursday), so it starts first. If QA finds a problem after Wednesday, the only QA day left is Friday.</p>
+<h2>3. Day-by-day</h2>
+<h3>Monday — start the long chains, clear the renewal escalation</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Send team alignment message (DRAFT_REPLY.md); acknowledge the renewal-risk customer</td>
+<td>Starts the decisions early</td>
+</tr>
+<tr>
+<td>10:00–10:30</td>
+<td>Recurring meeting</td>
+<td></td>
+</tr>
+<tr>
+<td>10:30–12:00</td>
+<td><strong>Focus: security patch review</strong> (60–90 min)</td>
+<td>Hand to QA as soon as done; unused time becomes buffer</td>
+</tr>
+<tr>
+<td>12:00–12:45</td>
+<td>Renewal-risk escalation response</td>
+<td>Due today; sent before lunch</td>
+</tr>
+<tr>
+<td>12:45–13:30</td>
+<td>Lunch</td>
+<td></td>
+</tr>
+<tr>
+<td>13:30–16:30</td>
+<td><strong>Focus: CEO strategy outline first draft (3 h)</strong></td>
+<td>Notifications off. Lina&#39;s 15:00 export status gets read at 16:30</td>
+</tr>
+<tr>
+<td>16:30–17:00</td>
+<td>Read Lina&#39;s update, pick the Board plan (see Contingency A); confirm the demo decision with Product</td>
+<td></td>
+</tr>
+<tr>
+<td>17:00–17:30</td>
+<td>Reread and send the outline to the CEO (well before the Tue 14:00 cutoff)</td>
+<td>If it isn&#39;t ready, finish it Tue 13:45–14:00 at the latest</td>
+</tr>
+</tbody></table>
+<p>Meetings: 0.5 h. Focus: 4.5 h.</p>
+<h3>Tuesday — Board numbers and the Wednesday-SLA escalations</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:15</td>
+<td>Escalation #2 (Wed SLA)</td>
+<td>Done a day early because the Wed SLA time is unknown and Wed is short</td>
+</tr>
+<tr>
+<td>10:15–11:00</td>
+<td>Escalation #3 (Wed SLA)</td>
+<td></td>
+</tr>
+<tr>
+<td>11:00–13:00</td>
+<td><strong>Protected: Board numbers (2 uninterrupted hours)</strong></td>
+<td>Starts when Lina&#39;s corrections arrive (due by 11:00)</td>
+</tr>
+<tr>
+<td>13:00–13:45</td>
+<td>Lunch</td>
+<td></td>
+</tr>
+<tr>
+<td>13:45–16:00</td>
+<td><strong>Contingency</strong></td>
+<td>Takes the Board block if corrections are late (Contingency A), QA questions, change window if Engineering needs me there, any outline edits</td>
+</tr>
+<tr>
+<td>16:00–17:00</td>
+<td>Leadership meeting (reviews the CEO outline)</td>
+<td></td>
+</tr>
+<tr>
+<td>17:00–17:30</td>
+<td>Wrap-up; prep for the rehearsal</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Meetings: 1 h.</p>
+<h3>Wednesday — half day (09:30–13:00)</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Check the demo environment before rehearsal</td>
+<td></td>
+</tr>
+<tr>
+<td>10:00–11:30</td>
+<td><strong>Demo rehearsal with Sam (90 min)</strong></td>
+<td>Sam&#39;s stated window is 10:00–12:00</td>
+</tr>
+<tr>
+<td>11:30–12:00</td>
+<td>Rehearsal overrun / fixes</td>
+<td>Still inside Sam&#39;s window</td>
+</tr>
+<tr>
+<td>12:00–12:15</td>
+<td>Hand demo notes to Product; check security QA status</td>
+<td></td>
+</tr>
+<tr>
+<td>12:15–13:00</td>
+<td>Lunch</td>
+<td></td>
+</tr>
+<tr>
+<td>13:00–17:30</td>
+<td><strong>Unavailable</strong></td>
+<td>I can&#39;t attend a 15:00 demo today</td>
+</tr>
+</tbody></table>
+<p>Meetings: 1.5 h. Both Wednesday-SLA escalations are already done (Tuesday).</p>
+<h3>Thursday — Board deadline, possible demo</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Recurring meeting</td>
+<td>Skip it only if Contingency A applies</td>
+</tr>
+<tr>
+<td>10:00–11:30</td>
+<td>Board: final check and sign-off with Finance</td>
+<td>If Tuesday went to plan this takes ~30 min and the rest turns into buffer</td>
+</tr>
+<tr>
+<td>11:30–12:00</td>
+<td>Buffer before the <strong>12:00 hard deadline</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>12:00–12:45</td>
+<td>Lunch</td>
+<td></td>
+</tr>
+<tr>
+<td>12:45–15:00</td>
+<td>Focus: work in leadership feedback on the outline; catch-up</td>
+<td></td>
+</tr>
+<tr>
+<td>15:00–16:00</td>
+<td>Demo prep (if the demo is Thu) / otherwise contingency</td>
+<td></td>
+</tr>
+<tr>
+<td>16:00–17:30</td>
+<td>Customer demo (if moved to Thu; length not yet confirmed) / otherwise contingency</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Meetings: 0.5 h, plus the demo if it happens today (up to 2 h, well under the cap).</p>
+<h3>Friday — security deadline buffer</h3>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Security status check</td>
+<td>If the patch already shipped, the morning is free focus time</td>
+</tr>
+<tr>
+<td>10:00–12:30</td>
+<td><strong>Contingency: security</strong></td>
+<td>Re-review of fixes if QA found issues; support a Friday QA re-run</td>
+</tr>
+<tr>
+<td>12:30–13:15</td>
+<td>Lunch</td>
+<td></td>
+</tr>
+<tr>
+<td>13:15–15:00</td>
+<td>Contingency</td>
+<td><strong>Latest acceptable change window: 14:30–15:00</strong>, which leaves an hour before the 16:00 deadline for verification or rollback</td>
+</tr>
+<tr>
+<td>15:00–16:30</td>
+<td>Catch-up / follow-ups from the demo and escalations</td>
+<td></td>
+</tr>
+<tr>
+<td>16:30–17:30</td>
+<td>Weekly wrap-up; plan next week</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2>4. Contingency plans</h2>
+<p><strong>A. Vendor export is late (known Mon 15:00).</strong></p>
+<ul>
+<li>Ask Lina on Monday for a new ETA for the corrections.</li>
+<li>Corrections arrive by ~13:45 Tue: move the Board block to Tue 13:45–15:45. Nothing else changes.</li>
+<li>Corrections arrive later Tue or Wed: Wednesday gives only 1.5 h in one piece (11:30–13:00), not 2. The next real 2-hour slot is <strong>Thu 09:30–11:30</strong>, and it only works if I skip the Thursday recurring meeting. That leaves 30 min before the deadline. Thu 10:00–12:00 leaves zero margin, so I won&#39;t plan on it.</li>
+<li>Raise this with Finance on <strong>Monday</strong>, not Thursday (DECISIONS.md, Q3).</li>
+</ul>
+<p><strong>B. Security QA finds a problem.</strong></p>
+<ul>
+<li>A fix plus my re-review, then a QA re-run on Wed or Fri (QA is out Thu). A Friday re-run needs QA to start by about 09:30–10:00 for the change window to happen by 14:30.</li>
+<li>If the Friday path looks at risk by Wednesday midday, escalate to Engineering right away.</li>
+</ul>
+<p><strong>C. Demo.</strong></p>
+<ul>
+<li>If I have to attend, it must be Thu 16:00. Rehearsal stays Wed 10:00 either way.</li>
+<li>If Sam&#39;s Wednesday slot falls through, we have no confirmed rehearsal window with him. His availability on Mon, Thu and Fri is unknown, so we ask him (Q6) rather than assume.</li>
+</ul>
+<p><strong>Unplanned time on purpose:</strong> Tue 13:45–16:00, Thu afternoon (if no demo), and most of Friday. That&#39;s about 7 hours of buffer across the week, placed right before each hard deadline.</p>
+<h2>5. What I have not assumed</h2>
+<ul>
+<li>QA&#39;s hours on Mon/Tue/Wed/Fri. We only know QA is out Thursday.</li>
+<li>Sam&#39;s availability beyond &quot;not Tuesday&quot; and &quot;Wed 10:00–12:00&quot;.</li>
+<li>Whether I (or Sam) need to be at the customer demo, and how long the demo runs.</li>
+<li>The exact Monday deadline for the renewal response and the Wednesday SLA times.</li>
+<li>Whether the change window needs me present.</li>
+</ul>
+</div></div></section></div><div role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">7.5 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
+        <p>The main path is feasible: renewals on Monday, patch review Mon 15:00-16:30, board Tue 11:00-13:00, rehearsal Wed 10:00-11:30, demo Thu 16:00, and a Friday deploy with Path A/B. The contingency for late corrections splits the board work into 90-minute pieces (Tue 14:00-15:30, Wed 11:30-13:00), which breaks Finance&#39;s requirement of 2 uninterrupted hours, and Wednesday lunch is not reliably protected. The 3h strategy draft is split into 30/45/105-minute pieces. The draft reply lists &#39;board numbers by Thursday 12:00 — immovable&#39; as locked even though it depends on Lina.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Clear table separating hard deadlines from soft ones; correctly calls Wed 15:00 unviable and proposes Thu 16:00 pending confirmation</li><li>Starts the patch chain Monday, and Friday Path A/B makes the QA-on-Friday risk explicit</li><li>Clears both Wednesday-SLA escalations by Tuesday morning</li></ul></div><div><h4>Weaknesses</h4><ul><li>Fallback board windows (Tue 14:00-15:30, Wed 11:30-13:00, Wed 09:30-10:00) are shorter than the required 2 uninterrupted hours</li><li>Wednesday lunch is &#39;contingency / short lunch&#39;, and the escalation fallback explicitly sacrifices it</li><li>The strategy draft is split into small pieces (09:30-10:00, 11:15-12:00, 12:45-14:30) rather than focused blocks</li><li>Fewer ambiguities surfaced (for example, whether Sam must attend the demo, and the SLA times), and there are fewer questions with owners</li><li>The draft reply partly overpromises by putting the board deadline under &#39;What&#39;s locked&#39; without noting the vendor/Lina risk</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Mon 09:30-10:00, 11:15-12:00, 12:45-14:30 strategy blocks (3h in total, fragmented); Mon 15:00-16:30 patch review</li><li>DECISIONS contradiction 2: &#39;move board-numbers recovery into Tuesday 14:00–15:30 and Wednesday 11:30–13:00&#39; breaks the 2h uninterrupted requirement</li><li>Wed 11:30-13:00 buffer used as board catch-up or for two escalations, which leaves no 45-min lunch</li><li>Thu 10:00-12:00 board finalization, 16:00 demo; Fri Path B QA 09:30-13:30 then change window 13:30-14:00</li></ul></details>
+        <h4>Objective checks</h4>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="3-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="3-1" aria-selected="false">DECISIONS.md</button><button role="tab" data-file="3-2" aria-selected="false">DRAFT_REPLY.md</button><button role="tab" data-file="3-3" aria-selected="false">INBOX.md</button><button role="tab" data-file="3-4" aria-selected="false">TASK.md</button><button role="tab" data-file="3-5" aria-selected="false">WEEK_PLAN.md</button></div>
+        <div class="file" id="file-3-0" ><p class="path mono">mimo/10-general-operations/RESPONSE.md</p><div class="prose"><h1>RESPONSE.md — reasoning behind the top three priorities</h1>
+<h2>1. Security patch chain start (review Monday)</h2>
+<p>This is the only hard deadline with a multi-step dependency chain that spans other people’s calendars: review (60–90 min) → QA half-day → 30-min change window → live by Friday 16:00. QA is out Thursday, so the only safe QA slots are Monday–Wednesday. If review slips past Wednesday, QA is forced onto Friday morning and the whole chain becomes a single-point-of-failure afternoon. Starting review Monday 15:00 costs one block of the day and buys the entire week of slack. Nothing else in the week has that leverage over a hard deadline.</p>
+<h2>2. Renewal-related support escalation (Monday) + pulling the other two forward</h2>
+<p>The renewal escalation is the only item that expires Monday and it touches revenue. The other two have Wednesday SLAs, but Wednesday morning is the only window Sam can rehearse, and Wednesday afternoon is unavailable. Leaving those two escalations for Wednesday would either burn the rehearsal slot or the lunch/buffer that absorbs a Lina slip. Paying 90 minutes of Monday/Tuesday to clear all three preserves the one morning that gates the customer demo and keeps contingency real.</p>
+<h2>3. Board-numbers block Tuesday 11:00–13:00 (with Thursday 10:00–12:00 as last call)</h2>
+<p>Finance requires two uninterrupted hours after Lina’s corrections, and the finish line is a hard Thursday 12:00. Corrections arrive Tuesday by 11:00 at best, so Tuesday 11:00–13:00 is the earliest honest slot and the only one that leaves recovery days. Doing it Tuesday also frees Thursday morning as a true finalization buffer rather than a rescue. Strategy outline (3h) is slotted Monday morning instead — it is soft (“early this week”) and must not compete with a hard chain.</p>
+<p><strong>Why these three over the rest:</strong> the customer demo and strategy outline are preferences/opportunities with movable slots; the three items above each sit on a hard deadline and each one loses its recovery path if deferred a single day. Sequencing them first is what makes the softer work (demo prep, strategy send, change-window coordination) schedulable at all.</p>
+</div></div><div class="file" id="file-3-1" hidden><p class="path mono">mimo/10-general-operations/DECISIONS.md</p><div class="prose"><h1>Decisions</h1>
+<h2>Confirmed decisions</h2>
+<p>These follow directly from stated constraints in the notes. No further approval needed to act on them.</p>
+<ol>
+<li><strong>Working window is 09:30–17:30 Mon–Fri, with Wednesday 13:00–17:30 unavailable.</strong> No work, meetings, or demos are scheduled in that Wednesday block.</li>
+<li><strong>The renewal-related support escalation gets a response on Monday.</strong> It is the only hard deadline that expires that day and it touches renewals.</li>
+<li><strong>The two remaining support escalations are pulled into Monday afternoon and Tuesday morning</strong> rather than left to their Wednesday SLA day. Wednesday morning is the only place the Sam rehearsal can happen, and keeping escalations out of that window preserves contingency.</li>
+<li><strong>Board numbers get two uninterrupted hours on Tuesday 11:00–13:00</strong>, matching Finance’s stated need (“two uninterrupted hours after Lina sends corrections Tuesday morning”), with Thursday 10:00–12:00 held as the finalization window before the hard stop at Thursday 12:00.</li>
+<li><strong>Strategy outline is built Monday in three focus blocks (3h total)</strong> and sent to leadership before Tuesday 14:00 so the 16:00 meeting can review it. Treating that send as an opportunity to use, not a second hard deadline.</li>
+<li><strong>Demo rehearsal is Wednesday 10:00–11:30</strong>, inside Sam’s only stated availability (Wed 10:00–12:00). 90 minutes as required.</li>
+<li><strong>The Wednesday 15:00 demo is not viable.</strong> It collides with the Wednesday afternoon blackout. The plan moves the demo to the customer’s stated alternative, <strong>Thursday 16:00</strong>, subject to confirmation (see open questions).</li>
+<li><strong>Security patch review is scheduled Monday 15:00–16:30</strong> to start the review → QA half-day → 30-minute change window chain early. QA must not be planned on Thursday (unavailable). Target live date Friday before 16:00.</li>
+<li><strong>Meeting load is kept under four hours per day and lunch is protected at 45 minutes</strong> on days where the working window is full. Wednesday’s short window may compress lunch if escalations have to be recovered there.</li>
+</ol>
+<h2>Unresolved contradictions</h2>
+<ol>
+<li><p><strong>Preferred demo time vs. stated unavailability.</strong></p>
+<ul>
+<li>Product prefers <strong>Wednesday 15:00</strong>.</li>
+<li>You are <strong>unavailable Wednesday 13:00–17:30</strong>.</li>
+<li>These cannot both hold. The notes offer <strong>Thursday 16:00</strong> as the customer’s alternative.</li>
+<li><strong>Stance:</strong> treat Thursday 16:00 as the working assumption <em>only after</em> Product confirms it with the customer. Do not promise Wednesday.</li>
+</ul>
+</li>
+<li><p><strong>Lina’s corrections may not exist when the board-numbers work needs them.</strong></p>
+<ul>
+<li>Corrections expected <strong>Tuesday by 11:00</strong>.</li>
+<li>If the vendor export is late, that timing slips; Lina knows <strong>Monday 15:00</strong>.</li>
+<li>Two uninterrupted hours are required <em>after</em> corrections arrive, and the board deadline is <strong>Thursday 12:00</strong> — a late Monday/Tuesday signal compresses the whole chain.</li>
+<li><strong>Stance:</strong> checkpoint with Lina Monday 15:00 is mandatory. If the export is late, move board-numbers recovery into Tuesday 14:00–15:30 and Wednesday 11:30–13:00 and treat Thursday 10:00–12:00 as the last possible finish — not as slack.</li>
+</ul>
+</li>
+<li><p><strong>Security patch chain vs. QA’s Thursday blackout.</strong></p>
+<ul>
+<li>Review (60–90 min) → QA (half day) → change window (30 min) → deploy by <strong>Friday 16:00</strong>.</li>
+<li>QA cannot run Thursday.</li>
+<li>If review slips past Wednesday, QA is forced onto Friday morning and the change window lands Friday afternoon — one QA failure away from missing the hard deadline.</li>
+<li><strong>Stance:</strong> review Monday; book QA for Tuesday or Wednesday. Friday is the fallback, not the plan.</li>
+</ul>
+</li>
+<li><p><strong>Strategy outline: “early this week” is vague.</strong></p>
+<ul>
+<li>CEO asked for “early this week”; the concrete opportunity is <strong>send by Tuesday 14:00</strong> for the 16:00 leadership review.</li>
+<li>Not a true contradiction, but an underspecified deadline. The plan uses Tuesday 14:00 as the working cutoff while flagging it for the CEO (below).</li>
+</ul>
+</li>
+<li><p><strong>Demo duration is unspecified.</strong></p>
+<ul>
+<li>Rehearsal is fixed at 90 minutes; the demo itself has no stated length. The plan blocks 60 minutes at Thursday 16:00 as a placeholder.</li>
+</ul>
+</li>
+</ol>
+<h2>Questions assigned to the right person</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Question</th>
+<th>Assigned to</th>
+<th>Needed by</th>
+<th>Why this person</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Can we move the customer demo to <strong>Thursday 16:00</strong>? Wednesday 15:00 is impossible on our side.</td>
+<td><strong>Product</strong> (to confirm with the customer)</td>
+<td>Monday EOD</td>
+<td>Product owns the customer relationship and proposed the slots</td>
+</tr>
+<tr>
+<td>2</td>
+<td>How long is the demo slot (the rehearsal is 90 min; the demo itself is not specified)?</td>
+<td><strong>Product</strong></td>
+<td>Before Thu prep block</td>
+<td>Same owner as the demo scheduling</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Will the vendor export be on time? If not, when will your corrections actually land?</td>
+<td><strong>Lina</strong></td>
+<td><strong>Monday 15:00</strong></td>
+<td>She stated she will know by then; board chain depends on it</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Is the security patch ready for review Monday 15:00–16:30?</td>
+<td><strong>Engineering</strong></td>
+<td>Monday morning</td>
+<td>They own the patch; review cannot start without it</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Can QA take a half-day on <strong>Tuesday or Wednesday</strong> (not Thursday) after review?</td>
+<td><strong>QA</strong> (via Engineering)</td>
+<td>Monday EOD</td>
+<td>QA’s calendar is the constraint in the deploy chain</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Which 30-minute change window should we hold — Wednesday, Thursday, or Friday early afternoon?</td>
+<td><strong>Engineering</strong></td>
+<td>Wednesday EOD</td>
+<td>They own the change-window process</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Is Tuesday 14:00 a real cutoff for the strategy outline, or is later this week acceptable?</td>
+<td><strong>CEO</strong></td>
+<td>Monday</td>
+<td>Only the CEO can turn “early this week” into a firm date</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Is Thursday 10:00–12:00 an acceptable finalization window for board numbers, given the 12:00 hard stop?</td>
+<td><strong>Finance</strong></td>
+<td>Tuesday EOD</td>
+<td>Finance stated the two-hour need and the Thursday deadline</td>
+</tr>
+</tbody></table>
+<h2>Hard deadlines vs. preferences — quick reference</h2>
+<p><strong>Hard (do not miss):</strong></p>
+<ul>
+<li>Monday: response to the renewal-related support escalation.</li>
+<li>Wednesday SLA: the other two support escalations (may be completed earlier).</li>
+<li>Thursday 12:00: board numbers final.</li>
+<li>Friday 16:00: security patch deployed.</li>
+<li>Stated working hours and Wednesday afternoon blackout are constraints, not preferences.</li>
+</ul>
+<p><strong>Preferences / opportunities (adjustable):</strong></p>
+<ul>
+<li>Demo “preferred” Wednesday 15:00 → alternative Thursday 16:00.</li>
+<li>Strategy outline “early this week”; Tuesday 14:00 send unlocks a review slot but is not itself a hard deadline.</li>
+<li>≤ 4 hours of meetings per day; ≥ 45 minutes for lunch (personal working preferences — protect them where possible, disclose if a day violates them).</li>
+</ul>
+</div></div><div class="file" id="file-3-2" hidden><p class="path mono">mimo/10-general-operations/DRAFT_REPLY.md</p><div class="prose"><h1>DRAFT_REPLY.md</h1>
+<p>Subject: Plan for this week — what’s locked, what I need from you</p>
+<p>Hi all,</p>
+<p>Here’s how I’m sequencing the week so the hard deadlines hold and we don’t surprise each other.</p>
+<p><strong>What’s locked</strong></p>
+<ul>
+<li>The renewal escalation gets its response today (Monday).</li>
+<li>Board numbers are in your hands by Thursday 12:00 — that one is immovable.</li>
+<li>The security patch is targeted for Friday before 16:00. I’m starting the review today so QA and the change window aren’t crushed into Friday.</li>
+<li>The two Wednesday-SLA escalations are going out Monday/Tuesday so Wednesday morning stays free for the demo rehearsal with Sam.</li>
+</ul>
+<p><strong>What I need decided or confirmed</strong></p>
+<ol>
+<li><strong>Product</strong> — Wednesday 15:00 for the demo doesn’t work on my end (I’m out Wednesday afternoon). Can we lock the customer’s Thursday 16:00 slot instead? Please also confirm how long the demo itself runs — the rehearsal is 90 minutes; the demo length isn’t specified yet.</li>
+<li><strong>Lina</strong> — by 15:00 today, will the vendor export be on time? If not, when should I expect your corrections? Board numbers sit on top of that timeline.</li>
+<li><strong>Engineering / QA</strong> — is the patch ready for my review this afternoon? And can QA do a half-day Tuesday or Wednesday? Thursday is out for QA, and Friday is our fallback, not the plan. I’ll also need us to pick a 30-minute change window by Wednesday.</li>
+<li><strong>CEO / leadership</strong> — the strategy outline will be with you before 14:00 tomorrow so the 16:00 meeting can review it. If “early this week” needs a different firm date, tell me and I’ll re-cut it.</li>
+<li><strong>Finance</strong> — I’m holding two uninterrupted hours tomorrow late morning once Lina’s corrections are in, with Thursday 10:00–12:00 as the final polish before the noon cutoff. Flag now if that shape doesn’t work.</li>
+</ol>
+<p>A few things I want to be straight about: the demo slot depends on the customer confirming Thursday, and the patch date depends on QA finding a half-day before Friday afternoon. If either slips I’ll say so the same day rather than let it drift.</p>
+<p>Thanks — shout if anything above conflicts with what you’re seeing.</p>
+<p>—</p>
+</div></div><div class="file" id="file-3-3" hidden><p class="path mono">mimo/10-general-operations/INBOX.md</p><div class="prose"><h1>Notes collected Friday afternoon</h1>
+<ul>
+<li>You work 09:30–17:30, Monday–Friday. Wednesday 13:00–17:30 is unavailable.</li>
+<li>Finance: “Board numbers must be final by Thursday 12:00. Need two uninterrupted
+hours after Lina sends corrections Tuesday morning.”</li>
+<li>Lina: corrections will arrive Tuesday by 11:00, unless the vendor export is
+late; she will know by Monday 15:00.</li>
+<li>Product: customer demo preferred Wednesday 15:00; the customer can also do
+Thursday 16:00. Demo environment needs a 90-minute rehearsal and Sam must join.</li>
+<li>Sam is unavailable Tuesday and can rehearse Wednesday 10:00–12:00.</li>
+<li>Engineering: security patch must deploy by Friday 16:00. It needs your review
+(60–90 min), QA (half day after review), then a 30-minute change window. QA is
+unavailable Thursday.</li>
+<li>CEO: asks for a strategy outline “early this week”; a useful first draft takes
+three focused hours. Tuesday 16:00 leadership meeting can review it if sent by
+14:00.</li>
+<li>Support: three escalations, one affects renewals and needs a response Monday;
+the other two have Wednesday SLAs. Each takes about 45 minutes.</li>
+<li>Recurring meetings: Monday 10:00–10:30, Tuesday 16:00–17:00, Thursday
+09:30–10:00.</li>
+<li>Personal preference: no more than four hours of meetings in a day; reserve at
+least 45 minutes for lunch.</li>
+</ul>
+</div></div><div class="file" id="file-3-4" hidden><p class="path mono">mimo/10-general-operations/TASK.md</p><div class="prose"><h1>Task 10 — General agent work: synthesize a messy operating week</h1>
+<p>Read <code>INBOX.md</code>. Produce:</p>
+<ul>
+<li><code>WEEK_PLAN.md</code>: prioritized plan for Monday–Friday with dependencies, focus
+blocks, deadlines, and contingency space.</li>
+<li><code>DECISIONS.md</code>: confirmed decisions, unresolved contradictions, and questions
+assigned to the right person.</li>
+<li><code>DRAFT_REPLY.md</code>: one concise message to the team aligning expectations and
+surfacing the decisions needed. It should sound human and avoid overpromising.</li>
+</ul>
+<p>Respect stated working hours and do not silently invent availability. Distinguish
+hard deadlines from preferences. Write <code>RESPONSE.md</code> with the reasoning behind
+your top three priorities. Work only in this directory.</p>
+</div></div><div class="file" id="file-3-5" hidden><p class="path mono">mimo/10-general-operations/WEEK_PLAN.md</p><div class="prose"><h1>Week Plan — Monday to Friday</h1>
+<h2>Ground rules (stated, not invented)</h2>
+<ul>
+<li>Working hours: <strong>09:30–17:30</strong>, Monday–Friday.</li>
+<li><strong>Wednesday 13:00–17:30 is unavailable</strong> — do not schedule work then.</li>
+<li>Preference: <strong>≤ 4 hours of meetings per day</strong>; <strong>≥ 45 minutes for lunch</strong>.</li>
+<li>Hard deadlines are marked <strong>[HARD]</strong>. Preferences and opportunities are marked <strong>[SOFT]</strong>.</li>
+<li>No availability invented for other people beyond what the notes state.</li>
+</ul>
+<h2>Deadline register</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>When</th>
+<th>Type</th>
+<th>Owner dependency</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Support escalation (renewal) response</td>
+<td>Monday</td>
+<td><strong>[HARD]</strong></td>
+<td>You</td>
+</tr>
+<tr>
+<td>Two support escalations</td>
+<td>Wednesday SLA</td>
+<td><strong>[HARD]</strong></td>
+<td>You (can be done earlier)</td>
+</tr>
+<tr>
+<td>Strategy outline first draft (3h work)</td>
+<td>“Early this week”</td>
+<td><strong>[SOFT]</strong></td>
+<td>You</td>
+</tr>
+<tr>
+<td>Send strategy for leadership review</td>
+<td>Tue 14:00 for 16:00 meeting</td>
+<td><strong>[SOFT]</strong> opportunity</td>
+<td>You</td>
+</tr>
+<tr>
+<td>Lina corrections arrive</td>
+<td>Tue by 11:00 (may slip)</td>
+<td>Input</td>
+<td>Lina; vendor export</td>
+</tr>
+<tr>
+<td>Lina will know if export is late</td>
+<td>Monday 15:00</td>
+<td>Input</td>
+<td>Lina</td>
+</tr>
+<tr>
+<td>Board numbers final</td>
+<td>Thursday 12:00</td>
+<td><strong>[HARD]</strong></td>
+<td>You + Lina corrections + 2h focus</td>
+</tr>
+<tr>
+<td>Customer demo</td>
+<td>Preferred Wed 15:00; alt Thu 16:00</td>
+<td><strong>[SOFT]</strong> preference</td>
+<td>Customer, Product, Sam</td>
+</tr>
+<tr>
+<td>Demo rehearsal (90 min, Sam joins)</td>
+<td>Sam free Wed 10:00–12:00 only</td>
+<td>Gate for demo</td>
+<td>Sam</td>
+</tr>
+<tr>
+<td>Security patch deploy</td>
+<td>Friday 16:00</td>
+<td><strong>[HARD]</strong></td>
+<td>You review → QA half-day → 30-min change window</td>
+</tr>
+<tr>
+<td>QA blackout</td>
+<td>Thursday</td>
+<td>Constraint</td>
+<td>QA</td>
+</tr>
+</tbody></table>
+<h2>Dependency chains</h2>
+<ol>
+<li><strong>Board numbers:</strong> Lina corrections (Tue ≤11:00, status known Mon 15:00) → <strong>2 uninterrupted hours</strong> with you → finalize before <strong>Thu 12:00 [HARD]</strong>. If corrections slip, use Wednesday morning and Thursday 10:00–12:00 as catch-up — still must land before Thu 12:00.</li>
+<li><strong>Security patch:</strong> Your review (60–90 min) → QA half-day <em>after</em> review → 30-min change window → live by <strong>Fri 16:00 [HARD]</strong>. QA cannot work Thursday, so QA must run Mon–Wed or Fri. Review early in the week to keep Friday from becoming a single-point-of-failure day.</li>
+<li><strong>Customer demo:</strong> 90-min rehearsal with Sam → demo slot. Sam is only free <strong>Wed 10:00–12:00</strong>. Preferred demo <strong>Wed 15:00 collides with your Wednesday afternoon blackout</strong> — the realistic slot is <strong>Thu 16:00</strong> (confirm with customer; do not assume).</li>
+<li><strong>Strategy outline:</strong> 3 focused hours → (optional) send by Tue 14:00 for the Tue 16:00 leadership review. Completing it Monday removes pressure from the board-numbers day.</li>
+</ol>
+<hr>
+<h2>Monday (09:30–17:30)</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Strategy outline — focus block 1</td>
+<td>Deep work</td>
+<td>Part of required 3h</td>
+</tr>
+<tr>
+<td>10:00–10:30</td>
+<td>Recurring meeting</td>
+<td>Meeting</td>
+<td>Fixed</td>
+</tr>
+<tr>
+<td>10:30–11:15</td>
+<td><strong>Support escalation (renewal)</strong></td>
+<td><strong>[HARD] today</strong></td>
+<td>45 min; response must go out Monday</td>
+</tr>
+<tr>
+<td>11:15–12:00</td>
+<td>Strategy outline — focus block 2</td>
+<td>Deep work</td>
+<td></td>
+</tr>
+<tr>
+<td>12:00–12:45</td>
+<td>Lunch</td>
+<td>Break</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>12:45–14:30</td>
+<td>Strategy outline — focus block 3</td>
+<td>Deep work</td>
+<td>Completes 3h total</td>
+</tr>
+<tr>
+<td>14:30–15:00</td>
+<td><strong>Lina status check</strong></td>
+<td>Deadline touchpoint</td>
+<td>She knows by 15:00 if vendor export is late</td>
+</tr>
+<tr>
+<td>15:00–16:30</td>
+<td><strong>Security patch review</strong> (60–90 min)</td>
+<td>Gate for Fri [HARD]</td>
+<td>Start the review→QA→deploy chain</td>
+</tr>
+<tr>
+<td>16:30–17:15</td>
+<td>Support escalation #2</td>
+<td><strong>[HARD] Wed SLA</strong> (done early)</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>17:15–17:30</td>
+<td>Day wrap / email</td>
+<td>Admin</td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Meetings:</strong> 30 min (well under 4h).</li>
+<li><strong>Contingency space:</strong> 14:30–15:00 (before Lina checkpoint). If the patch is not ready for review at 15:00, use that block for support escalation #3 instead and move the review to Tuesday.</li>
+</ul>
+<h2>Tuesday (09:30–17:30)</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:15</td>
+<td>Support escalation #3</td>
+<td><strong>[HARD] Wed SLA</strong> (done early)</td>
+<td>Clears all three escalations before Wednesday</td>
+</tr>
+<tr>
+<td>10:15–11:00</td>
+<td>Board-numbers prep / admin</td>
+<td>Prep</td>
+<td>Ready to start the moment corrections land</td>
+</tr>
+<tr>
+<td>11:00–13:00</td>
+<td><strong>Board numbers — 2 uninterrupted hours</strong></td>
+<td><strong>[HARD] chain step</strong></td>
+<td>Finance requirement; assumes corrections arrive ≤11:00</td>
+</tr>
+<tr>
+<td>13:00–13:45</td>
+<td>Lunch</td>
+<td>Break</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>13:45–14:00</td>
+<td><strong>Send strategy outline</strong> to leadership</td>
+<td><strong>[SOFT]</strong> for 16:00 review</td>
+<td>14:00 cutoff</td>
+</tr>
+<tr>
+<td>14:00–15:30</td>
+<td><strong>Contingency block</strong></td>
+<td>Buffer</td>
+<td>If Lina slipped: board-numbers recovery here. If not: QA scheduling + change-window coordination</td>
+</tr>
+<tr>
+<td>15:30–16:00</td>
+<td>Leadership meeting prep</td>
+<td>Prep</td>
+<td></td>
+</tr>
+<tr>
+<td>16:00–17:00</td>
+<td>Leadership meeting</td>
+<td>Meeting</td>
+<td>Fixed recurring; can review strategy if sent by 14:00</td>
+</tr>
+<tr>
+<td>17:00–17:30</td>
+<td>Wrap / notes</td>
+<td>Admin</td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Meetings:</strong> 60 min (under 4h).</li>
+<li><strong>If Lina’s corrections are late (she confirms Monday 15:00):</strong> keep 11:00–13:00 open as first recovery window and use Wed 09:30–10:00 plus Thu 10:00–12:00 as backup — still before the Thu 12:00 hard stop.</li>
+</ul>
+<h2>Wednesday (09:30–13:00 only)</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Demo rehearsal prep</td>
+<td>Prep</td>
+<td>Materials, environment check</td>
+</tr>
+<tr>
+<td>10:00–11:30</td>
+<td><strong>Demo rehearsal with Sam</strong> (90 min)</td>
+<td>Gate for demo</td>
+<td>Inside Sam’s only window (10:00–12:00)</td>
+</tr>
+<tr>
+<td>11:30–12:15</td>
+<td>Contingency</td>
+<td>Buffer</td>
+<td>Board-numbers catch-up if Lina slipped; or escalation fallback (see below)</td>
+</tr>
+<tr>
+<td>12:15–13:00</td>
+<td>Contingency / short lunch / handoff</td>
+<td>Buffer</td>
+<td>End of your available day</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>After 13:00: unavailable.</strong> The preferred demo at <strong>Wed 15:00 is not possible [SOFT preference vs hard constraint]</strong> — use the customer’s Thursday 16:00 alternative (confirm first).</li>
+<li><strong>Fallback if escalations were not done Mon/Tue:</strong> 11:30–12:15 and 12:15–13:00 fit both 45-min escalations and still meet the Wednesday SLA — but lunch suffers; doing them early is strongly preferred.</li>
+</ul>
+<h2>Thursday (09:30–17:30)</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–10:00</td>
+<td>Recurring meeting</td>
+<td>Meeting</td>
+<td>Fixed</td>
+</tr>
+<tr>
+<td>10:00–12:00</td>
+<td><strong>Board numbers finalization</strong></td>
+<td><strong>[HARD] 12:00</strong></td>
+<td>Last call; nothing goes past 12:00</td>
+</tr>
+<tr>
+<td>12:00–12:45</td>
+<td>Lunch</td>
+<td>Break</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>12:45–14:15</td>
+<td>Contingency / change-window coordination</td>
+<td>Buffer</td>
+<td>Confirm Friday change window with Engineering; absorb any board overrun <em>before</em> 12:00 only — after 12:00 board numbers are done</td>
+</tr>
+<tr>
+<td>14:15–15:30</td>
+<td>Demo prep</td>
+<td>Prep</td>
+<td>Assuming demo lands at Thu 16:00</td>
+</tr>
+<tr>
+<td>15:30–16:00</td>
+<td>Break / setup</td>
+<td>Buffer</td>
+<td></td>
+</tr>
+<tr>
+<td>16:00–17:00</td>
+<td><strong>Customer demo</strong> (60 min assumed)</td>
+<td><strong>[SOFT]</strong> slot</td>
+<td>Confirm duration with Product; slot is the customer’s alternative</td>
+</tr>
+<tr>
+<td>17:00–17:30</td>
+<td>Wrap</td>
+<td>Admin</td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Meetings:</strong> 30 + 60 = 90 min (under 4h).</li>
+<li><strong>QA is unavailable today</strong> — no security QA can run Thursday; do not plan any.</li>
+</ul>
+<h2>Friday (09:30–17:30)</h2>
+<p>Hard stop: <strong>security patch deployed by 16:00</strong>. Review should already be done (Monday). QA half-day must fit before the 30-minute change window.</p>
+<p><strong>Path A — QA completed earlier in the week (preferred):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–12:00</td>
+<td>Open / contingency / follow-ups</td>
+<td>Buffer</td>
+</tr>
+<tr>
+<td>12:00–12:45</td>
+<td>Lunch</td>
+<td>Break</td>
+</tr>
+<tr>
+<td>12:45–13:30</td>
+<td>Deploy prep</td>
+<td>Prep</td>
+</tr>
+<tr>
+<td>13:30–14:00</td>
+<td><strong>Change window (30 min)</strong></td>
+<td><strong>[HARD] chain step</strong></td>
+</tr>
+<tr>
+<td>14:00–16:00</td>
+<td>Verification + buffer to hard deadline</td>
+<td>Buffer</td>
+</tr>
+<tr>
+<td>16:00</td>
+<td><strong>Patch live [HARD]</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>16:00–17:30</td>
+<td>Week wrap, notes, handoffs</td>
+<td>Admin</td>
+</tr>
+</tbody></table>
+<p><strong>Path B — QA must run Friday (if earlier slots were missed):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Block</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:30–13:30</td>
+<td><strong>QA half-day (4h)</strong></td>
+<td><strong>[HARD] chain step</strong></td>
+</tr>
+<tr>
+<td>13:30–14:00</td>
+<td><strong>Change window (30 min)</strong></td>
+<td><strong>[HARD] chain step</strong></td>
+</tr>
+<tr>
+<td>14:00–16:00</td>
+<td>Verification + buffer to 16:00</td>
+<td>Buffer</td>
+</tr>
+<tr>
+<td>16:00</td>
+<td><strong>Patch live [HARD]</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>16:00–17:30</td>
+<td>Week wrap</td>
+<td>Admin</td>
+</tr>
+</tbody></table>
+<p>Path B leaves no recovery if QA finds issues. Getting review done Monday and QA scheduled for Tuesday/Wednesday is the main de-risking move of the week.</p>
+<hr>
+<h2>Contingency map (explicit buffer)</h2>
+<table>
+<thead>
+<tr>
+<th>Buffer</th>
+<th>Size</th>
+<th>Primary use</th>
+<th>Secondary use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mon 14:30–15:00</td>
+<td>30 min</td>
+<td>Lina status checkpoint</td>
+<td>Pull escalation #3 forward</td>
+</tr>
+<tr>
+<td>Tue 14:00–15:30</td>
+<td>90 min</td>
+<td>Lina-late board recovery</td>
+<td>QA + change-window coordination</td>
+</tr>
+<tr>
+<td>Wed 11:30–13:00</td>
+<td>90 min</td>
+<td>Board catch-up</td>
+<td>Escalation fallback (45+45)</td>
+</tr>
+<tr>
+<td>Thu 12:45–14:15</td>
+<td>90 min</td>
+<td>Change-window coordination</td>
+<td>Demo prep spillover</td>
+</tr>
+<tr>
+<td>Fri 14:00–16:00</td>
+<td>120 min</td>
+<td>Deploy verification</td>
+<td>Absorb QA findings before 16:00</td>
+</tr>
+</tbody></table>
+<h2>What is intentionally <em>not</em> scheduled</h2>
+<ul>
+<li>Wednesday 13:00–17:30 — stated unavailable.</li>
+<li>Any invented Sam availability outside Wed 10:00–12:00.</li>
+<li>Any invented Lina, QA, or customer availability.</li>
+<li>A Wednesday 15:00 demo — it conflicts with a hard personal constraint and must be renegotiated to Thursday 16:00 (or another slot the customer offers).</li>
+</ul>
+</div></div></section></div></section></main><script src="../app.js"></script></body></html>

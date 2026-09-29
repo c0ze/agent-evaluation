@@ -1,0 +1,1752 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>09 Incident analysis · Agent evaluation</title><link rel="stylesheet" href="../style.css"></head>
+<body><header class="top"><a class="brand" href="../index.html">Agent evaluation</a>
+<nav aria-label="Tasks"><a href="../tasks/01-feature-building.html" title="Feature building">01</a><a href="../tasks/02-bug-fixing.html" title="Bug fixing">02</a><a href="../tasks/03-infra-management.html" title="Infra management">03</a><a href="../tasks/04-project-maintenance.html" title="Project maintenance">04</a><a href="../tasks/05-technical-writing.html" title="Technical writing">05</a><a href="../tasks/06-product-planning.html" title="Product planning">06</a><a href="../tasks/07-creative-writing.html" title="Creative writing">07</a><a href="../tasks/08-social-media.html" title="Social media">08</a><a href="../tasks/09-incident-analysis.html" title="Incident analysis">09</a><a href="../tasks/10-general-operations.html" title="General operations">10</a><a href="../tasks/11-frontend-operations.html" title="Frontend operations">11</a><a href="../tasks/12-frontend-editorial.html" title="Frontend editorial">12</a><a href="../tasks/13-frontend-playful.html" title="Frontend playful">13</a></nav></header>
+<main><section class="hero"><p class="muted">Task 09</p><h1>Incident analysis</h1></section>
+    <details class="card brief" open><summary>The brief</summary><div class="prose"><h1>Task 09 — Incident analysis</h1>
+<p>Analyze <code>TIMELINE.md</code> and <code>LOGS.txt</code>. Produce:</p>
+<ul>
+<li><code>INCIDENT.md</code>: impact, concise timeline, most likely root cause, contributing
+factors, evidence supporting or weakening each hypothesis, and what remains
+unknown.</li>
+<li><code>ACTIONS.md</code>: immediate containment plus prioritized corrective actions with
+owners expressed as roles, verification signals, and rollback considerations.</li>
+<li><code>CUSTOMER_UPDATE.md</code>: a plain-language update under 180 words. Do not claim
+certainty beyond the evidence or blame an individual.</li>
+</ul>
+<p>Separate observed facts from inference. Avoid treating correlation as proof.
+Write <code>RESPONSE.md</code> with your confidence level and the next two pieces of data
+you would request. Work only in this directory.</p>
+</div>
+      <p class="muted">Inputs given: <a href="../../../_templates/09-incident-analysis/TIMELINE.md" target="_blank" rel="noopener" class="mono">TIMELINE.md</a>, <a href="../../../_templates/09-incident-analysis/LOGS.txt" target="_blank" rel="noopener" class="mono">LOGS.txt</a></p></details>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Opus 5.5</th><th scope="col">mimo</th></tr>
+    <tr><th scope="row">evidence discipline <span class="muted">(3)</span></th><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:0.17">1.5</td></tr><tr><th scope="row">diagnosis <span class="muted">(3)</span></th><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:1.00">3</td><td class="num heat" style="--h:0.72">2.5</td><td class="num heat" style="--h:0.44">2</td></tr><tr><th scope="row">corrective actions <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.58">1.5</td></tr><tr><th scope="row">customer communication <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:0.17">1</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">9.5</td><td class="num">9</td><td class="num">9</td><td class="num">6</td></tr></table></div>
+    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = Fable 5.1, B = Opus 5.5, C = mimo, D = Sonnet 5.5.</p><div class="prose"><p>A and B tie at 9.0. A is ranked above B for the deeper diagnosis (the stall-mechanism analysis and the latent transient-failure hypothesis) and a slightly richer action plan; B has the cleaner evidence discipline. D, A and B are all strong and close; D edges ahead on causal rigor (the pool-wait-before-retry timing and falsifiable repro actions) and on the customer update, despite a minor host-count error. C is clearly weaker because of unsupported mechanism claims in observed sections and in actions, and a less accurate customer update.</p>
+</div></details></section>
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">9.5</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">9</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">mimo <span class="pill">6</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+        <h3>Evaluation <span class="pill big">9.5 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
+        <p>The most rigorous causal reasoning: facts cited to log line numbers, a numbered list of facts separate from inferences, and six hypotheses that include coincidence and an unrelated infrastructure fault. It uniquely spots that the 5 s pool wait began around 09:06:56, before the first zero-delay retry, so missing backoff may have amplified an existing problem rather than started it. The actions include reproducing the mechanism before fixing it, and the customer update is the best hedged. One factual slip: it counts 4 hosts in the log when there are 5.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Line-level citations (L1-L12) and a numbered observed-vs-inferred list; the incident date and flag-enable time are marked as unknown rather than assumed</li><li>Derived timings verified: restart to exhaustion 4 min 2 s, job 319 behaviour changed within 3 s of the config change, flag-off to clear 35 min</li><li>Pool wait of 5000 ms logged at 09:07:01 implies it started around 09:06:56, which predates L1-L4; this raises the &#39;amplifier, not origin&#39; alternative</li><li>Considers coincidence/delayed rollback effect (H6) and an unrelated infrastructure fault (H4), and notes the rollback may have freed connections just by restarting pods</li><li>ACTIONS begins P0 with a staging reproduction that could falsify the hypothesis, and covers schema/data compatibility for rollback, idempotent rate-limited replay, and flag audit logging</li><li>The customer update is well hedged, accurate about the rollback and the flag, and promises to keep the setting off and contact affected customers</li></ul></div><div><h4>Weaknesses</h4><ul><li>Says &#39;LOGS.txt has 12 lines from 4 hosts&#39;; there are 5 (worker-17, worker-22, worker-08, api-03, worker-51)</li><li>The root-cause statement still asserts a &#39;sustained retry loop&#39;, although I2 itself admits re-queueing is not shown</li><li>C1 calls start-up flag reads &#39;a known trap&#39;; slightly overstated, since the restart simply read the flag&#39;s then-current value</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>L5 at 09:07:01 with wait_ms=5000 implies the wait began around 09:06:56, before L1 at 09:06:58; the reasoning is correct</li><li>L8 09:31:10 to L9 09:35:12 is 4 min 2 s; correct</li><li>L10 09:43:07 to L12 09:43:10 is 3 s; correct</li><li>Host count stated as 4; actual is 5 (error)</li><li>Customer update is about 155-163 words, under the limit</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>CUSTOMER_UPDATE.md ≈ 163 words (&lt; 180)</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="0-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="0-1" aria-selected="false">ACTIONS.md</button><button role="tab" data-file="0-2" aria-selected="false">CUSTOMER_UPDATE.md</button><button role="tab" data-file="0-3" aria-selected="false">INCIDENT.md</button><button role="tab" data-file="0-4" aria-selected="false">TASK.md</button><button role="tab" data-file="0-5" aria-selected="false">TIMELINE.md</button><button role="tab" data-file="0-6" aria-selected="false">LOGS.txt</button></div>
+        <div class="file" id="file-0-0" ><p class="path mono">sonnet-5.5/09-incident-analysis/RESPONSE.md</p><div class="prose"><h1>Response</h1>
+<h2>Confidence</h2>
+<ul>
+<li><strong>Overall: moderate.</strong> I am fairly confident that the <code>tenant_retry_policy</code> flag path was needed for the sustained outage, and much less sure how it produced database connection exhaustion.</li>
+<li><strong>Higher confidence (facts that line up):</strong> exhausted jobs show <code>policy=&quot;&quot;</code> with <code>delay_ms=0</code> and 38-41 ms budgets; the same job (319) retried with a 1000 ms delay and succeeded within seconds of the flag going off; the API rollback and a worker restart did not clear the problem while the flag stayed on; recovery began within two minutes of the flag being disabled.</li>
+<li><strong>Lower confidence (inference):</strong> that zero-backoff retries are what saturated the 300 DB connections; that the worker scale-up made it worse (it is correlated, not shown); and that the flag was the origin rather than an amplifier of an earlier failure. The logs are a 12-line sample, with only one worker and one job showing the before/after change and no control group. The unrelated-infrastructure and API-only-release hypotheses are weakened, not ruled out.</li>
+</ul>
+<h2>Next two pieces of data I would request</h2>
+<ol>
+<li><strong>Flag audit and policy resolution data.</strong> The change history for <code>tenant_retry_policy</code> in eu-west and US (when it was enabled, scope, percentage, and role of the approver), plus, per tenant, the resolved retry policy value and where it came from. This fixes the onset time against the 09:02 deploy and the 09:07 symptoms, shows why the policy was empty and for how many tenants, and gives a real dose-response comparison between eu-west and the US 2% cohort.</li>
+<li><strong>Time-aligned DB and retry telemetry, 09:00-10:20 UTC, both regions.</strong> Per-minute DB connections by client and pool (API versus workers), pool wait times, lock waits and idle-in-transaction counts, next to per-minute counts of retries, <code>delay_ms</code> distribution, and <code>retry_budget_exhausted</code> by policy value, and the error that caused the first failed attempt. This tests the weakest link (retries to connection exhaustion), shows which happened first (pool waits at 09:06:56 or the zero-delay retries), and shows who held the connections.</li>
+</ol>
+</div></div><div class="file" id="file-0-1" hidden><p class="path mono">sonnet-5.5/09-incident-analysis/ACTIONS.md</p><div class="prose"><h1>Actions: eu-west queue stall</h1>
+<p>Owners are roles, not people. Actions follow from the working hypothesis in <code>INCIDENT.md</code> (empty retry policy under <code>tenant_retry_policy</code> removed backoff and, with the scale-up, saturated the DB). That hypothesis is probable but unproven, so several actions below are written to confirm it as well as to fix it.</p>
+<p>Priority key: <strong>C</strong> = containment, do now. <strong>P0</strong> = before the flag is enabled anywhere again. <strong>P1</strong> = within about two weeks. <strong>P2</strong> = within the quarter.</p>
+<h2>1. Immediate containment</h2>
+<p>Flag disablement at 09:43 in eu-west and the API rollback at 09:24 are already done (per timeline). The items below close the remaining exposure.</p>
+<h3>C1. Verify the flag is really off everywhere it matters in eu-west</h3>
+<ul>
+<li>Owner: On-call SRE (with Feature-flag platform owner).</li>
+<li>Do: check the flag at every level (global, region, per-tenant overrides, cached snapshots). Restart or redeploy one worker canary and confirm it starts with <code>feature_flag=false</code>. The 09:31 restart came up with <code>feature_flag=true</code>, so start-up-time flag reads are a known trap.</li>
+<li>Verification signals: worker start-up log shows <code>feature_flag=false</code>; zero <code>retry_budget_exhausted policy=&quot;&quot;</code> lines and no <code>delay_ms=0</code> retries across a full hour of normal load; retries show non-zero <code>delay_ms</code>.</li>
+<li>Rollback: re-enabling the flag is the rollback, and it should not be done until P0 items are complete.</li>
+</ul>
+<h3>C2. Turn the flag off in US as well (or confirm the exposed 2% are unaffected first, without delaying the switch-off)</h3>
+<ul>
+<li>Owner: On-call SRE (executes), Release manager (approves).</li>
+<li>Do: same code, flag on for 2% of tenants, so the same defect may be silently present. In parallel, search US logs for <code>policy=&quot;&quot;</code>, <code>delay_ms=0</code>, and <code>retry_budget_exhausted</code> since the release, by tenant.</li>
+<li>Verification signals: US logs show no empty-policy exhaustion after the switch-off; if any existed before, list the affected tenants for C5.</li>
+<li>Rollback and side effects: turning it off reverts those tenants to default exponential retry (their pre-release behaviour). Ask the Product owner whether any of the 2% cohort was enabled deliberately for a customer commitment, and inform them if so.</li>
+</ul>
+<h3>C3. Freeze: keep the API rollback in place and block re-release of <code>2026.09.23.1</code> and any flag change for <code>tenant_retry_policy</code></h3>
+<ul>
+<li>Owner: Release manager.</li>
+<li>Verification signals: pipeline gate or flag lock is active; change calendar shows the freeze.</li>
+<li>Rollback considerations: confirm the rolled-back API version can read any data the new version wrote (for example tenant policy rows or config); the timeline does not say whether the release had schema or data changes. If it did, get the Database owner to confirm compatibility before any further rollback or roll-forward. Lift the freeze only when P0 is verified.</li>
+</ul>
+<h3>C4. Return worker count to its pre-incident level in controlled steps, if still at 90</h3>
+<ul>
+<li>Owner: On-call SRE (with Capacity owner).</li>
+<li>Do: check DB connection use first. Reduce in steps (for example 90 to 70 to 50 to 40) while watching job age.</li>
+<li>Verification signals: DB connections stay well under 300 (target under about 70% at peak); job age and queue depth stay flat through each step; no pool-wait warnings.</li>
+<li>Rollback: if job age rises after a step, go back up one step. Do not scale above the connection budget: scale-up during the incident coincided with the queue growing faster (correlation, but enough reason for caution).</li>
+</ul>
+<h3>C5. Find and reconcile jobs affected by the incident window</h3>
+<ul>
+<li>Owner: Backend engineering lead (with Support lead for customer-facing follow-up).</li>
+<li>Do: for eu-west 09:00-10:30 UTC (and US per C2), list every job that logged <code>retry_budget_exhausted</code>, its final state, and whether it touched a non-idempotent side effect (payment capture, email, webhooks). Check for duplicates and for jobs left in a non-terminal state.</li>
+<li>Verification signals: reconciliation report shows created jobs equal terminal-state jobs; zero unexplained non-terminal jobs; zero duplicate side effects, or a list of them.</li>
+<li>Rollback considerations: replays cannot be undone. Replay only with idempotency keys, run a dry-run first, and rate-limit replays so that they do not re-saturate the DB.</li>
+</ul>
+<h2>2. Corrective actions (prioritized)</h2>
+<h3>P0-1. Reproduce and confirm the mechanism</h3>
+<ul>
+<li>Owner: Performance/reliability engineer with the Queue service engineer.</li>
+<li>Do: in a staging environment with production-like DB connection limits, enable the flag with a tenant that has a missing, empty, and invalid policy. Inject transient job failures. Record retry delay, exhaustion rate, and DB connection use. Also test whether retries acquire a connection per attempt.</li>
+<li>Verification signals: repro shows <code>policy=&quot;&quot;</code>, <code>delay_ms=0</code>, exhaustion in tens of ms, and connection growth (confirms H1 and I3). If connection growth does not appear, the working hypothesis is wrong or incomplete, and the RCA must be reopened (see H2 and H4 in <code>INCIDENT.md</code>).</li>
+<li>Rollback: staging only. No production impact.</li>
+</ul>
+<h3>P0-2. Fix policy resolution: never resolve to an empty policy</h3>
+<ul>
+<li>Owner: Queue service engineering lead.</li>
+<li>Do: fall back to the configured default (<code>exponential</code>) when a tenant policy is missing, blank, or invalid. Validate tenant policies at load time and alert on invalid ones. Add tests for each config shape.</li>
+<li>Verification signals: tests pass; the P0-1 repro no longer shows empty policy or zero delay; staging run with the flag at 100% shows only non-zero delays.</li>
+<li>Rollback: ship the fix with the flag still off. If the fix itself misbehaves, revert the change; the flag stays off, so there is nothing else to unwind. Note that tenants who genuinely had a blank policy will now get the default; confirm none intended &quot;no retry&quot;.</li>
+</ul>
+<h3>P0-3. Add a retry floor and storm guard</h3>
+<ul>
+<li>Owner: Queue service engineering lead.</li>
+<li>Do: enforce a minimum delay and jitter regardless of policy; when a job&#39;s budget is exhausted, requeue with backoff or dead-letter it instead of making it immediately available again; cap retry attempts per second per tenant.</li>
+<li>Verification signals: fault-injection test shows bounded retry rate and stable DB connections; production metric of exhausted-budget jobs per minute stays near zero.</li>
+<li>Rollback: make the floor and cap configuration values. If they delay legitimate work, tune the numbers rather than removing the guard.</li>
+</ul>
+<h3>P0-4. Staged re-enablement plan with health gates</h3>
+<ul>
+<li>Owner: Release manager with the Feature-flag platform owner.</li>
+<li>Do: re-enable only after P0-1 to P0-3 are verified. Sequence: internal tenants, then 2%, 10%, 50%, 100%, one region at a time (US first). Halt automatically on retry exhaustion, DB pool wait, or job-age thresholds.</li>
+<li>Verification signals: each stage has a soak period with clean metrics; the auto-halt has been tested with a synthetic bad flag.</li>
+<li>Rollback: a documented one-step kill switch for the flag, tested before stage one.</li>
+</ul>
+<h3>P1-1. DB connection budget and isolation</h3>
+<ul>
+<li>Owner: Database/platform reliability lead.</li>
+<li>Do: compute worst-case connections (pool size x workers x replicas, for API and workers) against the 300 limit at maximum autoscale; introduce per-client caps or a connection pooler; reserve headroom for the API so that worker trouble cannot starve job creation and checkout.</li>
+<li>Verification signals: worst-case calculation stays under about 80% of the limit; a load test at 90 workers keeps API connection acquisition healthy.</li>
+<li>Rollback: introduce the pooler or caps region by region (US first), keep the direct path available, and change pool sizes one pool at a time.</li>
+</ul>
+<h3>P1-2. Detection: alert on causes as well as symptoms</h3>
+<ul>
+<li>Owner: Observability lead.</li>
+<li>Do: alerts for DB connection use above 80%, <code>db pool wait exceeded</code>, <code>retry_budget_exhausted</code> rate, and &quot;backlog growing while worker CPU falls&quot;. Annotate dashboards with flag and deploy events.</li>
+<li>Verification signals: replaying the incident&#39;s metrics (game-day or backfill) fires a cause-level alert within about 2 min of onset (the actual first alert took about 4 min and was symptom-only); the alert links to recent flag changes.</li>
+<li>Rollback: alerts can be muted or re-thresholded. Track noise for two weeks and tune.</li>
+</ul>
+<h3>P1-3. Runbook and autoscaler guard for backlog incidents</h3>
+<ul>
+<li>Owner: On-call lead / Incident process owner.</li>
+<li>Do: add to the queue-backlog runbook: check recent flag and config changes first; check DB connections and pool waits before scaling; if scale-up makes the queue worse, stop and revert the scale. Bound the autoscaler by the DB connection budget.</li>
+<li>Verification signals: tabletop exercise walks the incident and reaches the flag within 10 min; attempts to scale beyond the cap are refused or warned.</li>
+<li>Rollback: the cap is configuration and can be raised with an approval step.</li>
+</ul>
+<h3>P1-4. Blameless post-incident review</h3>
+<ul>
+<li>Owner: Engineering manager (facilitator), with representatives from Queue, SRE, Release, and Database.</li>
+<li>Do: reconcile the timeline (especially flag enable time), review decision points and the information responders had, and track actions to closure.</li>
+<li>Verification signals: review published, actions ticketed with owners and dates, and the P0/P1 items above are closed or scheduled.</li>
+<li>Rollback: not applicable.</li>
+</ul>
+<h3>P2-1. Improve log content for retry and DB behaviour</h3>
+<ul>
+<li>Owner: Queue service engineer.</li>
+<li>Do: include region, build version, flag state, resolved policy and its source (tenant versus default), the error that caused the first failure, DB pool acquire time, and job state after budget exhaustion in the retry logs.</li>
+<li>Verification signals: a game-day exercise can answer the &quot;unknown&quot; questions in <code>INCIDENT.md</code> section 7 from logs alone.</li>
+<li>Rollback: if log volume is a concern, sample at INFO but keep WARN and ERROR.</li>
+</ul>
+<h3>P2-2. Separate risky behaviour changes from deploys</h3>
+<ul>
+<li>Owner: Release engineering lead.</li>
+<li>Do: avoid enabling a flag for a large share of a region in the same window as its code deploy; require a recorded flag-enable step (time, scope, approver role) in the change log so the timeline can always answer &quot;when was it turned on&quot;.</li>
+<li>Verification signals: change log contains flag events for the next release; incident reviews no longer list &quot;flag enable time unknown&quot;.</li>
+<li>Rollback: process change only; revert by policy decision.</li>
+</ul>
+</div></div><div class="file" id="file-0-2" hidden><p class="path mono">sonnet-5.5/09-incident-analysis/CUSTOMER_UPDATE.md</p><div class="prose"><p><strong>Service disruption in our EU-West region</strong></p>
+<p>Between about 09:07 and 10:18 UTC, some customers served from our EU-West region may have seen slower checkouts and delays in background processing.</p>
+<p><strong>What we know:</strong> Job processing slowed and a backlog built up. We rolled back a recent release and switched off a related setting that controls how failed tasks are retried. Processing began recovering shortly after that setting was switched off, and the backlog was fully cleared at 10:18 UTC.</p>
+<p><strong>What we are still working out:</strong> The evidence points to that retry setting as the most likely trigger, but our investigation is not complete and we have not confirmed the exact chain of events. We are also checking whether any individual tasks need to be reprocessed, and will contact affected customers directly if so.</p>
+<p>We plan to keep the setting off until we have verified a fix. We apologize for the disruption and will share a further update when our review is complete.</p>
+</div></div><div class="file" id="file-0-3" hidden><p class="path mono">sonnet-5.5/09-incident-analysis/INCIDENT.md</p><div class="prose"><h1>Incident analysis: eu-west queue stall (release <code>2026.09.23.1</code>)</h1>
+<p>Sources: <code>TIMELINE.md</code> (cited as T) and <code>LOGS.txt</code> (cited as L plus line number).
+Convention: <strong>[F]</strong> = observed fact, stated in a source. <strong>[I]</strong> = inference, my reasoning on top of the facts. Nothing tagged [I] should be read as established.</p>
+<p>Status at time of writing: service recovered (backlog cleared 10:18 UTC). Root cause is <strong>probable, not proven</strong>.</p>
+<h2>1. Impact</h2>
+<p>Observed [F]</p>
+<ul>
+<li>Region: eu-west. Alerts fired for job age and checkout latency at 09:11 (T).</li>
+<li>Queue depth rose from 09:07 and worker CPU fell from 65% to 18% (T).</li>
+<li>The database reached its configured maximum of 300 connections at 09:20 (T). At 09:19:52 <code>api-03</code> logged that no connection slots were available (L7).</li>
+<li>New job creation was degraded until the API rollback at 09:24, after which it &quot;normalizes&quot; (T).</li>
+<li>Backlog stayed stuck after the rollback and cleared at 10:18 (T).</li>
+<li>US region: same release, flag enabled for 2% of tenants, no alert fired (T).</li>
+</ul>
+<p>Derived durations [F, arithmetic on T]</p>
+<ul>
+<li>Onset to alert: about 4 min (09:07 to 09:11). The first log evidence of the problem is 09:06:58 (L1).</li>
+<li>Alert to mitigation that worked (flag off): 32 min (09:11 to 09:43). Onset to flag off: 36 min.</li>
+<li>Onset to backlog cleared: about 71 min (09:07 to 10:18). Flag off to backlog cleared: 35 min.</li>
+</ul>
+<p>Not known</p>
+<ul>
+<li>Number of tenants and customers affected, number of checkouts that failed or timed out (versus merely slowed), and whether any jobs were dropped, dead-lettered, or executed more than once.</li>
+<li>Whether the US 2% cohort was silently affected (no alert is not the same as no impact).</li>
+<li>The incident date. The release tag suggests 2026-09-23 but T does not state a date.</li>
+</ul>
+<h2>2. Concise timeline (UTC)</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Event</th>
+<th>Source</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:02</td>
+<td>API deploy <code>2026.09.23.1</code>, adds tenant-specific retry policy</td>
+<td>T</td>
+<td>F</td>
+</tr>
+<tr>
+<td>?</td>
+<td><code>tenant_retry_policy</code> flag enabled in eu-west (<strong>time and % of tenants not recorded</strong>)</td>
+<td>none</td>
+<td>gap</td>
+</tr>
+<tr>
+<td>09:06:58</td>
+<td>job 81 (tenant acme) retries 3x with <code>delay_ms=0</code>, then <code>retry_budget_exhausted policy=&quot;&quot;</code> after 41 ms</td>
+<td>L1-L4</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:07</td>
+<td>Queue depth begins rising; worker CPU 65% to 18%</td>
+<td>T</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:07:01</td>
+<td>worker-22: DB pool wait exceeded 5000 ms, <code>active=10 idle=0</code></td>
+<td>L5</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:07:03</td>
+<td>worker-08: job 92 (tenant beta) succeeds first attempt, 830 ms</td>
+<td>L6</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:11</td>
+<td>Alerts: job age, checkout latency</td>
+<td>T</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:14</td>
+<td>Workers scaled 40 to 90; queue depth then rises faster</td>
+<td>T</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:19:52 / 09:20</td>
+<td>api-03 out of DB connection slots; DB at 300 max connections</td>
+<td>L7, T</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:24</td>
+<td>API rolled back; job creation normalizes; backlog stays stuck</td>
+<td>T</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:31:10</td>
+<td>worker-51 restarted: <code>config_retry_default=&quot;exponential&quot; feature_flag=true</code></td>
+<td>L8</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:31-09:35</td>
+<td>Restarted pool processes normally for about 4 min, then stalls</td>
+<td>T</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:35:12</td>
+<td>worker-51: job 319 <code>retry_budget_exhausted policy=&quot;&quot;</code> after 38 ms</td>
+<td>L9</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:43</td>
+<td>Flag <code>tenant_retry_policy</code> disabled; recovery begins within 2 min</td>
+<td>T</td>
+<td>F</td>
+</tr>
+<tr>
+<td>09:43:07-10</td>
+<td>worker-51 sees <code>feature_flag=false</code>; job 319 retries with <code>delay_ms=1000</code>, succeeds on attempt 2 in 190 ms</td>
+<td>L10-L12</td>
+<td>F</td>
+</tr>
+<tr>
+<td>10:18</td>
+<td>Backlog cleared</td>
+<td>T</td>
+<td>F</td>
+</tr>
+</tbody></table>
+<h2>3. Observed facts versus inference</h2>
+<p>Observed [F]</p>
+<ol>
+<li>In both <code>retry_budget_exhausted</code> log lines (L4, L9) the policy is an empty string, and the budget was spent in 38-41 ms.</li>
+<li>In the only job with per-attempt detail while the flag was on (job 81), every retry had <code>delay_ms=0</code> (L1-L3).</li>
+<li>The worker start-up config shows a default retry policy of <code>exponential</code> (L8), yet the exhausted jobs report <code>policy=&quot;&quot;</code>.</li>
+<li>After the flag was turned off, job 319, which had exhausted its budget at 09:35 (L9), retried with a 1000 ms delay and succeeded (L11-L12).</li>
+<li>Rolling back the API fixed job creation but not the backlog (T).</li>
+<li>Restarting a worker pool with the flag on gave about 4 minutes of normal processing, then a stall, and the first exhaustion line after restart appears 4 min 2 s after start-up (T, L8, L9).</li>
+<li>Scaling workers 40 to 90 was followed by faster queue growth, and DB connections hit 300 six minutes later (T).</li>
+<li>Worker CPU fell rather than rose during the stall (T), and a worker was waiting 5 s on its DB pool at the start (L5).</li>
+</ol>
+<p>Inferred [I]</p>
+<ul>
+<li><strong>I1.</strong> With the flag on, the policy lookup returns an empty value for at least some tenants or jobs and the code does not fall back to the <code>exponential</code> default. (Supported by facts 1-4; the reason for the empty value, such as tenant config with no policy or a bug in the new code, is not shown.)</li>
+<li><strong>I2.</strong> An empty policy means zero backoff, so failing jobs are retried instantly, burn their budget in tens of milliseconds and are put back in the queue. (Facts 2 and 4 support this; that job 319 was picked up again later suggests exhausted jobs are re-queued rather than dropped, but the logs do not say.)</li>
+<li><strong>I3.</strong> This churn saturated the shared DB connection limit, which is what starved workers (low CPU, 5 s pool waits) and later the API. <strong>This link is the weakest part of the chain.</strong> No log ties retries to connection usage.</li>
+<li><strong>I4.</strong> Scaling to 90 workers made it worse by adding more consumers competing for a fixed 300 connections (fact 7). Correlation only; queue depth could also have risen faster simply because more workers produced more exhausted retries.</li>
+<li><strong>I5.</strong> The stall after restart (fact 6) is consistent with the restarted workers reaching jobs that need a retry, or with DB saturation returning. The data cannot separate these.</li>
+</ul>
+<h2>4. Most likely root cause</h2>
+<p><strong>Enabling the <code>tenant_retry_policy</code> code path (shipped in <code>2026.09.23.1</code>) produced an empty retry policy that removed retry backoff. Jobs that hit a transient failure were retried immediately and exhausted their budget, creating a sustained retry loop that, together with the worker scale-up, exhausted the database connection limit and stalled workers and the API.</strong></p>
+<p>Confidence: moderate that the flag-enabled path was necessary for the sustained outage; low to moderate on the exact mechanism between retries and connection exhaustion (I3).</p>
+<p>Why this hypothesis ranks first: it is the only one that explains the empty-policy log lines, the zero delays, the lack of recovery after the API rollback, the relapse after the worker restart, the same-job before/after change at the flag flip, and recovery within two minutes of the flag flip.</p>
+<p>What it does not explain: what caused the <em>first</em> failed attempts. <code>attempt=1 result=retry</code> means something failed before any retry. If that something was DB pool contention (L5 shows a 5 s wait starting at about 09:06:56, which is not clearly after L1-L4), then missing backoff <strong>amplified</strong> an existing problem instead of creating it, and the original trigger is still unidentified.</p>
+<h2>5. Contributing factors</h2>
+<p>Each is supported by evidence but is a contributor, not proven cause.</p>
+<ol>
+<li><strong>No fallback or validation for an empty policy</strong> (I1; facts 1 and 3).</li>
+<li><strong>Shared DB connection ceiling (300) with no isolation between API and workers</strong>, so worker trouble also hurt job creation and checkout (L7, T). A pool showing <code>active=10</code> while the DB max is 300 suggests pool sizes multiply quickly with worker count: 40 workers x 10 would already be 400 if pools are per worker. [I, unverified: pool scope is not stated.]</li>
+<li><strong>Containment made things worse</strong>: scaling workers 40 to 90 accelerated queue growth. This was a reasonable step given the alerts, but no signal told responders that the database, not worker capacity, was the constraint. [I; process gap, not individual fault]</li>
+<li><strong>Detection covered symptoms only</strong>: alerts came from job age and checkout latency, 4 min after onset. The DB pool warning at 09:07:01 and the retry exhaustion did not alert (nothing in T says they did).</li>
+<li><strong>Flag change not correlated with the incident timeline</strong>: it took 32 min from alert to flag off, and the flag is not mentioned until 09:43. The timeline does not say when it was enabled. [I]</li>
+<li><strong>Two changes in one window</strong> (code deploy and flag exposure), and rollback of the API did not remove the flag-controlled behaviour on workers, which delayed diagnosis. [I]</li>
+<li><strong>Worker restart is not a useful remedy</strong> when the cause is configuration, and it appeared to work for 4 min (fact 6), which may have encouraged further restart attempts. [I]</li>
+</ol>
+<h2>6. Hypotheses, with evidence for and against</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Hypothesis</th>
+<th>Evidence for</th>
+<th>Evidence against or weakening</th>
+<th>Assessment</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>H1</td>
+<td>Flag-enabled empty policy causes zero-backoff retry churn, which saturates the DB</td>
+<td>L1-L4, L9 (empty policy, delay 0, 38-41 ms); L11-L12 (same job gets 1000 ms delay and succeeds after flag off); recovery within 2 min of flag off (T); restart relapse with flag on (L8-L9); US 2% exposure with no alert (T)</td>
+<td>Only one worker and one job show the before/after change (n=1, sampled logs, no control); no log links retries to DB connections; CPU fell instead of rising; first-failure cause unknown; the US comparison is confounded by traffic, scale and tenant mix</td>
+<td><strong>Most likely</strong></td>
+</tr>
+<tr>
+<td>H2</td>
+<td>The API release, independent of the flag, exhausted DB connections (leak, bigger pool, extra queries)</td>
+<td>Onset 5 min after deploy; API rollback normalized job creation; api-03 out of slots (L7)</td>
+<td>Backlog persisted after rollback; recovery followed a flag change, not a code change; retry logs are worker-side. The rollback may also just have restarted pods and freed connections</td>
+<td><strong>Partly retained</strong> for the API-side impact only; cannot be excluded</td>
+</tr>
+<tr>
+<td>H3</td>
+<td>Scale-up to 90 workers was itself the cause of exhaustion</td>
+<td>Depth rose faster after 09:14; 300 reached at 09:20</td>
+<td>Onset (09:07) and pool wait (09:07:01) precede scale-up by 7 min</td>
+<td><strong>Aggravator, not origin</strong></td>
+</tr>
+<tr>
+<td>H4</td>
+<td>Independent eu-west infrastructure fault (DB, network, noisy neighbour)</td>
+<td>DB pool waits and connection ceiling are infrastructure-flavoured; US quiet</td>
+<td>Recovery followed the flag flip without infrastructure action; same-job change at flag flip. No infra event data supplied</td>
+<td><strong>Not excluded, lower likelihood</strong></td>
+</tr>
+<tr>
+<td>H5</td>
+<td>Stuck or degraded worker processes</td>
+<td>Backlog stuck after rollback</td>
+<td>Restart gave only 4 min of normal work, then relapse (T, L8-L9)</td>
+<td><strong>Unlikely</strong></td>
+</tr>
+<tr>
+<td>H6</td>
+<td>Recovery at 09:43 was coincidental or a delayed effect of the 09:24 rollback</td>
+<td>Flag flip came 19 min after rollback; traffic could have changed</td>
+<td>Worker-51 stalled at 09:35, after the rollback; recovery began within 2 min of flag off; job 319 changed behaviour within 3 s of the config change</td>
+<td><strong>Weakened, not eliminated</strong> (no control group)</td>
+</tr>
+</tbody></table>
+<p>Correlation cautions</p>
+<ul>
+<li>The flag flip and recovery are closely timed, which is strong temporal evidence, but there was no controlled test, and several changes happened in the same hour (deploy, scale-up, rollback, restart, flag off).</li>
+<li>&quot;US had the flag on for only 2% and no alert&quot; supports a dose-response story but does not prove it, because alert thresholds may simply not have been reached.</li>
+<li>Job 319 succeeding on attempt 2 after the flag change may also reflect the underlying transient error clearing (for example DB pressure easing). The 1000 ms delay proves the policy changed; it does not prove the policy was the only thing that changed.</li>
+</ul>
+<h2>7. What remains unknown</h2>
+<ol>
+<li>When the flag was enabled in eu-west and for what share of tenants (T is silent; deploy was 09:02, symptoms 09:07).</li>
+<li>Why the policy was empty (tenant with no policy configured, blank default in new code, config parse failure) and how many tenants were affected.</li>
+<li>What the first-attempt failures were (error type) and whether they were caused by DB pool waits.</li>
+<li>Who held the 300 connections (API, workers, which pools, idle-in-transaction, lock waits), and whether retries acquire a connection per attempt.</li>
+<li>What happens to a job after <code>retry_budget_exhausted</code>: re-queued, dead-lettered, or failed; and whether any side effects (charges, emails) ran more than once.</li>
+<li>Whether workers run <code>2026.09.23.1</code> or only share the flag, and whether the release contained schema or data changes that affect rollback.</li>
+<li>Whether the worker count is still at 90, and why the pool stalled 4 min after restart rather than immediately.</li>
+<li>Whether the US 2% cohort experienced the same behaviour.</li>
+<li>Whether the CPU drop reflects workers blocked on the DB (my reading) or something else.</li>
+</ol>
+<h2>8. Data-quality limits</h2>
+<ul>
+<li><code>LOGS.txt</code> has 12 lines from 4 hosts. It is clearly a sample, so absence of a pattern in it means nothing, and selection bias is possible.</li>
+<li>Both exhausted-retry lines have empty policy, but there is no exhausted-retry line with a non-empty policy to contrast against.</li>
+<li>Timeline entries have minute resolution; log entries have second resolution. Ordering within the same minute (for example L1-L5 versus the 09:07 queue-depth event) cannot be resolved from this data.</li>
+</ul>
+</div></div><div class="file" id="file-0-4" hidden><p class="path mono">sonnet-5.5/09-incident-analysis/TASK.md</p><div class="prose"><h1>Task 09 — Incident analysis</h1>
+<p>Analyze <code>TIMELINE.md</code> and <code>LOGS.txt</code>. Produce:</p>
+<ul>
+<li><code>INCIDENT.md</code>: impact, concise timeline, most likely root cause, contributing
+factors, evidence supporting or weakening each hypothesis, and what remains
+unknown.</li>
+<li><code>ACTIONS.md</code>: immediate containment plus prioritized corrective actions with
+owners expressed as roles, verification signals, and rollback considerations.</li>
+<li><code>CUSTOMER_UPDATE.md</code>: a plain-language update under 180 words. Do not claim
+certainty beyond the evidence or blame an individual.</li>
+</ul>
+<p>Separate observed facts from inference. Avoid treating correlation as proof.
+Write <code>RESPONSE.md</code> with your confidence level and the next two pieces of data
+you would request. Work only in this directory.</p>
+</div></div><div class="file" id="file-0-5" hidden><p class="path mono">sonnet-5.5/09-incident-analysis/TIMELINE.md</p><div class="prose"><h1>Queue incident timeline (UTC)</h1>
+<ul>
+<li>09:02 deploy api <code>2026.09.23.1</code>; change adds tenant-specific retry policy.</li>
+<li>09:07 queue depth begins rising in eu-west; worker CPU falls from 65% to 18%.</li>
+<li>09:11 alerts fire for job age and checkout latency.</li>
+<li>09:14 on-call increases workers from 40 to 90; queue depth rises faster.</li>
+<li>09:20 database connections reach configured maximum of 300.</li>
+<li>09:24 API deploy rolled back; new job creation normalizes, backlog still stuck.</li>
+<li>09:31 one worker pool restarted; it processes jobs normally for four minutes,
+then stalls.</li>
+<li>09:43 feature flag <code>tenant_retry_policy</code> disabled; recovery begins within two
+minutes.</li>
+<li>10:18 backlog cleared.</li>
+<li>US region uses the same release but had the flag enabled for only 2% of tenants;
+no alert fired there.</li>
+</ul>
+</div></div><div class="file" id="file-0-6" hidden><p class="path mono">sonnet-5.5/09-incident-analysis/LOGS.txt</p><pre><code>09:06:58 worker-17 INFO job=81 tenant=acme attempt=1 result=retry delay_ms=0
+09:06:58 worker-17 INFO job=81 tenant=acme attempt=2 result=retry delay_ms=0
+09:06:58 worker-17 INFO job=81 tenant=acme attempt=3 result=retry delay_ms=0
+09:06:58 worker-17 WARN job=81 retry_budget_exhausted policy=&quot;&quot; elapsed_ms=41
+09:07:01 worker-22 WARN db pool wait exceeded wait_ms=5000 active=10 idle=0
+09:07:03 worker-08 INFO job=92 tenant=beta attempt=1 result=success elapsed_ms=830
+09:19:52 api-03 ERROR db remaining connection slots reserved
+09:31:10 worker-51 INFO startup config_retry_default=&quot;exponential&quot; feature_flag=true
+09:35:12 worker-51 WARN job=319 retry_budget_exhausted policy=&quot;&quot; elapsed_ms=38
+09:43:07 worker-51 INFO config_changed feature_flag=false
+09:43:09 worker-51 INFO job=319 attempt=1 result=retry delay_ms=1000
+09:43:10 worker-51 INFO job=319 attempt=2 result=success elapsed_ms=190
+
+</code></pre></div></section></div><div role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">9 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
+        <p>A thorough, well-structured analysis that labels every timeline row and claim as Observed or Inferred. It identifies the flag-gated empty-policy / zero-delay retry path as the trigger and says openly that the stall mechanism is unknown. Its actions are the most complete of the four. A few small overclaims (for example &#39;no other change was made at that time&#39;, and the customer update saying monitoring &#39;shows no impact&#39; in the US) cost it points.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Every timeline row is tagged with its source and whether it is observed or inferred; derived intervals (4, 36, 19 min) are correct</li><li>Points out that falling CPU contradicts a busy-loop and that zero-delay retries alone should fail fast rather than stall; the stall mechanism is left as an explicit unknown</li><li>Considers five hypotheses, including latent transient failures (job 319 needed a retry even with the flag off)</li><li>ACTIONS covers containment, job reconciliation with idempotency caveats, evidence preservation, the rollback-scope check, and a staged re-enable; each item has a role owner, a verification signal and a rollback note</li><li>RESPONSE gives calibrated per-claim confidence and two well-targeted data requests</li></ul></div><div><h4>Weaknesses</h4><ul><li>H1 support says &#39;No other change was made at that time&#39;, which the timeline does not establish</li><li>The customer update says &#39;Our monitoring shows no impact in the US region&#39;; the evidence only says no alert fired, and INCIDENT.md itself treats US impact as unverified</li><li>States the incident date (2026-09-23) as fact when it is only inferred from the release tag</li><li>Generalizes &#39;per-worker DB pools were fully in use&#39; from a single worker-22 line</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>09:06:58 job 81: three delay_ms=0 attempts, then retry_budget_exhausted policy=&quot;&quot; elapsed_ms=41 (L1-L4); correctly cited</li><li>09:31:10 startup -&gt; 09:35:12 exhaustion matches the timeline&#39;s &#39;four minutes then stalls&#39;; correctly framed as a single coincidence</li><li>09:43:07 flag=false -&gt; 09:43:09 delay_ms=1000 -&gt; 09:43:10 success in 190 ms (L10-L12); correct</li><li>Inference that 90 workers x 10 connections = 900 &gt; 300 is labeled as inferred from a single active=10 line (L5); appropriate</li><li>Customer update is 161 words, under the limit</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>CUSTOMER_UPDATE.md ≈ 161 words (&lt; 180)</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="1-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="1-1" aria-selected="false">ACTIONS.md</button><button role="tab" data-file="1-2" aria-selected="false">CUSTOMER_UPDATE.md</button><button role="tab" data-file="1-3" aria-selected="false">INCIDENT.md</button><button role="tab" data-file="1-4" aria-selected="false">TASK.md</button><button role="tab" data-file="1-5" aria-selected="false">TIMELINE.md</button><button role="tab" data-file="1-6" aria-selected="false">LOGS.txt</button></div>
+        <div class="file" id="file-1-0" ><p class="path mono">fable-5.1/09-incident-analysis/RESPONSE.md</p><div class="prose"><h1>Response: confidence and next data requests</h1>
+<h2>Confidence</h2>
+<ul>
+<li><strong>Trigger (flag-gated tenant retry policy resolving to an empty policy, producing
+zero-delay retries that exhaust the retry budget in milliseconds): moderate-high,
+roughly 75-80%.</strong> Four independent observations point the same way: the first
+<code>policy=&quot;&quot; delay_ms=0</code> line lands seconds before queue depth starts rising; the
+restarted pool stalls at its first <code>policy=&quot;&quot;</code> event; the flag disable is followed
+within two seconds by the same job succeeding with a 1000 ms backoff and within
+two minutes by region-wide recovery; and the US region on the same release at 2%
+exposure had no alert. What holds this below &quot;high&quot;: the log excerpt shows only
+two affected jobs and one affected tenant, the eu-west rollout percentage is not
+stated, and the &quot;four minutes then stalls&quot; match is a single coincidence on a
+single worker.</li>
+<li><strong>Stall mechanism (why an exhausted retry budget left workers idle with saturated
+DB pools rather than simply failing the job): low, roughly 40-50%.</strong> Low CPU and
+<code>active=10 idle=0</code> say the workers were blocked, and job 319 sat on worker-51 for
+~8 minutes, but nothing in the data shows what they were blocked on.</li>
+<li><strong>Role of the worker scale-up and DB connection cap as amplifiers rather than
+causes: moderate, roughly 65%.</strong> Queue depth was rising seven minutes before the
+scale-up, and the flag disable (not any DB change) produced recovery, but the
+arithmetic linking 90 workers x 10-connection pools to the 300 cap is inferred
+from a single <code>active=10</code> log line.</li>
+<li><strong>Underlying defect (why the policy was empty): unknown.</strong> Missing tenant config,
+a resolver bug, and eu-west-specific config propagation are all consistent with
+the evidence.</li>
+</ul>
+<h2>Next two pieces of data I would request</h2>
+<ol>
+<li><strong>Complete worker logs for both regions, 08:55-10:30, joined with the flag
+rollout state and the tenant retry-policy configuration.</strong> Specifically: every
+<code>retry_budget_exhausted</code>, <code>policy=&quot;&quot;</code>, <code>delay_ms=0</code> and <code>db pool wait exceeded</code>
+line with tenant and worker, plus the per-region flag percentage and the stored
+policy for each tenant that appears. This confirms or refutes the trigger at
+scale rather than from two jobs, reveals whether the empty policy came from
+missing config or a resolver defect, tells us whether the US 2% cohort had
+sub-threshold impact, and gives the list of jobs that need reconciliation.</li>
+<li><strong>Worker-51 diagnostics and DB connection accounting for 09:35-09:43.</strong> A
+thread or goroutine dump (or equivalent in-flight job state) from worker-51
+during the stall, and DB connection counts broken down by client (each worker
+pool versus the API) across 09:05-09:45. This is the data that separates &quot;the
+exhausted-retry path holds a connection or job lease&quot; from &quot;the pool was
+starved by other workers&quot;, explains why adding workers made the queue grow
+faster, and tells us whether a per-job timeout or a connection fix is the right
+corrective action.</li>
+</ol>
+<p>If a third were allowed it would be the diff for the retry-policy resolver in
+<code>2026.09.23.1</code>, which would likely answer the &quot;why empty&quot; question directly.</p>
+</div></div><div class="file" id="file-1-1" hidden><p class="path mono">fable-5.1/09-incident-analysis/ACTIONS.md</p><div class="prose"><h1>Actions: eu-west queue backlog (2026-09-23)</h1>
+<p>Owners are roles, not people. &quot;Verification signal&quot; is what we watch to know the
+action worked. &quot;Rollback consideration&quot; is what could go wrong with the action
+itself and how to undo it. Items are prioritized within each section.</p>
+<h2>A. Immediate containment (now, before anything else)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Action</th>
+<th>Owner (role)</th>
+<th>Verification signal</th>
+<th>Rollback consideration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C1</td>
+<td>Keep <code>tenant_retry_policy</code> <strong>disabled in every region</strong>, including the US 2% cohort, until A1-A3 ship.</td>
+<td>Incident commander (on-call SRE)</td>
+<td>Zero <code>retry_budget_exhausted policy=&quot;&quot;</code> and zero <code>result=retry delay_ms=0</code> lines in worker logs, both regions, for 24 h; eu-west queue depth, job age and worker CPU at pre-09:00 baseline.</td>
+<td>Disabling in the US changes behaviour for the 2% tenants. Confirm they fall back to <code>config_retry_default=&quot;exponential&quot;</code> (as worker-51 did at 09:43:09) and that no tenant was relying on the new policy. If one is, address it with an explicit per-tenant config review, not by re-enabling the flag.</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>Put the flag under change control: no re-enable without an approved change ticket referencing this incident.</td>
+<td>Release manager</td>
+<td>Flag audit log shows no state changes; ticket link recorded.</td>
+<td>None; this only adds friction to re-enabling.</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Return worker count from 90 to the pre-incident 40 (or whatever the DB can support with API headroom, see A5).</td>
+<td>On-call SRE</td>
+<td>DB connections stay below ~70% of the 300 cap at peak; no <code>db pool wait exceeded</code> warnings for 24 h; queue depth stable.</td>
+<td>If the backlog re-forms, scale up in steps of 10 and only while DB connections have &gt;20% headroom. Scaling up blindly made things worse at 09:14.</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>Reconcile every job that logged <code>retry_budget_exhausted</code> between 09:06 and 09:45 in eu-west: determine whether each was requeued, dead-lettered, or dropped; replay idempotent ones; hand non-idempotent ones to manual review; list affected tenants for Support.</td>
+<td>Queue platform engineer, with Support lead</td>
+<td>Dead-letter count back to baseline; replayed-job success rate; reconciled list attached to the incident; no duplicate side-effect reports from tenants after 48 h.</td>
+<td>Replay only jobs known to be idempotent. Keep the list of replayed job IDs so effects can be reversed if duplicates surface. If job creation was elevated 09:07-09:24 (unknown), also check for duplicate jobs before replaying.</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>Preserve evidence before log retention rolls: full worker and API logs 08:55-10:30 in both regions, DB connection metrics by client, flag audit history, and any worker-51 diagnostics (thread dumps, in-flight job state).</td>
+<td>SRE (incident scribe)</td>
+<td>Artifacts attached to the incident record; checksums noted.</td>
+<td>None.</td>
+</tr>
+<tr>
+<td>C6</td>
+<td>Query the US region for <code>policy=&quot;&quot;</code> events and for job-age p99 among the 2% flagged tenants during 09:00-10:30 to confirm &quot;no alert&quot; also meant &quot;no impact&quot;.</td>
+<td>On-call SRE (US)</td>
+<td>Query results documented in the incident record.</td>
+<td>None.</td>
+</tr>
+<tr>
+<td>C7</td>
+<td>Establish exactly what the 09:24 rollback reverted (API only? workers?) and which build every worker pool is running now.</td>
+<td>Release manager</td>
+<td>Build IDs per pool documented; workers confirmed on a build whose retry path is either pre-change or fixed.</td>
+<td>If workers are still on <code>2026.09.23.1</code> with the flag off, that is acceptable short-term only because the flag gates the path; do not treat it as fully rolled back.</td>
+</tr>
+</tbody></table>
+<h2>B. Corrective actions</h2>
+<h3>Priority 1: required before the flag is re-enabled anywhere</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Action</th>
+<th>Owner (role)</th>
+<th>Verification signal</th>
+<th>Rollback consideration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A1</td>
+<td>Fix retry-policy resolution: an empty, null or malformed tenant policy must fall back to <code>config_retry_default</code>; enforce a minimum retry delay floor (never <code>delay_ms=0</code>); treat an empty policy as a configuration error that is logged and alerted, not applied.</td>
+<td>Worker platform tech lead</td>
+<td>Unit tests covering empty/null/malformed policies resolve to the default; staging canary with a tenant that has no policy entry shows exponential delays; metric <code>retry.delay_ms == 0</code> count is zero over a full staging soak.</td>
+<td>Standard deploy rollback. Because the flag stays off during rollout, reverting this change has no tenant-facing effect.</td>
+</tr>
+<tr>
+<td>A2</td>
+<td>Identify and fix the stall mechanism: why a job whose retry budget was exhausted left worker-51 stalled for ~8 minutes with low CPU and a saturated DB pool. Ensure the exhausted-budget path acks/nacks the job, returns DB connections, and is bounded by a per-job timeout.</td>
+<td>Worker platform engineer</td>
+<td>Fault-injection test (jobs that always return <code>retry</code>): throughput on healthy jobs stays &gt;= 95% of baseline; per-worker pool <code>idle &gt; 0</code> throughout; no job held longer than the per-job timeout.</td>
+<td>Code-level change; deploy rollback. If the per-job timeout is set too low it will abort legitimate long jobs, so start at 2x the observed p99 job duration and tighten later.</td>
+</tr>
+<tr>
+<td>A3</td>
+<td>Validate tenant retry-policy configuration: schema validation at load time and in CI; refuse to enable <code>tenant_retry_policy</code> if any tenant resolves to an empty policy; log <code>policies_validated=N</code> at worker startup.</td>
+<td>Config / platform engineer</td>
+<td>CI fails on a synthetic empty policy; worker startup line shows the validated count; enabling the flag with a known-bad config is rejected in staging.</td>
+<td>Validation can be switched to warn-only if it blocks legitimate deploys, but not before A1 ships.</td>
+</tr>
+<tr>
+<td>A4</td>
+<td>Update the incident runbook: for any flag-gated change, disable the flag first, then consider a deploy rollback; document which services evaluate each flag (this one is evaluated by workers, not just the API, so an API rollback did not revert it).</td>
+<td>SRE lead</td>
+<td>Runbook reviewed in the postmortem; a game-day exercise reaches flag-off in under 10 minutes from first alert.</td>
+<td>None.</td>
+</tr>
+</tbody></table>
+<h3>Priority 2: within two weeks</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Action</th>
+<th>Owner (role)</th>
+<th>Verification signal</th>
+<th>Rollback consideration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A5</td>
+<td>Database connection budgeting: (worker replicas x pool size) + API pools must fit under the 300 cap with a reserve for the API tier; add a connection reserve or a pooler in front of the database; cap worker autoscaling at the DB-safe maximum.</td>
+<td>Database platform lead</td>
+<td>Load test at the maximum worker count produces zero <code>remaining connection slots reserved</code> errors on the API and no change in checkout p99; the cap is enforced in the autoscaler config.</td>
+<td>Pool-size and reserve changes are config and reversible. Watch for worker throughput regression if per-worker pools shrink; if it appears, raise the DB cap rather than the pool size.</td>
+</tr>
+<tr>
+<td>A6</td>
+<td>Scaling guardrail: runbook step and autoscaler rule that blocks adding workers while <code>db pool wait</code> warnings are firing or DB connections exceed 80%; scale in steps with a settle period.</td>
+<td>SRE lead</td>
+<td>Autoscaler dry-run logs show blocked scale-ups under simulated saturation; runbook step present.</td>
+<td>The rule can be disabled if it blocks legitimate scaling; keep a documented manual override.</td>
+</tr>
+<tr>
+<td>A7</td>
+<td>Alert on cause signals, not only symptoms: <code>retry_budget_exhausted</code> rate, <code>delay_ms=0</code> retries, <code>policy=&quot;&quot;</code>, <code>db pool wait exceeded</code>, and the signature &quot;queue depth rising while worker CPU falls&quot;.</td>
+<td>Observability engineer</td>
+<td>Replaying the 09:06-09:08 log lines into staging triggers an alert within 2 minutes; alert noise reviewed after one week in production.</td>
+<td>Thresholds can be tuned or individual alerts muted if noisy; do not remove the <code>policy=&quot;&quot;</code> alert until A3 is in place.</td>
+</tr>
+</tbody></table>
+<h3>Priority 3: before re-enabling the flag / within 30 days</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Action</th>
+<th>Owner (role)</th>
+<th>Verification signal</th>
+<th>Rollback consideration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A8</td>
+<td>Staged re-enable plan for <code>tenant_retry_policy</code>: 1% -&gt; 10% -&gt; 50% -&gt; 100% per region, each stage held 24 h with automatic halt on job-age or checkout SLO burn; begin in the region with the most DB headroom.</td>
+<td>Product / platform release manager</td>
+<td>Each stage completes with zero cause-signal alerts (A7) and no <code>policy=&quot;&quot;</code> events; job success-on-retry rate unchanged or better.</td>
+<td>Flag off at any stage. Workers pick up the flag at runtime (<code>config_changed</code> at 09:43:07), so the effect should be near-immediate; confirm this at the 1% stage before proceeding.</td>
+</tr>
+<tr>
+<td>A9</td>
+<td>Run the postmortem with the unknowns in <code>INCIDENT.md</code> section 7 as explicit questions to close; track every action here to completion.</td>
+<td>Incident commander</td>
+<td>Each action has a ticket, owner and due date; unknowns are either answered or accepted as residual risk.</td>
+<td>None.</td>
+</tr>
+<tr>
+<td>A10</td>
+<td>Investigate the underlying transient failures that make jobs return <code>retry</code> in normal operation (job 319 needed a retry even with the flag off), and reduce reliance on retries where possible.</td>
+<td>Worker platform engineer</td>
+<td>Baseline attempt&gt;1 rate measured; a reduction target set and tracked.</td>
+<td>None; this is investigative.</td>
+</tr>
+</tbody></table>
+<h2>C. Notes on ordering</h2>
+<ul>
+<li>C1-C3 are the immediate stabilizers and are already partly in effect; C4 is the
+customer-facing cleanup and should start today.</li>
+<li>A1 and A2 are the actual fixes and both must ship before A8; A3 and A4 prevent a
+repeat by a different route (bad config, wrong rollback target).</li>
+<li>A5-A7 reduce blast radius and shorten detection for the next incident of any
+cause, so they are worth doing even if A1/A2 fully explain this one.</li>
+</ul>
+</div></div><div class="file" id="file-1-2" hidden><p class="path mono">fable-5.1/09-incident-analysis/CUSTOMER_UPDATE.md</p><div class="prose"><h1>Service update: delayed background jobs and slower checkouts in the EU region</h1>
+<p><strong>Date:</strong> 23 September 2026 (times in UTC)</p>
+<p>Between about 09:07 and 10:18, customers served from our EU region experienced
+delayed background job processing and slower checkouts. Processing recovered from
+about 09:45, and the remaining backlog was fully cleared by 10:18. Our monitoring
+shows no impact in the US region.</p>
+<p>Our current understanding is that a change released that morning to how failed
+jobs are retried for some accounts caused work to pile up faster than it could be
+processed. We switched that change off at 09:43 and recovery began within minutes.
+We are still confirming the exact chain of events and whether any individual jobs
+were missed or run twice. If we find that any of your jobs were affected, we will
+contact you directly.</p>
+<p>We are sorry for the disruption. We are adding safeguards so that a problem of this
+kind is caught and switched off much sooner, and we will share a full report once
+our review is complete.</p>
+</div></div><div class="file" id="file-1-3" hidden><p class="path mono">fable-5.1/09-incident-analysis/INCIDENT.md</p><div class="prose"><h1>Incident report: eu-west queue backlog and checkout latency (2026-09-23, UTC)</h1>
+<p>Sources: <code>TIMELINE.md</code> (operator timeline) and <code>LOGS.txt</code> (12 log lines, apparently
+a filtered excerpt). Throughout this document, <strong>Observed</strong> means the statement is
+taken directly from one of those two sources; <strong>Inferred</strong> means it is our
+interpretation and could be wrong. Correlation in time is noted as such and is not
+treated as proof of causation.</p>
+<h2>1. Summary</h2>
+<p>Shortly after the 09:02 deploy of api <code>2026.09.23.1</code> (which adds a tenant-specific
+retry policy behind the feature flag <code>tenant_retry_policy</code>), eu-west workers stopped
+draining the job queue. Symptoms lasted from 09:07 until the backlog cleared at
+10:18 (about 71 minutes). Scaling workers up and rolling back the API deploy did not
+restore processing; disabling the feature flag at 09:43 did, with recovery starting
+within two minutes. The most likely trigger is that, with the flag on, the retry
+policy resolved to an empty policy (<code>policy=&quot;&quot;</code>) for some tenants, producing
+zero-delay retries that exhausted the retry budget within tens of milliseconds and
+left workers stalled. The exact mechanism by which exhausted retries stalled
+workers, and why the policy was empty, are not established by the available data.</p>
+<h2>2. Impact</h2>
+<h3>Observed</h3>
+<ul>
+<li>Region: eu-west. The US region ran the same release with the flag enabled for
+only 2% of tenants and raised no alert.</li>
+<li>Queue depth rose from 09:07; the backlog was cleared at 10:18 (~71 minutes of
+degraded or absent job processing).</li>
+<li>Alerts for job age and checkout latency fired at 09:11. Recovery began within two
+minutes of the 09:43 flag disable (~09:45), so alert-level customer impact lasted
+at least ~34 minutes, with a tail until 10:18.</li>
+<li>Database connections hit the configured maximum of 300 at 09:20; <code>api-03</code> logged
+<code>db remaining connection slots reserved</code> at 09:19:52, so the API tier was unable to
+obtain database connections for at least part of the window.</li>
+<li>New job creation was abnormal until the API rollback at 09:24 (the timeline says
+it &quot;normalizes&quot; then; whether it had been failing or elevated is not stated).</li>
+<li>Worker CPU dropped from 65% to 18% at 09:07 while queue depth rose.</li>
+</ul>
+<h3>Inferred / not yet quantified</h3>
+<ul>
+<li>Customer-visible effect: slower checkouts from at least 09:11 to ~09:45, and
+possibly checkout errors while the API had no database connections (around
+09:20-09:24, duration unknown).</li>
+<li>Jobs that hit <code>retry_budget_exhausted</code> during the window may have been
+dead-lettered, delayed, or lost; their final disposition is unknown. Job 319 is
+known to have succeeded at 09:43:10. Job 81&#39;s outcome is not in the logs.</li>
+<li>Number of affected tenants and jobs: unknown. The only tenant seen with the empty
+policy is <code>acme</code>; tenant <code>beta</code> processed successfully at 09:07:03.</li>
+<li>If the API tier also applied zero-delay retries when creating jobs, duplicate jobs
+are possible. No evidence either way.</li>
+</ul>
+<h2>3. Concise timeline (UTC)</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Event</th>
+<th>Source</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:02</td>
+<td>Deploy api <code>2026.09.23.1</code>; adds tenant-specific retry policy</td>
+<td>TIMELINE</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:06:58</td>
+<td>worker-17, job 81, tenant acme: attempts 1-3 all <code>result=retry delay_ms=0</code> within the same second; then <code>WARN retry_budget_exhausted policy=&quot;&quot; elapsed_ms=41</code></td>
+<td>LOGS</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:07:01</td>
+<td>worker-22: <code>db pool wait exceeded wait_ms=5000 active=10 idle=0</code></td>
+<td>LOGS</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:07</td>
+<td>eu-west queue depth starts rising; worker CPU 65% -&gt; 18%</td>
+<td>TIMELINE</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:07:03</td>
+<td>worker-08, job 92, tenant beta: success in 830 ms</td>
+<td>LOGS</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:11</td>
+<td>Alerts fire: job age, checkout latency</td>
+<td>TIMELINE</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:14</td>
+<td>On-call scales workers 40 -&gt; 90; queue depth rises faster</td>
+<td>TIMELINE</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:19:52</td>
+<td>api-03: <code>ERROR db remaining connection slots reserved</code></td>
+<td>LOGS</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:20</td>
+<td>DB connections at configured max (300)</td>
+<td>TIMELINE</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:24</td>
+<td>API deploy rolled back; new job creation normalizes; backlog still stuck</td>
+<td>TIMELINE</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:31:10</td>
+<td>Restarted pool: worker-51 startup with <code>config_retry_default=&quot;exponential&quot; feature_flag=true</code></td>
+<td>LOGS</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:31-09:35</td>
+<td>Restarted pool processes jobs normally for ~4 minutes</td>
+<td>TIMELINE</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:35:12</td>
+<td>worker-51, job 319: <code>retry_budget_exhausted policy=&quot;&quot; elapsed_ms=38</code>; the pool stalls at about this time</td>
+<td>LOGS + TIMELINE</td>
+<td>Both observed; that one caused the other is inferred</td>
+</tr>
+<tr>
+<td>09:43:07</td>
+<td>worker-51: <code>config_changed feature_flag=false</code></td>
+<td>LOGS</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>09:43:09-10</td>
+<td>worker-51, job 319: attempt 1 <code>result=retry delay_ms=1000</code>; attempt 2 success in 190 ms</td>
+<td>LOGS</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>~09:45</td>
+<td>Recovery begins</td>
+<td>TIMELINE</td>
+<td>Observed</td>
+</tr>
+<tr>
+<td>10:18</td>
+<td>Backlog cleared</td>
+<td>TIMELINE</td>
+<td>Observed</td>
+</tr>
+</tbody></table>
+<p>Derived intervals (arithmetic on observed times): first diagnostic log line to
+symptom-based alert, 4 minutes; first symptom to flag disable, 36 minutes; API
+rollback to flag disable, 19 minutes; job 319 was associated with worker-51 for
+about 8 minutes (09:35:12 to 09:43:09) before being reset to attempt 1.</p>
+<h2>4. Most likely root cause</h2>
+<p><strong>Inferred.</strong> With <code>tenant_retry_policy</code> enabled, the retry-policy lookup returned
+an empty policy (<code>policy=&quot;&quot;</code>) for at least some tenants instead of falling back to
+the configured default (<code>config_retry_default=&quot;exponential&quot;</code>). An empty policy
+produced retries with <code>delay_ms=0</code>, so the retry budget was consumed in roughly
+40 ms (three attempts for job 81), before whatever transient condition caused the
+first failure could clear. Jobs for affected tenants therefore failed outright
+instead of succeeding on a backed-off retry. The contrast is visible in the logs:
+with the flag off, job 319 got a 1000 ms delay on attempt 1 and succeeded on
+attempt 2.</p>
+<p>Something in the exhausted-budget path then left workers stalled rather than merely
+failing the job: worker CPU fell to 18% (workers were waiting, not busy-looping),
+per-worker DB pools were fully in use (<code>active=10 idle=0</code> with 5 s waits), and job
+319 stayed attached to worker-51 for ~8 minutes. The stall mechanism (a held
+connection, an unreleased job lease, a blocking requeue, or something else) is not
+identifiable from the data.</p>
+<p>Why we call this the trigger rather than the defect: the flag disable resolved the
+incident, but the underlying defect could be any of (a) tenants missing a policy
+entry in config, (b) a resolver bug that returns an empty policy, or (c) a config
+propagation problem specific to eu-west. Which one is unknown.</p>
+<h2>5. Hypotheses and evidence</h2>
+<h3>H1 (primary): flag-gated retry policy resolves empty -&gt; zero-delay retries -&gt; instant budget exhaustion -&gt; worker stall</h3>
+<p>Supporting (observed):</p>
+<ul>
+<li>First <code>delay_ms=0</code> / <code>policy=&quot;&quot;</code> line at 09:06:58, five minutes after deploy and
+seconds before queue depth began rising at 09:07.</li>
+<li>The restarted pool worked normally until its first <code>policy=&quot;&quot;</code> event at 09:35:12,
+about four minutes after startup, matching the timeline&#39;s &quot;four minutes, then
+stalls&quot;.</li>
+<li>Disabling the flag at 09:43:07 was followed within two seconds by the same job
+(319) retrying with <code>delay_ms=1000</code> and succeeding, and by region-wide recovery
+within two minutes. No other change was made at that time.</li>
+<li>The US region, same release, 2% flag exposure, had no alert.</li>
+<li>worker-51&#39;s own startup line shows the default policy was <code>exponential</code>, so the
+zero-delay behaviour came from the tenant-specific path, not the default.
+Weakening / caveats:</li>
+<li>The stall mechanism is not shown. Zero-delay retries alone should make a job fail
+fast, not block a worker with low CPU.</li>
+<li>Only two affected jobs (81, 319) and one affected tenant (acme) appear in the
+excerpt; the fraction of tenants with an empty policy is unknown.</li>
+<li>&quot;Four minutes then stalls&quot; and the 09:35:12 event is a single coincidence on a
+single worker.</li>
+<li>We do not know the eu-west flag rollout percentage; the US comparison assumes it
+was substantially higher than 2%.</li>
+</ul>
+<h3>H2: database connection exhaustion was the primary cause</h3>
+<p>Supporting (observed): pool-wait warning at 09:07:01; API <code>remaining connection slots reserved</code> at 09:19:52; DB at max at 09:20; checkout latency alert.
+Weakening (observed): the pool-wait warning came 3 seconds <em>after</em> the first
+zero-delay retry storm; DB reached its maximum only after workers were scaled to
+90 at 09:14; the API rollback restored job creation but not the backlog; the flag
+disable, which changed nothing about the database, triggered recovery. DB
+exhaustion is better explained as a consequence and amplifier than as the origin.
+Unknown: whether the exhausted-retry path leaks or holds connections, which would
+link H1 and H2 directly.</p>
+<h3>H3: the worker scale-up (40 -&gt; 90) caused the incident</h3>
+<p>Weakening (observed): queue depth was already rising at 09:07, seven minutes before
+the scale-up. Supporting as an amplifier (observed): queue depth rose faster after
+09:14, DB hit 300 connections six minutes later, and the API lost DB access at
+09:19:52. Inferred: with per-worker pools of 10 (from <code>active=10 idle=0</code>), 90
+workers can demand 900 connections against a cap of 300, so more workers meant more
+contention for the same database the API depends on.</p>
+<h3>H4: the API code change itself (independent of the flag) caused the incident</h3>
+<p>Supporting (observed): new job creation normalized after the API rollback at 09:24.
+Weakening (observed): the backlog stayed stuck after rollback; US ran the same
+release without alerting; the flag disable, not the rollback, produced recovery.
+Open question: &quot;normalizes&quot; could mean job creation had been failing (starved of DB
+connections) or had been elevated (e.g. API-side zero-delay retries creating
+duplicates). Either reading is consistent with the evidence.</p>
+<h3>H5: pre-existing transient failures are the real problem</h3>
+<p>Supporting (observed): even with the flag off, job 319&#39;s attempt 1 returned <code>retry</code>,
+so the underlying operation needs retries in normal operation. Assessment: this is a
+latent condition that the retry policy normally absorbs, not the cause of the
+outage; it does mean retry behaviour is on the critical path and any regression in
+it is high-impact.</p>
+<h2>6. Contributing factors</h2>
+<ol>
+<li><strong>No safe fallback for an empty policy</strong> (inferred). The default policy was
+<code>exponential</code>, but an empty tenant policy was applied as-is, yielding
+<code>delay_ms=0</code>.</li>
+<li><strong>Worker scale-up under DB contention</strong> (observed effect, inferred mechanism).
+Increasing workers to 90 at 09:14 made queue depth rise faster and coincided
+with the DB reaching its 300-connection cap and the API losing DB access.</li>
+<li><strong>Shared database with no connection reserve for the API tier</strong> (inferred from
+the api-03 error). Worker-side saturation spilled over into checkout latency.</li>
+<li><strong>Rollback scope mismatch</strong> (observed timing, inferred lesson). Rolling back the
+API at 09:24 did not change worker behaviour; workers still evaluated
+<code>feature_flag=true</code> at 09:31. The flag was not disabled until 09:43, 19 minutes
+later. Whether workers were part of the rollback is unknown.</li>
+<li><strong>Uneven flag rollout</strong> (partly observed). US was at 2%; eu-west&#39;s percentage is
+unknown but evidently high enough for region-wide impact, with no staged ramp
+visible in the timeline.</li>
+<li><strong>Detection gap</strong> (observed). The diagnostic signal (<code>policy=&quot;&quot;</code>, <code>delay_ms=0</code>,
+<code>retry_budget_exhausted</code>) was logged at WARN at 09:06:58; alerts fired on
+downstream symptoms four minutes later, and identifying the flag took a further
+32 minutes.</li>
+<li><strong>Retry-dependent workload</strong> (observed). Jobs return <code>retry</code> in normal operation,
+so retry policy defects convert transient failures into hard failures.</li>
+</ol>
+<h2>7. What remains unknown</h2>
+<ul>
+<li>Why <code>policy</code> was empty: missing tenant config entries, resolver bug, or eu-west
+config propagation. Which tenants and what fraction were affected.</li>
+<li>The eu-west flag rollout percentage, and whether the US 2% tenants saw any
+<code>policy=&quot;&quot;</code> events or sub-threshold degradation.</li>
+<li>The stall mechanism: what a worker does after <code>retry_budget_exhausted</code> (ack, nack,
+requeue, hold), whether DB connections are released, and why job 319 stayed on
+worker-51 for ~8 minutes with its attempt counter later reset to 1.</li>
+<li>What the 09:24 rollback actually reverted (API only, or workers too), and whether
+the retry logic lives in a shared library or is driven by config.</li>
+<li>Whether &quot;new job creation normalizes&quot; means creation had been failing or
+elevated, and whether duplicate jobs were created.</li>
+<li>The cause of the underlying transient <code>retry</code> results (job 81 failed three times
+in 41 ms, far faster than a 5 s pool wait, so those failures were not pool waits).</li>
+<li>Database connection accounting during the window: connections held by workers
+versus API, and whether any leaked.</li>
+<li>Final disposition of every job that exhausted its retry budget between 09:06 and
+09:45, and the customer-facing error rate (not just latency) on checkout.</li>
+<li>Whether the log excerpt is complete for the workers shown; gaps (e.g. worker-51
+between 09:35:12 and 09:43:07) may be filtering rather than silence.</li>
+</ul>
+</div></div><div class="file" id="file-1-4" hidden><p class="path mono">fable-5.1/09-incident-analysis/TASK.md</p><div class="prose"><h1>Task 09 — Incident analysis</h1>
+<p>Analyze <code>TIMELINE.md</code> and <code>LOGS.txt</code>. Produce:</p>
+<ul>
+<li><code>INCIDENT.md</code>: impact, concise timeline, most likely root cause, contributing
+factors, evidence supporting or weakening each hypothesis, and what remains
+unknown.</li>
+<li><code>ACTIONS.md</code>: immediate containment plus prioritized corrective actions with
+owners expressed as roles, verification signals, and rollback considerations.</li>
+<li><code>CUSTOMER_UPDATE.md</code>: a plain-language update under 180 words. Do not claim
+certainty beyond the evidence or blame an individual.</li>
+</ul>
+<p>Separate observed facts from inference. Avoid treating correlation as proof.
+Write <code>RESPONSE.md</code> with your confidence level and the next two pieces of data
+you would request. Work only in this directory.</p>
+</div></div><div class="file" id="file-1-5" hidden><p class="path mono">fable-5.1/09-incident-analysis/TIMELINE.md</p><div class="prose"><h1>Queue incident timeline (UTC)</h1>
+<ul>
+<li>09:02 deploy api <code>2026.09.23.1</code>; change adds tenant-specific retry policy.</li>
+<li>09:07 queue depth begins rising in eu-west; worker CPU falls from 65% to 18%.</li>
+<li>09:11 alerts fire for job age and checkout latency.</li>
+<li>09:14 on-call increases workers from 40 to 90; queue depth rises faster.</li>
+<li>09:20 database connections reach configured maximum of 300.</li>
+<li>09:24 API deploy rolled back; new job creation normalizes, backlog still stuck.</li>
+<li>09:31 one worker pool restarted; it processes jobs normally for four minutes,
+then stalls.</li>
+<li>09:43 feature flag <code>tenant_retry_policy</code> disabled; recovery begins within two
+minutes.</li>
+<li>10:18 backlog cleared.</li>
+<li>US region uses the same release but had the flag enabled for only 2% of tenants;
+no alert fired there.</li>
+</ul>
+</div></div><div class="file" id="file-1-6" hidden><p class="path mono">fable-5.1/09-incident-analysis/LOGS.txt</p><pre><code>09:06:58 worker-17 INFO job=81 tenant=acme attempt=1 result=retry delay_ms=0
+09:06:58 worker-17 INFO job=81 tenant=acme attempt=2 result=retry delay_ms=0
+09:06:58 worker-17 INFO job=81 tenant=acme attempt=3 result=retry delay_ms=0
+09:06:58 worker-17 WARN job=81 retry_budget_exhausted policy=&quot;&quot; elapsed_ms=41
+09:07:01 worker-22 WARN db pool wait exceeded wait_ms=5000 active=10 idle=0
+09:07:03 worker-08 INFO job=92 tenant=beta attempt=1 result=success elapsed_ms=830
+09:19:52 api-03 ERROR db remaining connection slots reserved
+09:31:10 worker-51 INFO startup config_retry_default=&quot;exponential&quot; feature_flag=true
+09:35:12 worker-51 WARN job=319 retry_budget_exhausted policy=&quot;&quot; elapsed_ms=38
+09:43:07 worker-51 INFO config_changed feature_flag=false
+09:43:09 worker-51 INFO job=319 attempt=1 result=retry delay_ms=1000
+09:43:10 worker-51 INFO job=319 attempt=2 result=success elapsed_ms=190
+
+</code></pre></div></section></div><div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">9 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
+        <p>Clean and careful work with consistent [Fact]/[Inference] labels, and I found no numeric errors. It notes that a tight retry loop should raise CPU rather than lower it, and that other changes around 09:43 have not been ruled out. The actions are strong and include explicit criteria for re-enabling the flag. The diagnosis is solid but explores the causal chain slightly less deeply than A or D, and the customer update overclaims that all delayed jobs were processed.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Log sample described accurately (12 lines, 5 hosts); timings all correct (about 4 min detection, 19 min rollback-to-flag, 32 min alert-to-flag)</li><li>Explicitly separates observed from inferred parts of H1 and calls the retry-to-stall link the weakest part of the chain</li><li>Says the US comparison is confounded and that &#39;no alert&#39; does not mean &#39;no impact&#39;; notes that other 09:43 changes are not ruled out</li><li>ACTIONS includes a minimum retry delay with jitter, investigation of the exhausted-retry path, a connection budget enforced in CI, and concrete re-enable criteria</li><li>RESPONSE separates trigger confidence (medium-high) from mechanism confidence (low-medium); the data requests (pg_stat_activity by client, plus policy code/targeting/tenant records) are well aimed</li></ul></div><div><h4>Weaknesses</h4><ul><li>The customer update says &#39;all delayed jobs have now been processed&#39;, but INCIDENT.md itself says the fate of retry-exhausted jobs is unknown and they may have been dropped or dead-lettered</li><li>The main root-cause narrative asserts somewhat more than the evidence supports (&#39;saturated the database connection pools&#39;), though it is hedged afterwards</li><li>Does not question what caused the first failed attempts, or whether DB contention came before the zero-delay retries</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>&#39;12 sampled log lines from 5 hosts&#39;: checked (worker-17, worker-22, worker-08, api-03, worker-51); correct</li><li>09:19:52 api-03 &#39;remaining connection slots reserved&#39; (L7) matches the 09:20 DB max of 300 in the timeline</li><li>Job 92 tenant beta success at 09:07:03 (L6) contrasted with job 81 acme failing; correct and used appropriately</li><li>Customer update is about 142 words</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>CUSTOMER_UPDATE.md ≈ 142 words (&lt; 180)</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="2-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="2-1" aria-selected="false">ACTIONS.md</button><button role="tab" data-file="2-2" aria-selected="false">CUSTOMER_UPDATE.md</button><button role="tab" data-file="2-3" aria-selected="false">INCIDENT.md</button><button role="tab" data-file="2-4" aria-selected="false">TASK.md</button><button role="tab" data-file="2-5" aria-selected="false">TIMELINE.md</button><button role="tab" data-file="2-6" aria-selected="false">LOGS.txt</button></div>
+        <div class="file" id="file-2-0" ><p class="path mono">opus-5.5/09-incident-analysis/RESPONSE.md</p><div class="prose"><h1>Response: incident analysis</h1>
+<h2>Confidence</h2>
+<p><strong>Medium-high</strong> that the retry-policy code behind <code>tenant_retry_policy</code> triggered the incident. <strong>Low-medium</strong> on exactly how it stalled the workers.</p>
+<ul>
+<li><strong>Trigger (medium-high).</strong> The logs show <code>policy=&quot;&quot;</code> and <code>delay_ms=0</code> while the flag was on. Right after the flag was turned off, the same job on the same worker, with no restart, retried at a 1000 ms delay and succeeded. The API rollback and the worker restart did not fix the problem while the flag stayed on. Together, these point strongly to the code the flag controls. It is still an association in time, from a small sample of logs, and not a controlled test.</li>
+<li><strong>Mechanism (low-medium).</strong> I infer that an empty policy skips the default and causes immediate retries, which saturate DB connections. Nothing in the data shows why workers sat blocked with low CPU instead of spinning. Nor does it show how retries that give up after about 40 ms kept connections tied up. The per-worker pool size of about 10 is inferred from a single log line.</li>
+<li><strong>Contributing factors (medium).</strong> Scaling workers from 40 to 90 made the connection pressure worse. It could not have started the incident, because the queue was already rising. The US &quot;no alert&quot; point is weak and confounded evidence.</li>
+</ul>
+<p>Facts are kept separate from inference throughout <code>INCIDENT.md</code>, and the unknowns are listed there.</p>
+<h2>Next two pieces of data I would request</h2>
+<ol>
+<li><p><strong>Database connections broken down by client and state, 09:00–10:20 UTC, for eu-west.</strong> For example, <code>pg_stat_activity</code> snapshots: application or host, state (active / idle / idle in transaction), wait events and locks. Pair this with per-worker pool metrics (active, idle, waiting).</p>
+<ul>
+<li>This tests the weakest link: whether workers were holding connections on the <code>retry_budget_exhausted</code> path (a leak or open transactions) or just competing for them.</li>
+<li>It also shows why connections were released when the flag was turned off.</li>
+</ul>
+</li>
+<li><p><strong>The code change to retry-policy resolution in <code>2026.09.23.1</code>, the flag targeting rules, and the tenant retry-policy records for eu-west and the US.</strong> Specifically: which tenants had the flag on, and which resolved to an empty policy.</p>
+<ul>
+<li>This confirms or refutes the inference that <code>&quot;&quot;</code> bypasses the default.</li>
+<li>It shows how many tenants were exposed in each region.</li>
+<li>It tests whether the US 2% cohort included any tenants with an empty policy, which is currently confounded evidence.</li>
+</ul>
+</li>
+</ol>
+<h2>Deliverables</h2>
+<ul>
+<li><code>INCIDENT.md</code>: impact, timeline, root-cause hypotheses with evidence for and against, contributing factors, and unknowns.</li>
+<li><code>ACTIONS.md</code>: containment steps and prioritized corrective actions, each with an owner role, a verification signal and rollback considerations.</li>
+<li><code>CUSTOMER_UPDATE.md</code>: a plain-language update under 180 words, with no blame and no claims beyond the evidence.</li>
+<li><code>RESPONSE.md</code>: this file.</li>
+</ul>
+</div></div><div class="file" id="file-2-1" hidden><p class="path mono">opus-5.5/09-incident-analysis/ACTIONS.md</p><div class="prose"><h1>Actions: eu-west queue stall (2026-09-23)</h1>
+<p>Owners are listed as roles. The priorities assume the leading hypothesis in <code>INCIDENT.md</code> (H1). Any action that depends on unconfirmed parts of H1 is marked.</p>
+<h2>Immediate containment (next 24 hours)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Action</th>
+<th>Owner</th>
+<th>Verification signal</th>
+<th>Rollback consideration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C1</td>
+<td>Keep <code>tenant_retry_policy</code> <strong>off in all regions</strong>, including the 2% in the US. Lock the flag so that changing it requires incident-commander approval.</td>
+<td>Incident commander</td>
+<td>The flag service shows 0% in every region. Workers log <code>feature_flag=false</code>. No <code>policy=&quot;&quot;</code> log lines appear.</td>
+<td>Low risk: the flag was already off in eu-west during recovery. Tenants that expected custom retry behavior fall back to the default. Tell their account owners.</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>Check the <strong>US 2% cohort</strong> for the same pattern over the same window: <code>policy=&quot;&quot;</code>, <code>delay_ms=0</code>, <code>retry_budget_exhausted</code>, and DB pool waits.</td>
+<td>On-call SRE (US)</td>
+<td>A search of the US logs returns a count, even if it is zero.</td>
+<td>Read-only.</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Find every job that logged <code>retry_budget_exhausted</code> in eu-west and the US between 09:00 and 09:45. Work out what happened to each one: completed, dead-lettered, dropped or duplicated.</td>
+<td>Owning service engineer + Support lead</td>
+<td>A reconciled list: each job ID with its final state.</td>
+<td>Re-running jobs can cause double side effects, such as double charges. Confirm the jobs are idempotent before bulk replay. Replay in small batches.</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>Return the worker count to a size whose total connection pools fit under the DB maximum, with room left for the API. Confirm no idle or leaked connections remain.</td>
+<td>On-call SRE + DBA</td>
+<td>DB connections are well below 300. Pool-wait warnings are at zero. The API has no <code>remaining connection slots reserved</code> errors.</td>
+<td>Scale down gradually while watching queue depth. Keep the previous worker count on record.</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>Hold further deploys of the retry-policy change until P0 items are fixed.</td>
+<td>Release manager</td>
+<td>The release calendar shows the hold.</td>
+<td>None.</td>
+</tr>
+</tbody></table>
+<h2>Corrective actions (prioritized)</h2>
+<h3>P0: Fix the trigger</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Action</th>
+<th>Owner</th>
+<th>Verification signal</th>
+<th>Rollback consideration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P0-1</td>
+<td>Fix policy resolution: when a tenant policy is empty, null or unknown, <strong>fall back to the configured default</strong>. Validate tenant policies when they are loaded and written, and reject <code>&quot;&quot;</code>.</td>
+<td>Owning service team (tech lead)</td>
+<td>Unit tests for empty, null, unknown and valid policies. In staging, a tenant with no policy logs <code>policy=&quot;exponential&quot;</code> (or whatever the default is) and <code>delay_ms&gt;0</code>.</td>
+<td>Ship behind the same flag, off by default. The flag stays the kill switch.</td>
+</tr>
+<tr>
+<td>P0-2</td>
+<td>Enforce a <strong>minimum retry delay with jitter</strong> in the retry library, whatever the policy says. This protects against any future bad policy.</td>
+<td>Platform / retry-library owner</td>
+<td>Tests: no retry has <code>delay_ms</code> below the minimum. Production logs have no <code>delay_ms=0</code>.</td>
+<td>The change is a library default. If it slows recovery for latency-sensitive jobs, allow a per-job override that has to be reviewed.</td>
+</tr>
+<tr>
+<td>P0-3</td>
+<td>Find out what the <code>retry_budget_exhausted</code> path does with DB connections, transactions and job state. Confirm or rule out a connection leak or held lock. This tests the weakest link in H1.</td>
+<td>Owning service engineer + DBA</td>
+<td>A reproduction in staging with pool metrics. After the fix, active connections return to their baseline after exhaustion.</td>
+<td>Investigation only. Any fix it leads to goes through normal review.</td>
+</tr>
+</tbody></table>
+<h3>P1: Limit the blast radius and speed up mitigation</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Action</th>
+<th>Owner</th>
+<th>Verification signal</th>
+<th>Rollback consideration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1-1</td>
+<td><strong>Connection budget:</strong> make sure <code>max_workers × pool_size + API pool + headroom ≤ DB max</code>. Enforce it in autoscaling. Give the API its own reserved connections or a separate pool or proxy.</td>
+<td>Platform/SRE + DBA</td>
+<td>A config check fails CI if the budget is exceeded. A load test at the maximum worker count keeps DB connections below 90%.</td>
+<td>Lowering pool sizes can reduce throughput. Roll out one region at a time and compare job throughput.</td>
+</tr>
+<tr>
+<td>P1-2</td>
+<td><strong>Runbook:</strong> when rolling back a release, list and turn off any feature flags changed or introduced with it. Warn against scaling workers when DB pool waits or connection limits are firing.</td>
+<td>SRE lead</td>
+<td>The runbook is updated, and a game day exercises it.</td>
+<td>Documentation only.</td>
+</tr>
+<tr>
+<td>P1-3</td>
+<td><strong>Alerts</strong> on the cause, not only on symptoms: the rate of <code>retry_budget_exhausted</code>, retries with <code>delay_ms=0</code>, DB pool-wait warnings, DB connections above 80%, and worker CPU falling while queue depth rises. Add equivalent alerts in the US.</td>
+<td>Observability owner</td>
+<td>The alerts fire in staging when a tenant with no policy is replayed.</td>
+<td>Tune thresholds to avoid alert fatigue. Start with notification-only alerts for a week.</td>
+</tr>
+<tr>
+<td>P1-4</td>
+<td>Show flag changes and deploys together on the incident dashboards and timeline.</td>
+<td>Observability owner</td>
+<td>Flag changes appear as annotations on the queue and DB graphs.</td>
+<td>None.</td>
+</tr>
+</tbody></table>
+<h3>P2: Prevent similar incidents</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Action</th>
+<th>Owner</th>
+<th>Verification signal</th>
+<th>Rollback consideration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P2-1</td>
+<td>Roll out flags gradually, <strong>per region, with automated safety checks</strong>: automatic rollback on queue age, retry exhaustion or DB connection signals. Start with 1–5% in each region.</td>
+<td>Release engineering</td>
+<td>The flag platform records the stages and automatic rollbacks. A test flag rolls back automatically in staging.</td>
+<td>If the safety checks are too sensitive, fall back to a manual rollout.</td>
+</tr>
+<tr>
+<td>P2-2</td>
+<td>Audit tenant retry-policy data for empty or invalid values before turning the flag back on.</td>
+<td>Owning service team + Data owner</td>
+<td>Audit report: zero invalid records, or each one fixed.</td>
+<td>Read-only, apart from data fixes, which should be backed up.</td>
+</tr>
+<tr>
+<td>P2-3</td>
+<td>Hold a blameless post-incident review once the data from <code>RESPONSE.md</code> is collected. Confirm or revise the root cause.</td>
+<td>Incident commander</td>
+<td>Review published, with root cause marked confirmed or revised.</td>
+<td>None.</td>
+</tr>
+</tbody></table>
+<h2>Re-enable criteria for <code>tenant_retry_policy</code></h2>
+<p>Turn the flag back on only when all of the following are true:</p>
+<ul>
+<li>P0-1, P0-2 and P0-3 are done.</li>
+<li>P1-1 and P1-3 are in place.</li>
+<li>The tenant data audit (P2-2) is clean.</li>
+<li>The rollout follows P2-1, starting at 1% in one region.</li>
+<li>For 24 hours at each stage: no <code>policy=&quot;&quot;</code> lines, no zero-delay retries, and DB connections below 70%.</li>
+</ul>
+</div></div><div class="file" id="file-2-2" hidden><p class="path mono">opus-5.5/09-incident-analysis/CUSTOMER_UPDATE.md</p><div class="prose"><h1>Service update: delayed background jobs and slower checkout in EU (23 September 2026)</h1>
+<p><strong>What happened:</strong> From about 09:07 to 10:18 UTC, background jobs in our EU region were delayed. For part of that time, checkout was slower than normal, and some requests may have failed.</p>
+<p><strong>Current status:</strong> The service has been stable since 10:18 UTC, and all delayed jobs have now been processed.</p>
+<p><strong>What we know so far:</strong> The problem began shortly after we released a change to how failed jobs are retried. It improved within minutes of our turning that change off. We have kept it turned off while we investigate. We have not yet confirmed the full cause.</p>
+<p><strong>What we are doing:</strong> We are checking whether any jobs did not complete correctly. We will contact affected customers directly. We are also adding safeguards and better alerting.</p>
+<p>We are sorry for the disruption. We will share a fuller report once our review is complete.</p>
+</div></div><div class="file" id="file-2-3" hidden><p class="path mono">opus-5.5/09-incident-analysis/INCIDENT.md</p><div class="prose"><h1>Incident: eu-west job queue stall and checkout latency (2026-09-23)</h1>
+<p>Status: mitigated at 09:43 UTC, backlog cleared at 10:18 UTC. Root cause not yet confirmed.</p>
+<p>Sources: <code>TIMELINE.md</code> (operator timeline) and <code>LOGS.txt</code> (12 sampled log lines from 5 hosts). The logs are a small sample. They are not a complete record.</p>
+<p>Labels used below:</p>
+<ul>
+<li><strong>[Fact]</strong>: stated directly in the timeline or logs.</li>
+<li><strong>[Inference]</strong>: my interpretation. It could be wrong.</li>
+</ul>
+<h2>1. Impact</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>What we know</th>
+<th>Label</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Region</td>
+<td>eu-west. No alert fired in the US, but US impact was not measured.</td>
+<td>Fact / Unknown</td>
+</tr>
+<tr>
+<td>Duration</td>
+<td>Queue depth began rising at 09:07. The backlog cleared at 10:18, about 71 minutes later.</td>
+<td>Fact</td>
+</tr>
+<tr>
+<td>Background jobs</td>
+<td>Job age alert fired at 09:11. Jobs were delayed until the backlog cleared.</td>
+<td>Fact</td>
+</tr>
+<tr>
+<td>Checkout</td>
+<td>A checkout latency alert fired at 09:11. How much latency rose, and for how many users, is unknown.</td>
+<td>Fact / Unknown</td>
+</tr>
+<tr>
+<td>API errors</td>
+<td>At 09:19:52, <code>api-03</code> logged <code>remaining connection slots reserved</code>, which means the API could not get database connections. Some API requests probably failed around 09:20.</td>
+<td>Fact / Inference</td>
+</tr>
+<tr>
+<td>Job creation</td>
+<td>New job creation was abnormal until the 09:24 rollback, when it &quot;normalized&quot;.</td>
+<td>Fact</td>
+</tr>
+<tr>
+<td>Jobs that gave up</td>
+<td>Jobs 81 and 319 logged <code>retry_budget_exhausted</code>. We do not know what happens to a job after that: it may be dropped, dead-lettered or retried. There may be permanently failed or duplicated work that has not been found yet.</td>
+<td>Fact / Unknown</td>
+</tr>
+</tbody></table>
+<p>Not yet quantified: the number of affected tenants, delayed jobs, failed checkouts and failed API requests, and the peak job age.</p>
+<h2>2. Timeline (UTC)</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Event</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:02</td>
+<td>API release <code>2026.09.23.1</code> deployed. It adds a tenant-specific retry policy behind flag <code>tenant_retry_policy</code>.</td>
+<td>Timeline</td>
+</tr>
+<tr>
+<td>09:06:58</td>
+<td><code>worker-17</code>, job 81, tenant <code>acme</code>: 3 attempts at <code>delay_ms=0</code>, then <code>retry_budget_exhausted policy=&quot;&quot;</code> after 41 ms.</td>
+<td>Log</td>
+</tr>
+<tr>
+<td>09:07</td>
+<td>Queue depth starts rising. Worker CPU falls from 65% to 18%.</td>
+<td>Timeline</td>
+</tr>
+<tr>
+<td>09:07:01</td>
+<td><code>worker-22</code>: DB pool wait exceeded 5000 ms, with <code>active=10 idle=0</code>.</td>
+<td>Log</td>
+</tr>
+<tr>
+<td>09:07:03</td>
+<td><code>worker-08</code>, job 92, tenant <code>beta</code>: succeeds on the first attempt.</td>
+<td>Log</td>
+</tr>
+<tr>
+<td>09:11</td>
+<td>Alerts fire for job age and checkout latency. Detection took about 4 minutes.</td>
+<td>Timeline</td>
+</tr>
+<tr>
+<td>09:14</td>
+<td>On-call raises workers from 40 to 90. Queue depth then rises faster.</td>
+<td>Timeline</td>
+</tr>
+<tr>
+<td>09:19:52 / 09:20</td>
+<td>The API is refused DB connections. DB connections reach the configured maximum of 300.</td>
+<td>Log / Timeline</td>
+</tr>
+<tr>
+<td>09:24</td>
+<td>API release rolled back. Job creation normalizes, but the backlog stays stuck.</td>
+<td>Timeline</td>
+</tr>
+<tr>
+<td>09:31</td>
+<td>One worker pool is restarted. <code>worker-51</code> starts with <code>config_retry_default=&quot;exponential&quot; feature_flag=true</code>.</td>
+<td>Timeline / Log</td>
+</tr>
+<tr>
+<td>09:35</td>
+<td>That pool stalls after about 4 normal minutes. <code>worker-51</code> job 319 logs <code>retry_budget_exhausted policy=&quot;&quot;</code> after 38 ms.</td>
+<td>Timeline / Log</td>
+</tr>
+<tr>
+<td>09:43:07</td>
+<td>Flag <code>tenant_retry_policy</code> disabled. <code>worker-51</code> logs <code>config_changed feature_flag=false</code>.</td>
+<td>Timeline / Log</td>
+</tr>
+<tr>
+<td>09:43:09–10</td>
+<td>Job 319 retries with <code>delay_ms=1000</code>, then succeeds.</td>
+<td>Log</td>
+</tr>
+<tr>
+<td>~09:45</td>
+<td>Recovery begins.</td>
+<td>Timeline</td>
+</tr>
+<tr>
+<td>10:18</td>
+<td>Backlog cleared.</td>
+<td>Timeline</td>
+</tr>
+</tbody></table>
+<h2>3. Most likely root cause</h2>
+<p><strong>Leading hypothesis (H1), medium-high confidence:</strong> the retry-policy code behind <code>tenant_retry_policy</code> misbehaves when a tenant has no specific policy.</p>
+<p>With the flag on, some tenants resolved to an empty policy (<code>policy=&quot;&quot;</code>). The code did not fall back to the configured default (<code>exponential</code>). Instead it retried immediately (<code>delay_ms=0</code>) and used up the retry budget in about 40 ms. This behavior, directly or indirectly, saturated the database connection pools. Workers then blocked while waiting for connections, and the queue stalled. When worker pools grew, the database hit its 300-connection limit, and the shared API was starved of connections. That caused the checkout latency and API errors.</p>
+<p>Which parts of H1 are observed and which are inferred:</p>
+<ul>
+<li><strong>[Fact]</strong> With the flag on, jobs logged <code>policy=&quot;&quot;</code> and <code>delay_ms=0</code> retries.</li>
+<li><strong>[Fact]</strong> The same worker had <code>config_retry_default=&quot;exponential&quot;</code> loaded.</li>
+<li><strong>[Fact]</strong> After the flag was turned off, the same job on the same worker, with no restart, retried at <code>delay_ms=1000</code> and succeeded.</li>
+<li><strong>[Inference]</strong> An empty string is treated as a valid policy instead of &quot;no policy&quot;. This fits the logs, but I have not read the code.</li>
+<li><strong>[Inference, weakest link]</strong> How fast retries turn into connection exhaustion and a worker that stalls with low CPU. See the unknowns in section 6.</li>
+</ul>
+<h2>4. Hypotheses and evidence</h2>
+<h3>H1: The flag-gated retry-policy path is the trigger (leading)</h3>
+<p>Supporting evidence:</p>
+<ul>
+<li>The logs show <code>policy=&quot;&quot;</code> and zero-delay retries while the flag was on. They show a 1000 ms delay and a success right after it was turned off.</li>
+<li>This is the strongest single piece of evidence. It is a before-and-after on one job and one worker, with no restart, and the flag change is the only change we know of. It is still not a controlled experiment: other things may have changed at 09:43.</li>
+<li>Rolling back the API release did not clear the backlog. The flag stayed on, which fits the cause being in behavior the flag controls, not only in API code.</li>
+<li>Restarting a worker with the flag still on helped only briefly. The pool stalled again after a job logged <code>policy=&quot;&quot;</code>.</li>
+<li>Recovery started within about 2 minutes of turning the flag off. About 19 minutes had passed since the rollback without recovery.</li>
+<li>Job 92 for tenant <code>beta</code> succeeded while job 81 for <code>acme</code> failed. This fits a problem that affects only some tenants, for example those without their own policy.</li>
+<li>The US had the flag on for only 2% of tenants and no alert fired. This is consistent with an effect that grows with exposure.</li>
+</ul>
+<p>Weakening evidence and caveats:</p>
+<ul>
+<li>The link from zero-delay retries to blocked, low-CPU workers is not shown. A tight retry loop would usually <em>raise</em> CPU, but CPU fell. Retries exhausting after about 40 ms do not by themselves explain workers staying stuck. Something else must be holding connections or blocking.</li>
+<li>Only 2 affected jobs appear in the logs. We do not know how common <code>policy=&quot;&quot;</code> was, or which tenants had it.</li>
+<li>The US evidence is confounded. It may have different traffic, capacity or tenants. The 2% cohort may not include any tenants with empty policies. No alert does not mean no impact.</li>
+<li>Other changes around 09:43 have not been ruled out: backlog load falling after the rollback, connections timing out, or other operator actions.</li>
+<li>We do not know whether workers were also running <code>2026.09.23.1</code>. The timeline says only &quot;deploy api&quot;.</li>
+</ul>
+<h3>H2: Non-flag code in API release <code>2026.09.23.1</code></h3>
+<ul>
+<li>For: the problem started 5 minutes after the deploy. The rollback normalized job creation, so the release did affect the API&#39;s job-intake side.</li>
+<li>Against: the backlog stayed stuck for 19 minutes after the rollback. Recovery followed the flag change, not the rollback.</li>
+<li>Assessment: probably contributed to the intake and API symptoms. Unlikely to be the main cause of the worker stall.</li>
+</ul>
+<h3>H3: A database problem unrelated to the change</h3>
+<ul>
+<li>For: the pool wait at 09:07:01, the connection limit reached at 09:20, and the API refused connections.</li>
+<li>Against: saturation started within seconds of the first <code>policy=&quot;&quot;</code> failure. It cleared after a flag change, with no database change. There was no evidence of a database fault.</li>
+<li>Assessment: most likely a <em>symptom and amplifier</em>, not the cause. Not fully ruled out, because we have no database-side metrics.</li>
+</ul>
+<h3>H4: The worker scale-up (40 to 90) caused the incident</h3>
+<ul>
+<li>Against: queue depth was already rising at 09:07, 7 minutes before the scale-up.</li>
+<li>For it as an amplifier: the queue grew faster after the scale-up, and connections hit their maximum 6 minutes later.</li>
+<li><strong>[Inference]</strong> <code>active=10 idle=0</code> suggests each worker&#39;s pool holds about 10 connections. If so, 90 workers could ask for up to about 900 connections. That is far above the limit of 300, which the API also shares. Even 40 workers (about 400) could exceed it.</li>
+<li>Assessment: this was a contributing factor that made things worse. It was not the root cause.</li>
+</ul>
+<h3>H5: Bad data for one tenant only (for example, <code>acme</code>)</h3>
+<ul>
+<li>A single bad tenant record is possible, but the flag-off recovery happened across the whole region. More likely, a tenant with no policy exposed the fallback bug in H1. Which tenants were involved is unknown.</li>
+</ul>
+<h2>5. Contributing factors</h2>
+<p>Each factor is labelled with how solid it is.</p>
+<ol>
+<li><strong>Missing fallback and validation (inference).</strong> An empty tenant policy was accepted instead of falling back to the default. There is also no minimum delay for retries.</li>
+<li><strong>Flag separate from the deploy (fact).</strong> Rolling back the release did not turn off the new behavior. This delayed mitigation by about 19 minutes, and about 32 minutes passed from the first alert to the flag change.</li>
+<li><strong>Scaling made it worse (fact plus inference).</strong> Adding workers added more connection pools against a database limit shared with the API. Nothing stopped workers × pool size from exceeding the database&#39;s maximum connections.</li>
+<li><strong>API and workers share one connection limit (fact plus inference).</strong> The worker backlog spread to checkout through connection starvation.</li>
+<li><strong>Detection was symptom-based (fact).</strong> Alerts fired on job age and latency. No alert covered retry-budget exhaustion, zero-delay retries or pool waits. In the US, no alert fired at all.</li>
+<li><strong>Rollout exposure (unknown).</strong> The flag was on for 2% of tenants in the US. The eu-west percentage is not recorded, and neither is whether the rollout had automatic safety checks.</li>
+</ol>
+<h2>6. What remains unknown</h2>
+<ul>
+<li>How an exhausted retry leaves a worker stuck with low CPU. Candidates: connections not returned to the pool on the exhaustion path, open transactions or row locks held, or contention on a shared job table. Recovery without a restart argues against a permanent connection leak, but does not rule out leaks that time out.</li>
+<li>Why the restarted pool worked for exactly about 4 minutes. This could be the time needed to fill a 10-connection pool, or the time until it picked up a job with <code>policy=&quot;&quot;</code>.</li>
+<li>Which tenants resolved to <code>policy=&quot;&quot;</code>, and the eu-west and US flag percentages.</li>
+<li>Whether workers run code from <code>2026.09.23.1</code>. If they do not, how the worker reads the tenant policy.</li>
+<li>Why the API rollback normalized job creation.</li>
+<li>What happens to jobs after <code>retry_budget_exhausted</code>, and whether any were lost, sent to a dead-letter queue or duplicated. This matters if checkout jobs are not idempotent.</li>
+<li>Why the attempt counter for job 319 reset to 1 after it had been exhausted.</li>
+<li>Database-side connection breakdown (by client and state) and US metrics for the same window.</li>
+<li>How many customers and requests were affected.</li>
+</ul>
+</div></div><div class="file" id="file-2-4" hidden><p class="path mono">opus-5.5/09-incident-analysis/TASK.md</p><div class="prose"><h1>Task 09 — Incident analysis</h1>
+<p>Analyze <code>TIMELINE.md</code> and <code>LOGS.txt</code>. Produce:</p>
+<ul>
+<li><code>INCIDENT.md</code>: impact, concise timeline, most likely root cause, contributing
+factors, evidence supporting or weakening each hypothesis, and what remains
+unknown.</li>
+<li><code>ACTIONS.md</code>: immediate containment plus prioritized corrective actions with
+owners expressed as roles, verification signals, and rollback considerations.</li>
+<li><code>CUSTOMER_UPDATE.md</code>: a plain-language update under 180 words. Do not claim
+certainty beyond the evidence or blame an individual.</li>
+</ul>
+<p>Separate observed facts from inference. Avoid treating correlation as proof.
+Write <code>RESPONSE.md</code> with your confidence level and the next two pieces of data
+you would request. Work only in this directory.</p>
+</div></div><div class="file" id="file-2-5" hidden><p class="path mono">opus-5.5/09-incident-analysis/TIMELINE.md</p><div class="prose"><h1>Queue incident timeline (UTC)</h1>
+<ul>
+<li>09:02 deploy api <code>2026.09.23.1</code>; change adds tenant-specific retry policy.</li>
+<li>09:07 queue depth begins rising in eu-west; worker CPU falls from 65% to 18%.</li>
+<li>09:11 alerts fire for job age and checkout latency.</li>
+<li>09:14 on-call increases workers from 40 to 90; queue depth rises faster.</li>
+<li>09:20 database connections reach configured maximum of 300.</li>
+<li>09:24 API deploy rolled back; new job creation normalizes, backlog still stuck.</li>
+<li>09:31 one worker pool restarted; it processes jobs normally for four minutes,
+then stalls.</li>
+<li>09:43 feature flag <code>tenant_retry_policy</code> disabled; recovery begins within two
+minutes.</li>
+<li>10:18 backlog cleared.</li>
+<li>US region uses the same release but had the flag enabled for only 2% of tenants;
+no alert fired there.</li>
+</ul>
+</div></div><div class="file" id="file-2-6" hidden><p class="path mono">opus-5.5/09-incident-analysis/LOGS.txt</p><pre><code>09:06:58 worker-17 INFO job=81 tenant=acme attempt=1 result=retry delay_ms=0
+09:06:58 worker-17 INFO job=81 tenant=acme attempt=2 result=retry delay_ms=0
+09:06:58 worker-17 INFO job=81 tenant=acme attempt=3 result=retry delay_ms=0
+09:06:58 worker-17 WARN job=81 retry_budget_exhausted policy=&quot;&quot; elapsed_ms=41
+09:07:01 worker-22 WARN db pool wait exceeded wait_ms=5000 active=10 idle=0
+09:07:03 worker-08 INFO job=92 tenant=beta attempt=1 result=success elapsed_ms=830
+09:19:52 api-03 ERROR db remaining connection slots reserved
+09:31:10 worker-51 INFO startup config_retry_default=&quot;exponential&quot; feature_flag=true
+09:35:12 worker-51 WARN job=319 retry_budget_exhausted policy=&quot;&quot; elapsed_ms=38
+09:43:07 worker-51 INFO config_changed feature_flag=false
+09:43:09 worker-51 INFO job=319 attempt=1 result=retry delay_ms=1000
+09:43:10 worker-51 INFO job=319 attempt=2 result=success elapsed_ms=190
+
+</code></pre></div></section></div><div role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">6 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
+        <p>Reaches the right leading hypothesis and has a reasonable hypothesis table, but it mixes inference into observed sections and makes several unsupported mechanistic claims. The claimed &#39;re-enters jobs in a tight loop / flooding the DB&#39; mechanism and the &#39;config caching&#39; explanation both go beyond what the logs show. The actions are adequate but thinner and less verifiable than the others, and the customer update blurs the sequence of events and adds details the evidence does not contain.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Correct leading hypothesis with a stated caveat that no code review was done</li><li>Raises the useful alternative that policy=&quot;&quot; might be a logging defect rather than a truly empty policy</li><li>Its unknowns section includes checking whether policy=&quot;&quot; also appears in healthy US traffic</li><li>Actions have role owners, verification signals and a rollback-order note</li></ul></div><div><h4>Weaknesses</h4><ul><li>The Impact (observed) section asserts that checkout latency degraded for customers whose jobs entered the queue, and that there were ~71 minutes of &#39;degraded checkout processing&#39;; neither is in the evidence</li><li>The root cause claims exhausted jobs &#39;re-enter in a tight loop&#39; and are &#39;flooding the DB pool&#39;; not shown, and in tension with the observed CPU drop</li><li>ACTIONS states &#39;config caching caused the 09:31 false recovery&#39;; unsupported, and the log (worker-51 picking up config_changed at 09:43:07 without a restart) points the other way</li><li>Contributing factor 5 treats &#39;broad exposure in eu-west&#39; as observed or strongly inferred, although the eu-west percentage is unknown</li><li>The customer update puts &#39;rolled back the release and turned off the related setting around 09:43&#39; in one sentence (the rollback was 09:24), invents &#39;order-processing jobs&#39;, and says US customers were &#39;largely unaffected&#39; without evidence</li><li>No action to investigate why an exhausted-retry path stalls workers</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Timeline and log timestamps are copied correctly (09:06:58, 09:07:01, 09:19:52, 09:35:12, 09:43:09-10)</li><li>Claims job 319&#39;s delay_ms=1000 is &#39;the configured default exponential&#39;; plausible but inferred, not stated in L11</li><li>Claim of per-worker flag caching is contradicted by L10 (live config_changed at 09:43:07)</li><li>Customer update is about 145 words</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>CUSTOMER_UPDATE.md ≈ 145 words (&lt; 180)</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="3-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="3-1" aria-selected="false">ACTIONS.md</button><button role="tab" data-file="3-2" aria-selected="false">CUSTOMER_UPDATE.md</button><button role="tab" data-file="3-3" aria-selected="false">INCIDENT.md</button><button role="tab" data-file="3-4" aria-selected="false">TASK.md</button><button role="tab" data-file="3-5" aria-selected="false">TIMELINE.md</button><button role="tab" data-file="3-6" aria-selected="false">LOGS.txt</button></div>
+        <div class="file" id="file-3-0" ><p class="path mono">mimo/09-incident-analysis/RESPONSE.md</p><div class="prose"><h1>RESPONSE.md — analyst confidence and next data requests</h1>
+<h2>Confidence level</h2>
+<p><strong>Moderate (about 70%)</strong> that the root cause is the <code>tenant_retry_policy</code> path resolving an empty policy and issuing zero-delay retries that exhaust the retry budget and stall workers.</p>
+<ul>
+<li>High confidence on the failure <em>mechanism</em> shown in logs (<code>delay_ms=0</code>, <code>policy=&quot;&quot;</code>, <code>retry_budget_exhausted</code> in ~40 ms) and on containment (flag off → recovery in ~2 min).</li>
+<li>Moderate confidence on <em>causation</em> that this path started the outage (deploy/flag timing, US control group with 2% exposure and no alerts).</li>
+<li>Low confidence on <em>why</em> policy resolution returned empty — that is the main gap between a plausible story and a proven root cause.</li>
+</ul>
+<p>Facts vs inference: timeline entries, log lines, CPU/connection numbers, and flag state are observed. &quot;Empty policy caused the retry loop&quot; and &quot;DB saturation was downstream&quot; are inferences from ordering and correlation, not proof.</p>
+<h2>Next two pieces of data I would request</h2>
+<ol>
+<li><strong>Retry-policy resolution traces/config for tenant=acme (and 2–3 healthy tenants) around 09:00–09:45</strong>, including the raw policy store entries and code path that sets <code>policy=&quot;&quot;</code>. This would confirm or refute H1 directly.</li>
+<li><strong>US region logs/metrics for the same window with the flag at 2% exposure</strong>, especially any <code>delay_ms=0</code> or <code>policy=&quot;&quot;</code> occurrences and DB pool waits. If US shows the same log pattern without impact, exposure-only correlation weakens; if US is clean, H1 and the exposure hypothesis both strengthen.</li>
+</ol>
+</div></div><div class="file" id="file-3-1" hidden><p class="path mono">mimo/09-incident-analysis/ACTIONS.md</p><div class="prose"><h1>Actions — queue incident 2026-09-23</h1>
+<h2>Immediate containment (done or do now)</h2>
+<ol>
+<li><strong>Keep <code>tenant_retry_policy</code> disabled</strong> globally until the empty-policy path is fixed. Owner: On-call SRE. Verify: no <code>retry_budget_exhausted policy=&quot;&quot;</code> log lines; queue age falling. Rollback: re-enable flag only behind a 1% canary.</li>
+<li><strong>Do not scale workers further</strong> while retry thrash is unresolved. Owner: On-call SRE. Verify: DB active connections &lt; 250. Rollback: N/A (safety hold).</li>
+<li><strong>Drain/inspect jobs that exhausted retry budget</strong> in 09:00–09:45 (e.g. job=81). Owner: Checkout Platform on-call. Verify: no silent drops; DLQ or retry status accounted for. Rollback: restore jobs from DLQ if dropped.</li>
+</ol>
+<h2>Prioritized corrective actions</h2>
+<h3>P0 — Fix empty-policy retry fallback</h3>
+<ul>
+<li>Add a hard default: when tenant policy resolves empty, use the global exponential backoff (<code>config_retry_default</code>), never <code>delay_ms=0</code>. Cap attempts and enforce minimum backoff &gt; 0. Owner: Checkout Platform (API/retry library). Verify: unit/integration test — empty policy ⇒ <code>delay_ms&gt;=1000</code> exponential; staging log shows <code>policy</code> never empty in the retry path. Rollback: revert library version behind a config flag; default stays safe.</li>
+</ul>
+<h3>P0 — Fail loudly on policy resolution failure</h3>
+<ul>
+<li>Emit ERROR + metric (<code>retry_policy_resolution_failure</code>) on empty resolution; alert on rate &gt; 0. Owner: Checkout Platform + Observability. Verify: synthetic misconfigured tenant produces ERROR and alert within 5 min. Rollback: revert alert rule (keep log).</li>
+</ul>
+<h3>P1 — Guard retry load before it reaches the DB</h3>
+<ul>
+<li>Per-tenant and per-worker retry rate limit / circuit breaker; shed or defer retries under DB pool pressure (pause retries when pool wait &gt; threshold). Owner: Checkout Platform. Verify: load test — retry storm holds DB connections &lt; 200 and queue age stable. Rollback: disable limiter via flag <code>retry_guard</code>.</li>
+</ul>
+<h3>P1 — DB connection budget and scale-out safety</h3>
+<ul>
+<li>Reserve connection slots for non-retry paths (e.g. checkout writes); alert at 80% of 300; require DB headroom check before worker scale-out runbooks. Owner: DBA / SRE. Verify: alert fires in staging at 240 conns; scale-out runbook includes check. Rollback: restore previous pool limits.</li>
+</ul>
+<h3>P1 — Canary and flag exposure limits</h3>
+<ul>
+<li>Require canary (≤2% tenants) for flag-gated policy changes before regional rollout; EU/US parity checks. Owner: Release Engineering. Verify: release checklist blocks full rollout without canary metrics; US-style low exposure can be reproduced in EU. Rollback: flag dial-down is the rollback path (already used).</li>
+</ul>
+<h3>P2 — Rollback runbook: flags ride with deploys</h3>
+<ul>
+<li>Bundled rollback must disable related feature flags and restart worker pools that cached flag/config (see 09:31 stall). Owner: SRE / Platform. Verify: game-day — rollback clears backlog signals within 10 min. Rollback: restore previous runbook.</li>
+</ul>
+<h3>P2 — Retry observability</h3>
+<ul>
+<li>Per-attempt metrics (delay, policy name, budget remaining) and dashboard panels for <code>delay_ms=0</code> rate. Owner: Observability. Verify: dashboard shows the 09:06 pattern within 30 s of onset in replay test. Rollback: keep logs; remove dashboard.</li>
+</ul>
+<h2>Verification signals (summary)</h2>
+<ul>
+<li>No <code>retry_budget_exhausted policy=&quot;&quot;</code> lines.</li>
+<li>Worker CPU in normal band while queue drains (not collapsed to &lt;20%).</li>
+<li>DB connections stable below 250 under peak.</li>
+<li>Queue age and checkout latency SLOs recovered and hold for 30 min after any flag change.</li>
+<li><code>retry_policy_resolution_failure</code> metric rate is zero.</li>
+</ul>
+<h2>Rollback considerations</h2>
+<ul>
+<li>Every fix above ships behind a flag or is version-revertible; P0 fallback default must be safe when the flag is off.</li>
+<li>Never roll back code without also flipping the associated feature flags and restarting worker pools (config caching caused the 09:31 false recovery).</li>
+<li>Roll back in this order: disable flag → revert code → scale workers back to baseline only after DB headroom is confirmed.</li>
+</ul>
+</div></div><div class="file" id="file-3-2" hidden><p class="path mono">mimo/09-incident-analysis/CUSTOMER_UPDATE.md</p><div class="prose"><h1>Customer update — September 23 checkout delays</h1>
+<p>Between roughly 09:07 and 10:18 UTC on September 23, some checkout and order-processing jobs in our EU region were delayed. A system that controls how failed jobs are retried appears to have been retrying them too quickly after a change we released that morning, which backed up our job queue and database connections. We rolled back the release and turned off the related setting around 09:43 UTC; processing recovered within minutes and the backlog cleared by 10:18 UTC.</p>
+<p>We are still confirming details, including exactly which accounts saw delays and whether any orders need to be reprocessed. Our US customers were largely unaffected.</p>
+<p>We are adding safeguards so retries slow down automatically if this kind of fault happens again, and we will notify you directly if we find that any of your orders need action on your side. We are sorry for the disruption.</p>
+</div></div><div class="file" id="file-3-3" hidden><p class="path mono">mimo/09-incident-analysis/INCIDENT.md</p><div class="prose"><h1>Incident analysis — queue backlog, eu-west, 2026-09-23</h1>
+<h2>Impact (observed)</h2>
+<ul>
+<li>Queue depth rose in eu-west starting 09:07 UTC; job-age and checkout-latency alerts fired at 09:11.</li>
+<li>Checkout latency degraded for customers whose jobs entered the queue during the window.</li>
+<li>Database reached its configured maximum of 300 connections at 09:20 (API error: <code>db remaining connection slots reserved</code>).</li>
+<li>Backlog did not clear until 10:18 UTC. Approximate customer-facing duration: ~71 minutes of degraded checkout processing (09:07–10:18), worst between 09:11 and 09:45.</li>
+<li>US region: same release, <code>tenant_retry_policy</code> enabled for only 2% of tenants; no alert fired (no observed impact there).</li>
+</ul>
+<h2>Concise timeline (observed, UTC)</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:02</td>
+<td>Deploy api <code>2026.09.23.1</code> (adds tenant-specific retry policy)</td>
+</tr>
+<tr>
+<td>09:06:58</td>
+<td>Logs: job=81 (tenant=acme) retried 3× with <code>delay_ms=0</code>; <code>retry_budget_exhausted policy=&quot;&quot;</code> in 41 ms</td>
+</tr>
+<tr>
+<td>09:07</td>
+<td>Queue depth rises in eu-west; worker CPU falls 65% → 18%</td>
+</tr>
+<tr>
+<td>09:07:01</td>
+<td>Logs: worker-22 DB pool wait &gt;5 s (<code>active=10 idle=0</code>)</td>
+</tr>
+<tr>
+<td>09:11</td>
+<td>Job-age and checkout-latency alerts fire</td>
+</tr>
+<tr>
+<td>09:14</td>
+<td>Workers scaled 40 → 90; queue depth then rises faster</td>
+</tr>
+<tr>
+<td>09:19:52</td>
+<td>Logs: api-03 DB connection slots exhausted</td>
+</tr>
+<tr>
+<td>09:20</td>
+<td>DB connections at max (300)</td>
+</tr>
+<tr>
+<td>09:24</td>
+<td>API deploy rolled back; new job creation normalizes; backlog remains stuck</td>
+</tr>
+<tr>
+<td>09:31</td>
+<td>One worker pool restarted; processes normally ~4 min, then stalls</td>
+</tr>
+<tr>
+<td>09:35:12</td>
+<td>Logs: worker-51 (started with <code>feature_flag=true</code>) hits <code>retry_budget_exhausted policy=&quot;&quot;</code></td>
+</tr>
+<tr>
+<td>09:43</td>
+<td>Feature flag <code>tenant_retry_policy</code> disabled; recovery begins within ~2 min</td>
+</tr>
+<tr>
+<td>09:43:09–10</td>
+<td>Logs: job=319 retries with <code>delay_ms=1000</code>, then succeeds</td>
+</tr>
+<tr>
+<td>10:18</td>
+<td>Backlog cleared</td>
+</tr>
+</tbody></table>
+<h2>Most likely root cause (inference)</h2>
+<p>The tenant-specific retry policy path behind <code>tenant_retry_policy</code> fails to resolve a policy for some tenants and falls back to <strong>zero-delay retries with an empty policy</strong> (<code>policy=&quot;&quot;</code>, <code>delay_ms=0</code>). This burns the retry budget in tens of milliseconds and re-enters jobs in a tight loop, stalling workers (CPU drops) while flooding the DB pool — which then exhausts the 300-connection ceiling and blocks checkout processing.</p>
+<p>This is an inference from the correlation of deploy/flag state with symptoms plus the direct log evidence of the zero-delay retry pattern; it is not proven by a root-cause code review.</p>
+<h2>Hypotheses and evidence</h2>
+<h3>H1: Tenant retry policy resolves empty → zero-delay retry loop (most likely)</h3>
+<p>Supporting (observed):</p>
+<ul>
+<li>Deploy 09:02 introduced the policy; symptoms begin 09:07.</li>
+<li>Logs show attempts with <code>delay_ms=0</code> and <code>retry_budget_exhausted policy=&quot;&quot;</code> within ~40 ms.</li>
+<li>After the flag is off, the same job type retries with <code>delay_ms=1000</code> (the configured default <code>exponential</code>) and succeeds.</li>
+<li>Flag off at 09:43 → recovery within 2 minutes.</li>
+<li>US: same binary, flag at 2% exposure → no alert (exposure tracks with impact).</li>
+<li>Worker CPU <em>fell</em> while queue grew — consistent with workers blocked in rapid retry/DB-wait loops, not doing useful work.</li>
+</ul>
+<p>Weakening:</p>
+<ul>
+<li>We have not seen the policy-resolution code path; <code>policy=&quot;&quot;</code> could be a logging defect rather than an empty policy.</li>
+<li>EU exposure percentage is not stated (inferred from US being 2% and unaffected).</li>
+<li>No direct proof that zero-delay retries (vs. another flag-gated behavior) caused the stall.</li>
+</ul>
+<h3>H2: Worker capacity shortage</h3>
+<p>Supporting:</p>
+<ul>
+<li>Queue depth grew, and scale-up was attempted.
+Weakening (stronger):</li>
+<li>Scaling 40→90 made queue depth rise <em>faster</em> and coincided with DB exhaustion — more workers amplified load rather than draining it.</li>
+<li>Worker CPU dropped to 18%; workers were not CPU-bound.</li>
+</ul>
+<h3>H3: Database as root cause</h3>
+<p>Supporting:</p>
+<ul>
+<li>DB hit max connections at 09:20; API errors show slot exhaustion.
+Weakening (stronger):</li>
+<li>DB pool waits appear at 09:07:01, <em>before</em> the 09:20 ceiling and concurrent with the first retry-loop logs — DB saturation is a downstream consequence of retry thrash plus scale-out, not the first symptom.</li>
+</ul>
+<h3>H4: API deploy binary alone is broken</h3>
+<p>Supporting:</p>
+<ul>
+<li>Rollback at 09:24 normalized new job creation.
+Weakening:</li>
+<li>After rollback the backlog stayed stuck, and a worker pool restarted at 09:31 with <code>feature_flag=true</code> stalled again at 09:35 — the flag-gated path kept failing independently of the API deploy.</li>
+<li>US ran the same release with low flag exposure and stayed healthy.</li>
+</ul>
+<h2>Contributing factors (observed or strongly inferred)</h2>
+<ol>
+<li>No backoff when policy is empty (<code>delay_ms=0</code>); retry budget exhausted in ~40 ms.</li>
+<li>Silent policy-resolution failure (<code>policy=&quot;&quot;</code>) with only a WARN.</li>
+<li>Scale-out at 09:14 increased concurrent DB demand and retry traffic during the fault.</li>
+<li>DB connection ceiling (300) turned worker/API stalls into a broader outage.</li>
+<li>Broad <code>tenant_retry_policy</code> exposure in eu-west (vs 2% in US) concentrated impact.</li>
+<li>Deploy rollback alone did not disable the flag, prolonging the stuck backlog.</li>
+</ol>
+<h2>What remains unknown</h2>
+<ul>
+<li>Why policy resolution produced <code>policy=&quot;&quot;</code> for tenant=acme (missing override, bug, or fallback design).</li>
+<li>Exact EU flag exposure percentage at 09:02–09:43.</li>
+<li>Whether exhausted-budget jobs were dropped, dead-lettered, or re-queued (job=81 fate unknown).</li>
+<li>Why the 09:31 worker pool worked ~4 minutes before stalling (trigger for the 09:35 failure).</li>
+<li>Why rollback at 09:24 did not clear the backlog (stuck jobs, workers still on new code, or requeue loops).</li>
+<li>Whether impact extended beyond checkout (other job types) or beyond eu-west at low level.</li>
+<li>Whether <code>policy=&quot;&quot;</code> is also present in healthy US traffic (would weaken H1).</li>
+</ul>
+</div></div><div class="file" id="file-3-4" hidden><p class="path mono">mimo/09-incident-analysis/TASK.md</p><div class="prose"><h1>Task 09 — Incident analysis</h1>
+<p>Analyze <code>TIMELINE.md</code> and <code>LOGS.txt</code>. Produce:</p>
+<ul>
+<li><code>INCIDENT.md</code>: impact, concise timeline, most likely root cause, contributing
+factors, evidence supporting or weakening each hypothesis, and what remains
+unknown.</li>
+<li><code>ACTIONS.md</code>: immediate containment plus prioritized corrective actions with
+owners expressed as roles, verification signals, and rollback considerations.</li>
+<li><code>CUSTOMER_UPDATE.md</code>: a plain-language update under 180 words. Do not claim
+certainty beyond the evidence or blame an individual.</li>
+</ul>
+<p>Separate observed facts from inference. Avoid treating correlation as proof.
+Write <code>RESPONSE.md</code> with your confidence level and the next two pieces of data
+you would request. Work only in this directory.</p>
+</div></div><div class="file" id="file-3-5" hidden><p class="path mono">mimo/09-incident-analysis/TIMELINE.md</p><div class="prose"><h1>Queue incident timeline (UTC)</h1>
+<ul>
+<li>09:02 deploy api <code>2026.09.23.1</code>; change adds tenant-specific retry policy.</li>
+<li>09:07 queue depth begins rising in eu-west; worker CPU falls from 65% to 18%.</li>
+<li>09:11 alerts fire for job age and checkout latency.</li>
+<li>09:14 on-call increases workers from 40 to 90; queue depth rises faster.</li>
+<li>09:20 database connections reach configured maximum of 300.</li>
+<li>09:24 API deploy rolled back; new job creation normalizes, backlog still stuck.</li>
+<li>09:31 one worker pool restarted; it processes jobs normally for four minutes,
+then stalls.</li>
+<li>09:43 feature flag <code>tenant_retry_policy</code> disabled; recovery begins within two
+minutes.</li>
+<li>10:18 backlog cleared.</li>
+<li>US region uses the same release but had the flag enabled for only 2% of tenants;
+no alert fired there.</li>
+</ul>
+</div></div><div class="file" id="file-3-6" hidden><p class="path mono">mimo/09-incident-analysis/LOGS.txt</p><pre><code>09:06:58 worker-17 INFO job=81 tenant=acme attempt=1 result=retry delay_ms=0
+09:06:58 worker-17 INFO job=81 tenant=acme attempt=2 result=retry delay_ms=0
+09:06:58 worker-17 INFO job=81 tenant=acme attempt=3 result=retry delay_ms=0
+09:06:58 worker-17 WARN job=81 retry_budget_exhausted policy=&quot;&quot; elapsed_ms=41
+09:07:01 worker-22 WARN db pool wait exceeded wait_ms=5000 active=10 idle=0
+09:07:03 worker-08 INFO job=92 tenant=beta attempt=1 result=success elapsed_ms=830
+09:19:52 api-03 ERROR db remaining connection slots reserved
+09:31:10 worker-51 INFO startup config_retry_default=&quot;exponential&quot; feature_flag=true
+09:35:12 worker-51 WARN job=319 retry_budget_exhausted policy=&quot;&quot; elapsed_ms=38
+09:43:07 worker-51 INFO config_changed feature_flag=false
+09:43:09 worker-51 INFO job=319 attempt=1 result=retry delay_ms=1000
+09:43:10 worker-51 INFO job=319 attempt=2 result=success elapsed_ms=190
+
+</code></pre></div></section></div></section></main><script src="../app.js"></script></body></html>
