@@ -57,14 +57,14 @@ function page(titleText, body, depth) {
 
 // ---------- index ----------
 function indexPage() {
-  const ranked = MODELS.map(m => ({ m, ...totals(m) })).sort((a, b) => (b.sum - a.sum));
+  const ranked = MODELS.map(m => ({ m, ...totals(m) })).sort((a, b) => ((b.avg ?? -1) - (a.avg ?? -1)));
   const cards = ranked.map(({ m, sum, n, avg, groups }, i) => {
     const r = runs[m] || {};
     return `<article class="card model">
-      <div class="rank">${n ? (() => { const r = 1 + ranked.filter(x => x.sum > sum).length; return ranked.filter(x => x.sum === sum).length > 1 ? r + '=' : r; })() : '–'}</div>
+      <div class="rank">${n ? (() => { const r = 1 + ranked.filter(x => x.avg > avg).length; return ranked.filter(x => x.avg === avg).length > 1 ? r + '=' : r; })() : '–'}</div>
       <h3>${esc(label(m))}</h3><p class="muted mono">${esc(r.model || '')}</p>
-      <p class="big">${n ? fmt(sum) : '–'}<span class="muted"> / ${n * 10}</span></p>
-      <p class="muted">average ${avg == null ? '–' : avg.toFixed(2)} per task</p>
+      <p class="big">${avg == null ? '–' : avg.toFixed(2)}<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total ${n ? fmt(sum) : '–'} of ${n * 10} (${n} tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>${esc(r.effort || '–')}</dd>
         <dt>Time</dt><dd>${esc(r.duration || 'not recorded')}</dd>
@@ -88,15 +88,15 @@ function indexPage() {
   const groupRows = GROUPS.map(([name]) => `<tr class="sub"><th scope="row">${name} average</th>${ranked.map(({ groups }) => {
     const g = groups.find(x => x.name === name); return `<td class="num heat"${heat(g.avg)}>${g.avg == null ? '–' : g.avg.toFixed(2)}</td>`;
   }).join('')}</tr>`).join('');
-  const totalRow = `<tr class="total"><th scope="row">Total</th>${ranked.map(({ sum, n }) => `<td class="num">${n ? fmt(sum) : '–'}</td>`).join('')}</tr>`;
+  const totalRow = `<tr class="total"><th scope="row">Average per task</th>${ranked.map(({ avg }) => `<td class="num">${avg == null ? '–' : avg.toFixed(2)}</td>`).join('')}</tr><tr class="sub"><th scope="row">Total (tasks graded)</th>${ranked.map(({ sum, n }) => `<td class="num">${n ? fmt(sum) : '–'} (${n})</td>`).join('')}</tr>`;
 
   const graded = Object.keys(scores.tasks).length;
   const method = `<section class="card prose"><h2>How this was scored</h2>
     <ul>
       <li><strong>Objective checks first.</strong> A hidden 11-test contract suite for tasks 01–02; each model's own tests; each model's tests run against every other model's code and against the original files; word, character and hashtag limits; and for tasks 11–13, a headless browser at 1440 px and 390 px checking horizontal scroll, console errors and network requests.</li>
-      <li><strong>Blind grading.</strong> For each task, one grader saw all submissions under random letters (a different mapping per task), with model names and paths removed. Scores come from the latest pass, which graded every model shown together; earlier passes (<code>scores-4way.json</code>, <code>scores-5way.json</code>) are kept as a repeatability check. It scored against <code>RUBRIC.md</code>, checking claims itself: rerunning tests, probing the code, counting limits, and clicking through the pages with Playwright.</li>
+      <li><strong>Blind grading.</strong> For each task, one grader saw all submissions under random letters (a different mapping per task), with model names and paths removed. Scores come from the latest pass, which graded every model shown together; earlier passes (<code>scores-4way.json</code>, <code>scores-5way.json</code>, <code>scores-6way.json</code>) are kept as a repeatability check. Models are ranked by average per task, since Grok 4.7 has 12 graded tasks. It scored against <code>RUBRIC.md</code>, checking claims itself: rerunning tests, probing the code, counting limits, and clicking through the pages with Playwright.</li>
       <li><strong>Who graded.</strong> The graders were Claude Opus 5.5 subagents. Opus 5.5 is also one of the models graded; blinding reduces but does not remove that bias.</li>
-      <li><strong>Not like-for-like.</strong> Sonnet 5.5 and Fable 5.1 ran on extra effort, Opus 5.5 on high, GPT-6 Luna and muse on max, mimo on its default. GPT-6 Luna ran in Codex CLI and muse through tincan on this Mac; their cost can't be measured in dollars, so token usage is shown instead. Scores are comparative within each task and anchored to the brief.</li>
+      <li><strong>Not like-for-like.</strong> Sonnet 5.5 and Fable 5.1 ran on extra effort, Opus 5.5 on high, GPT-6 Astra, GPT-6.1 Sol and Grok 4.7 on xhigh, GPT-6 Luna and muse on max, mimo on its default. The GPT models ran in Codex CLI, Grok in Grok CLI and muse through tincan on this Mac; where cost can't be measured in dollars, token usage is shown instead. Scores are comparative within each task and anchored to the brief.</li>
     </ul><p class="muted">${graded} of ${TASKS.length} tasks graded.</p></section>`;
 
   const body = `<section class="hero"><h1>Thirteen tasks, ${MODELS.length} models</h1>

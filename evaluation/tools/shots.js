@@ -17,6 +17,7 @@ const server = http.createServer((req, res) => {
   const browser = await chromium.launch();
   const results = {};
   for (const m of MODELS) for (const t of TASKS) {
+    if (!fs.existsSync(path.join(ROOT, m, t, 'index.html'))) continue;
     const key = `${m}/${t}`, r = results[key] = {};
     for (const [label, vp] of [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]) {
       const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: 1, isMobile: label === 'mobile', hasTouch: label === 'mobile' });

@@ -13,6 +13,7 @@ for task, impl in TASKS.items():
         tests = [p for p in (ROOT / tester / task).glob("test*.py")]
         out[task][tester] = {}
         for who, src in impls.items():
+            if not src.exists(): continue
             with tempfile.TemporaryDirectory() as tmp:
                 shutil.copy(src, Path(tmp) / impl)
                 for t in tests: shutil.copy(t, tmp)

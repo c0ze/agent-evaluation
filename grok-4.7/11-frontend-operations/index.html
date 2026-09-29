@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Relay — Degraded · 1 critical</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to workspace</a>
+  <div class="shell">
+    <nav class="rail" aria-label="Primary">
+      <a class="brand" href="#overview">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        <span class="brand-text">
+          <h1>Relay</h1>
+          <p>Operations</p>
+        </span>
+      </a>
+      <ul class="rail-nav">
+        <li><a href="#overview" aria-current="location">Board</a></li>
+        <li><a href="#throughput">Throughput</a></li>
+        <li>
+          <a href="#incidents">
+            <span>Incidents</span>
+            <span class="count" id="open-count">4</span>
+            <span class="sr-only"> active</span>
+          </a>
+        </li>
+      </ul>
+      <div class="rail-foot">
+        <span>Shift B</span>
+        <span>Desk 4</span>
+      </div>
+    </nav>
+
+    <div class="column">
+      <header class="topbar">
+        <div class="top-env">
+          <p class="env-name">Production</p>
+          <p class="env-meta">eu-central-1</p>
+        </div>
+        <p id="health" class="health health-bad">
+          <span class="pip" aria-hidden="true"></span>
+          <span id="health-label" class="health-label">Degraded</span>
+          <span id="health-detail" class="health-detail">1 critical active</span>
+        </p>
+        <div class="top-clock">
+          <time id="clock">
+            <span id="clock-time">--:--:--</span>
+            <span id="clock-date">UTC</span>
+          </time>
+        </div>
+      </header>
+
+      <main id="workspace" tabindex="-1">
+        <noscript>
+          <p class="noscript">JavaScript is required to show the shift snapshot.</p>
+        </noscript>
+
+        <section id="overview" aria-labelledby="metrics-heading">
+          <div class="section-head">
+            <h2 id="metrics-heading">Shift summary</h2>
+            <p>From the current shift snapshot</p>
+          </div>
+          <div class="metrics" id="metrics"></div>
+        </section>
+
+        <section id="throughput" aria-labelledby="tp-heading">
+          <div class="section-head">
+            <h2 id="tp-heading">Throughput</h2>
+            <p id="scale-note">Hourly index, 00:00–23:00</p>
+          </div>
+          <figure class="panel chart-panel">
+            <figcaption class="sr-only" id="chart-caption">
+              Hourly throughput index from 00:00 to 23:00. Scale starts at 0.
+              The bars are a toolbar: use the left and right arrow keys to move between hours.
+            </figcaption>
+            <div class="chart-layout" id="chart">
+              <div class="y-axis" id="y-axis" aria-hidden="true"></div>
+              <div class="plot">
+                <div class="gridlines" id="gridlines" aria-hidden="true"></div>
+                <div class="bars" id="bars" role="toolbar" aria-label="Hourly throughput index" aria-describedby="chart-caption"></div>
+                <div class="x-axis" id="x-axis" aria-hidden="true"></div>
+              </div>
+            </div>
+            <p class="readout" id="readout">
+              <span id="readout-hour">--:--</span>
+              <span class="readout-k">Index</span>
+              <span id="readout-value" class="num">--</span>
+              <span id="readout-note"></span>
+              <span class="quiet readout-hint">Arrows move hours</span>
+            </p>
+            <div class="chart-stats" id="chart-stats"></div>
+          </figure>
+        </section>
+
+        <section id="incidents" aria-labelledby="inc-heading">
+          <div class="section-head">
+            <h2 id="inc-heading">Incidents</h2>
+            <p>Snapshot queue for this shift</p>
+          </div>
+          <div class="split">
+            <div class="panel table-panel">
+              <form id="filters" class="filters" role="search" aria-label="Filter incidents" aria-controls="incident-rows">
+                <label class="field search">
+                  <span>Search</span>
+                  <input id="q" name="q" type="search" placeholder="ID, title, service, owner" autocomplete="off" spellcheck="false">
+                </label>
+                <label class="field sev-field">
+                  <span>Severity</span>
+                  <select id="severity" name="severity">
+                    <option value="all">All</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </label>
+                <label class="field svc-field">
+                  <span>Service</span>
+                  <select id="service" name="service">
+                    <option value="all">All</option>
+                  </select>
+                </label>
+                <label class="field status-field">
+                  <span>Status</span>
+                  <select id="status" name="status">
+                    <option value="all">All</option>
+                    <option value="open">Open</option>
+                    <option value="investigating">Investigating</option>
+                    <option value="monitoring">Monitoring</option>
+                    <option value="acknowledged">Acknowledged</option>
+                  </select>
+                </label>
+                <label class="field sort-label">
+                  <span>Sort</span>
+                  <select id="sort" name="sort">
+                    <option value="severity:asc">Severity, critical first</option>
+                    <option value="severity:desc">Severity, low first</option>
+                    <option value="age:asc">Age, shortest first</option>
+                    <option value="age:desc">Age, longest first</option>
+                    <option value="id:asc">ID, ascending</option>
+                    <option value="id:desc">ID, descending</option>
+                    <option value="title:asc">Title A–Z</option>
+                    <option value="title:desc">Title Z–A</option>
+                    <option value="service:asc">Service A–Z</option>
+                    <option value="service:desc">Service Z–A</option>
+                    <option value="owner:asc">Owner A–Z</option>
+                    <option value="owner:desc">Owner Z–A</option>
+                    <option value="status:asc">Status, open first</option>
+                    <option value="status:desc">Status, acknowledged first</option>
+                  </select>
+                </label>
+                <button type="button" id="reset-filters" class="btn reset" disabled>Reset filters</button>
+              </form>
+              <div class="table-meta">
+                <p id="result-count" aria-live="polite" aria-atomic="true">Showing 4 of 4 incidents</p>
+                <p id="snapshot-note" class="footnote">Ages are from the shift snapshot and do not tick.</p>
+              </div>
+              <table class="incidents" id="incident-table" aria-describedby="result-count snapshot-note">
+                <caption class="sr-only">Incidents. Select a row for details. Up and down arrow keys move between visible rows.</caption>
+                <colgroup>
+                  <col class="c-sev">
+                  <col class="c-id">
+                  <col class="c-title">
+                  <col class="c-service">
+                  <col class="c-age">
+                  <col class="c-owner">
+                  <col class="c-status">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col" data-sort="severity" aria-sort="ascending">
+                      <button type="button" data-sort="severity">Severity <span class="dir" aria-hidden="true">↑</span></button>
+                    </th>
+                    <th scope="col" data-sort="id">
+                      <button type="button" data-sort="id">ID <span class="dir" aria-hidden="true"></span></button>
+                    </th>
+                    <th scope="col" data-sort="title">
+                      <button type="button" data-sort="title">Title <span class="dir" aria-hidden="true"></span></button>
+                    </th>
+                    <th scope="col" data-sort="service">
+                      <button type="button" data-sort="service">Service <span class="dir" aria-hidden="true"></span></button>
+                    </th>
+                    <th scope="col" class="num" data-sort="age">
+                      <button type="button" data-sort="age">Age <span class="dir" aria-hidden="true"></span></button>
+                    </th>
+                    <th scope="col" data-sort="owner">
+                      <button type="button" data-sort="owner">Owner <span class="dir" aria-hidden="true"></span></button>
+                    </th>
+                    <th scope="col" data-sort="status">
+                      <button type="button" data-sort="status">Status <span class="dir" aria-hidden="true"></span></button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="incident-rows">
+                  <tr>
+                    <td class="empty-cell" colspan="7">Loading snapshot…</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <aside id="detail" class="panel detail" aria-labelledby="detail-heading">
+              <p class="kicker">Incident</p>
+              <h3 id="detail-heading">Loading snapshot…</h3>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <script src="app.js"></script>
+</body>
+</html>

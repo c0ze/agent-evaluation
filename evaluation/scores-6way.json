@@ -1,0 +1,2481 @@
+{
+ "tasks": {
+  "01-feature-building": {
+   "rubric": {
+    "contract correctness": 6,
+    "implementation quality": 2,
+    "tests and verification": 2
+   },
+   "models": {
+    "muse": {
+     "criteria": {
+      "contract correctness": 5.75,
+      "implementation quality": 1.25,
+      "tests and verification": 1.25
+     },
+     "total": 8.25,
+     "summary": "Correct Kahn scheduler with thorough validation; matches a brute-force reference on 4,000 random graphs and never hits recursion limits. Ready-job selection is max() plus list.remove over a plain list, so it is quadratic: 20k independent jobs take about 15 s. The cycle message lists every blocked job, including downstream ones, not the cycle itself. The 23 tests are reasonable but miss several tie-break mutants.",
+     "strengths": [
+      "0 mismatches vs brute-force reference on 4,000 random DAG/cyclic inputs",
+      "Validates ids, dependency entries, None/bare-string depends_on and non-Job items with ScheduleError",
+      "Iterative, so 5,000-node cycles and chains raise ScheduleError cleanly"
+     ],
+     "weaknesses": [
+      "O(n^2) ready selection: 5k/10k/20k independent jobs took 0.89/3.66/14.97 s (others about 0.02 s)",
+      "Cycle diagnostic ('involving: ...') lists all blocked jobs, including downstream ones, with no cycle path",
+      "Tests do not catch tie-by-readiness-time, lexicographic tie-break, sort-once, recursion or mutate-on-error mutants"
+     ],
+     "evidence": [
+      "fuzz.py: 4000 cases, A mismatches 0",
+      "probe.py: '20k independent OK 15.18s', '20k randdag OK 1.78s'",
+      "probe: 2-cycle + downstream -> \"dependency cycle detected involving: 'a', 'b', 'c', 'd'\"",
+      "Mutation harness (27 wrapper mutants around own impl): 21 killed; survived fifo, lex_tie, sort_once, cycle_recursion, cycle_msg_all_jobs, mutate_deps_on_error",
+      "Own suite: Ran 23 tests OK, matching RESPONSE.md"
+     ],
+     "letter": "A"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "contract correctness": 5.5,
+      "implementation quality": 1.5,
+      "tests and verification": 1.0
+     },
+     "total": 8.0,
+     "summary": "Clean heap-based Kahn implementation that matches the reference on all random graphs and is fast at 20k jobs. The cycle diagnostic only lists every blocked job, with no cycle path. A bare-string depends_on is silently iterated character by character. The suite is small (12 tests) and tied to exact message wording, and it has no duplicate-dependency, generator or priority-inheritance coverage.",
+     "strengths": [
+      "0 mismatches vs reference; 20k jobs in about 0.02-0.04 s",
+      "Validates ids, dependency entries and non-Job items; handles duplicate deps by counting consistently",
+      "Recursion-free; large cycles raise ScheduleError"
+     ],
+     "weaknesses": [
+      "depends_on='a' accepted and iterated per character (probe returned ['a','b'])",
+      "Cycle message 'jobs still blocked: a, b, c, d' includes downstream jobs and gives no cycle path",
+      "Only 12 tests; tests assert exact wording ('Duplicate job ID:', 'non-empty strings'), which makes them brittle across implementations"
+     ],
+     "evidence": [
+      "fuzz.py: B mismatches 0; probe: 20k randdag 0.04s",
+      "probe 'barestr deps' -> ('OK', ['a','b'])",
+      "Mutation harness: 20/27 killed; survived inherit, dup_dep_counts, gen_twice, cycle_recursion, cycle_msg_all_jobs, mutate_deps_on_error, mutate_job_priority",
+      "Cross-tests: B's suite fails on every other impl only through regex wording (e.g. 'unknown job 'missing'' vs F's 'unknown job: 'missing''), not through real contract bugs"
+     ],
+     "letter": "B"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "contract correctness": 6.0,
+      "implementation quality": 2.0,
+      "tests and verification": 1.75
+     },
+     "total": 9.75,
+     "summary": "Fully correct: heap-based Kahn, full validation, and an iterative cycle walk that reports one concrete cycle path plus a count of blocked jobs. It is fast at 20k jobs, and a 5,000-node cycle gives a clean ScheduleError. The 43-test suite is strong and killed 26 of 27 mutants, but it has no case where a later-ready, earlier-listed job wins a tie, so it misses a readiness-time tie-break bug.",
+     "strengths": [
+      "0 mismatches vs reference; 20k jobs about 0.02-0.04 s",
+      "Cycle message \"'a' -> 'b' -> 'a' (2 more job(s) are blocked behind it)\" is precise and excludes innocent jobs",
+      "Tests cover 5,000-node cycle and chain, mutation on the error path, bare-string deps, disconnected components"
+     ],
+     "weaknesses": [
+      "Tests miss the 'tie by readiness time instead of input order' mutant",
+      "Some tests (repr-quoted cycle path, float priorities, priority validation) are stricter than the contract",
+      "Fuzzing claim concerns a script kept outside the deliverable (disclosed honestly)"
+     ],
+     "evidence": [
+      "fuzz.py: C mismatches 0; probe 'bigcycle5000 SE'",
+      "probe 'cycle+5000chain' -> \"'x' -> 'y' -> 'x' (5000 more job(s) are blocked behind it)\"",
+      "Mutation harness: 26/27 killed (survivor: fifo)",
+      "Own suite: Ran 43 tests OK, matching RESPONSE.md"
+     ],
+     "letter": "C"
+    },
+    "mimo": {
+     "criteria": {
+      "contract correctness": 4.5,
+      "implementation quality": 1.0,
+      "tests and verification": 0.75
+     },
+     "total": 6.25,
+     "summary": "Scheduling itself is correct and fast. The cycle diagnostic uses a recursive DFS, so cycles of 1,000+ jobs, or a long blocked chain in front of a small cycle, raise RecursionError instead of ScheduleError, which breaks the cycle clause of the contract. Validation gaps let raw TypeError or AttributeError escape for None or unhashable dependencies and non-Job items. The tests are the weakest here, and RESPONSE.md misstates the cycle message format.",
+     "strengths": [
+      "0 mismatches vs reference on random DAGs; 20k jobs about 0.02-0.04 s",
+      "Duplicate dependencies deduplicated correctly; generator input works",
+      "Tries to extract a concrete cycle path for the message"
+     ],
+     "weaknesses": [
+      "RecursionError for cycle length >= 1000 and for a 3,000-job chain feeding a 2-cycle",
+      "depends_on=None -> TypeError; unhashable dep -> TypeError; non-Job -> AttributeError; bare-string depends_on silently iterated",
+      "The non-mutation test passes tuple(deps), so it never exercises a caller-owned list",
+      "RESPONSE claims output like 'a -> b -> c -> a' and 'a -> a', but actual output is 'a -> b -> c' and 'a'"
+     ],
+     "evidence": [
+      "probe: cycle sizes 900/990 -> SE, 1000/2000 -> RecursionError",
+      "probe: 3000-job chain into 2-cycle -> RecursionError",
+      "Cross-tests: C's test_long_cycle_does_not_hit_recursion_limit and F's test_very_long_cycle_does_not_hit_recursion_limit fail on D (real bugs)",
+      "Mutation harness: 19/27 killed; survived fifo, lex_tie, inherit, sort_once, cycle_recursion, cycle_msg_all_jobs, mutate_deps, mutate_deps_on_error",
+      "python3 -c on 3-cycle -> 'dependency cycle detected: a -> b -> c (unresolvable jobs: a, b, c)'"
+     ],
+     "letter": "D"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "contract correctness": 6.0,
+      "implementation quality": 1.75,
+      "tests and verification": 1.75
+     },
+     "total": 9.5,
+     "summary": "Correct, fast heap-based scheduler with thorough validation. The cycle message shows a concrete cycle path and separately lists all blocked jobs. It is iterative, so 5,000-node cycles are fine. The 34-test suite includes a randomized greedy-choice oracle and killed 26 of 27 mutants, but it has no long-cycle test, so a recursion regression would go unnoticed. It rejects float priorities, which the int annotation allows but is stricter than needed.",
+     "strengths": [
+      "0 mismatches vs reference; 20k jobs about 0.02-0.05 s",
+      "Message 'a -> b -> a; blocked jobs: a, b, c, d' separates the cycle from downstream jobs",
+      "200-random-DAG test checks each step against the best currently ready job"
+     ],
+     "weaknesses": [
+      "No large-cycle test (the cycle_recursion mutant survived)",
+      "Rejects float and bool priorities (over-strict but within the typed contract); reads depends_on twice during validation",
+      "Some tests (non-integer priority, message split on ';') are stricter than the contract"
+     ],
+     "evidence": [
+      "fuzz.py: E mismatches 0; probe bigcycle5000 -> SE in 0.01s",
+      "probe 'float prio' -> ScheduleError \"non-integer priority 1.5\"",
+      "Mutation harness: 26/27 killed (survivor: cycle_recursion)",
+      "Own suite: Ran 34 tests OK, matching RESPONSE.md"
+     ],
+     "letter": "E"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "contract correctness": 6.0,
+      "implementation quality": 2.0,
+      "tests and verification": 2.0
+     },
+     "total": 10.0,
+     "summary": "Correct, fast, well-structured scheduler with separate validation and dependency-resolution helpers. Its iterative cycle walk reports only the concrete cycle, and unknown dependencies are reported all at once. The 36-test suite includes an in-suite brute-force reference comparison over 120 random DAGs, 5,000-node cycle and chain tests, and a readiness-time tie-break test. It killed 26 of 27 mutants and reports its verification accurately.",
+     "strengths": [
+      "0 mismatches vs reference; 20k jobs about 0.02-0.03 s",
+      "Cycle message 'Dependency cycle detected: x -> y -> x' excludes downstream and innocent jobs; no recursion",
+      "In-suite reference scheduler property test plus targeted tie-break and no-priority-inheritance tests"
+     ],
+     "weaknesses": [
+      "Non-Job items give AttributeError and string priority gives TypeError (outside the written contract)",
+      "No test for mutation on the error path (the mutate_deps_on_error mutant survived)",
+      "Several tests assert exact wording, which fails other valid implementations in cross-tests"
+     ],
+     "evidence": [
+      "fuzz.py: F mismatches 0; probe bigcycle5000 -> SE; cycle+5000chain -> 'x -> y -> x'",
+      "Mutation harness: 26/27 killed (survivor: mutate_deps_on_error)",
+      "Own suite: Ran 36 tests OK, matching RESPONSE.md"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "fable-5.1",
+    "sonnet-5.5",
+    "opus-5.5",
+    "muse",
+    "gpt-6-luna",
+    "mimo"
+   ],
+   "notes": "All six pass the hidden suite and match my brute-force reference on 4,000 random graphs (a quarter of them cyclic), including input-order tie-breaks among currently ready jobs. Most cross-test failures come from stricter-than-contract expectations: message wording or regex format, repr quoting, rejecting bare-string/None depends_on, non-Job items, priority type checks. I did not count those as contract violations. The one cross-test failure that exposes a real contract bug is D's RecursionError on large cycles (C's and F's long-cycle tests), which I confirmed independently. For mutation testing I wrapped each submission's own implementation in 27 behavioral mutants, so each suite's own message expectations still hold. Kills: C/E/F 26, A 21, B 20, D 19. cycle_msg_all_jobs is a quality mutant, not a contract one. A's quadratic ready selection counts against implementation quality, not the contract, because the brief sets no performance requirement. C and F are near-tied: F ranks higher because its suite catches the readiness-time tie-break mutant that C's misses and runs its reference comparison in-suite."
+  },
+  "02-bug-fixing": {
+   "rubric": {
+    "behavioral correctness": 7,
+    "diagnosis": 1,
+    "regression coverage": 2
+   },
+   "models": {
+    "mimo": {
+     "criteria": {
+      "behavioral correctness": 7,
+      "diagnosis": 1,
+      "regression coverage": 1.5
+     },
+     "total": 9.5,
+     "summary": "The implementation is correct: it matched the reference on every fuzzed trace and passes all probes. The diagnosis lists all eight defects accurately. The 13 regression tests in a separate file catch 8 of the 9 original bug classes. They miss the evict-on-update bug, even though a test is named after exactly that case.",
+     "strengths": [
+      "Correct fix for every contract bullet",
+      "Complete, accurate root-cause list (8 items)",
+      "Kept the original tests unchanged and added a separate regression file; the purge test checks len so it catches the no-purge mutant"
+     ],
+     "weaknesses": [
+      "test_put_existing_key_at_capacity_does_not_evict updates the LRU key, so the original bug (pop the LRU, then re-insert) passes it; the RESPONSE claim that this case is pinned is not true",
+      "Misses the extra mutants head-only purge, max_size=1 rejected, and expired get not deleted",
+      "put reads the clock twice (purge time vs stored timestamp); harmless for a monotonic clock, but inconsistent"
+     ],
+     "evidence": [
+      "Differential fuzz (grade02/fuzz.py): 5000 random traces (max_size 1-5, ttl incl. 0.5/2.5, injected clock starting at 0/100/1e9, falsy and identity-checked values) vs a reference model: 0 get()/KeyError mismatches.",
+      "probe.py: every invalid arg (0,-1,0.5 size; 0,-1,0.0,-0.001 ttl) raises ValueError; valid (1,0.001) accepted; works with ttl_cache.time replaced by an object that raises (injected clock only); default clock works.",
+      "Tick-clock probe: A calls clock() 2x per put; all others 1x.",
+      "Mutants (grade02/mutate.py, base = clean reference): O1 falsy check, O2 wall-clock in put, O3 '>' boundary, O4 get no move_to_end, O5 evict before existence check (original bug), O6 no purge before capacity, O7 update keeps old recency, O8/O9 missing validation; extras X1 get refreshes TTL, X2 update keeps timestamp, X3 purge only from LRU head, X4 evict MRU, X5 ttl=0 allowed, X6 max_size=1 rejected, X7 get uses time.monotonic, X8 purge uses '>', X9 update keeps old value, X10 expired get not deleted.",
+      "A suite kills O1-O4, O6-O9 and X1,X2,X4,X5,X7,X8,X9; survives O5 (Ran 16 tests OK), X3, X6, X10.",
+      "OBJECTIVE_CHECKS: 16 tests OK; fails only D's test_len_excludes_expired in cross-tests."
+     ],
+     "letter": "A"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "behavioral correctness": 7,
+      "diagnosis": 1,
+      "regression coverage": 2
+     },
+     "total": 10,
+     "summary": "The implementation is correct: it matched the reference on every fuzzed trace. The diagnosis gives all seven root causes, each paired with its fix. It correctly explains why the purge has to scan every entry. The 25-test suite kills every original-bug mutant and every extra mutant, and its claims about the template run are accurate.",
+     "strengths": [
+      "Correct implementation; reads the clock once per put",
+      "Thorough regression suite: falsy values incl. [] and 0.0, boundary on both sides, updating the MRU key at capacity, a non-head expired entry being purged, max_size=1, default clock",
+      "Correctly leaves len() unspecified and documents that choice"
+     ],
+     "weaknesses": [
+      "No notable weaknesses; uses a while loop for eviction where an if would do (harmless)"
+     ],
+     "evidence": [
+      "Differential fuzz (grade02/fuzz.py): 5000 random traces (max_size 1-5, ttl incl. 0.5/2.5, injected clock starting at 0/100/1e9, falsy and identity-checked values) vs a reference model: 0 get()/KeyError mismatches.",
+      "probe.py: every invalid arg (0,-1,0.5 size; 0,-1,0.0,-0.001 ttl) raises ValueError; valid (1,0.001) accepted; works with ttl_cache.time replaced by an object that raises (injected clock only); default clock works.",
+      "Mutants (grade02/mutate.py, base = clean reference): O1 falsy check, O2 wall-clock in put, O3 '>' boundary, O4 get no move_to_end, O5 evict before existence check (original bug), O6 no purge before capacity, O7 update keeps old recency, O8/O9 missing validation; extras X1 get refreshes TTL, X2 update keeps timestamp, X3 purge only from LRU head, X4 evict MRU, X5 ttl=0 allowed, X6 max_size=1 rejected, X7 get uses time.monotonic, X8 purge uses '>', X9 update keeps old value, X10 expired get not deleted.",
+      "B suite kills all of O1-O9 and X1-X10.",
+      "RESPONSE claim '11 failures and 2 errors' on the original matches OBJECTIVE_CHECKS (failures=11, errors=2)."
+     ],
+     "letter": "B"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "behavioral correctness": 7,
+      "diagnosis": 1,
+      "regression coverage": 2
+     },
+     "total": 10,
+     "summary": "The implementation is correct and matched the reference on every fuzzed trace. The diagnosis gives all eight defects and notes that two original bugs cancel out. The 19-test suite kills every mutant. The RESPONSE describes its own mutation check, including a gap on evict-on-update that it found and closed, and that description holds up.",
+     "strengths": [
+      "Correct implementation; reads the clock once per put",
+      "Strong targeted tests: the expired MRU entry is purged while the live LRU entry survives, and updating the MRU key on a full cache does not evict",
+      "Self-verified tests against mutants and reported the result honestly"
+     ],
+     "weaknesses": [
+      "Fewer tests than B/D (19), but no coverage gap found"
+     ],
+     "evidence": [
+      "Differential fuzz (grade02/fuzz.py): 5000 random traces (max_size 1-5, ttl incl. 0.5/2.5, injected clock starting at 0/100/1e9, falsy and identity-checked values) vs a reference model: 0 get()/KeyError mismatches.",
+      "probe.py: every invalid arg (0,-1,0.5 size; 0,-1,0.0,-0.001 ttl) raises ValueError; valid (1,0.001) accepted; works with ttl_cache.time replaced by an object that raises (injected clock only); default clock works.",
+      "Mutants (grade02/mutate.py, base = clean reference): O1 falsy check, O2 wall-clock in put, O3 '>' boundary, O4 get no move_to_end, O5 evict before existence check (original bug), O6 no purge before capacity, O7 update keeps old recency, O8/O9 missing validation; extras X1 get refreshes TTL, X2 update keeps timestamp, X3 purge only from LRU head, X4 evict MRU, X5 ttl=0 allowed, X6 max_size=1 rejected, X7 get uses time.monotonic, X8 purge uses '>', X9 update keeps old value, X10 expired get not deleted.",
+      "C suite kills all of O1-O9 and X1-X10.",
+      "RESPONSE claim '9 failures and 2 errors' on the original matches OBJECTIVE_CHECKS."
+     ],
+     "letter": "C"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "behavioral correctness": 7,
+      "diagnosis": 1,
+      "regression coverage": 1.75
+     },
+     "total": 9.75,
+     "summary": "The implementation is correct. It also makes len() purge expired entries, which the brief does not require but does not break any contract. It has the most detailed diagnosis (nine items, each mapped to a spec bullet). The 25-test suite kills every mutant. One test, test_len_excludes_expired, pins behavior outside the brief and fails all five other correct implementations.",
+     "strengths": [
+      "Correct implementation, well documented",
+      "Most complete diagnosis and an accurate 'fails on original' table (15 failures + 8 errors matches OBJECTIVE_CHECKS)",
+      "Tests include the expired MRU vs live LRU purge case, the time module replaced to prove the injected clock is used, and a fractional TTL"
+     ],
+     "weaknesses": [
+      "test_len_excludes_expired over-specifies: it rejects correct implementations whose len() counts entries that are not yet purged, and the brief says nothing about len"
+     ],
+     "evidence": [
+      "Differential fuzz (grade02/fuzz.py): 5000 random traces (max_size 1-5, ttl incl. 0.5/2.5, injected clock starting at 0/100/1e9, falsy and identity-checked values) vs a reference model: 0 get()/KeyError mismatches. len differs from raw count because D purges in len; len always equals the live count.",
+      "probe.py: every invalid arg (0,-1,0.5 size; 0,-1,0.0,-0.001 ttl) raises ValueError; valid (1,0.001) accepted; works with ttl_cache.time replaced by an object that raises (injected clock only); default clock works.",
+      "Mutants (grade02/mutate.py, base = clean reference): O1 falsy check, O2 wall-clock in put, O3 '>' boundary, O4 get no move_to_end, O5 evict before existence check (original bug), O6 no purge before capacity, O7 update keeps old recency, O8/O9 missing validation; extras X1 get refreshes TTL, X2 update keeps timestamp, X3 purge only from LRU head, X4 evict MRU, X5 ttl=0 allowed, X6 max_size=1 rejected, X7 get uses time.monotonic, X8 purge uses '>', X9 update keeps old value, X10 expired get not deleted.",
+      "D suite kills all of O1-O9 and X1-X10; on the clean base it fails only test_len_excludes_expired."
+     ],
+     "letter": "D"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "behavioral correctness": 7,
+      "diagnosis": 0.75,
+      "regression coverage": 1
+     },
+     "total": 8.75,
+     "summary": "The implementation is correct and matched the reference on every fuzzed trace. The diagnosis is terse: it covers the bugs, but does not spell out the stale recency on update. Only 6 regression tests were added. Three of the original bug classes survive them (evict on update, no purge before capacity, update keeps old recency), although the RESPONSE claims all three are covered.",
+     "strengths": [
+      "Correct, clean implementation",
+      "Uses assertIs for the falsy values"
+     ],
+     "weaknesses": [
+      "The purge test's expired entry is also the LRU one, so the unpurged FIFO eviction removes it anyway and the no-purge mutant passes",
+      "test_put_updates_value_timestamp_and_recency calls get('a') before the capacity check, which hides the missing move_to_end on update",
+      "No test updates a key on a full cache without it being the LRU",
+      "Diagnosis lumps several bugs together and never names the stale recency on update"
+     ],
+     "evidence": [
+      "Differential fuzz (grade02/fuzz.py): 5000 random traces (max_size 1-5, ttl incl. 0.5/2.5, injected clock starting at 0/100/1e9, falsy and identity-checked values) vs a reference model: 0 get()/KeyError mismatches.",
+      "probe.py: every invalid arg (0,-1,0.5 size; 0,-1,0.0,-0.001 ttl) raises ValueError; valid (1,0.001) accepted; works with ttl_cache.time replaced by an object that raises (injected clock only); default clock works.",
+      "Mutants (grade02/mutate.py, base = clean reference): O1 falsy check, O2 wall-clock in put, O3 '>' boundary, O4 get no move_to_end, O5 evict before existence check (original bug), O6 no purge before capacity, O7 update keeps old recency, O8/O9 missing validation; extras X1 get refreshes TTL, X2 update keeps timestamp, X3 purge only from LRU head, X4 evict MRU, X5 ttl=0 allowed, X6 max_size=1 rejected, X7 get uses time.monotonic, X8 purge uses '>', X9 update keeps old value, X10 expired get not deleted.",
+      "E suite survives O5, O6 and O7 (each 'Ran 9 tests OK'), plus X3, X6, X8, X10."
+     ],
+     "letter": "E"
+    },
+    "muse": {
+     "criteria": {
+      "behavioral correctness": 7,
+      "diagnosis": 1,
+      "regression coverage": 1
+     },
+     "total": 9,
+     "summary": "The implementation is correct: it matched the reference on every fuzzed trace. When updating an existing key it skips the purge, which changes only len(). The diagnosis gives all eight defects accurately. There are 11 new tests, but three original bug classes survive them (evict on update, no purge, update recency), because each relevant test is hidden by FIFO order or by an intervening get.",
+     "strengths": [
+      "Correct implementation",
+      "Accurate, well-explained root causes",
+      "Honest template sanity check (failures=6, errors=1 matches OBJECTIVE_CHECKS)"
+     ],
+     "weaknesses": [
+      "test_expired_purged_before_capacity_eviction and test_expired_entry_does_not_cause_live_eviction both put the expired entry at the LRU position, so the no-purge mutant passes",
+      "test_put_existing_key_does_not_evict updates the LRU key, so the original bug passes it",
+      "The recency-on-update test is hidden by an intervening get",
+      "The RESPONSE claims coverage the tests do not deliver"
+     ],
+     "evidence": [
+      "Differential fuzz (grade02/fuzz.py): 5000 random traces (max_size 1-5, ttl incl. 0.5/2.5, injected clock starting at 0/100/1e9, falsy and identity-checked values) vs a reference model: 0 get()/KeyError mismatches. len() can count expired entries after an update-only put (7759 raw-len diffs vs reference, never below the live count).",
+      "probe.py: every invalid arg (0,-1,0.5 size; 0,-1,0.0,-0.001 ttl) raises ValueError; valid (1,0.001) accepted; works with ttl_cache.time replaced by an object that raises (injected clock only); default clock works.",
+      "Mutants (grade02/mutate.py, base = clean reference): O1 falsy check, O2 wall-clock in put, O3 '>' boundary, O4 get no move_to_end, O5 evict before existence check (original bug), O6 no purge before capacity, O7 update keeps old recency, O8/O9 missing validation; extras X1 get refreshes TTL, X2 update keeps timestamp, X3 purge only from LRU head, X4 evict MRU, X5 ttl=0 allowed, X6 max_size=1 rejected, X7 get uses time.monotonic, X8 purge uses '>', X9 update keeps old value, X10 expired get not deleted.",
+      "F suite survives O5, O6 and O7 (each 'Ran 14 tests OK'), plus X3, X6, X8, X10."
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "opus-5.5",
+    "sonnet-5.5",
+    "fable-5.1",
+    "mimo",
+    "muse",
+    "gpt-6-luna"
+   ],
+   "notes": "All six implementations are behaviorally equivalent on get/put/validation over 5000 random traces, so they separate on regression coverage. The brief never specifies len(), so test_len_excludes_expired (D) is not a requirement: the other five are not penalized for failing it, and D loses 0.25 coverage for pinning out-of-contract behavior in its suite. Its len purge is an acceptable choice and is not penalized in behavior. C and B tie at 10; C ranks first on its documented self-mutation check that found and closed a real gap. F and E have identical mutant kill sets; F ranks above E on its fuller diagnosis. A's double clock read in put was noted but not penalized, since no contract violation is observable with a monotonic clock. Mutant X11 (skip the purge when updating an existing key) is equivalent to F's design and was excluded."
+  },
+  "03-infra-management": {
+   "rubric": {
+    "security/correctness": 4,
+    "operability": 3,
+    "runbook and judgment": 3
+   },
+   "models": {
+    "fable-5.1": {
+     "criteria": {
+      "security/correctness": 3.75,
+      "operability": 2.75,
+      "runbook and judgment": 2.75
+     },
+     "total": 9.25,
+     "summary": "A complete, correct hardening. The secrets in .env.example are left blank so the required-variable guard actually works, Redis needs a password, the backend network is internal, and nginx re-resolves the api at request time. It also adds a small app.py with a /healthz that checks the database and cache, so the health chain means something. The runbook commands run inside the containers, so they would work.",
+     "strengths": [
+      "POSTGRES_PASSWORD and REDIS_PASSWORD are blank in .env.example, so ${VAR:?} fails on the shipped template (confirmed: docker compose --env-file .env.example config fails)",
+      "nginx uses the Docker resolver plus a variable in proxy_pass, so a recreated api is picked up without restarting nginx",
+      "Non-root venv multi-stage image, gunicorn.conf.py, read_only api, cap_drop ALL, init, pids limit",
+      "Rollback uses a tagged image with --no-build; backup and restore run pg_dump/pg_restore through sh -c inside the container",
+      "RESPONSE ranks the right risks (published db/cache, hard-coded creds, dev server, secrets baked into the image) and is honest about what was not verified"
+     ],
+     "weaknesses": [
+      "Adds application code (app.py) the brief did not ask for. It is documented, but it is a stub that could be confused with the real app",
+      "The Redis password is on the redis-server command line, visible via inspect/ps",
+      "The proxy publishes on all interfaces at port 80 by default (same as the original)",
+      "The claim that --no-build 'refuses to run' if the tag is missing is a little overstated (Compose may try to pull first)"
+     ],
+     "evidence": [
+      "A/.env.example:12,16 blank passwords; docker compose --env-file .env.example config fails with 'required variable POSTGRES_PASSWORD is missing a value'",
+      "A/nginx.conf:42,48 resolver 127.0.0.11 plus set $api_upstream http://api:8000",
+      "A/compose.yaml:105 pg_isready -h 127.0.0.1 (TCP, avoids the early-ready window during init); :160-163 backend internal",
+      "A/Dockerfile:56-57 stdlib HEALTHCHECK on /healthz; A/app.py:54-70 checks db and redis, returns 503 when degraded",
+      "A/RUNBOOK.md:112 'API_TAG=<previous-sha> docker compose up -d --no-build api'"
+     ],
+     "letter": "A"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "security/correctness": 3.75,
+      "operability": 2.75,
+      "runbook and judgment": 3.0
+     },
+     "total": 9.5,
+     "summary": "Correct and careful hardening with the most accurate, practical runbook. Passwords are blank so the guard works, nginx is published on loopback by default and hardened (read_only, reduced caps), nginx re-resolves the api, and Redis requires a password. The /healthz endpoint is assumed rather than implemented, and that dependency is stated clearly.",
+     "strengths": [
+      "Blank passwords in .env.example plus ${VAR:?} (confirmed: config fails on the shipped template); the runbook generates them with openssl and sed",
+      "Only the proxy is published, on 127.0.0.1:8080 by default; backend is internal; X-Forwarded-For is overwritten to prevent spoofing",
+      "Resolver plus variable proxy_pass for re-resolution; JSON 503 on upstream failure; proxy_next_upstream off",
+      "Runbook: backup sanity check with pg_restore --list, restore rehearsal into a scratch DB, --single-transaction restore, rollback with --no-deps --no-build, and a correct note that a git checkout of a single-file bind mount needs a restart rather than a reload",
+      "RESPONSE ranking and verification are thorough and honest, including what was not verified and the risk from read_only/cap_drop on the proxy"
+     ],
+     "weaknesses": [
+      "No /healthz is implemented; if the app lacks it, api never becomes healthy and the proxy never starts (documented)",
+      "read_only plus cap_drop on the nginx proxy is untested and could need adjustment (flagged by the author)",
+      "The Redis password is visible on the command line"
+     ],
+     "evidence": [
+      "B/.env.example:9-10 empty passwords; B/compose.yaml:18 '${PROXY_BIND:-127.0.0.1}:${PROXY_PORT:-8080}:80'",
+      "B/nginx.conf:28,34 resolver plus set $api_upstream; :45 X-Forwarded-For $remote_addr; :55 proxy_next_upstream off",
+      "B/compose.yaml:102 pg_isready -h 127.0.0.1; :133 REDISCLI_AUTH for the healthcheck",
+      "B/RUNBOOK.md:66 pg_restore --list sanity check; :72-75 restore rehearsal; :120 --no-deps --no-build rollback; :135-136 bind-mount inode note"
+     ],
+     "letter": "B"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "security/correctness": 3.25,
+      "operability": 2.5,
+      "runbook and judgment": 2.5
+     },
+     "total": 8.25,
+     "summary": "Solid configuration, with an nginx upstream that uses 'resolve' plus keepalive (valid on the pinned 1.28), Redis auth, an internal backend network, loopback publishing and a sound runbook. The main flaw is the change-me placeholder passwords in .env.example: they pass the ${VAR:?} guard, so copying the example starts the stack with a known password. The response even records that .env.example passes config.",
+     "strengths": [
+      "upstream with zone plus 'server api:8000 resolve' and keepalive re-resolves api on nginx 1.28",
+      "Internal backend, only the proxy published (loopback default), read_only/cap_drop api, and Redis still drops privileges via the entrypoint",
+      "Runbook commands run in-container through sh -c; rollback uses --no-build --no-deps; the expand/contract migration advice is good",
+      "Honest verification section that states the nginx version requirement"
+     ],
+     "weaknesses": [
+      "The placeholder passwords 'change-me' slip past the required-variable guard; RUNBOOK says config -q 'fails if a required secret is missing', which does not protect against placeholders",
+      "The api healthcheck is liveness only (by design), so it is less meaningful than a dependency-aware check",
+      "The nginx reload path after a git checkout of a single-file bind mount may not pick up the new file"
+     ],
+     "evidence": [
+      "C/.env.example:11,15 POSTGRES_PASSWORD=change-me, REDIS_PASSWORD=change-me; docker compose --env-file .env.example config passes",
+      "C/RESPONSE.md:78 'docker compose --env-file .env.example config succeeds'",
+      "C/nginx.conf:52-57 upstream zone plus resolve plus keepalive",
+      "C/compose.yaml:137-146 sh -c exec docker-entrypoint.sh redis-server --requirepass \"$$REDIS_PASSWORD\"",
+      "C/RUNBOOK.md:130 rollback with --no-build --no-deps"
+     ],
+     "letter": "C"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "security/correctness": 3.0,
+      "operability": 2.25,
+      "runbook and judgment": 1.75
+     },
+     "total": 7.0,
+     "summary": "A minimal, mostly correct hardening. Ports are closed, the backend network is internal, there is a volume and health-gated startup, and nginx re-resolves the api. It is the only submission that pins transitive Python dependencies. But Redis has no auth, the placeholder password slips past the guard, and the Postgres healthcheck can report ready during init. The runbook is thin and its rollback rebuilds from git.",
+     "strengths": [
+      "requirements.txt pins the full transitive set (best dependency reproducibility)",
+      "nginx resolver plus variable proxy_pass; only nginx published; backend internal",
+      "Runbook backup and restore commands run inside the container and would work"
+     ],
+     "weaknesses": [
+      "POSTGRES_PASSWORD=REPLACE_WITH_RANDOM_HEX_SECRET passes the ${VAR:?} guard",
+      "Redis has no password (it relies only on network isolation)",
+      "pg_isready without -h can report healthy during first-run init",
+      "Rollback is 'check out the revision and up -d --build', with no tagged images, so it rebuilds rather than restoring a known image",
+      "App code is chowned to the runtime user (writable); no read_only/cap_drop",
+      "RESPONSE is brief: the problems are lumped together and verification is minimal (honest, though)"
+     ],
+     "evidence": [
+      "D/.env.example:5 placeholder secret; config with .env.example passes",
+      "D/compose.yaml:37 REDIS_URL redis://cache:6379/0 with no auth; :97 redis-server with no requirepass; :81 pg_isready without -h",
+      "D/nginx.conf:11,24-25 resolver plus set $api_backend",
+      "D/RUNBOOK.md:67-68 rollback via checkout plus 'docker compose up -d --build'",
+      "D/Dockerfile:15 COPY --chown=app:app"
+     ],
+     "letter": "D"
+    },
+    "muse": {
+     "criteria": {
+      "security/correctness": 2.75,
+      "operability": 2.0,
+      "runbook and judgment": 1.75
+     },
+     "total": 6.5,
+     "summary": "Covers the basic goals: ports are closed, there is an internal network, a volume, health-gated startup and gunicorn as non-root. Several correctness gaps remain. The nginx upstream is resolved once, so it goes stale when api is recreated, and this is not documented. Redis has no auth, the placeholder password passes the guard, and the runbook's backup and rotation commands depend on host shell variables that are not set.",
+     "strengths": [
+      "Only nginx published; backend internal; pgdata volume; all four healthchecks with service_healthy gating",
+      "Reasonable nginx headers, timeouts and body limit",
+      "RESPONSE ranks the problems sensibly and lists its checks"
+     ],
+     "weaknesses": [
+      "'upstream api { server api:5000; }' is resolved at startup: after api is recreated, nginx keeps the old IP (502s) until reloaded, and this is not mentioned",
+      "The placeholder 'change-me-before-first-run' passes ${VAR:?}; Redis is unauthenticated",
+      "RUNBOOK backup/restore/rotation use host-side \"$POSTGRES_USER\", which is empty unless exported, so pg_dump -U '' fails",
+      "Rollback rebuilds with --build; no image tagging",
+      "No .gitignore despite saying .env is 'never committed'; pg_isready without -h; duplicate Content-Type via add_header; code writable by appuser"
+     ],
+     "evidence": [
+      "E/nginx.conf:28-29 static upstream with no resolver",
+      "E/.env.example:6 placeholder; E/compose.yaml:40 redis://cache:6379/0 with no password",
+      "E/RUNBOOK.md:42-43 'docker compose exec -T db pg_dump -U \"$POSTGRES_USER\"' expanded on the host; :58 ALTER USER with host vars; :68 up -d --build rollback",
+      "E/compose.yaml:84 pg_isready without -h; E/nginx.conf:39 add_header Content-Type"
+     ],
+     "letter": "E"
+    },
+    "mimo": {
+     "criteria": {
+      "security/correctness": 3.25,
+      "operability": 2.25,
+      "runbook and judgment": 2.0
+     },
+     "total": 7.5,
+     "summary": "The most elaborate submission: unprivileged read-only nginx, cap_drop everywhere, rate limiting, JSON errors, a 69-check verification script and an excellent RESPONSE. But several runbook operations would fail. Its own POSTGRES_INITDB_ARGS makes local-socket auth use scram-sha-256, so the in-container pg_dump/pg_restore/psql commands have no password and fail. The rollback can silently rebuild, nginx caches the api address (documented as needing a proxy restart), and the change-me placeholders pass the guard.",
+     "strengths": [
+      "Strong container hardening: nginx-unprivileged with read_only and cap_drop ALL, read_only api, no-new-privileges, pids limits, PGDATA subdirectory",
+      "Clear network split (the proxy is not on backend at all); loopback publishing by default",
+      "Thorough, honest RESPONSE with well-ranked risks; verify_config.py runs and passes (0 failures)"
+     ],
+     "weaknesses": [
+      "POSTGRES_INITDB_ARGS '--auth-local=scram-sha-256' breaks every runbook backup, restore and rotation command (pg_dump/pg_restore/dropdb/psql over the socket with no PGPASSWORD)",
+      "Rollback 'APP_VERSION=<last-good> docker compose up -d api' has no --no-build, so a missing tag is silently rebuilt from current source under the old tag",
+      "Static upstream is resolved once; every api recreate needs a proxy restart (documented, but a design flaw)",
+      "change-me placeholders pass ${VAR:?}; health commands use host-side $REDIS_PASSWORD/$POSTGRES_USER; 'pg_restore --list' needs host tools",
+      "Some over-engineering (rate limits, a verification script, a ./backups bind mount into db that the runbook never uses); the proxy_next_upstream comment is wrong about http_50x"
+     ],
+     "evidence": [
+      "F/compose.yaml:138 POSTGRES_INITDB_ARGS '--auth-host=scram-sha-256 --auth-local=scram-sha-256'; F/RUNBOOK.md:96-117 pg_dump/dropdb/pg_restore via exec with no password",
+      "F/RUNBOOK.md:172 'APP_VERSION=<last-good> docker compose up -d api' (no --no-build); :180 'docker compose restart proxy # nginx resolves api only at startup'",
+      "F/nginx.conf:81-84 static upstream api:8000; :125-128 retry comment",
+      "F/.env.example:11,15 change-me; config with .env.example passes",
+      "F/RUNBOOK.md:66-67 host-variable redis-cli -a \"$REDIS_PASSWORD\"; :104 host pg_restore --list",
+      "F/compose.yaml:144 ./backups:/backups unused by the runbook's stdout-redirect backup"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "sonnet-5.5",
+    "fable-5.1",
+    "opus-5.5",
+    "mimo",
+    "gpt-6-luna",
+    "muse"
+   ],
+   "notes": "A and B are close. B wins on runbook accuracy (restore rehearsal, bind-mount reload subtlety, loopback default); A wins on actually implementing a dependency-aware /healthz. C, D, E and F all ship placeholder passwords that pass the ${VAR:?} guard (checked with docker compose --env-file .env.example config). F has the strongest container hardening, but its own scram local-auth setting breaks its backup/restore runbook, which pulls it below C. D and F are near-tied (F's configs are much stronger, D's runbook commands actually work). No containers were started; nginx -t was not available."
+  },
+  "04-project-maintenance": {
+   "rubric": {
+    "compatibility/release correctness": 4,
+    "CI/tests": 3,
+    "release and maintenance communication": 3
+   },
+   "models": {
+    "gpt-6-luna": {
+     "criteria": {
+      "compatibility/release correctness": 2.5,
+      "CI/tests": 1.0,
+      "release and maintenance communication": 1.75
+     },
+     "total": 5.25,
+     "summary": "Correct minimal distutils removal (identity pass-through), version 0.4.0, and aligned requires-python/classifiers/ruff target. But the package still does not build: flat-layout discovery fails, so the CI `pip install -e . ruff` step would fail on every matrix leg. Tests are thin and do not guard the change on 3.10/3.11. The changelog drops the Unicode known-limitation line.",
+     "strengths": [
+      "normalize_version returns the input, matching LooseVersion.__str__ for every non-empty string",
+      "requires-python >=3.10,<3.14 plus 3.10-3.13 classifiers and py310 ruff target",
+      "CI has permissions: contents: read, a 3.10-3.13 matrix and fail-fast: false, with checkout@v4/setup-python@v5 kept"
+     ],
+     "weaknesses": [
+      "No py-modules declaration, so the wheel and editable builds fail with 'Multiple top-level modules discovered in a flat-layout' and the CI install step breaks",
+      "Only 2 tests, and they pass unchanged against the original distutils module on Python 3.9",
+      "CHANGELOG.md leaves out the Unicode known limitation and drops the 'already implemented' nuance for slugify",
+      "Lint runs inside every matrix leg; checkout credentials are not disabled",
+      "RESPONSE did not detect the build failure (no build attempted)"
+     ],
+     "evidence": [
+      "setuptools 84 build_meta.build_wheel and build_editable on a fresh copy of A: 'error: Multiple top-level modules discovered in a flat-layout: [test_slugkit, slugkit]'",
+      "python3 -B -m unittest: Ran 2 tests OK on 3.9.6, 3.12.13, 3.13.7",
+      "A's suite against the original slugkit.py on 3.9.6 (distutils present): Ran 2 tests OK, so it does not guard the change there",
+      "Probe against original LooseVersion over 26 inputs: identical for all non-empty strings; '' returns '' instead of AttributeError, and None returns None",
+      "CHANGELOG.md has no Known limitations entry for Unicode (RELEASE_NOTES line 5)"
+     ],
+     "letter": "A"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "compatibility/release correctness": 3.75,
+      "CI/tests": 2.75,
+      "release and maintenance communication": 2.75
+     },
+     "total": 9.25,
+     "summary": "Strong, carefully verified release. normalize_version is a validated pass-through identical to LooseVersion for all non-empty strings, with no new dependencies, and py-modules fixes the flat-layout build. CI is split into lint and test jobs and runs least-privileged. Tests are extensive and guard the change. Changelog, maintenance guide and response are accurate and thorough.",
+     "strengths": [
+      "Identity semantics preserved for ordinary and non-canonical versions; the only change is ValueError/TypeError for ''/None, which is documented",
+      "py-modules = ['slugkit'] makes the wheel build (wheel contains only slugkit.py); classifiers 3.10-3.13; ruff py310",
+      "CI: contents: read, persist-credentials: false, separate lint job with ruff check plus format --check, pinned ruff through a dev extra, 3.10-3.13 matrix with fail-fast: false",
+      "11 tests, including a differential check against LooseVersion and a fresh-interpreter -W error check that distutils is never imported",
+      "CHANGELOG covers every RELEASE_NOTES line, keeps the Unicode limitation, and separates Internal; MAINTENANCE has clear policy and prioritized items; RESPONSE gives exact multi-interpreter results and found the build defect"
+     ],
+     "weaknesses": [
+      "Changelog files the pre-existing slugify behavior under 'Fixed', though it says the behavior was already present",
+      "ruff==0.15.8 pin could not be resolved offline (acknowledged)",
+      "Empty-string exception type changes (AttributeError to ValueError), a minor edge-case behavior change (documented)"
+     ],
+     "evidence": [
+      "build_meta.build_wheel: slugkit-0.4.0 wheel = [slugkit.py + dist-info]; METADATA Requires-Python >=3.10, 3.10-3.13 classifiers",
+      "unittest: 3.9.6 Ran 11 OK; 3.12.13 and 3.13.7 (no distutils) Ran 11 OK (skipped=1); 3.13 venv with setuptools Ran 11 OK",
+      "B's suite against the original module on 3.9: FAILED (failures=1, errors=2), so it guards the change",
+      "Probe against LooseVersion over 26 inputs: only ''/None exception types differ"
+     ],
+     "letter": "B"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "compatibility/release correctness": 3.75,
+      "CI/tests": 2.75,
+      "release and maintenance communication": 2.75
+     },
+     "total": 9.25,
+     "summary": "Essentially equal to B. It uses the correct pass-through replacement with no new dependency, declares py-modules so the package builds, and adds classifiers. CI is well-structured and least-privileged, and turns DeprecationWarnings into errors. Tests include a LooseVersion parity check, and the documentation is accurate.",
+     "strengths": [
+      "Pass-through identical to LooseVersion for non-empty strings; packaging.version explicitly rejected with a reason",
+      "Builds cleanly; classifiers 3.10-3.13 including '3 :: Only'",
+      "CI: contents: read, persist-credentials: false, concurrency, timeouts, a separate lint job, -W error::DeprecationWarning on tests",
+      "10 tests covering parity with legacy LooseVersion, 1.02 non-rewriting, error cases and repeated punctuation",
+      "CHANGELOG maps every RELEASE_NOTES line, with Removed/Changed/Known limitations/Internal sections; MAINTENANCE and RESPONSE are thorough and accurate"
+     ],
+     "weaknesses": [
+      "The distutils guard test only checks the module namespace, not sys.modules in a fresh interpreter (the CI -W flag compensates)",
+      "ruff unpinned in CI (acknowledged)",
+      "MAINTENANCE suggests pinning actions to SHAs, which sits in some tension with the fixture's v4/v5 note"
+     ],
+     "evidence": [
+      "build_meta.build_wheel succeeded; wheel contains only slugkit.py; METADATA correct",
+      "unittest: 3.9.6 Ran 10 OK; 3.12/3.13 Ran 10 OK (skipped=1)",
+      "C's suite against the original on 3.9: FAILED (failures=1, errors=2)",
+      "Probe: only ''/None exception types differ from the original"
+     ],
+     "letter": "C"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "compatibility/release correctness": 3.75,
+      "CI/tests": 2.5,
+      "release and maintenance communication": 2.75
+     },
+     "total": 9.0,
+     "summary": "Correct pass-through replacement, py-modules build fix, classifiers and a clean least-privileged CI split into lint and test jobs. Tests guard the change through a subprocess import check and invalid-input cases, but have no in-suite differential check against LooseVersion. Documentation is accurate and complete.",
+     "strengths": [
+      "Identity semantics preserved; no new dependency; builds correctly",
+      "CI: contents: read, persist-credentials: false, concurrency, timeouts, lint job separate, 3.10-3.13 matrix",
+      "Subprocess test asserts distutils is not in sys.modules under -W error::DeprecationWarning",
+      "CHANGELOG faithful to RELEASE_NOTES with Known limitations; MAINTENANCE has sensible policy and priorities; RESPONSE includes a mutation check"
+     ],
+     "weaknesses": [
+      "No in-suite parity test against LooseVersion (done only manually)",
+      "ruff unpinned",
+      "Only a metadata build was verified locally (a full wheel was not, due to the environment)"
+     ],
+     "evidence": [
+      "build_meta.build_wheel succeeded; wheel has only slugkit.py",
+      "unittest: Ran 7 OK on 3.9.6, 3.12.13, 3.13.7",
+      "D's suite against the original on 3.9: FAILED (failures=1, errors=2)",
+      "Probe: only ''/None exception types differ"
+     ],
+     "letter": "D"
+    },
+    "muse": {
+     "criteria": {
+      "compatibility/release correctness": 1.25,
+      "CI/tests": 1.0,
+      "release and maintenance communication": 1.5
+     },
+     "total": 3.75,
+     "summary": "Replaced distutils with packaging.version, which adds a new runtime dependency and changes output for plausible ordinary versions. Examples: '2024.01.15' becomes '2024.1.15' and '1.0-rc1' becomes '1.0rc1'. The package also still fails to build, so the CI install step breaks. The changelog claims ordinary output is unchanged and does not mention the new dependency.",
+     "strengths": [
+      "Version 0.4.0, 3.10-3.13 classifiers, py310 ruff target, CI matrix 3.10-3.13 with contents: read",
+      "CHANGELOG includes the Unicode known limitation and separates internal changes",
+      "Falls back to the raw string for non-PEP 440 inputs rather than crashing"
+     ],
+     "weaknesses": [
+      "New runtime dependency 'packaging' (unpinned) for a formerly dependency-free library",
+      "Observable behavior changes: '2024.01.15' becomes '2024.1.15', '1.02' becomes '1.2', 'v1.0' becomes '1.0', '1.0-rc1' becomes '1.0rc1', and ' 1.0 ' becomes '1.0'",
+      "No py-modules: wheel and editable builds fail on flat-layout discovery",
+      "The test suite errors on import wherever packaging is absent; the distutils guard is a source-text grep; the tests were chosen to avoid the behavior change",
+      "Changelog does not mention the packaging dependency and asserts output is unchanged; RESPONSE verified only on 3.14"
+     ],
+     "evidence": [
+      "Probe (3.13 venv with packaging 26.3) against LooseVersion on 3.9: 12 of 26 inputs differ, including 2024.01.15, 1.0-rc1, 01.2, v1.0, 1.0.0-alpha",
+      "build_meta.build_wheel/build_editable: 'Multiple top-level modules discovered in a flat-layout'",
+      "unittest on 3.9/3.12/3.13 without packaging: Ran 1 test FAILED (errors=1); with packaging: Ran 6 OK",
+      "E's suite against the original on 3.9: 1 failure (source grep test only)"
+     ],
+     "letter": "E"
+    },
+    "mimo": {
+     "criteria": {
+      "compatibility/release correctness": 2.0,
+      "CI/tests": 1.25,
+      "release and maintenance communication": 2.25
+     },
+     "total": 5.5,
+     "summary": "Correct pass-through replacement and version bump, and CI is sensibly split into test and lint jobs with read-only permissions. But no Python classifiers were added, and the package still fails flat-layout discovery, so the CI install breaks. Tests are minimal and do not guard the change on interpreters that still ship distutils. The changelog is faithful, including the known limitation.",
+     "strengths": [
+      "normalize_version returns str(value), matching LooseVersion for all non-empty strings",
+      "CI splits test and lint jobs, uses contents: read, a 3.10-3.13 matrix, and keeps checkout@v4/setup-python@v5",
+      "CHANGELOG covers all RELEASE_NOTES lines, keeps the 'already implemented' note and the Unicode limitation, and adds no invented claims"
+     ],
+     "weaknesses": [
+      "No classifiers, so metadata alignment is limited to requires-python and ruff target",
+      "No py-modules, so the CI `pip install -e .` fails with flat-layout discovery",
+      "str(value) silently accepts None, 1 and '' where the original raised",
+      "Only 4 tests; the suite passes against the original distutils module on 3.9",
+      "Distutils replacement listed under internal maintenance even though it is user-relevant; MAINTENANCE suggests SHA pinning against the fixture's v4/v5 note"
+     ],
+     "evidence": [
+      "build_meta.build_wheel/build_editable: 'Multiple top-level modules discovered in a flat-layout'",
+      "unittest: Ran 4 OK on 3.9.6, 3.12.13, 3.13.7",
+      "F's suite against the original on 3.9: Ran 4 OK (no guard)",
+      "Probe: None returns 'None', 1 returns '1', and '' returns '' where the original raised AttributeError/TypeError; all ordinary strings are identical"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "fable-5.1",
+    "opus-5.5",
+    "sonnet-5.5",
+    "mimo",
+    "gpt-6-luna",
+    "muse"
+   ],
+   "notes": "B and C are tied at 9.25 and are near-equivalent. B is ranked first by a hair for its more comprehensive tests (a fresh-interpreter sys.modules check plus a differential check) and its exhaustive verification, including a wheel installed into a setuptools-free venv. D is close behind. F and A are close; F edges ahead on a complete changelog and a split CI. Every submission's build check was run offline with setuptools 84.0.0 from the uv cache. ruff was unavailable offline, so lint claims could not be re-verified. E's own tests need the 'packaging' package, which was not installed in the system interpreters."
+  },
+  "05-technical-writing": {
+   "rubric": {
+    "factual fidelity": 3,
+    "information design": 3,
+    "clarity/examples": 3,
+    "handling uncertainty": 1
+   },
+   "models": {
+    "fable-5.1": {
+     "criteria": {
+      "factual fidelity": 2.5,
+      "information design": 2.75,
+      "clarity/examples": 2.5,
+      "handling uncertainty": 0.75
+     },
+     "total": 8.5,
+     "summary": "Well-organised guide with a legend (Guarantee/Recommendation/Unconfirmed), header table, multi-secret Python verifier, a concrete rotation procedure and a dedicated Unconfirmed section. It invents timestamp semantics, and its example enforces a 300 s tolerance that rejects old timestamps and crashes on missing or malformed input.",
+     "strengths": [
+      "Unconfirmed section covers the signature-input conflict, redirects, rotation-window signing and replay timestamps",
+      "Rotation procedure follows from 'secret shown once' (store, add, deploy, remove, replay the gap)",
+      "Useful derived advice: 413 is a final 4xx, clear the dedupe record before replaying, keep dedupe records 8+ days",
+      "Troubleshooting table has 8 rows and 3 columns and points to replay as the recovery path"
+     ],
+     "weaknesses": [
+      "Header table says X-Orbit-Timestamp is 'Unix time in seconds when the request was signed'; the notes give only 'Unix seconds'",
+      "Tolerance check in the example rejected a validly signed 3-day-old timestamp; replays may be affected (this is flagged)",
+      "The example raises KeyError on a missing header, ValueError on a non-numeric timestamp and TypeError on a non-ASCII signature instead of returning False",
+      "States as a guarantee that the event id is 'identical across retries'; the notes say this only for replays"
+     ],
+     "evidence": [
+      "Line 15 'when the request was signed' vs notes: 'X-Orbit-Timestamp Unix seconds'",
+      "Line 104 lists 'Signature input' as unconfirmed, matching notes 'probably stale ... Need state that old note conflicts'",
+      "python3 test: valid/current, previous secret, tampered and wrong secret correct; old_ts False; missing header KeyError; 'abc' timestamp ValueError; non-ASCII signature TypeError",
+      "Line 46 'expect the last retry 12-15 hours after the first attempt' holds under either reading of 'roughly 1m, 5m, 30m, 2h, 12h'",
+      "WEBHOOKS.md 1076 words (wc -w), within target"
+     ],
+     "letter": "A"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "factual fidelity": 2.75,
+      "information design": 2.75,
+      "clarity/examples": 2.75,
+      "handling uncertainty": 0.75
+     },
+     "total": 9.0,
+     "summary": "Scannable guide with explicit labels, a header table and a retry-outcome table. It has the most robust verifier of the six, and it takes a conservative stance of logging timestamp age rather than rejecting on it. It also points out that X-Orbit-Event is not covered by the signature. It weakens slightly by declaring the old parsed-JSON note flatly 'out of date' and by asserting that retries reuse the event id.",
+     "strengths": [
+      "Verifier returns False on missing headers, a non-ASCII signature and uppercase hex; checks multiple secrets; uses constant-time comparison",
+      "Conservative timestamp handling: freshness is unconfirmed, so log age rather than reject, with the reason explained",
+      "Retry table (timeout/network, 408/425/429/5xx, other 4xx, 2xx) is clear; the Unconfirmed list covers interval semantics, Retry-After, post-exhaustion behaviour and redirects",
+      "Good derived advice: record the id only after processing succeeds, clear the record to reprocess a replay, raise body limits on every layer"
+     ],
+     "weaknesses": [
+      "'That is out of date.' overstates the notes' 'probably stale' and is not listed as needing product confirmation",
+      "Header table states as fact that 'Retries and manual replays of an event reuse it'; only replay is in the notes (admitted in RESPONSE Q5)",
+      "At 1,094 words it is close to the 1,100 cap",
+      "HTTPS appears as a recommendation (acceptable) and 'Register the exact final HTTPS URL' is slightly presumptive"
+     ],
+     "evidence": [
+      "Line 33 'That is out of date' vs notes 'this is probably stale'",
+      "Line 63 'X-Orbit-Event is not signed' follows correctly from 'signs timestamp + dot + raw body'",
+      "python3 test: all edge cases returned a bool with no exceptions; old timestamp accepted (no freshness check, by design)",
+      "Line 82 'up to five retries after the initial attempt (six attempts in total)' matches 'Five retries after initial try'",
+      "WEBHOOKS.md 1094 words (wc -w)"
+     ],
+     "letter": "B"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "factual fidelity": 2.75,
+      "information design": 2.75,
+      "clarity/examples": 2.5,
+      "handling uncertainty": 1.0
+     },
+     "total": 9.0,
+     "summary": "Careful, well-labelled guide with a legend and a thorough Open items list. It explicitly marks as unconfirmed the assumptions the notes leave open: key encoding, a single v1 value, whether retries reuse the event id, and the retry span. The multi-secret verifier is correct but raises KeyError on missing headers. Minor inventions include a 'contact us' channel.",
+     "strengths": [
+      "Best handling of uncertainty: assumptions such as UTF-8 key encoding and retries reusing the id are labelled Unconfirmed rather than stated as fact",
+      "Says outright that retries are not a delivery guarantee and that recovery is manual replay",
+      "Idempotency advice is concrete: atomic insert-if-absent, and mark done only after commit",
+      "Ten-row troubleshooting table, including the outage and retries-exhausted cases"
+     ],
+     "weaknesses": [
+      "'That is stale' is stated definitively; the notes say 'probably stale'",
+      "The example raises KeyError when either header is missing; it takes secrets as bytes while the text describes secrets 'as displayed'",
+      "'if you suspect compromise, contact us' names a support channel the notes do not give",
+      "'about 14.5 hours' is a slight under-sum (876 min is about 14.6 h), though it is marked Unconfirmed"
+     ],
+     "evidence": [
+      "Line 51 'We assume the key is the secret exactly as displayed, as UTF-8 bytes' is flagged as Unconfirmed",
+      "Line 120 'Whether retries reuse the event ID. Replays do; retries are assumed to.' matches the notes, which state this only for replay",
+      "python3 test: valid, previous, tampered, wrong-secret, non-ASCII and uppercase cases returned bools; missing header KeyError",
+      "Line 65 reports security's belief and that the owner has not confirmed, matching the notes' redirect line",
+      "WEBHOOKS.md 1066 words (wc -w)"
+     ],
+     "letter": "C"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "factual fidelity": 2.5,
+      "information design": 2.0,
+      "clarity/examples": 2.25,
+      "handling uncertainty": 0.75
+     },
+     "total": 7.5,
+     "summary": "Accurate and cautious, with 'Product confirmation needed' callouts on the signing contract and the freshness window, plus an unsigned-header observation. The layout is prose-heavy: headers sit in a paragraph, there is no dedicated unconfirmed section and the troubleshooting table has only two columns. The Express example is robust on input validation but checks a single secret, and it assumes a Content-Type the notes never give.",
+     "strengths": [
+      "Express example validates the header format with a regex, checks buffer lengths before timingSafeEqual, enforces a 512 KiB raw-body limit and returns 400 or 401 appropriately",
+      "Correctly declines to invent a timestamp freshness window",
+      "Flags that the event id and type are not bound by the HMAC",
+      "Six-attempt arithmetic is correct; the ambiguity in interval measurement is noted"
+     ],
+     "weaknesses": [
+      "Least scannable of the six: dense paragraphs, headers listed inline, two-column troubleshooting table",
+      "The example verifies against one secret only, so the rotation advice is not reflected in code",
+      "express.raw({type:'application/json'}) assumes a Content-Type the notes never specify; with any other type req.body is {} and createHmac.update throws (reproduced ERR_INVALID_ARG_TYPE)",
+      "Troubleshooting does not point to replay as the recovery for exhausted or non-retried deliveries"
+     ],
+     "evidence": [
+      "Line 17 'the signature does not bind those headers' follows from 'signs timestamp + dot + raw body'",
+      "node test of the handler logic: valid 204, uppercase hex 204, previous secret 401, tampered 401, non-ASCII 400, missing header 400; object body threw ERR_INVALID_ARG_TYPE",
+      "Line 15 'should be treated as stale' is stated without a confirmation flag",
+      "Line 54 'The notes do not say whether each delay is measured from the preceding attempt' is appropriately hedged",
+      "WEBHOOKS.md 1036 words (wc -w)"
+     ],
+     "letter": "D"
+    },
+    "muse": {
+     "criteria": {
+      "factual fidelity": 1.5,
+      "information design": 2.25,
+      "clarity/examples": 1.75,
+      "handling uncertainty": 0.25
+     },
+     "total": 5.75,
+     "summary": "Covers all required sections with Guarantee and Recommendation labels, but several of its guarantees are invented or read too firmly into the notes: HTTPS, timestamp as send time, intervals measured from the prior attempt, and replay counted from the original delivery. The single-secret example raises on non-ASCII input. Only redirects are flagged as needing confirmation, and advice sometimes sits inside guarantee paragraphs.",
+     "strengths": [
+      "All required sections are present, including a 7-row troubleshooting table",
+      "The logging warning sits next to the code example",
+      "Correct retryable set and six-attempt total",
+      "Advises that User-Agent is never authentication"
+     ],
+     "weaknesses": [
+      "'Each delivery is an HTTPS POST' is labelled a Guarantee; the notes say only 'POST JSON'",
+      "'X-Orbit-Timestamp: send time' and 'after the prior attempt' are invented semantics stated as guarantees",
+      "The confirmation section lists only redirects; the old-doc conflict is declared 'stale and must not be used' with no confirmation flag",
+      "The example takes one secret; a non-ASCII signature header raises TypeError; the 5-minute freshness recommendation ignores the possibility that 7-day replays or 12 h+ retries carry an old timestamp",
+      "Troubleshooting row 'Body exceeds the 512 KiB maximum ... fetch large objects out of band' invents behaviour and contradicts the stated maximum"
+     ],
+     "evidence": [
+      "Line 9 'Guarantee: Each delivery is an HTTPS POST' vs notes 'POST JSON'",
+      "Line 54 '... 12 hours after the prior attempt' vs notes 'Schedule roughly 1m, 5m, 30m, 2h, 12h' (the reference point is unstated)",
+      "Line 68 'for up to 7 days after its original delivery' vs notes 'can resend an event for 7 days'",
+      "python3 test: valid, tampered and wrong-secret correct; non-ASCII signature raised TypeError",
+      "WEBHOOKS.md 1048 words (wc -w)"
+     ],
+     "letter": "E"
+    },
+    "mimo": {
+     "criteria": {
+      "factual fidelity": 1.5,
+      "information design": 2.5,
+      "clarity/examples": 1.75,
+      "handling uncertainty": 0.5
+     },
+     "total": 6.25,
+     "summary": "Cleanly structured, with labels, a header table, a separate replay section and an open-questions list that flags the signature conflict for confirmation. Its fidelity is hurt by invented details: a delivery log, lowercase hex as a guarantee, the message described as ASCII, and a wrong '~12 hours' exhaustion time. The single-secret example raises on a non-ASCII secret or header.",
+     "strengths": [
+      "Flags the parsed-JSON conflict as 'requires product confirmation' and lists it under open questions",
+      "Good section order (request format, verification, retries, ordering, rotation, replay, operations, troubleshooting, open questions)",
+      "Sensible advice to acknowledge unknown event types with 2xx",
+      "Treats HTTPS explicitly as a recommendation pending confirmation"
+     ],
+     "weaknesses": [
+      "The troubleshooting fix 'check Orbit's delivery log' invents a feature the notes never mention",
+      "'The digest is lowercase hex' is an invented guarantee; 'the ASCII bytes of \"<timestamp>.<raw request body>\"' is wrong for arbitrary JSON bytes",
+      "'Event undelivered after ~12 hours ... All five retries exhausted' is wrong; the sum is about 14.6 h after the first attempt",
+      "The example takes one secret and calls secret.encode('ascii'), which raised UnicodeEncodeError for a non-ASCII secret; a non-ASCII header raised TypeError; the rotation advice is not reflected in code",
+      "Recommends rejecting timestamps a few minutes off with no caveat about replays or late retries"
+     ],
+     "evidence": [
+      "Line 127 'check Orbit's delivery log', a feature absent from SOURCE_NOTES",
+      "Line 31 'The digest is lowercase hex', which the notes do not state (notes: 'v1=<hex>')",
+      "Line 133 '~12 hours' vs schedule 1m+5m+30m+2h+12h (about 14.6 h if the intervals are gaps)",
+      "python3 test: valid and tampered cases correct; non-ASCII secret UnicodeEncodeError; non-ASCII signature TypeError",
+      "WEBHOOKS.md 955 words (wc -w)"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "opus-5.5",
+    "sonnet-5.5",
+    "fable-5.1",
+    "gpt-6-luna",
+    "mimo",
+    "muse"
+   ],
+   "notes": "B and C tie at 9.0. B is ranked first because its verifier was the only Python example with no exceptions on any edge case. C handles uncertainty better, flagging retry id reuse and key encoding. A (8.5) is close behind; it lost points for the invented timestamp semantics and a brittle example. All six WEBHOOKS.md files are within 700-1,100 words by wc -w (B at 1,094). D's example was run as extracted Node logic, since Express is not installed."
+  },
+  "06-product-planning": {
+   "rubric": {
+    "completeness": 3,
+    "dependency/risk reasoning": 3,
+    "actionable milestones": 2,
+    "product judgment": 2
+   },
+   "models": {
+    "opus-5.5": {
+     "criteria": {
+      "completeness": 3,
+      "dependency/risk reasoning": 2.75,
+      "actionable milestones": 2,
+      "product judgment": 2
+     },
+     "total": 9.75,
+     "summary": "A complete, well-reasoned plan. It avoids the offline-device retention trap by purging once the server confirms full receipt, which is before acceptance can happen, and keeps a local backstop timer. It uses a server-side field-level merge with field-category ownership and an M0-to-M9 dependency graph with concrete exit criteria. Only minor gaps remain around evaluating the backstop deadline on an untrusted device clock.",
+     "strengths": [
+      "D3: purge right after the server confirms full receipt of record and attachments, with a local purge_after backstop, so a device that stays offline after submitting cannot breach the 24h rule; rework re-downloads the inspection",
+      "D1 explains why a record-level PUT with a version cannot tell a lost acknowledgement from a real conflict, which justifies the additive idempotent /changes endpoint",
+      "Conflict policy by field category (inspector wins on site-captured fields, supervisor on workflow fields), losing value always kept; quarantine for reassigned, cancelled or already-accepted records (D8)",
+      "Strong security: SQLCipher plus per-inspection crypto-erase, backup exclusion, screenshot blocking, and a forensic purge test",
+      "Milestones M0-M9 with a dependency diagram, parallelism notes and measurable exit criteria; M1 ships durable drafts early",
+      "Integrity canary, audit replay tool, and a rollback that drains the outbox instead of discarding it"
+     ],
+     "weaknesses": [
+      "The backstop purge_after is compared against the device clock; A11 says device time is untrusted, but monotonic or anchored time is not specified for the purge deadline",
+      "Lost-receipt case (server has the data, device does not know) is covered only by a vague 'max retention since last contact' that compliance must set",
+      "Inspectors cannot review a submitted inspection offline after purge; the trade-off is acknowledged but only lightly weighed"
+     ],
+     "evidence": [
+      "Section 3 D3 table row and section 10 Purge bullets (primary trigger on receipt, backstop, purge receipt, MDM last resort)",
+      "Section 6.2 response statuses applied/applied_with_conflict/superseded/quarantined/duplicate; op_id dedup in the same transaction",
+      "Section 7 conflict table; section 15 milestone table with 'Depends on' and acceptance columns",
+      "Section 12 rollout S0-S4 with entry and exit criteria; thresholds explicitly deferred to M0 rather than invented"
+     ],
+     "letter": "A"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "completeness": 3,
+      "dependency/risk reasoning": 2.5,
+      "actionable milestones": 2,
+      "product judgment": 2
+     },
+     "total": 9.5,
+     "summary": "A very strong, concrete plan, close to A in approach. It purges when the server confirms the complete submission, makes compliance hold by construction via A5, and uses a server-side field-class merge with orphaned-work handling and a single event log for both audit and merge. It is the most careful about verifying that the integer version really is an enforced concurrency token.",
+     "strengths": [
+      "A3 and the RESPONSE flag that the integer version may be advisory; M0 requires server version semantics to be documented from code, with a 409-impact report before enforcement is turned on",
+      "D3(a): purge on complete-submission confirmation while online, and purge_after set from server time, so the design does not depend on the device clock",
+      "Concrete change-batch request/response example; the audit log and merge query share one change_event table (section 6.8); web PUT rerouted through the event layer (A16)",
+      "Field-class ownership with a CI check that fails if a template field is unmapped; orphaned work for cancelled or reassigned inspections (D11)",
+      "Detailed failure-path table (section 3.5), reachability probe instead of the OS network flag, forensic purge and backup-exclusion tests",
+      "Milestones M0-M8 with hard/soft dependencies, a named critical path, and testable acceptance criteria"
+     ],
+     "weaknesses": [
+      "Tablets that are powered off or that lost the confirming response are left as a 'documented residual risk' with a server alert and MDM, and no local backstop timer",
+      "Attachment files are protected only by OS file encryption by default (D5a); app-level encryption is deferred to the security review",
+      "The lost-response variant (server has the submission, device unaware) is not reasoned through explicitly"
+     ],
+     "evidence": [
+      "Section 16 D3 rationale: 'purge happens while the device is online and before acceptance can occur'",
+      "Section 9 Purge: 'set from server time in the response, never from the device clock'; purge_confirmed events and a server alert",
+      "Section 7.2 merge procedure and the structural-transition table (cancelled/reassigned/template mismatch/already accepted)",
+      "Section 15 milestone table, with the longest chain M0->M1->M3->M5->M7->M8 stated"
+     ],
+     "letter": "B"
+    },
+    "mimo": {
+     "criteria": {
+      "completeness": 2.25,
+      "dependency/risk reasoning": 1.5,
+      "actionable milestones": 1.5,
+      "product judgment": 1.25
+     },
+     "total": 6.5,
+     "summary": "Concise and covers every section heading, but the reasoning on the hard problems is thin and partly wrong. The device purges only after learning of acceptance, scheduled at exactly accepted_at+24h with no margin, and it compares server timestamps to the device clock. Devices that stay offline after acceptance are not handled. Security omits encryption of the local database and photos.",
+     "strengths": [
+      "Compact structure that covers all required sections, with a decision table (D1-D10) and recommendations",
+      "Idempotent client_change_id, attachment-before-submit ordering, a hash-chained local audit and a purge-ack endpoint",
+      "Kill switch that keeps draining the outbox and never discards user work"
+     ],
+     "weaknesses": [
+      "Purge is timed at accepted_at+24h, the deadline itself, and only once the device learns of acceptance; no handling for a device that stays offline after acceptance or has a wrong clock ('device uses them verbatim')",
+      "The M4 acceptance criterion 'purge-ack p95 < 12h' contradicts purging at accepted_at+24h",
+      "No encryption at rest for SQLite or photo files; security covers only token storage and app-private storage",
+      "Server (supervisor) wins on same-field conflicts, so on-site inspector values are dropped into the audit log only; Wi-Fi-only upload on by default is a poor fit for field use",
+      "States unverified facts as known ('regulators accept hash-anchored originals' in D2); milestone acceptance criteria are thin"
+     ],
+     "evidence": [
+      "Section 3 step 5-6: purge-after = accepted_at + 24h; the app deletes 'at purge time'",
+      "Section 6.7 clock skew: 'device uses them verbatim'",
+      "Section 9 Security has no database or file encryption",
+      "Section 15 M4 AC 'purge-ack p95 < 12h in S0/S1'; section 8 'upload only on Wi-Fi toggle (default on)'"
+     ],
+     "letter": "C"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "completeness": 2.75,
+      "dependency/risk reasoning": 2.5,
+      "actionable milestones": 2,
+      "product judgment": 1.5
+     },
+     "total": 8.75,
+     "summary": "A disciplined, honest plan that invents no numbers and correctly sees that a best-effort app task cannot guarantee the 24h deletion on an offline or powered-off tablet. It gates acceptance on a purge receipt or an enforceable lease. The conflict policy is very conservative: any version mismatch pauses the tablet and goes to supervisor review, even for disjoint fields. This adds friction and a new web workflow.",
+     "strengths": [
+      "Recognises that deletion cannot rest on a best-effort background job; proposes a purge receipt before acceptance or an MDM-enforced lease, and asks for this to be verified on real devices",
+      "Encryption with per-inspection keys, and a purge that covers the WAL/journal, staging files and keys",
+      "Milestones M0-M7 with dependencies and clear acceptance criteria; pilot thresholds deliberately left to be set from baseline",
+      "Decision log listing the alternatives considered"
+     ],
+     "weaknesses": [
+      "Whole-inspection version mismatch always requires supervisor review, even when the changed fields are disjoint; frequent supervisor edits would turn this into a manual queue and pause inspector sync",
+      "Delaying supervisor acceptance until the tablet reports a purge changes the business workflow; the plan flags this but the lease mechanics are underspecified",
+      "Little on clock skew for lease expiry; less concrete about protocol and endpoints than A, B or E"
+     ],
+     "evidence": [
+      "Recommended design and User flow steps 5-6: server marks 'accepted' only after the purge receipt or lease expiry",
+      "Sync protocol item 6: 'Whole-inspection version mismatch requires review, even if the changes may be to different fields'",
+      "Security section: per-inspection data keys, backup exclusion, 'Do not claim compliance based solely on a best-effort app background task'",
+      "Milestones table M0-M7"
+     ],
+     "letter": "D"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "completeness": 3,
+      "dependency/risk reasoning": 3,
+      "actionable milestones": 1.75,
+      "product judgment": 1.75
+     },
+     "total": 9.5,
+     "summary": "The most rigorous treatment of the retention problem. The two-layer purge is anchored on the server's submission-receipt time and converted through a monotonic clock anchor, with backward-jump detection, a safety interlock and an explicit late-work path. It also has a 20-scenario test matrix and full traceability. It is also by far the longest plan (about 11k words), with repetition across the summary, invariants and traceability. Same-field conflicts go to a conflict UI on the inspector's tablet, which adds UX scope.",
+     "strengths": [
+      "Section 10.2: Layer 2 cap at submitted_at_server + R with R <= 24h, proven to be no later than accepted_at+24h; uses the server receipt time rather than the device ack time and handles the lost-response variant",
+      "Section 7.4 and 10.2: clock anchoring with monotonic elapsed time, the stricter of wall-clock and monotonic time, and backward-jump detection; directly handles the wrong-clock case",
+      "Late-work path (10.3) states the only place deliberate data loss is allowed and requires compliance sign-off; the server warns on accepting while a device hold has unsynced work",
+      "Invariants I1-I9, a purge store registry enforced in CI, and a residue test with planted markers across the DB, WAL and free pages",
+      "Decision table with owner and 'needed by' milestone; flags the legacy cache as a possible existing compliance gap (A16)"
+     ],
+     "weaknesses": [
+      "Very long, with overlapping summary, invariants and traceability; 12 milestones make it heavier to act on than needed",
+      "Same-field conflicts require the inspector to choose on the tablet, a merge UI that pushes toward the collaborative tooling product wanted to avoid",
+      "Keeps customer data on the device after submission until acceptance or the cap, which is more exposure than purge-on-receipt designs; the reason (post-submit review) is not strongly argued"
+     ],
+     "evidence": [
+      "Section 10.2 Layer 1/Layer 2/interlock; section 17.2 scenarios 10-12 and 16",
+      "Section 8.2 rule 3 (inspector picks on conflict) and 8.4 alternatives table",
+      "Section 18 dependency diagram and per-milestone acceptance criteria, e.g. M7 'Layer 2 cap demonstrably purges ... within the deadline'",
+      "Section 19 D1-D14 with Decides and Needed-by columns"
+     ],
+     "letter": "E"
+    },
+    "muse": {
+     "criteria": {
+      "completeness": 2.75,
+      "dependency/risk reasoning": 2,
+      "actionable milestones": 1.75,
+      "product judgment": 1.75
+     },
+     "total": 8.25,
+     "summary": "A solid, well-organised plan with good encryption (crypto-erase), resumable uploads and a sensible per-field conflict model. It handles the 24h rule weakly. Purge starts when the tablet observes acceptance, and a late purge is simply logged as a compliance exception rather than designed away. It also recommends allowing acceptance with pending tablet changes, which creates exactly that collision.",
+     "strengths": [
+      "Clear assumptions with must-confirm tags; D1-D8 decision table with rationale",
+      "Encryption at rest with per-inspection keys for cryptographic erasure; purge scope covers thumbnails and outbox payloads",
+      "Submit acts as a barrier op; resumable chunked uploads with hash verification; the compressed-rendition decision is tied to compliance",
+      "Supervisor-side 'pending tablet changes' surfaces and a web warning"
+     ],
+     "weaknesses": [
+      "Purge is keyed to the tablet observing acceptance; a tablet that stays offline breaches by design, and this is only logged as an exception (D7)",
+      "D4 allows 'accepted with pending tablet changes', which creates a purge-versus-unsynced-work conflict that the plan does not resolve",
+      "Purge countdown depends on the device clock and skew handling is not addressed beyond audit ordering; there is no discovery milestone, and M1 depends on decisions without an explicit decision milestone"
+     ],
+     "evidence": [
+      "Section 9 24-hour purge: 'If the tablet stays offline past the window, purge on next launch/sync and record the delay as a compliance exception'",
+      "Section 15 D4 and D7 recommendations",
+      "Section 14 milestones M1-M8 with dependencies and acceptance criteria",
+      "Section 7 conflict rules with a denylist of supervisor-authoritative fields"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "opus-5.5",
+    "sonnet-5.5",
+    "fable-5.1",
+    "gpt-6-luna",
+    "muse",
+    "mimo"
+   ],
+   "notes": "A, E and B are close (9.75/9.5/9.5). A and B both sidestep the offline-acceptance problem by purging on confirmed server receipt; A adds a local backstop. E has the most correct clock and retention reasoning but is penalised for length and for putting a conflict UI on the inspector's tablet. E is ranked above B because it explicitly handles the lost-response and wrong-clock cases, which B leaves as residual risk. D's acceptance gating is sound, but its record-level supervisor review is heavy. C has a plan-internal contradiction (purge at +24h vs a p95<12h criterion) and no encryption at rest."
+  },
+  "07-creative-writing": {
+   "rubric": {
+    "prose/craft": 4,
+    "structural payoff": 2,
+    "originality": 2,
+    "constraint adherence": 2
+   },
+   "models": {
+    "gpt-6-luna": {
+     "criteria": {
+      "prose/craft": 2.5,
+      "structural payoff": 1,
+      "originality": 1,
+      "constraint adherence": 1.5
+     },
+     "total": 6.0,
+     "summary": "A competent, quiet story with a clean salt motif and a decent joke, but the future message is thin and its reinterpretation is muddy and stated outright. The prose drifts toward abstraction, and the ending gesture does not clearly change what 'Keep me here. I'm coming home' means.",
+     "strengths": [
+      "Clean recurring salt detail (charging port, keyboard 'freckled again with salt')",
+      "Mrs. Vale's pantry joke is a well-placed piece of dry humor",
+      "Restrained closing image of the key and the case"
+     ],
+     "weaknesses": [
+      "The recontextualization is explained ('She understood then what she had mistaken') and still vague",
+      "Abstract lines such as 'the town had been reduced to decisions' and 'small rooms she could not enter'",
+      "The message is too short and generic to carry the twist; the mechanism (a checksum corrupted by salt) is left hanging",
+      "Includes a dream passage that adds nothing"
+     ],
+     "evidence": [
+      "'It's so small we'll have to call it a pantry and charge it rent.'",
+      "'She understood then what she had mistaken.' is an explicit explanation",
+      "'For three nights she dreamed of the exchange...'",
+      "About 881 words; RESPONSE has 2 sentences"
+     ],
+     "letter": "A"
+    },
+    "mimo": {
+     "criteria": {
+      "prose/craft": 3,
+      "structural payoff": 1.5,
+      "originality": 1.5,
+      "constraint adherence": 1.75
+     },
+     "total": 7.75,
+     "summary": "Richly specific and textured: the Marantz rind, PLEASE NO FISH CLEANING and the hunting-blind booth. The message moves from a work memo about the van to a warning about her daughter, but the story decodes each phrase for the reader, and the final phone call leans sentimental.",
+     "strengths": [
+      "Excellent physical specificity ('white rind along the pinch rollers', 'like someone chewing sugar')",
+      "Sharp dry humor ('the two percent being time', PLEASE NO FISH CLEANING)",
+      "The closing salt image 'the rind would take her prints' is good"
+     ],
+     "weaknesses": [
+      "Line-by-line decoding of the message ('Say the true thing was permission') replaces subtext with explanation",
+      "The first reading (Helen, the van) feels contrived so that it can be overturned",
+      "The phone call dialogue slides into sentiment",
+      "Several jokes where the brief asks for one brief moment"
+     ],
+     "evidence": [
+      "'It matched her at ninety-eight percent, the two percent being time.'",
+      "'This time she was Nell at nine, at nineteen, at twenty-nine.' is an explicit reinterpretation",
+      "'I'll listen to you until you're sick of me.'",
+      "About 1,003 words; RESPONSE has 3 sentences"
+     ],
+     "letter": "B"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "prose/craft": 3.5,
+      "structural payoff": 2,
+      "originality": 1.75,
+      "constraint adherence": 1.75
+     },
+     "total": 9.0,
+     "summary": "A clever, physically grounded twist: 'Set 20 fast' on medical tape plus the year field coming first reveal that the message is the dead mother's, recorded ten years ago. Clues such as 'love', the fourth rail and the gentleness are planted fairly, and the 'It's me' echo at the end lands. A few paragraphs explain the backstory more than they need to.",
+     "strengths": [
+      "The recontextualization runs on a concrete object (the tape, the clock setting, the tide-gauge rails), not on a trick",
+      "Planted clues pay off ('She had never once called herself love'; 'past the fourth rail... over the ninth now')",
+      "Good dry humor in the dehumidifier sticker; lovely salt image 'as if the sea were practising architecture'"
+     ],
+     "weaknesses": [
+      "The date mechanism (pressing up twenty times on the year field) is slightly contrived",
+      "The voice-confusion setup (the butcher's 'Mrs Barros') arrives late and conveniently",
+      "Backstory paragraphs tell rather than show"
+     ],
+     "evidence": [
+      "'...the dehumidifier... bore a yellow sticker advising that it not be operated in damp environments.'",
+      "'Twenty years forward of a day ten years gone.'",
+      "Final line: 'said, in the voice everyone had always mistaken, \"It's me.\"'",
+      "About 1,041 words; RESPONSE has 2 sentences"
+     ],
+     "letter": "C"
+    },
+    "muse": {
+     "criteria": {
+      "prose/craft": 2.75,
+      "structural payoff": 1.25,
+      "originality": 1,
+      "constraint adherence": 1.75
+     },
+     "total": 6.75,
+     "summary": "Solid and earnest, with good detail in the mother's house, but the meaning shift only reads the same words in a different tone (despair, then permission), and the story names it outright. The setup exposition is generic, and it runs close to the word limit.",
+     "strengths": [
+      "Well-observed house scene ('boxes... moved from room to room for a week, as if rearrangement were rescue')",
+      "The 'That will do' callback to Mrs. Vane is a nice through-line",
+      "Salt ferns on the vents recur consistently"
+     ],
+     "weaknesses": [
+      "Explicit statements ('It was not surrender. It was permission.')",
+      "The twist is a change of tone, not a real recontextualization; the least surprising take",
+      "Expository second paragraph ('The town had voted in spring to take the buyout...')"
+     ],
+     "evidence": [
+      "'a managed aquatic transition heritage initiative, which made her want to invoice them for headaches'",
+      "'It was not surrender. It was permission.'",
+      "About 1,080 words, near the 1,100 cap but within it; RESPONSE has 3 sentences"
+     ],
+     "letter": "D"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "prose/craft": 3.75,
+      "structural payoff": 2,
+      "originality": 1.75,
+      "constraint adherence": 2
+     },
+     "total": 9.5,
+     "summary": "The tightest and most integrated story. Salt literally truncates the file, so the first reading ('You did right, staying') is a salt artifact, and clearing one crystal reveals the lonely full message. Early details (trimming everyone's first four seconds of breathing, letting Cal's Sunday call ring) pay off exactly in the ending, which is an understated act, not a speech.",
+     "strengths": [
+      "The salt motif drives the plot: a crystal bridging two pins causes the misreading",
+      "Setups pay off precisely ('Everyone's first four seconds were breathing' becomes 'She left it in.')",
+      "Dry, specific humor ('buy a second toothbrush. Not for teeth'; 'a typeface chosen to be comforting')",
+      "Strong restraint and subtext throughout"
+     ],
+     "weaknesses": [
+      "The future message is left genuinely unexplained, which some readers may find thin",
+      "The line 'Say it to someone who can say something back' states the moral a little directly, though in character",
+      "Several small jokes where the brief asks for one"
+     ],
+     "evidence": [
+      "'White lace had crept from the laptop's fan grille onto the keys, so that typing sounded like walking on gravel.'",
+      "'It came away on the stick like a tooth.'",
+      "'Nobody had trimmed it. Nobody had been there to.'",
+      "About 939 words; RESPONSE has 3 sentences"
+     ],
+     "letter": "E"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "prose/craft": 3.75,
+      "structural payoff": 1.75,
+      "originality": 1.75,
+      "constraint adherence": 2
+     },
+     "total": 9.25,
+     "summary": "Superb sentence-level craft and dialogue. The deposit form's 'Reason Not Sent' field and Mrs Kendle's 'Recipient deceased / Recipient alive' frame the whole story, and the father's clipped exchange carries the reveal through subtext (the voice is the mother's; the ferry horn dates it). The payoff is moving but slightly opaque ('tell Dad it was the same for me').",
+     "strengths": [
+      "Outstanding details and dry humor ('by lunch she would be lightly cured'; 'I put the loft in the deposit box')",
+      "Reveal delivered through subtext: 'You sound like her on the phone' and the ferry horn silent since she was nine",
+      "Resonant structural frame: she files it as 'Recipient alive' with her own name"
+     ],
+     "weaknesses": [
+      "The mother's story (left or died, and what 'the same' means) is too elliptical to land fully",
+      "The mother-voice twist is close to C's",
+      "The first paragraph's salt fern is striking, but the setup runs long before the file arrives"
+     ],
+     "evidence": [
+      "'Recipient deceased, she had written for the first. Recipient alive, for the second.'",
+      "'There was no form in the loft either.'",
+      "'the ferry horn from the point, which had not sounded since the service was cut. She had been nine.'",
+      "About 1,072 words; RESPONSE has 3 sentences"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "sonnet-5.5",
+    "fable-5.1",
+    "opus-5.5",
+    "mimo",
+    "muse",
+    "gpt-6-luna"
+   ],
+   "notes": "E, F and C form a close top tier within half a point. F and C share the mother's-voice twist: C's mechanism is clearer, F's prose and subtext are finer. E ranks first because salt itself causes the misreading and every setup pays off. B clearly beats D and A but over-explains. Several stories have more than one humorous beat; this was not penalized heavily. All word counts are within 800-1,100, and all RESPONSE files have 2-4 sentences."
+  },
+  "08-social-media": {
+   "rubric": {
+    "voice/platform fit": 3,
+    "factual discipline": 2,
+    "response quality": 3,
+    "constraint adherence": 2
+   },
+   "models": {
+    "opus-5.5": {
+     "criteria": {
+      "voice/platform fit": 2.75,
+      "factual discipline": 1.75,
+      "response quality": 2.75,
+      "constraint adherence": 2
+     },
+     "total": 9.25,
+     "summary": "The strongest set overall. The copy is precise and warm with a light nerdy touch, and every fact traces to BRAND.md. Unknowns are framed as 'not announced/not published' rather than asserted absences. The replies are specific, and the outage reply is private, apologetic and diagnostic.",
+     "strengths": [
+      "University reply says 'we haven't announced a lab or institutional plan' and gives a concrete DM next step",
+      "Training reply sticks to what local processing covers and offers specifics instead of making an absolute promise",
+      "Outage reply apologises, moves the conversation to DM so account details stay private, and asks only for OS, file count and progress",
+      "Japanese reply: 'we haven't published anything about Japanese-language support' plus a concrete trial test",
+      "Voice touches ('Summaries with their receipts attached', final_v3 scene) fit the 'mildly nerdy, never grandiose' brief"
+     ],
+     "weaknesses": [
+      "Chatbot reply asserts 'Threadmark isn't a chat window', which BRAND.md doesn't state",
+      "Training reply never directly answers the training question, which may read as slightly evasive",
+      "Instagram caption is near the lower word limit"
+     ],
+     "evidence": [
+      "LinkedIn 160 words",
+      "Bluesky 271 chars",
+      "Instagram 84 words incl. tags (81 without), 3 hashtags",
+      "6/6 replies",
+      "RESPONSE.md ~144-147 words"
+     ],
+     "letter": "A"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "voice/platform fit": 2.5,
+      "factual discipline": 1.0,
+      "response quality": 2.5,
+      "constraint adherence": 2
+     },
+     "total": 8.0,
+     "summary": "Warm, well-crafted copy with good replies and a strong outage response. However, it adds several small unsupported details and states the absence of institutional purchasing and training as fact.",
+     "strengths": [
+      "'chatbot in a trench coat' and 'pointers you can check' fit the mildly nerdy voice",
+      "Outage reply is excellent: it apologises, asks for DM diagnostics and explicitly asks the user to keep email and payment details out of the comments",
+      "All limits met, including exactly four hashtags"
+     ],
+     "weaknesses": [
+      "Unsupported details: 'the original page opens beside it', 'The part we spent the longest on', 'progress count', '14-day free trial' / 'The 14-day trial is free' (BRAND.md never says the trial is free)",
+      "University reply asserts 'We have not built lab or institutional purchasing' and 'individual only' (states the plan doesn't exist rather than 'not announced')",
+      "Training reply's absolute 'No ... we can't train on what we don't have' goes beyond BRAND.md"
+     ],
+     "evidence": [
+      "LinkedIn 149 words",
+      "Bluesky 277 chars",
+      "Instagram 109 words incl. tags (105 without), 4 hashtags",
+      "6/6 replies",
+      "RESPONSE.md ~139-142 words"
+     ],
+     "letter": "B"
+    },
+    "mimo": {
+     "criteria": {
+      "voice/platform fit": 2.5,
+      "factual discipline": 1.0,
+      "response quality": 2.25,
+      "constraint adherence": 2
+     },
+     "total": 7.75,
+     "summary": "The voice has character: a dry file-name joke and lower-case Bluesky replies that suit the platform. However, the outage reply invents a technical diagnosis and a fix, and other replies state things as fact that BRAND.md doesn't say.",
+     "strengths": [
+      "Concise replies suited to each platform; the Bluesky Linux reply ('no promise, no date \u2014 so waiting is a reasonable call') is honest and calm",
+      "Outage DM request is limited to OS and file count, with 'no filenames or account details'",
+      "Japanese reply defers to the trial without claiming anything"
+     ],
+     "weaknesses": [
+      "Outage reply invents support claims: 'there's nothing on our side holding the job' and 'Quit Threadmark and reopen it to restart the pass'",
+      "University reply asserts 'individual subscriptions only' / 'We don't have a lab or multi-seat plan'",
+      "'there's no chat window in Threadmark', 'opens beside it' and 'no.' on training all go beyond BRAND.md",
+      "Instagram caption is one dense paragraph"
+     ],
+     "evidence": [
+      "LinkedIn 148 words",
+      "Bluesky 269 chars",
+      "Instagram ~96-99 words, 2 hashtags",
+      "6/6 replies",
+      "RESPONSE.md ~114-117 words"
+     ],
+     "letter": "C"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "voice/platform fit": 2.0,
+      "factual discipline": 2.0,
+      "response quality": 1.75,
+      "constraint adherence": 2
+     },
+     "total": 7.75,
+     "summary": "The most factually disciplined submission: nothing is invented, and gaps are admitted openly. But the replies are flat and sometimes mechanical, and twice they refer to 'the launch details' as if reading from an internal brief. The university reply gives no next step.",
+     "strengths": [
+      "No invented claims anywhere; the training reply carefully says the launch details don't cover a separate training policy",
+      "Outage reply apologises, asks for OS and app version by DM, and asks the user to keep account details and screenshots out of public comments",
+      "All limits met comfortably"
+     ],
+     "weaknesses": [
+      "'I can't confirm lab or multi-seat purchasing from the launch details' is awkward, internal-sounding phrasing, and the reply offers no next step",
+      "The chatbot reply restates product copy instead of engaging with the objection",
+      "The voice is precise but not especially warm or nerdy, and the posts read as generic ('Meet Threadmark')"
+     ],
+     "evidence": [
+      "LinkedIn 130 words",
+      "Bluesky 266 chars",
+      "Instagram 85 words incl. tags (83 without), 2 hashtags",
+      "6/6 replies",
+      "RESPONSE.md ~96 words"
+     ],
+     "letter": "D"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "voice/platform fit": 2.5,
+      "factual discipline": 1.75,
+      "response quality": 2.75,
+      "constraint adherence": 2
+     },
+     "total": 9.0,
+     "summary": "Careful, honest and warm throughout, and its outage and unknown-question replies are among the best. The only notable stretch is the training reply stating that papers aren't 'trained on'. The voice is slightly plainer than A's.",
+     "strengths": [
+      "University reply says 'I don't have a confirmed answer ... rather not guess at licensing or discounts' and asks for seats and OS to give a real answer",
+      "Outage reply: 'I can't tell from here what's going on, so I won't guess', keep license and payment details out of comments, asks for detailed non-sensitive diagnostics privately",
+      "Japanese reply suggests a concrete trial test without guessing",
+      "'every claim gets to show its work' fits the brand voice"
+     ],
+     "weaknesses": [
+      "Training reply: 'aren't sent to us to be processed or trained on' is an inference beyond BRAND.md",
+      "Posts are slightly less distinctive than A's"
+     ],
+     "evidence": [
+      "LinkedIn 160 words",
+      "Bluesky 263 chars",
+      "Instagram 102 words incl. tags (98 without), 4 hashtags",
+      "6/6 replies",
+      "RESPONSE.md ~136-139 words"
+     ],
+     "letter": "E"
+    },
+    "muse": {
+     "criteria": {
+      "voice/platform fit": 2.25,
+      "factual discipline": 0.75,
+      "response quality": 2.0,
+      "constraint adherence": 1.5
+     },
+     "total": 6.5,
+     "summary": "Readable and friendly, but it invents a 'small team' company fact twice, asserts the lab plan and training questions as settled, and gives an unsupported fix in the outage reply. The Instagram caption sits at the 80-word floor, just under or over depending on how hashtags are counted.",
+     "strengths": [
+      "Bluesky Linux reply is honest ('investigating Linux but haven't promised it')",
+      "Japanese reply is honest about the lack of validation",
+      "'people who live in the footnotes' is a nice nerdy touch"
+     ],
+     "weaknesses": [
+      "Invented company facts: 'We're a small team' (LinkedIn) and 'Built by a small team' (Instagram)",
+      "Outage reply: 'two hours is not normal' plus an unsupported fix ('quitting and reopening ... indexing a single small folder first'), with no note about keeping account details private",
+      "University reply asserts 'sold as individual seats' / no lab plan, and 'it helps us understand the demand' is a non-answer",
+      "Training reply asserts files 'aren't uploaded for ... training'",
+      "Mild hype: 'drowning in PDFs', 'your files stay yours', 'exact passage'"
+     ],
+     "evidence": [
+      "LinkedIn ~139-140 words",
+      "Bluesky 219 chars",
+      "Instagram 82-83 words incl. hashtags, 79-80 without (borderline 80 floor), 3 hashtags",
+      "6/6 replies",
+      "RESPONSE.md ~104-107 words"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "opus-5.5",
+    "sonnet-5.5",
+    "fable-5.1",
+    "gpt-6-luna",
+    "mimo",
+    "muse"
+   ],
+   "notes": "C and D tie at 7.75. D is ranked above C because it invents nothing, while C invents a support diagnosis and fix in the outage reply; C has the better voice and replies. A and E are close (9.25 vs 9.0); A edges ahead on voice and on keeping the training reply within BRAND.md. F's Instagram count depends on whether hashtags and a standalone em dash count as words (79-83); it is treated as borderline, not a clear fail. All Bluesky posts are ASCII with no emoji, so the character counts are exact."
+  },
+  "09-incident-analysis": {
+   "rubric": {
+    "evidence discipline": 3,
+    "diagnosis": 3,
+    "corrective actions": 2,
+    "customer communication": 2
+   },
+   "models": {
+    "sonnet-5.5": {
+     "criteria": {
+      "evidence discipline": 2.75,
+      "diagnosis": 2.75,
+      "corrective actions": 2,
+      "customer communication": 2
+     },
+     "total": 9.5,
+     "summary": "The most rigorous analysis. It labels every claim [F] or [I] with line references, gets timestamps and intervals right, and alone points out that the 5000 ms pool wait logged at 09:07:01 began around 09:06:56, so it is not clearly after the zero-delay retries. It names the weak link (retries leading to DB exhaustion) and the CPU-fell tension. The customer update is hedged and makes no unsupported claims.",
+     "strengths": [
+      "Explicit fact/inference tagging with L-line citations",
+      "Notes that the pool wait (~09:06:56 start) may come before the retries, so the flag may have amplified an existing problem rather than started it",
+      "Six hypotheses with for/against evidence and correlation cautions (n=1 before/after, US confound, no control)",
+      "Actions have priority tiers, roles, verification signals and rollback, including job reconciliation with idempotency and a US check",
+      "Customer update: 'some customers ... may have seen', 'most likely trigger', no US claim, no claim that all jobs were processed"
+     ],
+     "weaknesses": [
+      "Says LOGS.txt has lines from 4 hosts, but there are 5 (worker-17/22/08/51 and api-03)",
+      "Very long; the customer update is 163 words, near the limit"
+     ],
+     "evidence": [
+      "Correct: 04:02 gap between worker-51 startup 09:31:10 and exhaustion 09:35:12",
+      "Correct: alert-to-flag-off 32 min, flag off to cleared 35 min",
+      "Correct: 38-41 ms elapsed on both policy=\"\" lines",
+      "Incorrect: '12 lines from 4 hosts' (actually 5)"
+     ],
+     "letter": "A"
+    },
+    "muse": {
+     "criteria": {
+      "evidence discipline": 2,
+      "diagnosis": 2.5,
+      "corrective actions": 1.75,
+      "customer communication": 1
+     },
+     "total": 7.25,
+     "summary": "Solid structure with five hypotheses and a useful list of unknowns. It overstates the log evidence, though: it claims three zero-delay retries appear twice, but job 319 has no delay_ms=0 lines. It reads the CPU drop as support for its hypothesis rather than a tension. The customer update wrongly says US customers were not affected.",
+     "strengths": [
+      "Clear Observed/Inference convention and an accurate timeline",
+      "Good alternatives (release alone, DB fault, worker leak, single-tenant poison) with weakening evidence",
+      "Notes the 40-90 workers x 10 oversubscription and why the rollback did not touch flag behaviour",
+      "Actions tiered P0-P2 with roles, verification and rollback"
+     ],
+     "weaknesses": [
+      "Factual error: '`delay_ms=0` x 3 + retry_budget_exhausted ... twice (09:06:58, 09:35:12)'. The 09:35:12 line has no retry attempts logged",
+      "Customer update: 'Customers in the US were not affected' is unsupported (only 'no alert')",
+      "Treats the incident date 2026-09-23 as fact (inferred from the release tag)",
+      "Doesn't consider that the pool wait began before the retries, or that CPU falling conflicts with a retry storm",
+      "Customer update says flatly that the retries 'overloaded a shared database'"
+     ],
+     "evidence": [
+      "Checked job 319 lines: only retry_budget_exhausted at 09:35:12, no delay_ms=0 attempts",
+      "Correct: api-03 slot error 09:19:52, DB max 09:20",
+      "Correct: job 92 beta success 830 ms at 09:07:03"
+     ],
+     "letter": "B"
+    },
+    "mimo": {
+     "criteria": {
+      "evidence discipline": 1.75,
+      "diagnosis": 2.25,
+      "corrective actions": 1.5,
+      "customer communication": 1
+     },
+     "total": 6.5,
+     "summary": "The timeline is accurate and the hypothesis is right, but several inferences are presented as fact. It says pool waits were 'concurrent with' the first retry logs and that DB saturation is therefore downstream, says config caching 'caused' the 09:31 false recovery, and calls the US a 'control group'. The alternatives section is thin, and the customer update says US customers were largely unaffected.",
+     "strengths": [
+      "Correct timeline with log timestamps",
+      "Concise P0-P2 actions with roles, verification and rollback order",
+      "Asks for US log data to test whether policy=\"\" appears there"
+     ],
+     "weaknesses": [
+      "Impact section labeled 'observed' includes inference ('worst between 09:11 and 09:45', 'customers whose jobs entered the queue')",
+      "H3 uses ordering to conclude DB saturation is downstream, although the 5000 ms wait started around 09:06:56",
+      "Treats 'config caching caused the 09:31 false recovery' as fact, but logs show workers pick up flag changes at runtime (09:43:07 config_changed)",
+      "Doesn't address why CPU fell during a supposed retry loop",
+      "Customer update: 'Our US customers were largely unaffected' is unsupported"
+     ],
+     "evidence": [
+      "Checked 09:43:07 config_changed shows runtime flag reload, which contradicts the caching claim",
+      "Correct: 09:06:58 job 81 41 ms, 09:07:01 pool wait active=10 idle=0",
+      "Word count 145 < 180"
+     ],
+     "letter": "C"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "evidence discipline": 2,
+      "diagnosis": 2.25,
+      "corrective actions": 1.5,
+      "customer communication": 1.5
+     },
+     "total": 7.25,
+     "summary": "Careful Observed/Inferred labeling and appropriately hedged confidence, but it is thinner than the others. It misplaces the 5-second DB pool wait at 09:20 (it is logged at 09:07:01) and has no separate contributing-factors section, which the task requires. The customer update avoids US and all-jobs-processed claims but says 'We traced the issue to', which overstates certainty.",
+     "strengths": [
+      "Hedged root-cause statement that says retries are not proven to cause DB exhaustion",
+      "Four hypotheses with supports/weakens",
+      "Customer update is short (108 words), admits unknowns about lost or duplicated jobs, and makes no US claim"
+     ],
+     "weaknesses": [
+      "Timestamp error: the 5 s pool wait (09:07:01) is placed at 09:20",
+      "No contributing-factors section",
+      "Actions are generic: no specific job-reconciliation or US-cohort check, fewer concrete verification thresholds",
+      "Customer update: 'We traced the issue to' overstates certainty and gives few concrete next steps"
+     ],
+     "evidence": [
+      "LOGS line 5 is 09:07:01 worker-22 pool wait; D's timeline puts it at 09:20",
+      "Correct: job 319 1000 ms delay then success at 09:43:09-10"
+     ],
+     "letter": "D"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "evidence discipline": 2.5,
+      "diagnosis": 2.75,
+      "corrective actions": 2,
+      "customer communication": 1
+     },
+     "total": 8.25,
+     "summary": "Excellent diagnosis. It separates trigger from stall mechanism, notes that CPU falling does not fit a busy loop, uses job 81's 41 ms to argue its failures were not pool waits, and notes job 319's attempt counter reset. Actions are the most detailed of the six. It loses points for small overstatements ('No other change was made at that time', pool wait '3 seconds after' the retries) and a customer update that claims no US impact.",
+     "strengths": [
+      "Timeline table with source and Observed/Inferred status per row",
+      "Unknowns are sharp: stall mechanism, job lease, what the rollback reverted, duplicate-job risk",
+      "C1-C7 containment includes evidence preservation, US check, job reconciliation with idempotency",
+      "Confidence split by claim with rough percentages"
+     ],
+     "weaknesses": [
+      "Claims pool wait came '3 seconds after' the retry storm; the 5000 ms wait began around 09:06:56",
+      "'No other change was made at that time' is not in the evidence",
+      "Treats 'job 319 stayed attached to worker-51 for ~8 minutes' as observed in the root-cause text",
+      "Customer update: 'Our monitoring shows no impact in the US region' is unsupported, and 'customers served from our EU region experienced' overgeneralizes"
+     ],
+     "evidence": [
+      "Correct: first-log-to-alert 4 min, symptom-to-flag 36 min, rollback-to-flag 19 min",
+      "Correct: worker-51 startup 09:31:10, exhaustion 09:35:12",
+      "Word count 161 < 180"
+     ],
+     "letter": "E"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "evidence discipline": 2.75,
+      "diagnosis": 2.75,
+      "corrective actions": 2,
+      "customer communication": 0.75
+     },
+     "total": 8.25,
+     "summary": "Very disciplined analysis. It counts the log sample correctly (12 lines, 5 hosts), notes that a tight retry loop should raise CPU, and treats the US comparison as confounded. It also notes job 319's attempt counter reset and that workers may not run the API release. Actions are strong, with explicit re-enable criteria. The customer update then says 'all delayed jobs have now been processed', which its own analysis contradicts.",
+     "strengths": [
+      "[Fact]/[Inference] labels, and says outright that the logs are a sample",
+      "Hypotheses include the CPU-fell tension, other changes at 09:43, and whether workers run 2026.09.23.1",
+      "Actions include a P0 investigation of the exhausted-path connection handling, a connection budget formula and re-enable gates",
+      "Requests pg_stat_activity by client/state to test the weakest link"
+     ],
+     "weaknesses": [
+      "Customer update claims 'all delayed jobs have now been processed', which is unsupported and contradicts INCIDENT.md (jobs may have been dropped) and the next paragraph",
+      "H3 says saturation 'started within seconds of the first policy=\"\" failure' without noting the wait began before it"
+     ],
+     "evidence": [
+      "Correct: '12 sampled log lines from 5 hosts'",
+      "Correct: rollback 09:24 to flag off 09:43 = 19 min; alert to flag 32 min",
+      "Word count 142 < 180"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "sonnet-5.5",
+    "opus-5.5",
+    "fable-5.1",
+    "muse",
+    "gpt-6-luna",
+    "mimo"
+   ],
+   "notes": "F and E tie at 8.25. F is ranked higher on evidence discipline, though its customer-update error (claiming all jobs processed) is arguably the more harmful one. B and D tie at 7.25. B is ranked higher for more depth in diagnosis and actions, although D's customer update is safer. Only A noted that the 5000 ms pool wait logged at 09:07:01 must have begun around 09:06:56, before the 09:06:58 zero-delay retries."
+  },
+  "10-general-operations": {
+   "rubric": {
+    "scheduling feasibility": 4,
+    "prioritization": 2,
+    "contradiction handling": 2,
+    "team communication": 2
+   },
+   "models": {
+    "gpt-6-luna": {
+     "criteria": {
+      "scheduling feasibility": 3.5,
+      "prioritization": 1.5,
+      "contradiction handling": 1.0,
+      "team communication": 1.25
+     },
+     "total": 7.25,
+     "summary": "A feasible, compact schedule with no hard-constraint violations: renewal Mon, strategy Mon, patch review Mon 16:00-17:30, board Tue 11-13 with a Tue 13:45-15:45 fallback and Thu 10-12 backstop, rehearsal Wed 10-11:30, demo Thu 16:00, change window Fri 13:00. The supporting documents are thin. There is no explicit hard-vs-preference split, few contradictions are surfaced, and the draft reply commits without much risk framing.",
+     "strengths": [
+      "No double bookings, and nothing is scheduled in Wed PM.",
+      "Board has a sensible 2h fallback on Tue 13:45-15:45 plus a Thu backstop, and flags that a start after Thu 10:00 is infeasible.",
+      "Change window at Fri 13:00 leaves 2.5h of rollback margin.",
+      "The draft reply is short and specific."
+     ],
+     "weaknesses": [
+      "No explicit hard-deadline vs preference table, which the task requires.",
+      "'Early this week' vs Tue 14:00 is not discussed, nor is whether the Tue 16:00 leadership meeting is the recurring one.",
+      "No questions to the CEO or Support (SLA times). Sam is asked about the demo but not explicitly to confirm the rehearsal.",
+      "The draft promises the strategy outline Monday and says little about risk beyond the finance slip.",
+      "RESPONSE.md is very brief."
+     ],
+     "evidence": [
+      "Mon 12:45-15:45 strategy (3h uninterrupted), Mon 16:00-17:30 review: valid.",
+      "Tue 11:00-13:00 board, fallback 13:45-15:45 ends before the 16:00 meeting: valid.",
+      "Wed 10:00-11:30 rehearsal, lunch 12:15-13:00, nothing after 13:00: valid.",
+      "Thu 16:00-17:30 demo hold, Fri 13:00-13:30 change window: valid.",
+      "Lina check at Mon 15:45 rather than 15:00: acceptable."
+     ],
+     "letter": "A"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "scheduling feasibility": 3.75,
+      "prioritization": 2.0,
+      "contradiction handling": 2.0,
+      "team communication": 1.75
+     },
+     "total": 9.5,
+     "summary": "The most rigorous submission, with no constraint violations. It covers every hard deadline with explicit fallbacks: Tue 13:45-15:45 and Thu 10-12 for board, a Fri 14:30 latest change-window start, and both Wed-SLA escalations cleared by Tue 11:00. Contradictions and unknowns are laid out with owners and needed-by times. The draft reply is honest and specific, though slightly long.",
+     "strengths": [
+      "Clear hard/fixed/preference table. It treats Tue 14:00 as a conditional cut-off and 'early this week' as soft.",
+      "Every day stays within hours, with 45 min lunch and meetings at most 1.5h. Contingency table and checkpoints are included.",
+      "It flags that Wednesday cannot host 2 uninterrupted hours and that Thu 10-12 is a zero-slack fallback. It asks whether the Thu 09:30 meeting could be shortened rather than silently skipping it.",
+      "Eight unresolved issues (demo, Sam at demo, vendor, QA slot, leadership = recurring meeting, SLA times, demo length, Wed-deploy-then-unreachable), each with an owner.",
+      "The draft states the risk honestly: 'I can't promise it all fits if the corrections or QA slip'."
+     ],
+     "weaknesses": [
+      "The proposed Wed 09:30 change window sits right before Wed PM unavailability. It is flagged as risk X8 with a Friday fallback.",
+      "The draft covers six asks and runs longer than ideal."
+     ],
+     "evidence": [
+      "Mon 10:30 renewal, 11:15-12:45 review, 13:30-15:00 plus 15:15-16:45 strategy, 15:00 Lina check, 16:45 escalation 2: valid.",
+      "Tue 09:30 polish/send, 10:15 escalation 3, 11:00-13:00 board, 13:45-15:45 fallback, 16:00 meeting: valid.",
+      "Wed 10:00-11:30 rehearsal, lunch 12:00-12:45, off at 13:00: valid.",
+      "Thu 10:00-12:00 reserve, demo 16:00: valid. Fri change window no later than 14:30: valid."
+     ],
+     "letter": "B"
+    },
+    "muse": {
+     "criteria": {
+      "scheduling feasibility": 3.25,
+      "prioritization": 1.75,
+      "contradiction handling": 1.5,
+      "team communication": 1.5
+     },
+     "total": 8.0,
+     "summary": "A sound, feasible core schedule similar to the strongest ones: review Mon, strategy Mon, board Tue 11-13, escalations Tue, rehearsal Wed, demo Thu 16:00, change window Fri 14:30. The weaknesses are small. The Friday QA fallback 'half day' is only 2.5h (09:30-12:00), the late-corrections contingency is vague about Tuesday afternoon, and the draft reply says strategy and board compete for Tuesday morning when the plan drafts strategy Monday.",
+     "strengths": [
+      "Clear hard-vs-preference split. Correctly notes the Wed SLAs are effectively due Wed 13:00.",
+      "Seven contradictions listed, including what 'final' means for board and Wednesday-morning overload.",
+      "Questions assigned to every relevant owner.",
+      "The priority reasoning (patch chain first, board second, demo third) is defensible."
+     ],
+     "weaknesses": [
+      "The Fri 09:30-12:00 'QA fallback half day' is 2.5h, shorter than a half day.",
+      "The late-corrections contingency jumps to Thu 10-12 as 'primary' without using the Tue afternoon buffer.",
+      "Plan choices are labelled 'Confirmed decisions'.",
+      "The draft's closing flag is inconsistent with the plan's Monday strategy drafting.",
+      "It does not flag the assumption that the Tue 16:00 leadership meeting is the recurring meeting."
+     ],
+     "evidence": [
+      "Mon 11:15-12:45 review, 13:30-15:00 plus 15:15-16:45 strategy: valid.",
+      "Tue 11:00-13:00 board, 14:00-14:45 escalation 3, 16:00 meeting: valid.",
+      "Wed rehearsal 10:00-11:30, lunch 11:30-12:15: valid.",
+      "Fri QA fallback 09:30-12:00 labelled half day: undersized. Change window 14:30-15:00 before 16:00: valid."
+     ],
+     "letter": "C"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "scheduling feasibility": 3.25,
+      "prioritization": 1.75,
+      "contradiction handling": 1.75,
+      "team communication": 1.75
+     },
+     "total": 8.5,
+     "summary": "A good plan with the review first thing Monday, strategy sent Monday, escalations Tuesday, board Tue 11-13 with a Tue 13:45-15:45 fallback, a buffered Friday, and explicit 'what I have not assumed'. Its late-corrections contingency proposes skipping the fixed Thu 09:30 recurring meeting and dismisses the valid Thu 10:00-12:00 slot. It handles the demo contradiction well by asking whether attendance is required rather than just moving it.",
+     "strengths": [
+      "Hard/preference table and 'what I have not assumed' list.",
+      "Escalates the demo properly: Thu 16:00 if I must attend, otherwise someone else owns Wed 15:00. Product decides.",
+      "It raises the late-corrections risk with Finance on Monday.",
+      "The draft is honest ('first draft, not a finished strategy', a heads-up on combined risk) and specific."
+     ],
+     "weaknesses": [
+      "Contingency A plans Thu 09:30-11:30 by skipping the fixed Thu 09:30 recurring meeting, and asks Finance rather than the meeting owner. It also says it 'won't plan on' Thu 10:00-12:00, although that slot meets the deadline.",
+      "Renewal response at Mon 12:00-12:45, after the review. Acceptable, but the riskiest Monday item comes late in the morning.",
+      "Lina's 15:00 status is not read until 16:30."
+     ],
+     "evidence": [
+      "Mon 10:30-12:00 review, 12:00-12:45 renewal, 13:30-16:30 strategy, 17:00 send: valid.",
+      "Tue 09:30-11:00 two escalations, 11:00-13:00 board, 13:45-16:00 contingency: valid.",
+      "Wed rehearsal 10:00-11:30, lunch 12:15-13:00: valid.",
+      "Thu contingency: 09:30-11:30 board skips the fixed recurring meeting. Error (conditional).",
+      "Fri latest change window 14:30-15:00: valid."
+     ],
+     "letter": "D"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "scheduling feasibility": 3.75,
+      "prioritization": 2.0,
+      "contradiction handling": 2.0,
+      "team communication": 1.5
+     },
+     "total": 9.25,
+     "summary": "A very thorough, feasible plan with Plan B and Plan C for board (Tue 14:00-16:00, Thu 10:00-12:00), a fully sequenced one-loop patch-retest path, and a load summary. It gives the richest contradiction list, with proposed resolutions and owners, plus an explicit assumptions list. The draft reply is honest about the CEO outline slipping and the one-loop limit but is long for a team message.",
+     "strengths": [
+      "No constraint violations, and the Tue Plan B board block ends exactly at the 16:00 meeting.",
+      "Clear hard/preference table. Treats Tue 14:00 as an opportunity with a Wednesday async fallback.",
+      "Eight contradictions, including whether Sam must attend the demo and whether Wednesday lunch counts. Explicit assumptions, such as the leadership meeting being the recurring one and half day meaning about 4h.",
+      "The patch fallback is fully traced: fix Wed, re-review Thu, re-test Fri, deploy 14:00.",
+      "Strong RESPONSE reasoning."
+     ],
+     "weaknesses": [
+      "The Fri QA re-test at 09:30-13:00 is 3.5h, under its own 4h half-day assumption.",
+      "The draft reply (about 440 words, seven asks) is long, and 'Locked on my side' includes a change window Engineering has not confirmed.",
+      "Monday has zero buffer (acknowledged, with a stated flex)."
+     ],
+     "evidence": [
+      "Mon 10:30 renewal, 11:15-12:45 review, 13:30-16:30 strategy, 16:30 escalation 2, 17:15 Lina action: valid.",
+      "Tue 11:00-13:00 board, Plan B 14:00-16:00, 16:00 meeting: valid.",
+      "Wed rehearsal 10:00-11:30, 11:30 escalations close-out, lunch 12:15: valid.",
+      "Thu 10:00-12:00 board, demo 16:00-17:30: valid. Fri change window 10:00 default, 14:00 fallback: valid."
+     ],
+     "letter": "E"
+    },
+    "mimo": {
+     "criteria": {
+      "scheduling feasibility": 2.75,
+      "prioritization": 1.5,
+      "contradiction handling": 1.25,
+      "team communication": 1.25
+     },
+     "total": 6.75,
+     "summary": "The core schedule is feasible, but the late-corrections contingency relies on fragmented slots (Wed 09:30-10:00, Wed 11:30-13:00) that violate Finance's 2-hour uninterrupted requirement. It also lets Wednesday lunch be compressed. Strategy is spread over a 30-minute fragment and two other blocks. The draft reply overcommits ('Board numbers are in your hands by Thursday 12:00 \u2014 immovable').",
+     "strengths": [
+      "Clear [HARD]/[SOFT] labelling and a deadline register.",
+      "Path A/Path B for Friday: QA 09:30-13:30 (full 4h), then the change window at 13:30.",
+      "Both Wed-SLA escalations are cleared by Tuesday to protect the rehearsal."
+     ],
+     "weaknesses": [
+      "Board fallback in Wednesday fragments (30 and 90 min) breaks the 2h uninterrupted requirement.",
+      "The Wednesday 12:15-13:00 'short lunch' and the escalation fallback would erase lunch.",
+      "The strategy '3 focused hours' is split into 30/45/105 minute pieces.",
+      "The Lina check is at 14:30-15:00, before she will know.",
+      "No questions to Sam or Support (SLA times). Does not flag the leadership-meeting identity.",
+      "The draft makes firm promises on the board and the outline. RESPONSE says strategy is 'Monday morning', which contradicts the plan."
+     ],
+     "evidence": [
+      "Mon 09:30-10:00 plus 11:15-12:00 plus 12:45-14:30 strategy, 15:00-16:30 review, 16:30 escalation 2: feasible but fragmented.",
+      "Tue 11:00-13:00 board, 13:45 send, 16:00 meeting: valid.",
+      "Contingency: 'use Wed 09:30-10:00 plus Thu 10:00-12:00' and 'Wed 11:30-13:00 board catch-up' are blocks shorter than the 2h uninterrupted minimum. Error.",
+      "Wed 12:15-13:00 'contingency / short lunch': lunch preference at risk.",
+      "Fri Path B QA 09:30-13:30, window 13:30-14:00: valid."
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "sonnet-5.5",
+    "fable-5.1",
+    "opus-5.5",
+    "muse",
+    "gpt-6-luna",
+    "mimo"
+   ],
+   "notes": "Constraints: work 09:30-17:30 Mon-Fri, Wed 13:00-17:30 unavailable. Recurring meetings Mon 10:00-10:30, Tue 16:00-17:00, Thu 09:30-10:00. Lunch at least 45 min and meetings at most 4h/day (preferences). Board final Thu 12:00 (hard), needing 2 uninterrupted hours after Lina's corrections (Tue by 11:00 unless the vendor is late; known Mon 15:00). Wednesday cannot host 2h, so the fallbacks are Tue PM or Thu 10:00-12:00 (zero slack). Patch deployed Fri 16:00 (hard): review 60-90 min, then QA half day (not Thu), then a 30 min window. Demo: Wed 15:00 preferred but inside the unavailability (contradiction), Thu 16:00 alternative. 90-min rehearsal with Sam, who is out Tue and free Wed 10:00-12:00, so Wed 10:00-11:30 is the only overlap. CEO outline: 3 focused hours, 'early this week' (soft), send by Tue 14:00 for Tue 16:00 review. Support: renewal response Monday (hard), two 45-min escalations with Wed SLAs, effectively by Wed 13:00. Ambiguities: whether the Tue 16:00 leadership meeting is the recurring one, whether Sam or the user must attend the demo, demo length, SLA cut-off times, QA's actual availability, whether 'three focused hours' must be contiguous. None of the submissions double-books or schedules inside Wed PM. The differences lie in fallback validity, documentation depth and draft quality. Note: submission folders contain copies of INBOX/TASK identical to the originals."
+  },
+  "11-frontend-operations": {
+   "rubric": {
+    "visual hierarchy/taste": 3,
+    "responsive design": 2,
+    "interaction and task completion": 2,
+    "accessibility": 2,
+    "implementation quality": 1
+   },
+   "models": {
+    "mimo": {
+     "criteria": {
+      "visual hierarchy/taste": 1.75,
+      "responsive design": 1.5,
+      "interaction and task completion": 1.5,
+      "accessibility": 1.25,
+      "implementation quality": 0.75
+     },
+     "total": 6.75,
+     "summary": "Dark, fairly dense control-room layout that has every required element and working filters, empty state and acknowledge. It falls down on craft and honesty: the stretched SVG chart (preserveAspectRatio=none) shows distorted, duplicated axis labels, a rail label is clipped, and the status bar says 'All systems nominal' while a critical incident is open. Focus is lost after acknowledging.",
+     "strengths": [
+      "All required parts present: rail, status bar, 4 metrics with trend, chart, filterable table with 3 selects and search, detail panel, and toast plus live-region announcement on ack",
+      "Good empty-filter state with a Clear filters button",
+      "Mobile collapses the table into readable stacked cards with no horizontal overflow",
+      "Monospace tabular numerals, restrained dark palette"
+     ],
+     "weaknesses": [
+      "Status bar says 'All systems nominal' even though a critical and a high incident are open (contradicts the data)",
+      "Chart SVG is stretched non-uniformly: the in-SVG hour labels and the '88k' marker are distorted and repeat the HTML axis labels underneath",
+      "The 'THROUGHPUT' rail label is clipped to 'HROUGHPUT'",
+      "No incident is selected by default, so a large empty detail card sits at the bottom",
+      "After acknowledging, focus falls to <body>",
+      "Trend context text has about 3:1 contrast at 11px; some labels are 9\u201310px",
+      "Units ('k events' per hour) don't match the 18,420/min metric"
+     ],
+     "evidence": [
+      "A-desktop.png: doubled x-axis labels (stretched '00 03 06' inside the SVG plus a second HTML row), 'HROUGHPUT' clipped in the rail",
+      "Playwright: search 'zzzqqq' shows 'NO INCIDENTS MATCH \u2026 Clear filters'; ack on INC-2839 changes the row to J. Okonkwo / ACKNOWLEDGED, and the live region reads 'INC-2839 acknowledged \u00b7 owner J. Okonkwo'; activeElement is BODY afterwards",
+      "Tab order goes skip link, rail, selects, search, reset, rows (tr tabindex), all with a 2px solid outline",
+      "Contrast scan: 17 text nodes under 4.5:1 (worst 2.99)"
+     ],
+     "letter": "A"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "visual hierarchy/taste": 2.0,
+      "responsive design": 1.25,
+      "interaction and task completion": 1.25,
+      "accessibility": 1.0,
+      "implementation quality": 0.5
+     },
+     "total": 6.0,
+     "summary": "An attractive, editorial light theme with a dark-green rail and a single green accent, but it's the least dense and least legible of the six. The chart takes about 500px of height with oversized axis text, while the table text is tiny. There's a visible bug: the 'Select an incident' empty state stays on screen above the selected incident because CSS display:grid overrides [hidden]. The chart is rescaled so the last hour matches 18,420/min, which invents absolute values.",
+     "strengths": [
+      "Distinctive, calm palette with one accent and clear severity dots",
+      "Acknowledge works: the button becomes 'Acknowledged', the row updates, and a toast plus role=status message announce it; focus stays on the button",
+      "Good filter empty state with 'Clear all filters'",
+      "No horizontal overflow at 390px; rows become labelled stacked cards"
+     ],
+     "weaknesses": [
+      "The detail panel shows the 'Select an incident' empty state and the selected incident at the same time (.detail-empty display:grid overrides the hidden attribute)",
+      "Chart is oversized with huge mono axis labels on desktop and unreadably tiny labels on mobile (SVG scaling)",
+      "Throughput values are made up by scaling the series so the final point equals 18,420",
+      "85 text nodes under 11px (as small as 8px) and 39 under 4.5:1 contrast (worst 2.27)",
+      "After ack the owner becomes the placeholder 'On-call'",
+      "Low information density for a control room"
+     ],
+     "evidence": [
+      "B-desktop-full.png and B-d-ack.png: 'Select an incident' block sits above the INC-2839 detail inside the same panel",
+      "Code: app.js `scale = currentRate / lastValue`; styles.css `.detail-empty { display: grid }` with no [hidden] override",
+      "Playwright: search empty state shown; ack gives row 'On-call Acknowledged', live text 'INC-2839 acknowledged and assigned to On-call.', focus stays on the button",
+      "Contrast scan: minimum font 8px, 39 low-contrast nodes"
+     ],
+     "letter": "B"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "visual hierarchy/taste": 2.75,
+      "responsive design": 1.75,
+      "interaction and task completion": 2.0,
+      "accessibility": 1.75,
+      "implementation quality": 1.0
+     },
+     "total": 9.25,
+     "summary": "The most complete and honest submission. It has a compact top status bar ('1 critical, 1 high open \u00b7 4 unacknowledged'), metrics with Improving/Worsening context, a bar chart with a chart/table toggle, peak/low/mean and keyboard inspection, and a rich filter set (severity chips with counts, unassigned, unacknowledged, status, sortable headers). Acknowledge is separate from status, has Undo, moves focus sensibly and is announced. On mobile it becomes a card list with a focus-managed detail drawer.",
+     "strengths": [
+      "Status bar and counts derived honestly from DATA.json; chart labelled as a 'throughput index' rather than invented units",
+      "Acknowledge records who and when, adds a timeline entry, updates the unacked count, offers Undo, moves focus to the Undo button and announces 'INC-2839 acknowledged by J. Rivera.'",
+      "Mobile detail opens as a drawer; Esc returns focus to the originating row",
+      "Dense, calm, neutral palette with a single blue accent; tabular numerals right-aligned; clear severity badges with icon shapes as well as colour",
+      "No sub-4.5:1 text found; skip links; visible 2px focus rings everywhere"
+     ],
+     "weaknesses": [
+      "At 390px the severity chip row wraps awkwardly and the fixed bottom nav covers content in a full-page capture",
+      "Severity badges use several hues (red, orange, yellow) beside the blue accent, though that is justified",
+      "Desktop leaves an empty band below the table"
+     ],
+     "evidence": [
+      "C-desktop.png: dense layout with the detail column pre-selected on INC-2841",
+      "Playwright: search empty state 'No incidents match these filters / Nothing matches search \u201czzzqqq\u201d\u2026' plus Clear filters; ack moves focus to the 'Undo acknowledgement' button, status bar changes to '3 unacknowledged', live region announces it",
+      "Mobile: clicking a row opens aside.detail.is-open; Esc returns focus to the row button",
+      "Contrast scan: 0 low-contrast nodes, min font 10px"
+     ],
+     "letter": "C"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "visual hierarchy/taste": 2.5,
+      "responsive design": 1.75,
+      "interaction and task completion": 2.0,
+      "accessibility": 1.75,
+      "implementation quality": 1.0
+     },
+     "total": 9.0,
+     "summary": "A very polished, dense control-room layout: a compact table with solid severity chips, an honest 'Degraded \u00b7 1 critical, 1 high' status pill, a bar chart with Now/Peak/Low/Mean readouts and a collapsible data table, and a detail panel with a timeline. Acknowledge works, assigns to you, keeps focus on the button, and shows a toast with Undo. On mobile the detail becomes a bottom sheet. Slightly behind C because it invents a '% of provisioned capacity' unit with an 85% line, and its desktop detail column sits mostly empty until something is selected.",
+     "strengths": [
+      "Tight, restrained design with a single blue accent; the current hour is highlighted",
+      "Keyboard row navigation (arrow keys and Enter) is documented in the empty detail state; sortable headers; severity segmented filter with counts",
+      "Ack updates the row, status bar count and timeline; announced through polite live regions; Undo toast",
+      "Mobile rows are compact two-line cards; bottom-sheet detail; no overflow",
+      "No low-contrast text found"
+     ],
+     "weaknesses": [
+      "Throughput reframed as '% of provisioned capacity' with a made-up 85% capacity line, and hours re-labelled to end at 'now'",
+      "Desktop right column shows only a small 'No incident selected' card with a lot of blank space below it",
+      "The mobile bottom sheet and toast cover a lot of the screen"
+     ],
+     "evidence": [
+      "D-desktop.png and D-d-ack.png: ack gives row 'You / Acknowledged', header '3 unacknowledged', toast with Undo, focus stays on the 'Acknowledged' button",
+      "Playwright: empty state 'No incidents matching \u201czzzqqq\u201d. 4 active incidents are hidden by the current filters.' plus Clear filters",
+      "D-m-ack.png: bottom sheet with details and a toast above the bottom nav",
+      "Contrast scan: 0 low-contrast nodes"
+     ],
+     "letter": "D"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "visual hierarchy/taste": 2.5,
+      "responsive design": 1.0,
+      "interaction and task completion": 2.0,
+      "accessibility": 1.75,
+      "implementation quality": 0.75
+     },
+     "total": 8.0,
+     "summary": "Strong on desktop: an honest status bar ('Degraded \u00b7 1 critical \u00b7 4 active \u00b7 2 awaiting ack'), a clear bar chart with a scale-out threshold and a data-table disclosure, severity toggle chips with counts, and a detail panel that stays open with a 'Hidden from the list by current filters' note when filters exclude the selection. Acknowledge is announced and focus lands on the confirmation. The 390px layout is badly broken, though: the incident title column shrinks to about 40px, so titles wrap one clipped word per line ('Card aut\u2026 tim\u2026').",
+     "strengths": [
+      "Honest, informative status bar and incidents badge count derived from the data",
+      "Thoughtful state handling: the selected incident stays visible and flagged when filtered out; the empty state names the filter and offers Clear",
+      "Ack assigns to you, updates the status bar to '1 awaiting ack', is announced, and moves focus to the 'Acknowledged by You at \u2026' confirmation",
+      "Good contrast throughout; severity shown with shape and colour"
+     ],
+     "weaknesses": [
+      "At 390px the incident rows are broken: the ID and title are squeezed into a tiny column with per-word ellipsis, which hurts usability",
+      "Two strong chart colours (blue plus an orange peak bar) weaken the single-accent direction",
+      "Invents a '% of provisioned capacity' unit and re-labels hours",
+      "Status select doesn't span the full width on mobile"
+     ],
+     "evidence": [
+      "E-m-rows.png: 'INC-2841 / Card / aut\u2026 / tim\u2026' stacked in a narrow column next to the age and badge",
+      "E-d-empty.png: empty state plus the detail panel keeping INC-2839 with the note 'Hidden from the list by current filters.'",
+      "Playwright: ack gives row 'You Acknowledged', live text 'INC-2839 acknowledged and assigned to you.', activeElement is div.ack-done",
+      "Contrast scan: 0 low-contrast nodes"
+     ],
+     "letter": "E"
+    },
+    "muse": {
+     "criteria": {
+      "visual hierarchy/taste": 2.25,
+      "responsive design": 1.0,
+      "interaction and task completion": 1.5,
+      "accessibility": 1.5,
+      "implementation quality": 0.75
+     },
+     "total": 7.0,
+     "summary": "A clean, conventional light dashboard with a labelled rail, a bar chart, a detail panel pre-selected on the critical incident (with signals and a timeline), and a working acknowledge that is announced. The mobile card layout has overlapping text (the SERVICE/AGE labels and values print over each other), chart labels are unreadably small, and the top tab strip is clipped. Focus falls to <body> after acknowledging, and the chart's 'thousands of events/min' (peak 88k) contradicts the 18,420/min metric.",
+     "strengths": [
+      "Well-organised desktop layout with a good table/detail relationship and a sensible single blue accent",
+      "Detail is pre-selected and has useful context (signals, timeline, playbook)",
+      "Filter empty state with Clear all filters; ack announced via role=status and the row updates"
+     ],
+     "weaknesses": [
+      "At 390px the service and age values overlap in every incident card",
+      "Mobile chart axis text is tiny; the horizontal nav tabs are cut off at the right edge",
+      "Focus is lost to <body> after acknowledging (the button is disabled)",
+      "Throughput units are inconsistent with the metric; a content glitch ('oldest msg: INC region eu-west')",
+      "15 low-contrast text nodes (e.g. 'vs prev hr' at about 3:1)"
+     ],
+     "evidence": [
+      "F-m-rows.png: 'payments-api' and '12m' drawn on top of each other under overlapping 'SERVICE'/'AGE' labels",
+      "Playwright: search empty state shown; ack gives row 'D. Reyes Acknowledged', live 'INC-2839 acknowledged. Status is now Acknowledged.', activeElement BODY",
+      "F-d-ack.png: disabled 'Acknowledged \u2713' button"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "sonnet-5.5",
+    "fable-5.1",
+    "opus-5.5",
+    "muse",
+    "mimo",
+    "gpt-6-luna"
+   ],
+   "notes": "C and D are close; C edges ahead for honest data framing (no invented capacity units), Undo with focus management and a mobile drawer that returns focus. E would rival them on desktop but its 390px incident list is badly broken. A and B are close at the bottom: A has a dishonest 'All systems nominal' and a distorted chart; B has a visible detail-panel state bug and widespread 8\u201310px low-contrast text."
+  },
+  "12-frontend-editorial": {
+   "rubric": {
+    "visual hierarchy/taste": 3,
+    "responsive design": 2,
+    "interaction and task completion": 2,
+    "accessibility": 2,
+    "implementation quality": 1
+   },
+   "models": {
+    "mimo": {
+     "criteria": {
+      "visual hierarchy/taste": 1.75,
+      "responsive design": 1.5,
+      "interaction and task completion": 1.5,
+      "accessibility": 1.5,
+      "implementation quality": 0.75
+     },
+     "total": 7.0,
+     "summary": "A tidy, restrained page: an indented LOW / WATER title, a small wavy-line motif, a stepped list of stories, a boxed archive strip and a clear offer. Everything required is there and the copy is almost exactly as given. It looks competent but plain: the display motif is weak, the right column is mostly empty, and it reads closer to a template than to an authored print layout. Its single reading-mode toggle dims whole sections to failing contrast.",
+     "strengths": [
+      "All required content present; the summaries match COPY.md word for word",
+      "The reading-mode toggle works, sets aria-pressed and persists in localStorage",
+      "The form handles empty, invalid and valid input through a role=status live region and sets aria-invalid",
+      "Consistent 2px focus outlines, a skip link, no overflow at 320-1440 px"
+     ],
+     "weaknesses": [
+      "Weak display motif: a small cluster of wavy lines and a boxed '14' that feels like a placeholder",
+      "An orphaned 'THEME' label beside the kicker; large empty right-hand space at desktop",
+      "Reading mode fades the archive, story numbers and cover mark to about 1.6-2.2:1 contrast, which hurts real content",
+      "Small invented details ('sewn print edition', 'printed on uncoated stock')",
+      "No colour or dark mode (not required, but thinner than the others)"
+     ],
+     "evidence": [
+      "Screenshots: centred single column, a large serif LOW/WATER title and six wavy lines top right; archive as three bordered cells",
+      "Playwright: toggle set body.reading-mode and it persisted after reload; the contrast scan in reading mode found 13 failures, e.g. 'Recent issues' at 2.23 and 'Issue 13' at 1.77",
+      "Form: empty gave 'Enter an email address.', foo@bar gave an invalid-address message, a valid address gave a success message; aria-invalid toggled and focus returned to the field",
+      "390 px: no overflow, sensible order, motif placed after the title"
+     ],
+     "letter": "A"
+    },
+    "fable-5.1": {
+     "criteria": {
+      "visual hierarchy/taste": 2.6,
+      "responsive design": 1.75,
+      "interaction and task completion": 2.0,
+      "accessibility": 1.75,
+      "implementation quality": 0.9
+     },
+     "total": 9.0,
+     "summary": "A convincing print-magazine translation: a huge serif 'Margin' masthead whose g drops through a double rule, an outlined '14' issue mark, a nested-shoreline contour figure with a caption, staggered story columns, archive issues drawn as book spines, and a big \u00a52,400 offer. Craft and typographic hierarchy are high. The reading-mode radios (Paper/Dusk/Night) and the form are polished and accessible. It loses some points for invented details: the years on the art, story genres and archive seasons.",
+     "strengths": [
+      "Strong authored masthead and a real editorial grid; the contour art is described with title and desc",
+      "Three reading modes that persist, apply before paint, follow the OS until the reader chooses, and are announced through a hidden live region",
+      "Form: helpful specific errors, aria-invalid, a live message, success moves focus to the message, and a 'use a different address' reset",
+      "Nav marks the current section with aria-current through IntersectionObserver"
+     ],
+     "weaknesses": [
+      "Invented facts: archive seasons (Summer/Spring 2026, Winter 2025), shoreline years 1978/1996/2011, genres like 'Cartography', 'Four issues a year, on paper, to your door'",
+      "The issue title 'Low Water' is only a small italic line beside the masthead, not the main display element; the h1 is the wordmark",
+      "Horizontal overflow at 320 px (scrollWidth 357)",
+      "Some tiny monospace text (about 10.5 px)"
+     ],
+     "evidence": [
+      "Desktop screenshot: the wordmark fills the width with the g descender crossing the rule, and an outlined 14 on the right; spines archive on a tinted band",
+      "Playwright: dusk and night radios set data-mode and night persisted after reload; the contrast scan found no real failures (only the intentionally outlined '14')",
+      "Form: empty, foo@bar and valid all behaved as expected, and focus moved to #email-msg on success",
+      "Tab order: skip link, nav, mode radio, link, input, button, all with 2px outlines"
+     ],
+     "letter": "B"
+    },
+    "muse": {
+     "criteria": {
+      "visual hierarchy/taste": 2.0,
+      "responsive design": 1.75,
+      "interaction and task completion": 1.0,
+      "accessibility": 1.75,
+      "implementation quality": 0.75
+     },
+     "total": 7.25,
+     "summary": "A handsome page: a cover-story hero with a framed contour panel, a drop-cap excerpt, a three-column contents section with page folios, and a boxed archive strip. It invents a lot of content the brief forbids: an excerpt and pull quote attributed to the cover story, page counts, '4 river cities', 'Est. 2023 \u00b7 Kyoto / Lisbon', '18 plates', sewn binding and worldwide delivery. The Low Water issue title is pushed into small folio text. Paper/Sepia/Ink modes work and persist.",
+     "strengths": [
+      "Refined print-style details: folio line, numbered sections, italic accents in the headline",
+      "Three reading modes using aria-pressed buttons, persisted, defaulting to the OS dark preference",
+      "The form has a live status region, aria-invalid, and validates on blur and as the reader types",
+      "Visible 2px focus outlines on every control"
+     ],
+     "weaknesses": [
+      "Fabricated excerpt paragraph and quotation, invented page numbers, page counts, place counts, founding year, cities and product features, a direct breach of the copy contract",
+      "The success message says a checkout link 'is on its way' although nothing is sent",
+      "'Low Water' is not given display treatment; the hero is the cover story",
+      "Vertical margin text sits on the cover panel's border line; 'Back to top' and the wordmark link to a #top that does not exist",
+      "The hero relies on SaaS-like solid and ghost CTA buttons"
+     ],
+     "evidence": [
+      "Screenshots: 'From the cover story' section with invented prose and a quote; 'PAGES 148 / PLACES 4 river cities' strip; 'VOL. IV \u00b7 EST. 2023 \u00b7 KYOTO / LISBON' top line",
+      "Playwright: sepia and ink set data-reading-mode and ink persisted after reload; contrast OK apart from the intentionally outlined archive numerals",
+      "Form: correct errors for empty and invalid input; valid input showed 'a checkout link ... is on its way to reader@example.com'",
+      "grep: no id=\"top\" in the HTML"
+     ],
+     "letter": "C"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "visual hierarchy/taste": 2.75,
+      "responsive design": 2.0,
+      "interaction and task completion": 2.0,
+      "accessibility": 1.75,
+      "implementation quality": 1.0
+     },
+     "total": 9.5,
+     "summary": "The most distinctive and confident page. A heavy 'Low / Water' display is cut by an orange waterline with the lower half rendered as stripes. A fixed ruler down the left margin 'drains' as you scroll, a tilted till-receipt SVG plays on 'Receipts', story rows carry small glyphs, archive entries carry water gauges, and a bold orange subscription block makes the offer unmistakable. Copy is faithful. The JS is careful: display fitting, detailed validation, and a success panel that takes focus.",
+     "strengths": [
+      "One strong display motif (the waterline) carried through the ruler, the archive gauges and the receipt art: clearly authored, not a template",
+      "Reading mode offers Paper/Night plus a large-text toggle, persisted, applied before paint and announced via role=status",
+      "The form gives specific messages (missing @, missing dot and so on), aria-invalid, a live feedback region, and a focused success panel with reset",
+      "Scales well: fit-to-column display title; clean at 320, 390, 768 and 1440 with no overflow"
+     ],
+     "weaknesses": [
+      "Dense and busy in places (ruler, receipt, glyphs, orange block) and it pushes the restraint of print editorial",
+      "Some mono labels are as small as 9.6 px",
+      "Minor playful liberties in the receipt illustration (e.g. 'Bottle caps 14')"
+     ],
+     "evidence": [
+      "Desktop screenshot: very large slab serif 'Low', 'Water' struck by an orange line with a striped lower half, receipt SVG at right, ruler at left",
+      "Playwright: night and large-text both persisted after reload (data-theme=night, data-size=large, body text 13.6 to 17 px); contrast scan clean apart from the intentionally clipped display text",
+      "Form: empty gave 'Enter your email...', foo@bar gave 'The part after the @ needs a dot', valid input hid the form and moved focus to #sub-success",
+      "Tab order includes every control with a 3px outline; reduced-motion media query present"
+     ],
+     "letter": "D"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "visual hierarchy/taste": 2.0,
+      "responsive design": 1.5,
+      "interaction and task completion": 1.25,
+      "accessibility": 1.5,
+      "implementation quality": 0.5
+     },
+     "total": 6.75,
+     "summary": "A polished magazine-landing look: a green meandering-river SVG map beside a tightly tracked 'Low Water' title, a ruled contents list, a tinted archive band and a dark subscription block. It is weaker on the contract. The cover-story summary is rewritten rather than taken from COPY.md. The reading mode is not persisted. The email control is a type=button 'Check address' rather than a form. On mobile the artwork comes before the issue title. The run also left draft files outside the task directory.",
+     "strengths": [
+      "Attractive palette and a well-drawn river map with an accessible title and desc",
+      "The reading mode hides the art and narrows the measure, a sensible reading treatment",
+      "Email feedback via a role=status live region, aria-invalid and focus return; Enter key handled",
+      "3px focus outlines; no overflow"
+     ],
+     "weaknesses": [
+      "Cover-story summary altered ('gives up its ledgers...') instead of the given copy",
+      "Reading mode does not persist across reloads",
+      "Very tight negative tracking on display heads; the map labels are overlapped by the survey dots and the red sun",
+      "Mobile reading order puts a full-screen map before the issue title; a large empty gap above the subscribe block on desktop",
+      "'Read the story' links to its own section; some 9-10 px labels at about 4.4:1 contrast",
+      "Process lapse: wrote draft files to the repository root, outside its task directory"
+     ],
+     "evidence": [
+      "Screenshots: river map left, 'Low Water' right; 'A / 06:12' label hidden behind the red circle; mobile shows the map first",
+      "Playwright: toggle set body.is-reading-mode but it was gone after reload",
+      "Contrast: 'From the shelves' and the archive numbers at 4.37:1 at about 10.5 px",
+      "OBJECTIVE_CHECKS process_note: left root-level drafts"
+     ],
+     "letter": "E"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "visual hierarchy/taste": 2.6,
+      "responsive design": 1.75,
+      "interaction and task completion": 2.0,
+      "accessibility": 1.5,
+      "implementation quality": 0.9
+     },
+     "total": 8.75,
+     "summary": "A strong, literate editorial page. A marginal meta column (Issue 14 / Autumn 2026 / Low Water) sits beside a large serif 'Low Water' cut by a waterline with a striped submerged half, and a dashed 'former level' line above. It adds a riverbed cross-section figure with a depth gauge, staggered story columns, tiny drawn back-issue covers, and a clear \u00a52,400 offer. Copy is faithful (the pull quote reuses the given summary). Theme and size controls persist. The error message is not in a live region, and at tablet width the waterline stops lining up with 'Water'.",
+     "strengths": [
+      "Distinctive waterline display motif and a well-described cross-section SVG; the asymmetric margin column feels like a printed page",
+      "Paper/Night radios plus a larger-text toggle, applied before paint, persisted and following the OS until the reader chooses",
+      "Validation on blur and submit with aria-invalid and aria-describedby, and a live success status",
+      "3px focus outlines; reduced motion handled by gating the intro animation behind no-preference"
+     ],
+     "weaknesses": [
+      "The error text (#email-error) is not a live region, so errors on blur are not announced; empty and invalid submits rely on refocusing the field",
+      "At 768 px the waterline sits under 'Low', not through 'Water', which breaks the motif; the masthead tagline wraps awkwardly",
+      "Invented story genres ('Mapping', 'Reportage'); the wordmark links to a #top that does not exist",
+      "The email input has no visible example or placeholder (minor)"
+     ],
+     "evidence": [
+      "Desktop screenshot: left meta column, 'Low / Water' with teal stripes below a solid rule, cross-section figure with gauge 1-4 m",
+      "Playwright: night and large text persisted after reload (data-theme=night, data-size=large); contrast scan found only the duplicated, clipped display layers",
+      "Form: empty and foo@bar showed errors in #email-error, but no live region carried text (live=[]); valid input filled #signup-status",
+      "The 768 px screenshot shows the motif misaligned"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "sonnet-5.5",
+    "fable-5.1",
+    "opus-5.5",
+    "muse",
+    "mimo",
+    "gpt-6-luna"
+   ],
+   "notes": "D, B and F are close. D wins on the strongest single motif, the most robust interactions and faithful copy. B has the most classically print-like masthead but invents years and seasons. F shares D's waterline idea with a more restrained layout but has weaker error announcement and tablet alignment. C is visually competent but heavily fabricates excerpts, quotes and facts, so it lands below the top three. A is correct but plain. E is attractive but alters the cover copy, does not persist its reading mode, and carries the out-of-directory process lapse."
+  },
+  "13-frontend-playful": {
+   "rubric": {
+    "visual hierarchy/taste": 3,
+    "responsive design": 2,
+    "interaction and task completion": 2,
+    "accessibility": 2,
+    "implementation quality": 1
+   },
+   "models": {
+    "fable-5.1": {
+     "criteria": {
+      "visual hierarchy/taste": 2.5,
+      "responsive design": 1.75,
+      "interaction and task completion": 2,
+      "accessibility": 1.75,
+      "implementation quality": 0.85
+     },
+     "total": 8.85,
+     "summary": "A warm, clear design. An oversized 'Needs you now' block for Frida sits above an airy, divider-separated list, so it avoids a wall of cards. It has a pebble-dot weekly rhythm and a sticky detail panel on desktop, with inline expansion on mobile. Interactions are complete and focus is managed well. The header uses the real current weekday rather than a fixed demo day, and the rhythm invents a 'missed' dot.",
+     "strengths": [
+      "Strong overdue hierarchy with a whimsical Moss mascot and a sentence-style headline ('Frida has been waiting')",
+      "Action labels match each task (Watered/Rotated/Checked/Do it early) and aria-labels name the plant",
+      "After an action, focus moves to the next row and then to the all-done heading; undo works via the toast and Ctrl+Z; snoozed plants can be brought back",
+      "Useful all-done state: it summarizes snoozed and tended plants and suggests a follow-up (log a leaf wipe)",
+      "No contrast failures in the automated check; reduced motion is handled in both CSS and JS"
+     ],
+     "weaknesses": [
+      "Headline weekday and rhythm labels come from new Date() (Wednesday) instead of a demo day that fits the Sep 19\u201321 history",
+      "The rhythm adds an invented 'missed' and a catch-up state not in PLANTS.json",
+      "The desktop left column ends early and leaves empty space under 'Coming up'"
+     ],
+     "evidence": [
+      "Desktop screenshot: two columns, a queue with section headings and a detail panel with Light/Water/Up next plus water and observation history",
+      "Playwright: Watered: Frida moved focus to Orbit's details button; Undo restored Frida and focused her row; Snooze gave 'Frida snoozed until tomorrow... Undo'; completing the rest focused the h2 'All tended for today.'",
+      "At 390px the detail opens inline under the row; no horizontal overflow; 0 low-contrast text nodes"
+     ],
+     "letter": "A"
+    },
+    "mimo": {
+     "criteria": {
+      "visual hierarchy/taste": 1.25,
+      "responsive design": 1.25,
+      "interaction and task completion": 0.9,
+      "accessibility": 0.75,
+      "implementation quality": 0.5
+     },
+     "total": 4.65,
+     "summary": "A tidy but generic pastel 2x2 grid of near-identical cards with a bar-chart rhythm and a stats sidebar: the 'wall of cards' the brief warns against. Every plant's primary action reads 'Watered', even for Rotate, Check soil and Mist. Action buttons don't name their plant, and focus drops to the body after each action.",
+     "strengths": [
+      "Calm, readable palette with serif headings",
+      "Undo toast and per-card Undo work; the all-done 'Today is wrapped' state has a restart button",
+      "Detail expansion shows light, a water-rhythm glyph and history"
+     ],
+     "weaknesses": [
+      "The primary button says 'Watered' for all four plants regardless of task",
+      "Wall of equal cards and weak overdue emphasis; redundant 'Today \u00b7 Today' and 'Tomorrow \u00b7 Tomorrow' chips",
+      "Buttons named only 'Watered'/'Snooze'; the card-toggle button wraps an h3; focus is lost to <body> after every action",
+      "Expanding a card on desktop breaks the grid alignment; the focus ring is clipped by overflow on cards",
+      "The rhythm doesn't mark today; 14 low-contrast text nodes; odd pink corner blob on Frida's card"
+     ],
+     "evidence": [
+      "Aria snapshot: button 'Watered' under Orbit/Dot/Drama; heading inside button",
+      "Playwright: activeElement was BODY after complete, undo and snooze",
+      "Desktop detail screenshot: Orbit expands and pushes its grid row, leaving Frida's card misaligned"
+     ],
+     "letter": "B"
+    },
+    "sonnet-5.5": {
+     "criteria": {
+      "visual hierarchy/taste": 2.75,
+      "responsive design": 1.75,
+      "interaction and task completion": 2,
+      "accessibility": 1.85,
+      "implementation quality": 0.9
+     },
+     "total": 9.25,
+     "summary": "The most distinctive and 'a little odd' design: chunky ink outlines, an antenna moss-blob, a snail, a squiggle-underlined 'parched', and a red overdue slab clearly above grouped Due today and dashed Up next sections. It uses a fixed demo day (Tue Sep 22), so the relative dates ('last watered 6 days ago') agree with the data. The three-column desktop layout is well used, and the mobile detail is a proper modal bottom sheet with inert background and focus trap.",
+     "strengths": [
+      "Excellent priority hierarchy and a rich shape language without childish clip art; task-specific actions (Watered/Rotated/Soil checked/Misted early)",
+      "Honest data: fixed demo date that fits the PLANTS.json history, with a note saying so",
+      "Focus moves to the row's Undo after an action and back to the action after undo; toast undo, per-row undo, 'Undo last change', 'Bring back'",
+      "Rich all-done: chips for each result, next-up line, restart; the rhythm shows done/late/to-do/snoozed pebbles",
+      "Mobile sheet uses aria-modal, inert siblings, scroll lock and Escape to return focus"
+     ],
+     "weaknesses": [
+      "The desktop detail panel is a fixed-height scroller, so history is cut off mid-row",
+      "The all-done copy says '2 plants looked after' next to three tended chips (counts only due-today tasks)",
+      "At 390px the toast sits over the rhythm card"
+     ],
+     "evidence": [
+      "Desktop screenshot: left intro/rhythm, centre queue, right detail with light dots and a 3-week water timeline",
+      "Playwright: Mark Frida as watered focused 'Undo watered for Frida'; undo focused 'Mark Frida as watered'; snooze focused 'Bring Frida back to the queue'",
+      "At 390px the details open an ASIDE with aria-modal; Escape returned focus to 'Orbit, show details'; 0 low-contrast nodes"
+     ],
+     "letter": "C"
+    },
+    "opus-5.5": {
+     "criteria": {
+      "visual hierarchy/taste": 2.6,
+      "responsive design": 1.65,
+      "interaction and task completion": 2,
+      "accessibility": 1.75,
+      "implementation quality": 0.9
+     },
+     "total": 8.9,
+     "summary": "A charming, polished design: pot characters with expressions (grumpy overdue Frida), a sprout-glyph weekly rhythm on a dark-green card, and a big peach overdue hero. The three-column desktop has a persistent detail pane that includes adding observations. On mobile the detail is a native dialog sheet. It uses a fixed Sep 22 demo day with derived 'Last watered Sep 16, 6 days ago' and a water forecast. The mobile secondary cards feel cramped.",
+     "strengths": [
+      "Clear priority tiers (Needs you first / Also today / Coming up) with task-specific labels",
+      "Very useful all-done: summary sentence, next-up, a water forecast derived from the history, and a 'Done today' shelf",
+      "Keyboard shortcuts (U to undo, Esc), a legend, and focus moved to the next action or the all-done heading",
+      "Native <dialog> sheet on mobile, sr-only plant names in buttons, forced-colors support"
+     ],
+     "weaknesses": [
+      "At 390px the Orbit and Dot cards stack narrow full buttons beside the illustration; the dashed Coming-up box has an awkward curved edge",
+      "The desktop left column is mostly empty below the rhythm card",
+      "The greeting uses the real clock hour while the date is fixed; the faces edge toward cute"
+     ],
+     "evidence": [
+      "Playwright: Watered, Frida moved focus to 'Rotated, Orbit'; undo returned focus to 'Watered, Frida'; the final action focused the h3 'Everyone's looked after.'",
+      "At 390px Orbit details opened a DIALOG and Escape returned focus to 'Orbit, open details'",
+      "Desktop screenshot: the detail pane has light/water tiles, an observation timeline and an 'Add an observation' input"
+     ],
+     "letter": "D"
+    },
+    "gpt-6-luna": {
+     "criteria": {
+      "visual hierarchy/taste": 1.25,
+      "responsive design": 1.25,
+      "interaction and task completion": 1.1,
+      "accessibility": 1.0,
+      "implementation quality": 0.55
+     },
+     "total": 5.15,
+     "summary": "A tasteful but generic wellness-SaaS look: a large hero, then a stack of near-identical list cards with tiny, low-contrast type. It is not especially playful or odd. It shows the real date (Wednesday, September 30) next to September 16\u201321 history. Snooze is an icon-only clock that can't be undone once the toast goes, and the all-done panel is hidden whenever something is snoozed.",
+     "strengths": [
+      "Task-specific aria-labels ('Mark Orbit's rotate task done'); details/summary disclosures show light and history",
+      "Undo toast with focus moved to Undo and back to the action after undoing",
+      "Reduced-motion and focus styles present"
+     ],
+     "weaknesses": [
+      "Wall of equal cards; hero and illustration take priority over the care queue; the 'slow days count too' caption overlaps the pot",
+      "64 of 112 visible text nodes fail 4.5:1 and 81 are under 12px",
+      "Uses new Date() for the header and rhythm, so the date is inconsistent with the data",
+      "Snooze is only a \u25f7 glyph and snoozed plants have no 'bring back'; the all-done state shows only when nothing is snoozed and offers nothing actionable",
+      "A stray 'A' avatar circle in the header"
+     ],
+     "evidence": [
+      "Desktop screenshot: 'WEDNESDAY, SEPTEMBER 30' in the hero; small grey metadata text",
+      "Playwright: after snoozing Frida and completing the rest, #all-done stayed hidden; with all four completed it appears as a short message",
+      "Contrast script: 64 low-contrast small-text nodes"
+     ],
+     "letter": "E"
+    },
+    "muse": {
+     "criteria": {
+      "visual hierarchy/taste": 2.0,
+      "responsive design": 1.5,
+      "interaction and task completion": 1.5,
+      "accessibility": 1.1,
+      "implementation quality": 0.6
+     },
+     "total": 6.7,
+     "summary": "A friendly, outlined-card look with a nice windowsill illustration and a numbered arch-bar weekly rhythm. The overdue plant gets a 'First up \u00b7 Overdue' tag and an expanded card. It still reads as a grid of similar cards, and the all-done and snoozed states feel clunky ('Not yet, actually' plus a stray link). It shows the real date, buttons don't name their plant, focus falls to the body after actions, and there is a console error.",
+     "strengths": [
+      "Clear overdue-first ordering with an expanded detail (light, water, observation history)",
+      "Task-specific button text, restart demo day, a toast undo and a reasonable all-done card with a next-day hint",
+      "Good desktop use of a side rail with rhythm, field notes and 'How Moss thinks'"
+     ],
+     "weaknesses": [
+      "Header shows the real date (Wednesday, September 30), inconsistent with the history; 'Wednesday holds 2' contradicts 3 tasks today",
+      "Progress says '4 of 4 tended' when one plant was only snoozed; every action button uses the water-drop icon",
+      "Buttons only say 'Watered'/'Snooze' with no plant name; activeElement becomes BODY after each action",
+      "Console error: <svg> height='auto'; the tended-card layout wraps awkwardly ('Orbit Golden / pothos TENDED')"
+     ],
+     "evidence": [
+      "OBJECTIVE_CHECKS: svg height console error",
+      "Playwright: focus was BODY after complete, undo and snooze; final status '4 of 4 tended' with Frida snoozed",
+      "Final screenshot: done cards show a 'Not yet, actually' button beside a 'moves back to the queue' link"
+     ],
+     "letter": "F"
+    }
+   },
+   "ranking": [
+    "sonnet-5.5",
+    "opus-5.5",
+    "fable-5.1",
+    "muse",
+    "gpt-6-luna",
+    "mimo"
+   ],
+   "notes": "C, D and A are close and all strong. C edges D for its bolder, odder identity and more robust modal/focus handling. D has the richest all-done state but weaker mobile secondary cards. A is very clean but uses the real weekday and adds a small invented 'missed' mark. E and F both mix the real current date with the seed history. B's mislabeled 'Watered' actions and lost focus put it last."
+  }
+ },
+ "grader": "Blind per-task graders: Claude Opus 5.5 subagents in Claude Code, 2026-09-30"
+}

@@ -13,6 +13,7 @@ def words(p):
     return len(re.findall(r"\b[\w'’.,:;!?/$%&@-]+\b", t))
 
 def run(cmd, cwd):
+    if not Path(cwd).is_dir(): return {"rc": None, "summary": "task not run"}
     r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=300)
     out = (r.stdout + r.stderr).strip().splitlines()
     m = [l for l in out if re.match(r"(Ran \d+ tests|OK|FAILED|\d+ passed|=+ .* in )", l.strip())]

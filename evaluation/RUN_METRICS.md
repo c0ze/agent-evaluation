@@ -18,6 +18,7 @@ for each one is as Arda identified it.
 | muse (muse-spark-1.3) | max | local (tincan on the Mac) | 02:12:21 | 02:32:49 | 20 min 28 s | n/a | n/a | not measurable; see tokens | 13 / 13 | `muse-run` in `c0ze/agent-eval-muse` |
 | GPT-6 Luna (`gpt-6-luna`) | max | Codex CLI, gand-business | 03:06:18 | 03:40:28 | 34 min 10 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-luna` |
 | GPT-6.1 Sol (`gpt-6.1-sol`) | xhigh | Codex CLI, gand-business | 04:06:46 | 04:54:38 | 47 min 52 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6.1-sol` |
+| Grok 4.7 (`grok-4.7`) | xhigh | Grok CLI, grok.com | 04:22:45 | 05:43:00 (12 tasks) | 80 min 15 s for 12 tasks | n/a | n/a | **$6.74** for 12 tasks | 12 / 13 (13 interrupted) | `run` in `c0ze/agent-eval-grok-4.7` |
 | GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business then gmail-personal | 03:06:18 (01-09), 05:19:41 (10-13) | 05:39:03 | 34 min 54 s (15:32 + 19:22) | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-astra` |
 
 Durations are as Arda timed them. The push times agree with them.
@@ -114,3 +115,20 @@ Tasks 10-13 were re-run from the template on gmail-personal (Arda reset its limi
 
 The same model used far less of gmail-personal's quota for similar token counts, so how "hungry" a
 model looks depends on the account's plan as much as on the model.
+
+## Grok 4.7 (Grok CLI on the Mac)
+
+Grok reports cost in dollars per request. Personal context was kept out with a clean temporary HOME
+(no ~/.claude/CLAUDE.md, user skills or plugins), GROK_MEMORY=0, MCP tools denied and web tools off;
+GROK_HOME stayed ~/.grok for login. Only Grok's 22 bundled skills loaded. Sandbox: `workspace`
+(writes limited to the repo and /tmp; the no-network `strict` profile fails on this Mac because
+/var/run/docker.sock is a symlink).
+
+| | Turns | Input | Cache-read input | Output (reasoning) | Cost |
+|---|---|---|---|---|---|
+| Tasks 01-12 | 286 | 1,596,456 | 22,209,536 | 850,540 (675,976) | $6.74 |
+| Task 13 (interrupted) | 35 | 399,646 | 3,376,896 | 261,932 (215,011) | $1.43 |
+
+Task 13 stopped after an hour with "402 Payment Required: Grok Build usage balance exhausted",
+before writing RESPONSE.md. Its partial output is kept in grok-orchestration; the task was reset to the
+template and will be re-run after a top-up (resume-13.sh). Until then Grok's scores cover 12 tasks.
