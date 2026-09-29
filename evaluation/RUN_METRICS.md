@@ -16,6 +16,8 @@ for each one is as Arda identified it.
 | Fable 5.1 | extra | B | ~01:17 | 02:05:18 | ~49 min | $79 | $26 | **$53** | 13 / 13 | `claude/funny-turing-1qfdj4` in `c0ze/agent-eval-fable-5.1` |
 | Opus 5.5 | high | A | ~01:48 | 02:09:37 | ~21 min | $79 (01:44 reading) | $65 | **$14** | 13 / 13 | `claude/focused-hopper-vexle5` in `c0ze/agent-eval-opus-5.5` |
 | muse (muse-spark-1.3) | max | local (tincan on the Mac) | 02:12:21 | 02:32:49 | 20 min 28 s | n/a | n/a | not measurable; see tokens | 13 / 13 | `muse-run` in `c0ze/agent-eval-muse` |
+| GPT-6 Luna (`gpt-6-luna`) | max | Codex CLI, gand-business | 03:06:18 | 03:40:28 | 34 min 10 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-luna` |
+| GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business | 03:06:18 | paused at 9 / 13 | 15 min 32 s so far | n/a | n/a | quota, see below | 9 / 13 so far | `run` in `c0ze/agent-eval-gpt-6-astra` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -67,3 +69,22 @@ event's usage, counted once, including muse's built-in reminder helpers.
 | **13 tasks** | 172 | 6,200,186 | 5,544,028 | 162,252 | 59,639 | 61.9 min (summed over parallel sessions) |
 
 Per-task figures are in `run-logs/muse-RUN_LOG.md` and `run-logs/muse-orchestration/usage.txt`.
+
+## GPT-6 runs (Codex CLI on the Mac)
+
+Codex subscriptions report quota, not dollars, so usage is recorded as tokens and quota consumed.
+Each run used its own account; the accounts' personal `AGENTS.md` was set aside during the runs.
+
+| | Luna (max, gand-business) | Astra (xhigh, gmail-business) |
+|---|---|---|
+| Tasks | 13 / 13 | 9 / 13, then the account ran out of credits |
+| Wall-clock | 34 min 10 s | 15 min 32 s for tasks 01-09; tasks 10-13 to be re-run from the template |
+| Input tokens (cached) | 3,475,051 (3,051,008) | 1,950,073 (1,683,456) for 01-09 |
+| Output tokens (reasoning) | 219,647 (124,405) | 82,221 (22,285) for 01-09 |
+| 5-hour quota used | 97% -> 94% left | 100% -> 0% (blocked) |
+| Weekly quota used | 76% -> 75% left | 100% -> 84% left |
+
+On tasks 01-09 the two used about the same number of tokens (Luna about 2.00M input and 99k output),
+but Astra's used up a full 5-hour window and 16% of the weekly quota, against about 3% and 1% for
+Luna. Astra costs far more quota per token. Timing and the interruption are in
+`run-logs/gpt-orchestration/ASTRA_TIMING.md`.
