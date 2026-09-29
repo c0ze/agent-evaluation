@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Moss — a gentle household plant-care companion.">
+  <title>Moss · Today</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#queue-title">Skip to today's care</a>
+
+  <div class="app" id="app">
+    <!-- DOM order = phone reading order: greeting, queue, rhythm.
+         On wide screens the grid puts greeting + rhythm in a left rail. -->
+    <header class="hello" aria-labelledby="app-title">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" focusable="false"><path d="M16 29c0-9 0-14 7-20M16 29c0-7-3-11-9-14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M23 9c-6-1-9 3-8 7 5 0 9-2 8-7zM7 15c5-2 8 1 8 5-4 1-8-1-8-5z" fill="currentColor"/></svg>
+        </span>
+        <h1 id="app-title" class="brand__name">Moss</h1>
+      </div>
+
+      <div class="hello__row">
+        <div class="mossball" id="mossball" aria-hidden="true">
+          <span class="mossball__eye"></span><span class="mossball__eye"></span>
+          <span class="mossball__sprout"></span>
+        </div>
+        <div class="hello__text">
+          <p class="hello__date" id="today-date">Tuesday, Sep 22</p>
+          <p class="hello__greeting" id="greeting">Good morning.</p>
+        </div>
+      </div>
+
+      <p class="hello__mood" id="mood"></p>
+
+      <div class="progress" id="progress"></div>
+    </header>
+
+    <main class="queue" id="queue" aria-labelledby="queue-title">
+      <div class="queue__head">
+        <h2 id="queue-title" class="queue__title" tabindex="-1">Today's care</h2>
+        <p class="queue__sub" id="queue-sub"></p>
+      </div>
+      <div id="queue-body"></div>
+    </main>
+
+    <section class="rhythm" id="rhythm" aria-labelledby="rhythm-title"></section>
+
+    <p class="keys-hint">
+      <span class="keys-hint__label">Keyboard:</span>
+      <kbd>Tab</kbd> to move, <kbd>Enter</kbd> to act, <kbd>U</kbd> to undo, <kbd>Esc</kbd> to close.
+    </p>
+
+    <!-- Desktop only: persistent detail pane -->
+    <aside class="pane" id="pane" aria-label="Plant details"></aside>
+  </div>
+
+  <!-- Mobile / narrow: detail opens as a bottom sheet -->
+  <dialog class="sheet" id="sheet" aria-labelledby="sheet-name">
+    <div class="sheet__grip" aria-hidden="true"></div>
+    <div class="sheet__inner" id="sheet-body"></div>
+  </dialog>
+
+  <!-- Undo toast -->
+  <div class="toast" id="toast" hidden>
+    <p class="toast__msg" id="toast-msg"></p>
+    <button type="button" class="toast__undo" data-action="undo">Undo <kbd aria-hidden="true">U</kbd></button>
+    <span class="toast__timer" aria-hidden="true"><span></span></span>
+  </div>
+
+  <div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <noscript><p class="noscript">Moss needs JavaScript to show your plants.</p></noscript>
+
+  <script src="app.js"></script>
+</body>
+</html>
