@@ -14,6 +14,8 @@ The orchestrator gave no hints and did not review, fix, finish or re-run any wor
 
 Usage comes from each run's own `exec.result` JSON (`usageSource: completed_responses`). Quota is the MiniMax Token Plan's 5-hour and weekly windows, read from the coding-plan endpoint right before the first task and right after the last, and every 2 minutes during the run (`usage.log`); a watcher would have held new tasks past 85% of either window. It never did.
 
+**Process note:** during task 03 (at 19:39:59) MiniMax M3 also wrote a copy of its .env.example to ~/projects/agent-eval-runs/agent-eval-m3/03-infra-management/, a sibling path outside its repository (apparently a mistyped repository name). The file is identical to the .env.example in its task directory, so the deliverable is unaffected, but the brief says to work only in the task directory. The stray copy is kept in mcode-m3-run-orch/stray-write/. Found after the eleven-way grading, so that pass's task 03 grader did not see this note.
+
 ## Results
 
 Summaries are mcode's own replies, verbatim except that the `<deliver-assets>` file lists are left out; they have not been verified.
