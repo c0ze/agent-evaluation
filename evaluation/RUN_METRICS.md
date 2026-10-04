@@ -21,6 +21,7 @@ for each one is as Arda identified it.
 | Grok 4.7 (`grok-4.7`) | xhigh | Grok CLI, grok.com | 04:22:45 | 05:43:00 (12 tasks) | 80 min 15 s for 12 tasks | n/a | n/a | **$6.74** for 12 tasks | 12 / 13 (13 interrupted) | `run` in `c0ze/agent-eval-grok-4.7` |
 | GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business then gmail-personal | 03:06:18 (01-09), 05:19:41 (10-13) | 05:39:03 | 34 min 54 s (15:32 + 19:22) | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-astra` |
 | MiniMax M3.1 Flash (`MiniMax-M3.1-Flash-Preview`) | xhigh | mcode on the Mac (managed MiniMax login) | 18:20:45 (2026-10-04) | 19:05:06 | 42 min 16 s (28:38 first pass + 13:38 task 11 re-run) | n/a | n/a | not measurable; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3.1-flash` |
+| MiniMax M3 (`MiniMax-M3`) | default (not selectable) | mcode on the Mac (managed MiniMax login) | 19:39:03 (2026-10-04) | 19:47:52 | 8 min 49 s | n/a | n/a | 2% of the 5-hour window; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -166,3 +167,22 @@ The run's cost could not be measured; tokens are the record.
 
 The slowest tasks were the frontends: 12 (19 min 22 s, 6.25M cache-read tokens) and 11 (13 min 38 s), while
 the writing tasks took 1–7 minutes each.
+
+## MiniMax M3 (mcode on the Mac, 2026-10-04)
+
+Same protocol and command as MiniMax M3.1 Flash above, with `--model minimax/MiniMax-M3` and **no `--effort`**:
+mcode rejects it ("MiniMax-M3 does not support reasoning effort selection"), so M3 ran at its fixed default
+while M3.1 Flash ran on xhigh. Scripts, timing, replies and usage are in `run-logs/mcode-m3-orchestration/`.
+
+Unlike the M3.1 Flash preview, M3 is billed against the Token Plan: a 15k-token probe before the run moved
+both windows from 0% to 1% used. So the run polled the coding-plan windows every 2 minutes (`usage.log`), with
+a watcher ready to hold new tasks if either window passed 85%. It never came close.
+
+| Tasks | Wall-clock | Input tokens | Cache-read input | Output tokens | 5-hour window | Weekly window |
+|---|---|---|---|---|---|---|
+| 13 / 13 | 8 min 49 s | 546,628 | 4,781,334 | 189,837 | 1% -> 3% used | 1% -> 1% used |
+
+The windows only report whole percentages, so the run cost about 2% of a 5-hour window and too little of the
+week to register. Readings during the run: 1% (19:39, 19:41), 2% (19:43, 19:45), 3% (19:47) of the 5-hour
+window. M3 was much faster and leaner than M3.1 Flash: 8 min 49 s against 42 min 16 s, and 4.8M cache-read
+input against 18.6M.

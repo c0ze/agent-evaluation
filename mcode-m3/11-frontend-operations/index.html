@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relay · Operations</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app" data-app>
+    <!-- Navigation rail -->
+    <nav class="rail" aria-label="Primary">
+      <div class="rail__brand" aria-hidden="true">
+        <span class="rail__mark">R</span>
+      </div>
+      <ul class="rail__items" role="list">
+        <li>
+          <button class="rail__btn rail__btn--active" type="button" aria-current="page" aria-label="Overview">
+            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+              <rect x="2.5" y="2.5" width="6" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <rect x="11.5" y="2.5" width="6" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <rect x="2.5" y="11.5" width="6" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <rect x="11.5" y="11.5" width="6" height="6" rx="1" fill="currentColor"/>
+            </svg>
+          </button>
+        </li>
+        <li>
+          <button class="rail__btn" type="button" aria-label="Incidents">
+            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+              <path d="M10 2 L18 16 H2 Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+              <path d="M10 8 V11.5 M10 13.4 V13.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </li>
+        <li>
+          <button class="rail__btn" type="button" aria-label="Services">
+            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+              <rect x="2" y="3" width="16" height="4" rx="0.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <rect x="2" y="9" width="16" height="4" rx="0.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <rect x="2" y="15" width="16" height="2.5" rx="0.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            </svg>
+          </button>
+        </li>
+        <li>
+          <button class="rail__btn" type="button" aria-label="Logs">
+            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+              <path d="M4 3 H13 L16 6 V17 H4 Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+              <path d="M6 8 H14 M6 11 H14 M6 14 H10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </li>
+        <li>
+          <button class="rail__btn" type="button" aria-label="Settings">
+            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+              <circle cx="10" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M10 2.5 V4.5 M10 15.5 V17.5 M2.5 10 H4.5 M15.5 10 H17.5 M4.7 4.7 L6.1 6.1 M13.9 13.9 L15.3 15.3 M4.7 15.3 L6.1 13.9 M13.9 6.1 L15.3 4.7"
+                stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </li>
+      </ul>
+      <div class="rail__foot" aria-hidden="true">
+        <span class="rail__dot"></span>
+      </div>
+    </nav>
+
+    <!-- Top status bar -->
+    <header class="topbar" role="banner">
+      <div class="topbar__left">
+        <h1 class="topbar__title">Operations</h1>
+        <span class="topbar__sep" aria-hidden="true">/</span>
+        <span class="topbar__crumb">Live overview</span>
+      </div>
+      <div class="topbar__right">
+        <div class="env" role="status" aria-live="polite">
+          <span class="env__dot" aria-hidden="true"></span>
+          <span class="env__label">production · us-east-1</span>
+        </div>
+        <div class="clock" aria-label="Current time">
+          <span class="clock__time" data-clock>--:--:-- UTC</span>
+        </div>
+        <div class="user" aria-label="Signed in as Mira Okafor">
+          <span class="user__avatar" aria-hidden="true">MO</span>
+          <span class="user__name">Mira Okafor</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main id="main" class="main" tabindex="-1">
+      <!-- Summary metrics -->
+      <section class="metrics" aria-label="Summary metrics">
+        <div class="metric" data-metric>
+          <div class="metric__label">Events / min</div>
+          <div class="metric__value" data-metric-value>—</div>
+          <div class="metric__delta" data-metric-delta>—</div>
+        </div>
+        <div class="metric" data-metric>
+          <div class="metric__label">P95 latency</div>
+          <div class="metric__value" data-metric-value>—</div>
+          <div class="metric__delta" data-metric-delta>—</div>
+        </div>
+        <div class="metric" data-metric>
+          <div class="metric__label">Error rate</div>
+          <div class="metric__value" data-metric-value>—</div>
+          <div class="metric__delta" data-metric-delta>—</div>
+        </div>
+        <div class="metric" data-metric>
+          <div class="metric__label">Queue depth</div>
+          <div class="metric__value" data-metric-value>—</div>
+          <div class="metric__delta" data-metric-delta>—</div>
+        </div>
+      </section>
+
+      <!-- Throughput visualization -->
+      <section class="panel panel--chart" aria-labelledby="chart-h">
+        <header class="panel__head">
+          <h2 id="chart-h" class="panel__title">Throughput</h2>
+          <div class="panel__meta">
+            <span class="panel__sub">events per minute, last 24h</span>
+            <div class="seg" role="tablist" aria-label="Throughput range">
+              <button class="seg__btn" role="tab" aria-selected="false" data-range="1h">1h</button>
+              <button class="seg__btn seg__btn--active" role="tab" aria-selected="true" data-range="24h">24h</button>
+              <button class="seg__btn" role="tab" aria-selected="false" data-range="7d">7d</button>
+            </div>
+          </div>
+        </header>
+        <div class="chart" data-chart>
+          <!-- SVG injected by app.js -->
+        </div>
+        <div class="chart__legend" aria-hidden="true">
+          <span class="chart__legendItem">00:00</span>
+          <span class="chart__legendItem">06:00</span>
+          <span class="chart__legendItem">12:00</span>
+          <span class="chart__legendItem">18:00</span>
+          <span class="chart__legendItem">24:00</span>
+        </div>
+      </section>
+
+      <!-- Incident list and detail panel -->
+      <section class="panel panel--incidents" aria-labelledby="inc-h">
+        <header class="panel__head">
+          <h2 id="inc-h" class="panel__title">
+            Incidents
+            <span class="badge" data-inc-count>0</span>
+          </h2>
+          <div class="filters" role="search">
+            <label class="search">
+              <span class="search__icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="13" height="13"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5 L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </span>
+              <input class="search__input" type="search" placeholder="Filter incidents" data-search aria-label="Filter incidents" />
+            </label>
+            <div class="chips" role="group" aria-label="Filter by severity">
+              <button class="chip chip--active" type="button" data-sev="all">All</button>
+              <button class="chip" type="button" data-sev="critical">Critical</button>
+              <button class="chip" type="button" data-sev="high">High</button>
+              <button class="chip" type="button" data-sev="medium">Medium</button>
+              <button class="chip" type="button" data-sev="low">Low</button>
+            </div>
+          </div>
+        </header>
+
+        <div class="split">
+          <!-- Table -->
+          <div class="table-wrap" role="region" aria-label="Incident list" tabindex="0">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" class="col-sev">Sev</th>
+                  <th scope="col" class="col-id">ID</th>
+                  <th scope="col" class="col-title">Incident</th>
+                  <th scope="col" class="col-svc">Service</th>
+                  <th scope="col" class="col-age num">Age</th>
+                  <th scope="col" class="col-owner">Owner</th>
+                  <th scope="col" class="col-status">Status</th>
+                </tr>
+              </thead>
+              <tbody data-tbody>
+                <!-- rows injected -->
+              </tbody>
+            </table>
+            <div class="empty" data-empty hidden>
+              <p class="empty__title">No incidents match your filters</p>
+              <p class="empty__hint">Try clearing severity filters or adjusting the search term.</p>
+              <button class="btn btn--ghost" type="button" data-clear>Clear filters</button>
+            </div>
+          </div>
+
+          <!-- Detail panel -->
+          <aside class="detail" aria-label="Incident detail" data-detail>
+            <div class="detail__placeholder" data-detail-placeholder>
+              <p>Select an incident to view details.</p>
+            </div>
+            <div class="detail__body" data-detail-body hidden>
+              <header class="detail__head">
+                <div class="detail__id">
+                  <span class="sev-dot" data-detail-sev></span>
+                  <span class="detail__idText" data-detail-id></span>
+                </div>
+                <h3 class="detail__title" data-detail-title></h3>
+              </header>
+              <dl class="kv">
+                <div class="kv__row"><dt>Service</dt><dd data-detail-service></dd></div>
+                <div class="kv__row"><dt>Age</dt><dd data-detail-age></dd></div>
+                <div class="kv__row"><dt>Owner</dt><dd data-detail-owner></dd></div>
+                <div class="kv__row"><dt>Status</dt><dd data-detail-status></dd></div>
+              </dl>
+              <section class="timeline" aria-label="Timeline">
+                <h4 class="timeline__h">Timeline</h4>
+                <ol class="timeline__list" data-detail-timeline>
+                  <li><span class="timeline__t">12:04</span><span class="timeline__m">Alert raised: card authorization latency exceeded 2s</span></li>
+                  <li><span class="timeline__t">12:06</span><span class="timeline__m">M. Chen paged, joined bridge</span></li>
+                  <li><span class="timeline__t">12:11</span><span class="timeline__m">Suspected upstream issuer; replay traffic throttled</span></li>
+                  <li><span class="timeline__t">12:18</span><span class="timeline__m">Mitigation deployed: failover to secondary gateway</span></li>
+                </ol>
+              </section>
+              <div class="detail__actions">
+                <button class="btn btn--primary" type="button" data-acknowledge>
+                  <span class="btn__dot" aria-hidden="true"></span>
+                  Acknowledge
+                </button>
+                <button class="btn" type="button" data-escalate>Escalate</button>
+                <button class="btn btn--ghost" type="button" data-silence>Silence 30m</button>
+              </div>
+              <p class="detail__ack" data-ack-msg role="status" aria-live="polite"></p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <footer class="foot">
+        <span>Relay v4.2 · build 18a7c3</span>
+        <span class="foot__sep" aria-hidden="true">·</span>
+        <span>Data refreshes every 30s</span>
+      </footer>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

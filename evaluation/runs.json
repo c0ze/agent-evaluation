@@ -98,5 +98,15 @@
   "cost": null,
   "usage": "582k input + 18.61M cache-read input, 398k output tokens; the Token Plan's coding-plan counters stayed at 0% (they don't track mcode's managed usage)",
   "notes": "One mcode exec per task, four at a time, in the user's normal HOME (mcode refuses a clean one); no personal instruction files reached it, user skills did. Task 11's first attempt was killed ~15 min in by the orchestrator's job limit and re-run alone from the template; bench time = 28m38s first pass + 13m38s re-run."
+ },
+ "mcode-m3": {
+  "label": "MiniMax M3",
+  "model": "minimax/MiniMax-M3",
+  "where": "mcode (MiniMax Code 0.6.2) on the Mac, 2026-10-04",
+  "effort": "default (not selectable)",
+  "duration": "~9 min",
+  "cost": null,
+  "usage": "547k input + 4.78M cache-read input, 190k output tokens; 2% of the Token Plan's 5-hour window, weekly unchanged (1%)",
+  "notes": "One mcode exec per task, four at a time, same protocol as MiniMax M3.1 Flash; mcode rejects --effort for M3, so it ran at its fixed default. Usage was polled every 2 minutes with a hold at 85%, never reached."
  }
 }

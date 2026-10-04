@@ -1,0 +1,8 @@
+I turned `SOURCE_NOTES.md` into a developer-facing `WEBHOOKS.md` at 925 words (within the 700-1,100 target), covering signature verification with a Python example, delivery and retry semantics, ordering and idempotency, key rotation, the replay window, operational advice, and a troubleshooting table — while explicitly distinguishing Orbit-enforced guarantees (10s response deadline, 512 KiB limit, 24h previous-secret window, 7-day replay window, retry status codes) from customer-side recommendations (5-minute clock-skew tolerance, treating the retry schedule as approximate, idempotent receivers). I resolved the signature contradiction conservatively by treating the current implementation (`timestamp + "." + raw_body`) as authoritative and flagging the older "sign parsed JSON" note as stale in two places, and I left HTTP-redirect behavior as best-effort pending product confirmation rather than asserting either side of the security vs. engineering disagreement. `RESPONSE.md` lists the editorial choices, what I deliberately omitted, and four concrete open questions for product (redirects, replay timestamp handling, old-doc cleanup, tolerance enforcement).
+
+Both deliverables are complete: `WEBHOOKS.md` and `RESPONSE.md` are written to `/Users/arda/projects/agent-eval-runs/agent-eval-mcode-m3/05-technical-writing/`. Model ID: **MiniMax-M3**.
+
+<deliver-assets>
+<media type="file" src="/Users/arda/projects/agent-eval-runs/agent-eval-mcode-m3/05-technical-writing/WEBHOOKS.md" caption="Orbit webhooks developer guide (925 words)" />
+<media type="file" src="/Users/arda/projects/agent-eval-runs/agent-eval-mcode-m3/05-technical-writing/RESPONSE.md" caption="Editorial choices and unresolved questions" />
+</deliver-assets>

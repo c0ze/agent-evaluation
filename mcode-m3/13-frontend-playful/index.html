@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#F1E6CF">
+  <meta name="color-scheme" content="light">
+  <title>Moss · a gentle plant companion</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to today's care</a>
+
+  <main id="main" class="page" aria-labelledby="greeting">
+
+    <!-- =================== HEADER =================== -->
+    <header class="topbar">
+      <div class="brand">
+        <svg class="brand__mark" viewBox="0 0 36 36" aria-hidden="true">
+          <path d="M5 26c0-9 7-15 13-15s13 6 13 15" fill="none" stroke="#3E5A2E" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M18 11c0 5-2 9-6 12" fill="none" stroke="#3E5A2E" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="13" cy="25" r="1.4" fill="#3E5A2E"/>
+          <circle cx="23" cy="25" r="1.4" fill="#3E5A2E"/>
+          <circle cx="18" cy="29" r="1.4" fill="#3E5A2E"/>
+        </svg>
+        <span class="brand__name">Moss</span>
+        <span class="brand__dot" aria-hidden="true">·</span>
+        <span class="brand__tag">plant companion</span>
+      </div>
+
+      <div class="topbar__meta">
+        <p class="hello" id="greeting">Good afternoon.</p>
+        <p class="date"><time datetime="2026-10-04">Sunday, October 4</time> · <span class="loc">Your windowsill</span></p>
+      </div>
+    </header>
+
+    <!-- =================== RHYTHM =================== -->
+    <section class="rhythm" aria-labelledby="rhythm-title">
+      <div class="rhythm__head">
+        <h2 id="rhythm-title" class="rhythm__title">This week's rhythm</h2>
+        <p class="rhythm__sub">How busy you've been with your green friends.</p>
+      </div>
+
+      <ol class="bars" role="list" aria-label="Care events per day">
+        <li class="bar bar--mon"><span class="bar__day">M</span><span class="bar__pip" style="--h: 22%"><span class="bar__count">1</span></span></li>
+        <li class="bar bar--tue"><span class="bar__day">T</span><span class="bar__pip" style="--h: 66%"><span class="bar__count">3</span></span></li>
+        <li class="bar bar--wed"><span class="bar__day">W</span><span class="bar__pip" style="--h: 44%"><span class="bar__count">2</span></span></li>
+        <li class="bar bar--thu"><span class="bar__day">T</span><span class="bar__pip" style="--h: 88%"><span class="bar__count">4</span></span></li>
+        <li class="bar bar--fri"><span class="bar__day">F</span><span class="bar__pip" style="--h: 44%"><span class="bar__count">2</span></span></li>
+        <li class="bar bar--sat"><span class="bar__day">S</span><span class="bar__pip" style="--h: 22%"><span class="bar__count">1</span></span></li>
+        <li class="bar bar--sun bar--today"><span class="bar__day">S</span><span class="bar__pip" style="--h: 66%"><span class="bar__count">3</span></span></li>
+      </ol>
+
+      <p class="rhythm__caption">A lighter week than last. Your pothos is the steady presence.</p>
+    </section>
+
+    <!-- =================== QUEUE + DETAIL =================== -->
+    <div class="split">
+
+      <!-- QUEUE -->
+      <section class="queue" aria-labelledby="queue-title">
+        <div class="queue__head">
+          <h2 id="queue-title" class="queue__title">Today's care</h2>
+          <p class="queue__count"><span data-done>0</span> of <span data-total>3</span> tended</p>
+        </div>
+
+        <ul class="cards" role="list" id="cards" aria-live="polite"></ul>
+
+        <div class="alldone" id="alldone" hidden>
+          <svg viewBox="0 0 120 80" class="alldone__art" aria-hidden="true">
+            <!-- Sun -->
+            <circle cx="92" cy="22" r="11" fill="#E8B547"/>
+            <g stroke="#E8B547" stroke-width="2.4" stroke-linecap="round">
+              <line x1="92" y1="4"  x2="92" y2="8"/>
+              <line x1="92" y1="36" x2="92" y2="40"/>
+              <line x1="74" y1="22" x2="78" y2="22"/>
+              <line x1="106" y1="22" x2="110" y2="22"/>
+              <line x1="79" y1="9"  x2="82" y2="12"/>
+              <line x1="102" y1="32" x2="105" y2="35"/>
+            </g>
+            <!-- Hill -->
+            <path d="M0 70 Q 30 50 60 60 T 120 56 L 120 80 L 0 80 Z" fill="#C7B58A"/>
+            <!-- Tiny plants -->
+            <g>
+              <path d="M22 64 q -3 -6 0 -12 q 3 6 0 12 z" fill="#6B7F4A"/>
+              <line x1="22" y1="64" x2="22" y2="68" stroke="#3E5A2E" stroke-width="1.6"/>
+              <path d="M44 66 q -3 -5 0 -10 q 3 5 0 10 z" fill="#7A8E58"/>
+              <line x1="44" y1="66" x2="44" y2="70" stroke="#3E5A2E" stroke-width="1.6"/>
+            </g>
+          </svg>
+          <h3 class="alldone__title">A quiet day, well earned.</h3>
+          <p class="alldone__sub">Every plant on your list has been seen to. Drama's misting is waiting for tomorrow morning.</p>
+        </div>
+      </section>
+
+      <!-- DETAIL -->
+      <section class="detail" aria-labelledby="detail-name" id="detail">
+        <!-- filled by app.js -->
+      </section>
+
+    </div>
+
+    <!-- =================== FOOTER =================== -->
+    <footer class="foot">
+      <p class="foot__line">Moss listens to leaves, not loudness. Tap any plant to see what it likes.</p>
+      <p class="foot__small">Local-only build · no network, no clouds, just soil and water.</p>
+    </footer>
+  </main>
+
+  <!-- =================== TOAST =================== -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span class="toast__icon" id="toastIcon" aria-hidden="true"></span>
+    <span class="toast__msg" id="toastMsg"></span>
+    <button class="toast__undo" id="toastUndo" type="button">Undo</button>
+  </div>
+
+  <!-- =================== TEMPLATES =================== -->
+  <template id="card-tpl">
+    <li class="card" role="listitem">
+      <button class="card__btn" type="button" data-select>
+        <span class="card__avatar" data-avatar aria-hidden="true"></span>
+        <span class="card__body">
+          <span class="card__name" data-name></span>
+          <span class="card__species" data-species></span>
+          <span class="card__loc"><span data-location></span>  ·  <span data-task></span></span>
+        </span>
+        <span class="card__due" data-due></span>
+      </button>
+      <div class="card__actions" data-actions>
+        <button type="button" class="act act--water" data-water>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 C 8 8 6 12 6 15 a6 6 0 0 0 12 0 c 0 -3 -2 -7 -6 -12 z" fill="currentColor"/></svg>
+          <span>Water</span>
+        </button>
+        <button type="button" class="act act--snooze" data-snooze>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 3h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Snooze</span>
+        </button>
+        <span class="card__status" data-status></span>
+      </div>
+    </li>
+  </template>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
