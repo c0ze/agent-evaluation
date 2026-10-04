@@ -1,5 +1,6 @@
-from distutils.version import LooseVersion
 import re
+
+from packaging.version import InvalidVersion, Version
 
 
 def slugify(value: str) -> str:
@@ -9,5 +10,9 @@ def slugify(value: str) -> str:
 
 def normalize_version(value: str) -> str:
     """Normalize ordinary dotted versions, preserving pre-release suffixes."""
-    return str(LooseVersion(value))
-
+    try:
+        return str(Version(value))
+    except InvalidVersion:
+        # Preserve observable behavior for ordinary dotted versions.
+        # Anything we cannot parse is surfaced to the caller unchanged.
+        return value

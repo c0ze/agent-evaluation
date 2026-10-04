@@ -1,30 +1,161 @@
-services:
-  proxy:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-  api:
-    build: .
-    environment:
-      DATABASE_URL: postgres://admin:password@db:5432/app
-      REDIS_URL: redis://cache:6379
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-      - cache
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app
-    ports:
-      - "5432:5432"
-  cache:
-    image: redis:latest
-    ports:
-      - "6379:6379"
+# Compose v2 (the deployed `docker compose` CLI), not v1 `docker-compose`.
+# Intended for a small single-host deployment, NOT a full orchestrator.
 
+name: small-api
+
+services:
+
+  # ---------- reverse proxy / TLS terminator ----------
+  proxy:
+    image: nginx:1.27-alpine
+    container_name: small-api-proxy
+    restart: unless-stopped
+    ports:
+      # Only the proxy is reachable from the host
+      - "127.0.0.1:8080:80"
+      # Uncomment for TLS if you put certs in ./nginx/certs
+      # - "127.0.0.1:8443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      # - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/healthz || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    networks:
+      - frontend
+
+  # ---------- Python API (private — only proxy can reach it) ----------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: small-api/api:latest
+    container_name: small-api-api
+    restart: unless-stopped
+    environment:
+      # Injected from .env / host env — never hard-code secrets
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      FLASK_ENV: production
+      PYTHONUNBUFFERED: "1"
+    # No host port mapping — the api is internal-only.
+    expose:
+      - "8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    healthcheck:
+      # Replace /healthz with your real health endpoint.
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8000/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    networks:
+      - frontend
+      - backend
+
+  # ---------- PostgreSQL ----------
+  db:
+    image: postgres:16-alpine
+    container_name: small-api-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    # No host port mapping — db is internal-only.
+    expose:
+      - "5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Optional: bootstrap SQL on first run only
+      # - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    networks:
+      - backend
+
+  # ---------- Redis ----------
+  cache:
+    image: redis:7-alpine
+    container_name: small-api-cache
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
+    # No host port mapping — cache is internal-only.
+    expose:
+      - "6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    networks:
+      - backend
+
+
+# ---------- named volumes (persistent) ----------
+volumes:
+  pgdata:
+    name: small-api-pgdata
+  redisdata:
+    name: small-api-redisdata
+
+
+# ---------- explicit networks ----------
+networks:
+  frontend:
+    name: small-api-frontend
+  backend:
+    name: small-api-backend
+    internal: true   # no internet egress from the data tier
