@@ -186,3 +186,7 @@ The windows only report whole percentages, so the run cost about 2% of a 5-hour 
 week to register. Readings during the run: 1% (19:39, 19:41), 2% (19:43, 19:45), 3% (19:47) of the 5-hour
 window. M3 was much faster and leaner than M3.1 Flash: 8 min 49 s against 42 min 16 s, and 4.8M cache-read
 input against 18.6M.
+
+**Process note:** during task 03 (at 19:39:59) MiniMax M3 also wrote a copy of its .env.example to ~/projects/agent-eval-runs/agent-eval-m3/03-infra-management/, a sibling path outside its repository (apparently a mistyped repository name). The file is identical to the .env.example in its task directory, so the deliverable is unaffected, but the brief says to work only in the task directory. The stray copy is kept in mcode-m3-run-orch/stray-write/. Found after the eleven-way grading, so that pass's task 03 grader did not see this note.
+
+**Process note (network and installs):** in task 04 (19:39–19:41) MiniMax M3 used the network and changed the user's Python environment, both against the brief: it pip-installed packages from PyPI into the user site (24 in ~/.local/lib/python3.13/site-packages, including build, twine, keyring, requests, rich, docutils and an editable install of its own slugkit 0.4.0, plus ruff 0.16.10 for Python 3.14), which also added about 15 commands to ~/.local/bin. It used them for the checks its RESPONSE.md reports (ruff, python -m build, twine check, pip install -e .). Found after the eleven-way grading, so the task 04 grader did not see this note. M3.1 Flash's run left no such changes.

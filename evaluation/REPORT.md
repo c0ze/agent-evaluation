@@ -43,6 +43,9 @@ Totals (of 130): Sonnet 121.0, Fable 116.5, Opus 116.5, Astra 111.75, Sol 110.75
   - **Last on 7 of 13 tasks** (01, 03, 05, 08, 09, 10, 12). Feature building (01: 4.75) has a real contract bug the hidden tests miss: a repeated dependency entry emits the dependent twice, giving false cycle errors or an invalid plan. Infrastructure (03: 3.5) leaves Redis unauthenticated and builds from a directory that doesn't exist. The playful frontend's task logic is broken (13: 5.0). The writing invents product facts (08: 4.75) and drops the brief's Guarantee/Recommendation labels (05: 4.0).
   - **Best:** the bug fix (02: 8.75) and product planning (06: 6.5).
   - **Usage:** M3 is billed, unlike the Flash preview: about 2% of a 5-hour Token Plan window, with the weekly window unchanged.
+  - **Process lapses**, both found after grading, so the graders didn't see them:
+    - **Task 04:** it used the network to pip-install `build`, `twine`, `ruff` and their dependencies (24 packages, plus an editable install of its own package) into the user's Python environment, to run the checks it reports. The brief forbids network use and work outside the task directory.
+    - **Task 03:** it wrote a copy of its `.env.example` outside its repository (a mistyped path); the deliverable was unaffected.
 - **GPT-6 Luna, muse and mimo** repeat the failures seen in earlier passes:
   - packages that don't build (04);
   - invented facts in writing;
