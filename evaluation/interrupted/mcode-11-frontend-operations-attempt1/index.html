@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relay — Operations Control Room</title>
+  <meta name="description" content="Relay operations console: 24-hour throughput, service health, and incident triage." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- Icon sprite: inline so the page makes no network requests -->
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-overview" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5" />
+    </symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24">
+      <path d="M3 12h4l2.5 7L15 5l2.5 7H21" />
+    </symbol>
+    <symbol id="i-incident" viewBox="0 0 24 24">
+      <path d="M12 4.2 21 19.4H3z" />
+      <path d="M12 10v4" />
+      <path d="M12 17.2h.01" />
+    </symbol>
+    <symbol id="i-team" viewBox="0 0 24 24">
+      <circle cx="9" cy="8.5" r="3.2" />
+      <path d="M3.5 19.2c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5" />
+      <path d="M16.4 6.2a3 3 0 0 1 0 5.9" />
+      <path d="M18 14.4c1.6.6 2.6 2.2 2.9 4.4" />
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path d="M12 3 19 6v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z" />
+      <path d="M9.2 12.2l1.9 1.9 3.7-3.9" />
+    </symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 3.5v2M12 18.5v2M20.5 12h-2M5.5 12h-2M18 6l-1.4 1.4M7.4 16.6 6 18M18 18l-1.4-1.4M7.4 7.4 6 6" />
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="10.5" cy="10.5" r="6" />
+      <path d="M15 15l4.5 4.5" />
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="M4.5 12.5 9.5 17.5 19.5 6.5" />
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 7.5V12l3 2" />
+    </symbol>
+    <symbol id="i-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8.5" r="3.4" />
+      <path d="M5 19.4c.7-3.4 3.3-5.4 7-5.4s6.3 2 7 5.4" />
+    </symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24">
+      <path d="M9.5 6 15.5 12l-6 6" />
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5" />
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24">
+      <rect x="9" y="9" width="11" height="11" rx="2" />
+      <path d="M15 5.5A1.5 1.5 0 0 0 13.5 4H6a2 2 0 0 0-2 2v7.5A1.5 1.5 0 0 0 5.5 15" />
+    </symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24">
+      <path d="M4 6h16l-6 7v5.5l-4 2V13z" />
+    </symbol>
+    <symbol id="i-up" viewBox="0 0 24 24">
+      <path d="M12 19V5" />
+      <path d="M6 11l6-6 6 6" />
+    </symbol>
+    <symbol id="i-down" viewBox="0 0 24 24">
+      <path d="M12 5v14" />
+      <path d="M6 13l6 6 6-6" />
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24">
+      <path d="M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5S6.5 14 6.5 10" />
+      <path d="M10 18.5a2.2 2.2 0 0 0 4 0" />
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24">
+      <path d="M13.5 3.5H7A1.5 1.5 0 0 0 5.5 5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8.5z" />
+      <path d="M13.5 3.5v5h5" />
+    </symbol>
+  </svg>
+
+  <div class="app">
+    <!-- ── Top status bar ─────────────────────────────────────────── -->
+    <header class="topbar">
+      <div class="topbar__group topbar__group--brand">
+        <span class="brand" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-activity" /></svg>
+        </span>
+        <span class="brand__name">Relay</span>
+        <span class="pill pill--env" title="Environment: production">prod</span>
+      </div>
+
+      <div class="topbar__group topbar__group--context">
+        <span class="statusdot statusdot--warn" aria-hidden="true"></span>
+        <span class="topbar__state">
+          <strong>Degraded</strong>
+          <span class="topbar__muted">2 of 4 services outside SLO</span>
+        </span>
+        <span class="divider" aria-hidden="true"></span>
+        <span class="topbar__muted topbar__mono">eu-west-1 · us-east-1</span>
+      </div>
+
+      <div class="topbar__group topbar__group--right">
+        <form class="search" role="search" id="search-form">
+          <label class="visually-hidden" for="global-search">Filter incidents by ID, title, or service</label>
+          <svg class="icon search__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search" /></svg>
+          <input class="search__input" id="global-search" type="search" placeholder="Filter incidents" autocomplete="off" spellcheck="false" />
+          <kbd class="search__kbd" aria-hidden="true">/</kbd>
+        </form>
+        <span class="topbar__clock">
+          <span class="topbar__muted">UTC</span>
+          <time class="topbar__mono" id="clock" datetime="">--:--:--</time>
+        </span>
+        <button class="iconbtn" type="button" aria-label="Notifications, 3 unread">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bell" /></svg>
+          <span class="iconbtn__badge" aria-hidden="true">3</span>
+        </button>
+        <span class="avatar" title="Signed in as A. Silva">AS</span>
+      </div>
+    </header>
+
+    <!-- ── Navigation rail ────────────────────────────────────────── -->
+    <nav class="rail" aria-label="Primary">
+      <ul class="rail__list">
+        <li>
+          <a class="rail__item is-current" href="#main" aria-current="page">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-overview" /></svg>
+            <span class="rail__label">Overview</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__item" href="#throughput">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-activity" /></svg>
+            <span class="rail__label">Throughput</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__item" href="#incidents">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-incident" /></svg>
+            <span class="rail__label">Incidents</span>
+            <span class="rail__count" id="rail-count">4</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__item" href="#detail-panel">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-team" /></svg>
+            <span class="rail__label">On-call</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__item" href="#runbooks">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc" /></svg>
+            <span class="rail__label">Runbooks</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__item" href="#settings">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gear" /></svg>
+            <span class="rail__label">Settings</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- ── Main ───────────────────────────────────────────────────── -->
+    <main class="main" id="main" tabindex="-1">
+      <div class="pagehead">
+        <div>
+          <h1 class="pagehead__title">Operations overview</h1>
+          <p class="pagehead__sub">
+            Rolling 24&nbsp;h · <span class="mono">all regions</span> ·
+            updated <span class="mono" id="updated-at">—</span>
+          </p>
+        </div>
+        <div class="pagehead__actions">
+          <button class="btn btn--ghost" type="button" id="refresh-btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-activity" /></svg>
+            <span>Refresh</span>
+          </button>
+          <button class="btn btn--ghost" type="button" id="export-btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc" /></svg>
+            <span>Export</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary metrics -->
+      <section class="metrics" aria-labelledby="metrics-heading">
+        <h2 class="section-heading" id="metrics-heading">Service health, last 24 hours</h2>
+        <ul class="metrics__grid" id="metrics-grid"></ul>
+      </section>
+
+      <!-- Throughput chart -->
+      <section class="panel panel--chart" id="throughput" aria-labelledby="throughput-heading">
+        <div class="panel__head">
+          <div>
+            <h2 class="section-heading" id="throughput-heading">Event throughput by hour</h2>
+            <p class="panel__sub">Events ingested per hour · <span class="mono" id="throughput-total">—</span> total</p>
+          </div>
+          <ul class="legend" id="chart-legend">
+            <li class="legend__item"><span class="legend__swatch legend__swatch--bar" aria-hidden="true"></span>Hourly volume</li>
+            <li class="legend__item"><span class="legend__swatch legend__swatch--window" aria-hidden="true"></span>Incident window</li>
+            <li class="legend__item"><span class="legend__swatch legend__swatch--peak" aria-hidden="true"></span>Peak hour</li>
+            <li class="legend__item"><span class="legend__swatch legend__swatch--mean" aria-hidden="true"></span>24h mean</li>
+          </ul>
+        </div>
+        <div class="chart" id="chart"></div>
+        <p class="chart__caption" id="chart-caption"></p>
+      </section>
+
+      <!-- Incidents + detail -->
+      <div class="workspace" id="incidents">
+        <section class="panel panel--table" aria-labelledby="incidents-heading">
+          <div class="panel__head panel__head--stack">
+            <div>
+              <h2 class="section-heading" id="incidents-heading">Active incidents</h2>
+              <p class="panel__sub"><span id="result-count">4</span> of 4 shown · sorted by <span class="mono" id="sort-label">severity</span></p>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filters" role="group" aria-label="Incident filters">
+            <div class="filters__row">
+              <fieldset class="chips" id="severity-chips">
+                <legend class="visually-hidden">Filter by severity</legend>
+                <button class="chip is-active" type="button" data-severity="all" aria-pressed="true">All <span class="chip__count" data-count="all">4</span></button>
+                <button class="chip" type="button" data-severity="critical" aria-pressed="false"><span class="sev sev--critical" aria-hidden="true"></span>Critical <span class="chip__count" data-count="critical">1</span></button>
+                <button class="chip" type="button" data-severity="high" aria-pressed="false"><span class="sev sev--high" aria-hidden="true"></span>High <span class="chip__count" data-count="high">1</span></button>
+                <button class="chip" type="button" data-severity="medium" aria-pressed="false"><span class="sev sev--medium" aria-hidden="true"></span>Medium <span class="chip__count" data-count="medium">1</span></button>
+                <button class="chip" type="button" data-severity="low" aria-pressed="false"><span class="sev sev--low" aria-hidden="true"></span>Low <span class="chip__count" data-count="low">1</span></button>
+              </fieldset>
+            </div>
+
+            <div class="filters__row filters__row--controls">
+              <div class="field">
+                <label class="field__label" for="status-select">Status</label>
+                <select class="select" id="status-select">
+                  <option value="all">All statuses</option>
+                  <option value="open">Open</option>
+                  <option value="investigating">Investigating</option>
+                  <option value="monitoring">Monitoring</option>
+                  <option value="acknowledged">Acknowledged</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field__label" for="service-select">Service</label>
+                <select class="select" id="service-select">
+                  <option value="all">All services</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field__label" for="sort-select">Sort by</label>
+                <select class="select" id="sort-select">
+                  <option value="severity">Severity</option>
+                  <option value="age">Oldest first</option>
+                  <option value="id">Incident ID</option>
+                  <option value="service">Service</option>
+                </select>
+              </div>
+              <button class="btn btn--ghost btn--sm" type="button" id="clear-filters" hidden>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close" /></svg>
+                <span>Clear filters</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="tablewrap" id="tablewrap">
+            <table class="table" id="incident-table">
+              <caption class="visually-hidden">Active incidents with severity, service, age, owner, and status. Select a row to open the incident detail panel.</caption>
+              <thead>
+                <tr>
+                  <th scope="col" class="col-sev">Sev</th>
+                  <th scope="col">Incident</th>
+                  <th scope="col">Service</th>
+                  <th scope="col" class="num">Age</th>
+                  <th scope="col">Owner</th>
+                  <th scope="col">Status</th>
+                  <th scope="col"><span class="visually-hidden">Open detail</span></th>
+                </tr>
+              </thead>
+              <tbody id="incident-body"></tbody>
+            </table>
+
+            <!-- Empty state for filters -->
+            <div class="empty" id="empty-state" hidden>
+              <svg class="icon empty__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-filter" /></svg>
+              <p class="empty__title">No incidents match these filters</p>
+              <p class="empty__body">All 4 seeded incidents are currently open. Widen the severity or status filter, or clear the search term.</p>
+              <button class="btn btn--ghost btn--sm" type="button" data-clear-filters>Clear all filters</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Detail panel -->
+        <aside class="panel panel--detail" id="detail-panel" aria-labelledby="detail-heading">
+          <div class="detail" id="detail-body"></div>
+        </aside>
+      </div>
+
+      <section class="panel panel--aux" id="runbooks" aria-labelledby="runbooks-heading">
+        <div class="panel__head">
+          <div>
+            <h2 class="section-heading" id="runbooks-heading">On-call rotation &amp; runbooks</h2>
+            <p class="panel__sub">Primary responder for the next 6 hours is <strong>A. Silva</strong> · escalation to platform-oncall</p>
+          </div>
+        </div>
+        <ul class="auxlist" id="aux-list">
+          <li class="aux">
+            <span class="aux__label">Payments timeouts</span>
+            <span class="aux__value mono">RB-114</span>
+            <span class="aux__note">Drain upstream queue, then re-run auth replay.</span>
+          </li>
+          <li class="aux">
+            <span class="aux__label">Retry queue growth</span>
+            <span class="aux__value mono">RB-208</span>
+            <span class="aux__note">Scale consumers in eu-west-1, verify DLQ depth.</span>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <p class="visually-hidden" id="live-region" role="status" aria-live="polite"></p>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

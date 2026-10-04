@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>measure</title>
+  <style>html,body{margin:0}iframe{width:390px;height:900px;border:0}</style>
+</head>
+<body>
+  <iframe id="f" src="index.html"></iframe>
+  <pre id="out">pending</pre>
+  <script>
+  document.getElementById('f').addEventListener('load', function () {
+    var w = document.getElementById('f').contentWindow;
+    var d = w.document;
+    setTimeout(function () {
+      var out = [];
+      var vw = d.documentElement.clientWidth;
+      out.push('viewport=' + vw);
+      out.push('docScrollWidth=' + d.documentElement.scrollWidth);
+      out.push('bodyScrollWidth=' + d.body.scrollWidth);
+      out.push('HORIZONTAL_SCROLL=' + (d.documentElement.scrollWidth > vw + 1 ? 'YES' : 'no'));
+      out.push('--- elements wider than viewport ---');
+      var all = d.querySelectorAll('*');
+      var bad = [];
+      for (var i = 0; i < all.length; i++) {
+        var r = all[i].getBoundingClientRect();
+        if (r.width > vw + 1 || r.right > vw + 1) {
+          bad.push({
+            el: all[i].tagName.toLowerCase() + (all[i].className && typeof all[i].className === 'string' ? '.' + all[i].className.trim().split(/\s+/).join('.') : '') + (all[i].id ? '#' + all[i].id : ''),
+            w: Math.round(r.width), right: Math.round(r.right)
+          });
+        }
+      }
+      out.push('count=' + bad.length);
+      bad.slice(0, 25).forEach(function (b) { out.push('  ' + b.el + ' w=' + b.w + ' right=' + b.right); });
+      document.getElementById('out').textContent = out.join('\n');
+    }, 600);
+  });
+  </script>
+</body>
+</html>

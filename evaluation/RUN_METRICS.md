@@ -20,6 +20,7 @@ for each one is as Arda identified it.
 | GPT-6.1 Sol (`gpt-6.1-sol`) | xhigh | Codex CLI, gand-business | 04:06:46 | 04:54:38 | 47 min 52 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6.1-sol` |
 | Grok 4.7 (`grok-4.7`) | xhigh | Grok CLI, grok.com | 04:22:45 | 05:43:00 (12 tasks) | 80 min 15 s for 12 tasks | n/a | n/a | **$6.74** for 12 tasks | 12 / 13 (13 interrupted) | `run` in `c0ze/agent-eval-grok-4.7` |
 | GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business then gmail-personal | 03:06:18 (01-09), 05:19:41 (10-13) | 05:39:03 | 34 min 54 s (15:32 + 19:22) | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-astra` |
+| MiniMax M3.1 Flash (`MiniMax-M3.1-Flash-Preview`) | xhigh | mcode on the Mac (managed MiniMax login) | 18:20:45 (2026-10-04) | 19:05:06 | 42 min 16 s (28:38 first pass + 13:38 task 11 re-run) | n/a | n/a | not measurable; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3.1-flash` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -132,3 +133,36 @@ GROK_HOME stayed ~/.grok for login. Only Grok's 22 bundled skills loaded. Sandbo
 Task 13 stopped after an hour with "402 Payment Required: Grok Build usage balance exhausted",
 before writing RESPONSE.md. Its partial output is kept in grok-orchestration; the task was reset to the
 template and will be re-run after a top-up (resume-13.sh). Until then Grok's scores cover 12 tasks.
+
+## MiniMax M3.1 Flash (mcode on the Mac, 2026-10-04)
+
+MiniMax Code (`mcode` 0.6.2) with its managed MiniMax login, model `minimax/MiniMax-M3.1-Flash-Preview`,
+effort xhigh. Same protocol as the other runs: one fresh `mcode exec` per task with the same instruction,
+four queues with the same task split, no hints, on a private repository holding only the thirteen tasks.
+Command: `mcode exec --cwd <repo> --model minimax/MiniMax-M3.1-Flash-Preview --effort xhigh --prompt-mode coding
+--permission full --max-steps 200 --timeout 2h --output-format json`. Scripts, timing, replies and usage are in
+`run-logs/mcode-orchestration/`.
+
+- **Personal context:** mcode refuses a clean HOME (it rejects a symlinked `~/.minimax`, and copying its login
+  would disturb the real one), so it ran in the normal HOME. Asked beforehand, it reported no AGENTS.md,
+  CLAUDE.md or other personal instruction files in its context; the user's skills from `~/.agents/skills`
+  did load, as in the muse run.
+- **Interruption:** task 11's first attempt was killed about 15 minutes in by the orchestrator's own
+  background-job limit, not by mcode. The other twelve tasks finished in the first pass (18:20:45–18:49:23,
+  28 min 38 s). Task 11 was reset to the template and re-run alone with the identical command
+  (18:51:28–19:05:06, 13 min 38 s); the killed attempt's output is in `interrupted/mcode-11-frontend-operations-attempt1/`.
+  Bench time, as for Astra, is the sum: **42 min 16 s** (44 min 21 s on the clock).
+
+| Tasks | Bench time | Input tokens | Cache-read input | Output tokens | Token Plan quota (5-hour / weekly) |
+|---|---|---|---|---|---|
+| 13 / 13 | 42 min 16 s | 582,181 | 18,605,981 | 397,831 | 100% -> 100% left / 100% -> 100% left |
+
+Tokens come from each run's own `exec.result` JSON (`usageSource: completed_responses`); the killed task 11
+attempt reported none, so its tokens are missing here. The **quota didn't move**: the account's
+coding-plan counters (`/v1/api/openplatform/coding_plan/remains`) show no limit (`total_count 0`) and no
+usage even after about 19M tokens, so mcode's managed usage is billed somewhere those counters don't
+see (mcode also reads a credit balance, from an endpoint that needs its signed client requests).
+The run's cost could not be measured; tokens are the record.
+
+The slowest tasks were the frontends: 12 (19 min 22 s, 6.25M cache-read tokens) and 11 (13 min 38 s), while
+the writing tasks took 1–7 minutes each.

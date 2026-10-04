@@ -11,7 +11,14 @@ fe = json.loads((ROOT / "evaluation/frontend-checks.json").read_text())
 notes_file = ROOT / "evaluation/blind-notes.json"
 NOTES = json.loads(notes_file.read_text()) if notes_file.exists() else {}
 PATH_RE = re.compile(r"/(home/user|home/arda|Users/arda/projects(/agent-eval-runs)?)/agent-eval[a-z0-9.\-]*(-2026-09-23)?(/(" + "|".join(map(re.escape, MODELS)) + r"))?")
-ID_RE = re.compile(r"(?i)\b(gpt-[0-9][0-9a-z.\-]*|grok[ -]?[0-9][0-9a-z.\-]*(?:-build)?|claude-[a-z0-9.\-]+|(?:claude )?(?:sonnet|opus|fable) [0-9.]+|muse[- ]spark[0-9a-z.\-]*|muse code|meta muse spark|xiaomi/mimo[0-9a-z.\-]*|mimo-v[0-9a-z.\-]*)\b")
+ID_RE = re.compile(r"(?i)\b(gpt-[0-9][0-9a-z.\-]*|grok[ -]?[0-9][0-9a-z.\-]*(?:-build)?|claude-[a-z0-9.\-]+|(?:claude )?(?:sonnet|opus|fable) [0-9.]+|muse[- ]spark[0-9a-z.\-]*|muse code|meta muse spark|xiaomi/mimo[0-9a-z.\-]*|mimo-v[0-9a-z.\-]*|(?:minimax/)?minimax[- ]?m[0-9][0-9a-z.\-]*|minimax code|mcode)\b")
+HIDDEN_FAILS = {}
+def hidden_failures(m):
+    import subprocess
+    r = subprocess.run([sys.executable, str(ROOT / "evaluation/test_code_tasks.py"), m], cwd=ROOT, capture_output=True, text=True)
+    out = {}
+    for name, cls in re.findall(r"^(?:FAIL|ERROR): (\S+) \(__main__\.(\w+)\.", r.stderr, flags=re.M): out.setdefault(cls, []).append(name)
+    return out
 rng = random.Random(SEED); key = {}; letters_all = "ABCDEFGHIJKL"
 for task in sorted(p.name for p in (ROOT / "_templates").iterdir()):
     order = [m for m in MODELS if (ROOT / m / task).is_dir()]; rng.shuffle(order); letters = dict(zip(order, letters_all)); key[task] = {l: m for m, l in letters.items()}
@@ -27,7 +34,13 @@ for task in sorted(p.name for p in (ROOT / "_templates").iterdir()):
                 t2 = ID_RE.sub("[model id removed]", PATH_RE.sub("/work", t))
                 if t2 != t: f.write_text(t2)
         c = checks[m]; n = task[:2]; fx = {}
-        if n in ("01", "02"): fx["hidden_contract_tests_11"] = "all pass" if c["hidden_tests"]["rc"] == 0 else "FAILURES"; fx["own_tests"] = c[f"own_tests_{n}"]["summary"]
+        if n in ("01", "02"):
+            # Report this task's own part of the hidden suite (5 scheduler / 6 cache tests), so a failure
+            # in one task doesn't show up against the other.
+            cls, total = ("SchedulerContract", 5) if n == "01" else ("CacheContract", 6)
+            fails = HIDDEN_FAILS.setdefault(m, hidden_failures(m)).get(cls, [])
+            fx["hidden_contract_tests"] = f"all {total} pass" if not fails else f"FAILURES ({len(fails)} of {total}): " + ", ".join(fails)
+            fx["own_tests"] = c[f"own_tests_{n}"]["summary"]
         if n == "04": fx["own_tests"] = c["own_tests_04"]["summary"]
         if n == "05": fx["approx_words_WEBHOOKS_md"] = c["words_05_WEBHOOKS"]
         if n == "07": fx["approx_words_STORY_md"] = c["words_07_STORY"]; fx["sentences_RESPONSE_md"] = c["sentences_07_RESPONSE"]

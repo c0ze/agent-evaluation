@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>measure390</title>
+  <style>html,body{margin:0}iframe{display:block;width:390px;height:900px;border:0}</style>
+</head>
+<body>
+  <iframe id="f" src="index.html"></iframe>
+  <pre id="out">pending</pre>
+  <script>
+  document.getElementById('f').addEventListener('load', function () {
+    var w = document.getElementById('f').contentWindow;
+    var d = w.document;
+    setTimeout(function () {
+      var out = [];
+      var vw = d.documentElement.clientWidth;
+      out.push('viewport=' + vw);
+      out.push('scrollWidth=' + d.documentElement.scrollWidth);
+      out.push('bodyOverflowX=' + w.getComputedStyle(d.body).overflowX);
+      function rect(sel) {
+        var n = d.querySelector(sel);
+        if (!n) return sel + ' = MISSING';
+        var r = n.getBoundingClientRect();
+        return sel + ' left=' + Math.round(r.left) + ' right=' + Math.round(r.right) + ' w=' + Math.round(r.width);
+      }
+      out.push('--- key rects ---');
+      out.push(rect('.topbar__group--brand'));
+      out.push(rect('.topbar__group--right'));
+      out.push(rect('.search'));
+      out.push(rect('.main'));
+      out.push(rect('.metrics__grid'));
+      out.push(rect('.metric:nth-child(1)'));
+      out.push(rect('.metric:nth-child(2)'));
+      out.push(rect('.chart svg'));
+      out.push(rect('.rail'));
+      out.push(rect('.rail__list'));
+      var lastItem = d.querySelectorAll('.rail__item');
+      out.push('rail_items=' + lastItem.length + ' last_right=' + Math.round(lastItem[lastItem.length - 1].getBoundingClientRect().right));
+      out.push('--- ANY element past ' + vw + ' (body clips, so scrollWidth lies) ---');
+      var n = 0;
+      var all = d.querySelectorAll('*');
+      for (var i = 0; i < all.length; i++) {
+        var r = all[i].getBoundingClientRect();
+        if (r.right > vw + 0.5) {
+          n++;
+          if (n <= 20) {
+            out.push('  ' + all[i].tagName.toLowerCase() + (typeof all[i].className === 'string' && all[i].className ? '.' + all[i].className.trim().split(/\s+/).join('.') : '') + ' right=' + Math.round(r.right) + ' w=' + Math.round(r.width));
+          }
+        }
+      }
+      out.push('TOTAL_PAST=' + n);
+      document.getElementById('out').textContent = out.join('\n');
+    }, 700);
+  });
+  </script>
+</body>
+</html>

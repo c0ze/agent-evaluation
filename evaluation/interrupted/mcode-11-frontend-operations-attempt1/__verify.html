@@ -1,0 +1,89 @@
+<!doctype html>
+<!-- TEMPORARY verification harness. Deleted after the test run. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>pending</title>
+</head>
+<body>
+  <pre id="out">no results</pre>
+  <script>
+    window.__errors = [];
+    window.addEventListener('error', function (e) { window.__errors.push(String(e.message)); });
+  </script>
+  <iframe id="frame" src="index.html" style="width:1400px;height:1200px;border:0"></iframe>
+  <script>
+  // Re-run the checks inside the iframe once its app.js has initialised.
+  function report(lines) {
+    document.getElementById('out').textContent = lines.join('\n');
+    document.title = 'DONE';
+  }
+  document.getElementById('frame').addEventListener('load', function () {
+    var w = document.getElementById('frame').contentWindow;
+    var d = w.document;
+    setTimeout(function () {
+      var lines = [];
+      function ok(name, cond, extra) { lines.push((cond ? 'PASS ' : 'FAIL ') + name + (extra ? ' :: ' + extra : '')); }
+      try {
+        ok('4 metric cards', d.querySelectorAll('.metric').length === 4, d.querySelectorAll('.metric').length);
+        ok('metric values present', !!d.querySelector('.metric__value').textContent.trim(), d.querySelector('.metric__value').textContent);
+        ok('chart svg rendered', !!d.querySelector('#chart svg'), '');
+        ok('24 bar groups', d.querySelectorAll('.bar--group').length === 24, d.querySelectorAll('.bar--group').length);
+        ok('mean line drawn', !!d.querySelector('.meanline'), '');
+        ok('4 incident rows', d.querySelectorAll('#incident-body tr').length === 4, d.querySelectorAll('#incident-body tr').length);
+        ok('detail auto-selected', !!d.querySelector('.detail__title'), d.querySelector('.detail__title') ? d.querySelector('.detail__title').textContent : 'none');
+        ok('ack button present', !!d.querySelector('[data-ack]'), '');
+        ok('rail count = 4', d.getElementById('rail-count').textContent === '4', d.getElementById('rail-count').textContent);
+
+        // --- acknowledge flow
+        var incId = d.querySelector('#incident-body tr').getAttribute('data-id');
+        d.querySelector('[data-ack]').click();
+        ok('status text -> acknowledged', /Acknowledged/.test(d.querySelector('#incident-body tr .status').textContent), d.querySelector('#incident-body tr .status').textContent.trim());
+        ok('undo control offered', !!d.querySelector('[data-undo-ack]'), '');
+        ok('ack note shown', !!d.querySelector('.ack-note'), '');
+        d.querySelector('[data-undo-ack]').click();
+        ok('undo restores status', /Investigating/.test(d.querySelector('#incident-body tr .status').textContent), d.querySelector('#incident-body tr .status').textContent.trim());
+
+        // --- select a different row
+        d.querySelectorAll('#incident-body tr')[1].click();
+        ok('row 2 selected', d.querySelectorAll('#incident-body tr')[1].classList.contains('is-selected'), '');
+        ok('detail follows selection', /INC-2839/.test(d.querySelector('.detail__id').textContent), d.querySelector('.detail__id').textContent);
+
+        // --- severity filter
+        d.querySelector('.chip[data-severity="high"]').click();
+        ok('severity filter -> 1 row', d.querySelectorAll('#incident-body tr').length === 1, d.querySelectorAll('#incident-body tr').length);
+        ok('selection resynced to visible', /INC-2839/.test(d.querySelector('.detail__id').textContent), d.querySelector('.detail__id').textContent);
+        d.querySelector('#clear-filters').click();
+        ok('clear filters -> 4 rows', d.querySelectorAll('#incident-body tr').length === 4, d.querySelectorAll('#incident-body tr').length);
+
+        // --- empty state (critical + monitoring is an impossible pair)
+        d.querySelector('.chip[data-severity="critical"]').click();
+        var sel = d.getElementById('status-select');
+        sel.value = 'monitoring';
+        sel.dispatchEvent(new w.Event('change', { bubbles: true }));
+        ok('empty state visible', d.getElementById('empty-state').hidden === false, '');
+        ok('table hidden when empty', d.getElementById('incident-table').hidden === true, '');
+        ok('detail falls back to placeholder', !!d.querySelector('.detail__placeholder'), '');
+        d.querySelector('[data-clear-filters]').click();
+        ok('empty state cleared', d.getElementById('empty-state').hidden === true, '');
+
+        // --- text search
+        var s = d.getElementById('global-search');
+        s.value = 'webhooks';
+        s.dispatchEvent(new w.Event('input', { bubbles: true }));
+
+        setTimeout(function () {
+          ok('search -> 1 row', d.querySelectorAll('#incident-body tr').length === 1, d.querySelectorAll('#incident-body tr').length);
+          ok('no page overflow @1400', d.documentElement.scrollWidth <= 1401, d.documentElement.scrollWidth + ' vs ' + d.documentElement.clientWidth);
+          lines.push('JS_ERRORS=' + (w.__errors ? w.__errors.join('|') || 'none' : 'n/a'));
+          report(lines);
+        }, 320);
+      } catch (err) {
+        lines.push('THROWN ' + err.message);
+        report(lines);
+      }
+    }, 400);
+  });
+  </script>
+</body>
+</html>

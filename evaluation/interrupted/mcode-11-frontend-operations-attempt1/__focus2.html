@@ -1,0 +1,64 @@
+<!doctype html><html><head><meta charset="utf-8"><title>focus2</title>
+<style>html,body{margin:0}iframe{width:1280px;height:820px;border:0}</style></head>
+<body><iframe id="f" src="index.html"></iframe><pre id="out">p</pre>
+<script>
+document.getElementById('f').addEventListener('load', function(){
+  var w=document.getElementById('f').contentWindow, d=w.document;
+  setTimeout(function(){
+    var o=[], res=function(n,c,x){o.push((c?'PASS ':'FAIL ')+n+(x?' :: '+x:''));};
+    var found=[];
+    for (var i=0;i<d.styleSheets.length;i++){
+      var rules=d.styleSheets[i].cssRules;
+      for (var j=0;j<rules.length;j++){
+        if (rules[j].selectorText && rules[j].selectorText.indexOf(':focus-visible')>-1) found.push(rules[j].cssText);
+      }
+    }
+    res('focus-visible rules present', found.length>0, found.length+' rule(s)');
+    found.forEach(function(t){o.push('   '+t.replace(/\s+/g,' ').slice(0,110));});
+    res('focus-not-visible reset', found.some(function(t){return t.indexOf(':focus:not')>-1;}));
+
+    var rb=d.querySelectorAll('.incident__btn');
+    rb[1].focus();
+    res('focus lands on row button', d.activeElement.className.indexOf('incident__btn')>-1, d.activeElement.className);
+
+    d.activeElement.dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));
+    res('ArrowDown keeps focus on a row button', d.activeElement.className.indexOf('incident__btn')>-1, d.activeElement.className);
+    res('ArrowDown moved selection to next row', d.querySelector('.detail__id').textContent==='INC-2837', d.querySelector('.detail__id').textContent);
+    res('focused row is the selected row', d.activeElement.closest('tr').getAttribute('data-id')==='INC-2837', d.activeElement.closest('tr').getAttribute('data-id'));
+
+    d.activeElement.dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowUp',bubbles:true}));
+    res('ArrowUp returns to INC-2839', d.querySelector('.detail__id').textContent==='INC-2839', d.querySelector('.detail__id').textContent);
+    d.activeElement.dispatchEvent(new w.KeyboardEvent('keydown',{key:'End',bubbles:true}));
+    res('End jumps to last row', d.activeElement.closest('tr').getAttribute('data-id')==='INC-2832', d.activeElement.closest('tr').getAttribute('data-id'));
+    d.activeElement.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Home',bubbles:true}));
+    res('Home jumps to first row', d.activeElement.closest('tr').getAttribute('data-id')==='INC-2841', d.activeElement.closest('tr').getAttribute('data-id'));
+
+    // Enter re-selects without losing focus
+    d.activeElement.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    res('Enter keeps focus on row button', d.activeElement.className.indexOf('incident__btn')>-1, d.activeElement.className);
+
+    // Escape clears the search when dispatched from the input (as a browser would)
+    var s=d.getElementById('global-search'); s.value='low'; s.focus();
+    s.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+    res('Escape clears search term', s.value==='', JSON.stringify(s.value));
+    res('Escape restores all 4 rows', d.querySelectorAll('#incident-body tr').length===4, d.querySelectorAll('#incident-body tr').length);
+
+    // '/' focuses search when not typing
+    d.getElementById('refresh-btn').focus();
+    d.dispatchEvent(new w.KeyboardEvent('keydown',{key:'/',bubbles:true}));
+    res('"/" focuses the search box', d.activeElement.id==='global-search', d.activeElement.id+' / '+d.activeElement.tagName);
+
+    // aria wiring
+    res('selected row marked aria-current', !!d.querySelector('tr[aria-current="true"]'), '');
+    res('status filter is a real select', d.getElementById('status-select').tagName==='SELECT', '');
+    res('chip pressed state exposed', d.querySelector('.chip').getAttribute('aria-pressed'), d.querySelector('.chip').getAttribute('aria-pressed'));
+    res('caption present on table', !!d.querySelector('#incident-table caption'), '');
+    res('th scope on all headers', d.querySelectorAll('#incident-table thead th[scope="col"]').length===7, d.querySelectorAll('#incident-table thead th[scope="col"]').length);
+    res('announce region used on select', (function(){
+      d.querySelectorAll('.incident__btn')[1].click();
+      return d.getElementById('live-region').textContent.indexOf('INC-2839')>-1;
+    })(), d.getElementById('live-region').textContent.slice(0,60));
+    document.getElementById('out').textContent=o.join('\n');
+  },600);
+});
+</script></body></html>

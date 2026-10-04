@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><title>css</title>
+<style>html,body{margin:0}iframe{display:block;width:390px;height:700px;border:0}</style></head>
+<body><iframe id="f" src="index.html"></iframe><pre id="out">p</pre>
+<script>
+document.getElementById('f').addEventListener('load', function(){
+  var w=document.getElementById('f').contentWindow, d=w.document;
+  setTimeout(function(){
+    var o=[], vw=d.documentElement.clientWidth;
+    o.push('viewport='+vw+'  matchMedia(max-width:480px)='+w.matchMedia('(max-width: 480px)').matches);
+    ['.topbar__group--context','.metric__context','.legend','.search__kbd','.pagehead__actions .btn span','.metric:nth-child(2)']
+      .forEach(function(s){
+        var n=d.querySelector(s);
+        o.push(s+' -> '+(n? w.getComputedStyle(n).display : 'MISSING'));
+      });
+    o.push('metric2 grid-cols: cols='+w.getComputedStyle(d.querySelector('.metrics__grid')).gridTemplateColumns);
+    o.push('metric_value font='+w.getComputedStyle(d.querySelector('.metric__value')).fontSize);
+    var sheets=0,rules=0,err=[];
+    for(var i=0;i<d.styleSheets.length;i++){
+      try{ var s2=d.styleSheets[i]; sheets++; rules+=s2.cssRules.length; }catch(e){ err.push('blocked'); }
+    }
+    o.push('stylesheets='+sheets+' rules='+rules+' errs='+(err.join(',')||'none'));
+    document.getElementById('out').textContent=o.join('\n');
+  },600);
+});
+</script></body></html>

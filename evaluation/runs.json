@@ -88,5 +88,15 @@
   "cost": "$6.74 for 12 tasks (+$1.43 on the interrupted task 13)",
   "usage": "2.00M input + 25.6M cache-read, 1.11M output (891k reasoning) tokens; 321 model turns",
   "notes": "One grok -p per task, four at a time, with a clean HOME so no personal instructions or skills loaded; memory off, MCP denied, web tools off, workspace sandbox. Task 13 stopped when the Grok Build balance ran out and awaits a re-run; totals cover 12 tasks."
+ },
+ "mcode-m3.1-flash": {
+  "label": "MiniMax M3.1 Flash",
+  "model": "minimax/MiniMax-M3.1-Flash-Preview",
+  "where": "mcode (MiniMax Code 0.6.2) on the Mac, 2026-10-04",
+  "effort": "xhigh",
+  "duration": "~42 min",
+  "cost": null,
+  "usage": "582k input + 18.61M cache-read input, 398k output tokens; the Token Plan's coding-plan counters stayed at 0% (they don't track mcode's managed usage)",
+  "notes": "One mcode exec per task, four at a time, in the user's normal HOME (mcode refuses a clean one); no personal instruction files reached it, user skills did. Task 11's first attempt was killed ~15 min in by the orchestrator's job limit and re-run alone from the template; bench time = 28m38s first pass + 13m38s re-run."
  }
 }
