@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="description" content="Moss — a gentle household plant-care companion. Today's care queue, plant details, and the weekly rhythm of your windowsill.">
+<title>Moss · gentle plant care</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%233F6B32'/><path d='M16 24c0-7 3-11 8-12-1 7-4 11-8 12Z' fill='%23FBF6EA'/><path d='M16 24c0-6-3-9-8-10 1 6 4 9 8 10Z' fill='%235A8A44'/></svg>">
+</head>
+<body>
+
+<!-- ── Art sprite: every illustration is inline SVG, no network ────────────── -->
+<svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <g id="pot">
+      <rect x="20.5" y="34" width="23" height="4" rx="2" fill="#3A2A1E"/>
+      <path d="M20 38h24l-3.1 17.6a3.4 3.4 0 0 1-3.3 2.7H26.4a3.4 3.4 0 0 1-3.3-2.7Z" fill="var(--art-pot, #B95A34)"/>
+      <path d="M17.4 33.4h29.2a1.6 1.6 0 0 1 1.6 1.7l-.4 4.2a1.6 1.6 0 0 1-1.6 1.5H17.8a1.6 1.6 0 0 1-1.6-1.5l-.4-4.2a1.6 1.6 0 0 1 1.6-1.7Z" fill="var(--art-pot-dark, #8F4526)"/>
+    </g>
+  </defs>
+
+  <symbol id="art-fern" viewBox="0 0 64 64">
+    <g fill="none" stroke="var(--art-leaf-dark,#2C4A22)" stroke-width="1.7" stroke-linecap="round">
+      <path d="M32 36C32 25 30 17 26 11"/><path d="M32 36C33 24 37 17 40 10"/>
+      <path d="M32 36C31 26 28 21 22 16"/><path d="M32 36C34 26 38 22 44 18"/>
+      <path d="M32 36C32 28 32 23 32 15"/>
+    </g>
+    <g fill="var(--art-leaf,#3F6B32)">
+      <ellipse cx="24.5" cy="10" rx="3.4" ry="2" transform="rotate(-32 24.5 10)"/>
+      <ellipse cx="41" cy="9" rx="3.4" ry="2" transform="rotate(28 41 9)"/>
+      <ellipse cx="20" cy="15" rx="3.2" ry="1.9" transform="rotate(-42 20 15)"/>
+      <ellipse cx="45.5" cy="17" rx="3.2" ry="1.9" transform="rotate(40 45.5 17)"/>
+      <ellipse cx="29" cy="21" rx="2.7" ry="1.6" transform="rotate(-58 29 21)"/>
+      <ellipse cx="35" cy="21" rx="2.7" ry="1.6" transform="rotate(58 35 21)"/>
+      <ellipse cx="32" cy="25" rx="2.5" ry="1.5"/>
+      <ellipse cx="27" cy="27" rx="2.4" ry="1.5" transform="rotate(-50 27 27)"/>
+      <ellipse cx="37" cy="27" rx="2.4" ry="1.5" transform="rotate(50 37 27)"/>
+      <ellipse cx="32" cy="31" rx="2.4" ry="1.5"/>
+    </g>
+    <use href="#pot"/>
+  </symbol>
+
+  <symbol id="art-pothos" viewBox="0 0 64 64">
+    <g fill="none" stroke="var(--art-leaf-dark,#2C4A22)" stroke-width="1.7" stroke-linecap="round">
+      <path d="M32 36c0-8 1-13 0-20"/><path d="M32 30c-3-3-7-4-11-3"/><path d="M32 24c4-3 8-3 11-1"/>
+    </g>
+    <g fill="var(--art-leaf,#3F6B32)">
+      <path d="M32 16c4-5 10-5 12-1 2 5-4 9-12 6Z"/>
+      <path d="M21 27c-5-2-9 1-9 5 0 5 6 7 10 3Z"/>
+      <path d="M43 23c5-3 10 0 10 5 0 5-6 7-11 2Z"/>
+      <path d="M32 30c-4 2-8 0-8-4 0-4 5-6 8-3Z" opacity=".85"/>
+    </g>
+    <g fill="var(--art-leaf-hi,#5A8A44)" opacity=".9">
+      <ellipse cx="41" cy="18" rx="2.4" ry="1.4" transform="rotate(24 41 18)"/>
+      <ellipse cx="16.5" cy="31" rx="2.4" ry="1.4" transform="rotate(-16 16.5 31)"/>
+      <ellipse cx="48.5" cy="27" rx="2.4" ry="1.4" transform="rotate(14 48.5 27)"/>
+    </g>
+    <use href="#pot"/>
+  </symbol>
+
+  <symbol id="art-cactus" viewBox="0 0 64 64">
+    <g fill="var(--art-leaf,#3F6B32)">
+      <path d="M27 36c-3-1-4-4-4-8V15c0-4 3-7 6-7s6 3 6 7v13c0 4-1 7-4 8Z"/>
+      <path d="M38 36c-2.6-.8-3.6-3.6-3.6-7V21c0-3.4 2.4-6 5-6s5 2.6 5 6v8c0 3.4-1 6.2-3.6 7Z" opacity=".9"/>
+    </g>
+    <g fill="var(--art-leaf-hi,#5A8A44)">
+      <ellipse cx="29" cy="16" rx="2.6" ry="5"/><ellipse cx="39.4" cy="21" rx="2.2" ry="4"/>
+    </g>
+    <g fill="var(--art-pot-dark,#8F4526)">
+      <circle cx="26" cy="12" r="3.1"/><circle cx="45" cy="20" r="2.5"/>
+    </g>
+    <g fill="var(--art-leaf-dark,#2C4A22)" opacity=".55">
+      <circle cx="27.5" cy="22" r="1"/><circle cx="31" cy="27" r="1"/><circle cx="27" cy="31" r="1"/>
+      <circle cx="38" cy="27" r="1"/><circle cx="42" cy="30" r="1"/><circle cx="39.5" cy="33" r="1"/>
+    </g>
+    <use href="#pot"/>
+  </symbol>
+
+  <symbol id="art-calathea" viewBox="0 0 64 64">
+    <g fill="none" stroke="var(--art-leaf-dark,#2C4A22)" stroke-width="1.6" stroke-linecap="round">
+      <path d="M32 37c0-6-8-8-12-13"/><path d="M32 37c0-7 8-9 13-13"/><path d="M32 37v-11"/>
+    </g>
+    <g fill="var(--art-leaf,#3F6B32)">
+      <ellipse cx="18.5" cy="20" rx="7.4" ry="5.4" transform="rotate(-22 18.5 20)"/>
+      <ellipse cx="46" cy="20" rx="7.4" ry="5.4" transform="rotate(22 46 20)"/>
+      <ellipse cx="32" cy="22" rx="6.4" ry="7"/>
+    </g>
+    <g fill="none" stroke="var(--art-leaf-hi,#5A8A44)" stroke-width="1.1" opacity=".85">
+      <path d="M25.6 20.6 20 19.6M27 22.4l-5.6 2.4M25.4 18.6 21 15.8M38.4 20.6 44 19.6M37 22.4l5.6 2.4M38.6 18.6 43 15.8M32 27.6V17.6"/>
+    </g>
+    <use href="#pot"/>
+  </symbol>
+
+  <symbol id="art-sprout" viewBox="0 0 64 64">
+    <g fill="none" stroke="var(--art-leaf-dark,#2C4A22)" stroke-width="2" stroke-linecap="round">
+      <path d="M32 38V22"/>
+    </g>
+    <g fill="var(--art-leaf,#3F6B32)">
+      <path d="M32 24c1-8 7-12 13-11 1 8-5 12-13 11Z"/>
+      <path d="M32 28c-1-7-7-10-12-9-1 7 5 10 12 9Z"/>
+    </g>
+    <g class="mascot-eyes" fill="#1E2A20">
+      <ellipse class="mascot-eye" cx="28.4" cy="31.6" rx="1.5" ry="1.9"/>
+      <ellipse class="mascot-eye" cx="35.6" cy="31.6" rx="1.5" ry="1.9"/>
+    </g>
+    <path d="M29.4 35.2q2.6 2.4 5.2 0" fill="none" stroke="#1E2A20" stroke-width="1.5" stroke-linecap="round"/>
+    <use href="#pot"/>
+  </symbol>
+
+  <symbol id="art-bloom" viewBox="0 0 64 64">
+    <g fill="var(--art-blossom,#E8A33C)">
+      <ellipse cx="32" cy="17" rx="6.4" ry="10"/>
+      <ellipse cx="32" cy="47" rx="6.4" ry="10"/>
+      <ellipse cx="17" cy="32" rx="10" ry="6.4"/>
+      <ellipse cx="47" cy="32" rx="10" ry="6.4"/>
+    </g>
+    <g fill="var(--art-blossom-deep,#C97A22)" opacity=".75">
+      <ellipse cx="32" cy="17" rx="3" ry="8" transform="rotate(14 32 17)"/>
+      <ellipse cx="32" cy="47" rx="3" ry="8" transform="rotate(-14 32 47)"/>
+      <ellipse cx="17" cy="32" rx="8" ry="3" transform="rotate(-14 17 32)"/>
+      <ellipse cx="47" cy="32" rx="8" ry="3" transform="rotate(14 47 32)"/>
+    </g>
+    <circle cx="32" cy="32" r="8.4" fill="var(--art-pot,#B95A34)"/>
+    <circle cx="32" cy="32" r="6" fill="#FBF6EA"/>
+    <g fill="#1E2A20">
+      <circle cx="29.6" cy="31" r="1.2"/><circle cx="34.4" cy="31" r="1.2"/>
+    </g>
+    <path d="M29.6 34q2.4 2.2 4.8 0" fill="none" stroke="#1E2A20" stroke-width="1.3" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="art-drop" viewBox="0 0 24 24">
+    <path d="M12 2.5c3.4 4.2 6 7.5 6 10.4A6 6 0 0 1 6 12.9C6 10 8.6 6.7 12 2.5Z" fill="currentColor"/>
+  </symbol>
+
+  <symbol id="art-zzz" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 6h6L4.6 11H10"/><path d="M12 12h6l-5.4 5H18"/>
+    </g>
+  </symbol>
+
+  <symbol id="art-check" viewBox="0 0 24 24">
+    <path d="M4.5 12.5 9.5 17.5 19.5 6.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="art-chevron" viewBox="0 0 24 24">
+    <path d="M6 9.5 12 15.5 18 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="art-clock" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M12 6.8V12l3.6 2.2"/>
+    </g>
+  </symbol>
+
+  <symbol id="art-sprout-sm" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M12 21v-8"/>
+    </g>
+    <g fill="currentColor">
+      <path d="M12 15c.5-4 3-6 6.5-5.5C18 13.5 15 15.5 12 15Z"/>
+      <path d="M12 17c-.5-3.5-3-5-6-4.5C6.5 15.8 9 17.5 12 17Z"/>
+    </g>
+  </symbol>
+
+  <symbol id="art-sun" viewBox="0 0 24 24">
+    <g stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none">
+      <path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/>
+    </g>
+    <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<a class="skip-link" href="#queue">Skip to today&rsquo;s care</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="brand">
+      <span class="brand__mark" aria-hidden="true">
+        <svg class="art" viewBox="0 0 64 64"><use href="#art-sprout"></use></svg>
+      </span>
+      <span class="brand__words">
+        <span class="brand__name">Moss</span>
+        <span class="brand__tag">gentle plant care</span>
+      </span>
+    </p>
+    <p class="masthead__status" id="day-status">Checking on the windowsill&hellip;</p>
+  </div>
+</header>
+
+<main class="shell">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__copy">
+      <h1 class="hero__title" id="hero-title">Good morning, the plants are waiting.</h1>
+      <p class="hero__sub" id="hero-sub">Four of them, one bathroom window, and a fern with a two-day thirst.</p>
+    </div>
+
+    <section class="rhythm card" aria-labelledby="rhythm-title">
+      <div class="rhythm__intro">
+        <h2 class="rhythm__title" id="rhythm-title">Weekly rhythm</h2>
+        <p class="rhythm__sub">Care given, day by day</p>
+      </div>
+      <ul class="rhythm__bars" id="rhythm-bars"></ul>
+    </section>
+  </section>
+
+  <section class="queue-wrap" aria-labelledby="queue-title">
+    <div class="section-head">
+      <h2 class="section-head__title" id="queue-title">Today&rsquo;s care</h2>
+      <p class="section-head__meta" id="queue-count"></p>
+    </div>
+
+    <div class="alldone" id="alldone" hidden>
+      <span class="alldone__art" aria-hidden="true">
+        <svg class="art" viewBox="0 0 64 64"><use href="#art-bloom"></use></svg>
+      </span>
+      <div class="alldone__copy">
+        <h3 class="alldone__title" id="alldone-title">All four are cared for.</h3>
+        <p class="alldone__text" id="alldone-text">Nothing else today. Go enjoy the window light.</p>
+        <ul class="alldone__list" id="alldone-list"></ul>
+      </div>
+    </div>
+
+    <ol class="queue" id="queue"></ol>
+    <p class="queue__empty" id="queue-empty" hidden>Nothing in the queue. Suspiciously tidy.</p>
+  </section>
+
+  <aside class="rail" aria-label="Around the house">
+    <section class="card rail__card" aria-labelledby="light-title">
+      <h2 class="rail__title" id="light-title">
+        <span class="rail__icon" aria-hidden="true"><svg class="art" viewBox="0 0 24 24"><use href="#art-sun"></use></svg></span>
+        Light around the house
+      </h2>
+      <ul class="lightmap" id="lightmap"></ul>
+    </section>
+
+    <section class="card rail__card note" aria-labelledby="note-title">
+      <h2 class="rail__title" id="note-title">Moss&rsquo;s note</h2>
+      <p class="note__text" id="note-text">The bathroom window is doing a lot of quiet work.</p>
+      <p class="note__sign"><span class="note__mascot" aria-hidden="true"><svg class="art" viewBox="0 0 64 64"><use href="#art-sprout"></use></svg></span>&mdash; Moss</p>
+    </section>
+
+    <section class="card rail__card legend" aria-labelledby="legend-title">
+      <h2 class="rail__title" id="legend-title">Reading the queue</h2>
+      <ul class="legend__list">
+        <li><span class="swatch swatch--overdue" aria-hidden="true"></span> Overdue &mdash; cares first</li>
+        <li><span class="swatch swatch--today" aria-hidden="true"></span> Due today</li>
+        <li><span class="swatch swatch--soon" aria-hidden="true"></span> Coming up</li>
+        <li><span class="swatch swatch--snoozed" aria-hidden="true"></span> Snoozed</li>
+        <li><span class="swatch swatch--done" aria-hidden="true"></span> Cared for</li>
+      </ul>
+      <button type="button" class="btn btn--quiet btn--block" id="reset-day" data-focus-key="reset">Start the day over</button>
+    </section>
+  </aside>
+</main>
+
+<footer class="colophon">
+  <p>Moss keeps a small rhythm for four plants. Data in <code>PLANTS.json</code>.</p>
+  <p class="colophon__hint">No network, no libraries &mdash; HTML, CSS and a little JavaScript.</p>
+</footer>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<noscript>
+  <p class="noscript">Moss needs JavaScript to hand out the watering can. The plants forgive you.</p>
+</noscript>
+
+<script src="app.js"></script>
+</body>
+</html>

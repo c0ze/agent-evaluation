@@ -1,30 +1,226 @@
-services:
-  proxy:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-  api:
-    build: .
-    environment:
-      DATABASE_URL: postgres://admin:password@db:5432/app
-      REDIS_URL: redis://cache:6379
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-      - cache
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app
-    ports:
-      - "5432:5432"
-  cache:
-    image: redis:latest
-    ports:
-      - "6379:6379"
+# Deployment for a small JSON API behind nginx, with Postgres and Redis.
+#
+# Scope note: this is plain Docker Compose, not an orchestrator. It gives you
+# health-gated startup, restart policies, log rotation, resource ceilings and
+# two network tiers - which is what a single-host deployment needs. It does NOT
+# give you multi-host failover, rolling updates, secret rotation or
+# autoscaling. Those need a real orchestrator; see RUNBOOK.md "Limits".
+#
+# Required setup:  cp .env.example .env   (then edit the passwords)
+# Validate:       docker compose config --quiet
+# Start:          docker compose up -d --build
+#
+# Every ${VAR} below is read from .env by Compose before the stack starts, so
+# no credential is ever committed here. Nothing in this file publishes a
+# database or cache port to the host.
 
+name: small-api
+
+# Uniform log rotation. Without this the json-file driver grows without bound
+# and fills the disk - the default Docker behaviour is a real outage cause.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # ---------------------------------------------------------------- edge ----
+  proxy:
+    image: nginx:stable-alpine
+    # Only the edge is reachable from outside. Bound via .env so a laptop can
+    # use 127.0.0.1:8080 while a real host listens on 0.0.0.0:80.
+    ports:
+      - "${HTTP_BIND:-0.0.0.0}:${HTTP_PORT:-80}:80"
+    volumes:
+      # Read-only: nginx must never be able to rewrite its own config.
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      api:
+        # Wait for the API to pass readiness, not merely to be started.
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/healthz >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - frontend
+    restart: unless-stopped
+    stop_grace_period: 10s
+    logging: *default-logging
+    security_opt:
+      - no-new-privileges:true
+    # A ceiling, not a reservation. Compose enforces these for a single
+    # container; `deploy.resources` would be ignored outside Swarm.
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 100
+
+  # ---------------------------------------------------------------- api ----
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # No `ports:`. The API is reachable only from the proxy, over `frontend`.
+    environment:
+      SERVICE_NAME: api
+      # Discrete parts rather than a postgres:// URL: a password containing
+      # '@', ':' or '/' would need percent-encoding inside a URL and would
+      # fail to parse. app.py builds a libpq DSN from these.
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+      REDIS_HOST: cache
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+      # Capacity tuning, appended to the gunicorn args baked into the image.
+      GUNICORN_CMD_ARGS: >-
+        --workers=${API_WORKERS:-2}
+        --threads=${API_THREADS:-4}
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    healthcheck:
+      # Readiness, not liveness: nginx should not be marked healthy while the
+      # API cannot reach its dependencies. A failing probe does not restart
+      # the container (restart is driven by the restart policy), so a database
+      # outage cannot turn into a restart loop.
+      test:
+        - CMD
+        - python
+        - -c
+        - |
+          import sys, urllib.request
+          try:
+              sys.exit(0 if urllib.request.urlopen("http://127.0.0.1:8000/ready", timeout=3).status == 200 else 1)
+          except Exception:
+              sys.exit(1)
+      interval: 15s
+      timeout: 5s
+      retries: 4
+      start_period: 20s
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+    # Long enough for gunicorn to finish in-flight requests on SIGTERM.
+    stop_grace_period: 35s
+    read_only: true
+    # read_only blocks the only path gunicorn needs for temp files.
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    logging: *default-logging
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1.5
+    pids_limit: 200
+
+  # ----------------------------------------------------------------- db ----
+  db:
+    # Major version pinned; ':latest' means a major upgrade can land silently
+    # on the next `up` and can refuse to start against an existing data dir.
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+      # Deterministic collation regardless of the host's locale.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    # No published port. The only client is the api container, over `backend`.
+    # To inspect from a laptop, use `docker compose exec db psql -U $POSTGRES_USER app`.
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # Postgres wants more shared memory than Docker's 64MB default for
+    # parallel queries and large sorts.
+    shm_size: 256mb
+    command:
+      - postgres
+      # Fewer than the default 100 connections: gunicorn workers x threads all
+      # connect here, and a connection ceiling is cheap protection against one
+      # bad client exhausting the server's slots.
+      - -c
+      - max_connections=100
+    healthcheck:
+      # $$ escapes so the value is expanded by the shell INSIDE the container
+      # from its own environment, rather than being baked in by Compose.
+      test: ["CMD-SHELL", "pg_isready -q -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - backend
+    restart: unless-stopped
+    # Long enough for a clean shutdown checkpoint, instead of a kill mid-write.
+    stop_grace_period: 30s
+    logging: *default-logging
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 1g
+    cpus: 2.0
+    pids_limit: 200
+
+  # -------------------------------------------------------------- cache ----
+  cache:
+    image: redis:7-alpine
+    # Must be present: the command below and the healthcheck both read it from
+    # the container's own environment. Without it redis would start with an
+    # empty requirepass and the healthcheck could never pass, which would block
+    # the api from ever starting (it waits on service_healthy).
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    # No published port, and no volume: this is a cache, and a lost cache must
+    # be cheap. Persistence is off, so a restart does not block on an RDB load.
+    command:
+      - sh
+      - -c
+      - >
+        exec redis-server
+        --requirepass "$$REDIS_PASSWORD"
+        --appendonly no
+        --save ""
+        --maxmemory 256mb
+        --maxmemory-policy allkeys-lru
+    healthcheck:
+      # REDISCLI_AUTH keeps the password out of the command line, so it does
+      # not show up in `ps` inside the container.
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    networks:
+      - backend
+    restart: unless-stopped
+    stop_grace_period: 10s
+    logging: *default-logging
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 384m
+    cpus: 1.0
+    pids_limit: 100
+
+# ---------------------------------------------------------------- networks --
+networks:
+  # Edge tier: the proxy, and the API's inbound side.
+  frontend:
+    driver: bridge
+  # Data tier: API, db, cache. `internal: true` means these containers have no
+  # route to the outside world - a compromised database cannot call home, and
+  # the data stores are not exposed on the host's networks at all. The API is
+  # on both tiers so it can still reach the internet if it ever needs to.
+  backend:
+    driver: bridge
+    internal: true
+
+volumes:
+  # Named volume, not a bind mount: a bind mount inherits host directory
+  # ownership and is easy to back up or destroy by accident.
+  pgdata:
