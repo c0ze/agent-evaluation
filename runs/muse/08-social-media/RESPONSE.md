@@ -1,0 +1,3 @@
+# Voice choices
+
+I kept the voice precise, warm, and mildly nerdy: concrete nouns (folder, passage, evidence map), short sentences, and small researcher jokes (footnotes, that one paragraph) without hype. No customer counts, speed or accuracy claims, certifications, or roadmap promises — Linux stays "investigating," lab seats stay individual-only for now, and Japanese support is an honest unknown tested via trial. Each reply answers the actual question in platform length: fuller explanations on LinkedIn, plain short sentences on Bluesky, and gentle steps on Instagram. The indexing reply apologizes, names a normal baseline, gives a safe retry step, and moves details to DM without requesting private account data.

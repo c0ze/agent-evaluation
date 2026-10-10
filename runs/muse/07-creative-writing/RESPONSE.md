@@ -1,0 +1,1 @@
+Lena begins in dutiful exhaustion, mistaking total preservation for care as she tries to carry everything uphill. Hearing her future voice first deepens that despair, then slowly reframes it as she recognizes relief rather than defeat in its tone. She ends in quiet acceptance, choosing what is truly worth keeping and allowing the rest to go.
