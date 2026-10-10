@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f4f0">
+  <meta name="description" content="Relay production operations dashboard">
+  <title>Relay — Operations</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="nav-rail" aria-label="Primary navigation">
+      <a class="brand" href="#overview" aria-label="Relay overview">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        <span class="brand-name">relay<span class="brand-period">.</span></span>
+      </a>
+      <nav class="rail-nav">
+        <a class="nav-link is-active" href="#overview" aria-current="page">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="11.5" y="2.5" width="6" height="6" rx="1"/><rect x="2.5" y="11.5" width="6" height="6" rx="1"/><rect x="11.5" y="11.5" width="6" height="6" rx="1"/></svg>
+          <span>Overview</span>
+        </a>
+        <a class="nav-link" href="#throughput">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 15.5 7 10l3 2.8 6.5-8.3"/><path d="M12.5 4.5h4v4"/></svg>
+          <span>Traffic</span>
+        </a>
+        <a class="nav-link" href="#incidents">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 17.5 16H2.5L10 2.5Z"/><path d="M10 7v4.5M10 14v.1"/></svg>
+          <span>Incidents</span>
+          <span class="nav-count" id="nav-incident-count">4</span>
+        </a>
+      </nav>
+      <div class="rail-footer">
+        <span class="environment-dot" aria-hidden="true"></span>
+        <span class="environment-label">Production</span>
+        <span class="environment-region">US-E</span>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="status-bar" aria-label="System status">
+        <div class="status-bar-left">
+          <span class="status-eyebrow">RELAY CONTROL</span>
+          <span class="status-divider" aria-hidden="true"></span>
+          <span class="status-region">Global operations</span>
+        </div>
+        <div class="status-bar-right">
+          <span class="system-condition"><span class="condition-dot" aria-hidden="true"></span><span id="system-condition-label">Action required</span></span>
+          <span class="status-clock" id="sync-time" aria-label="Current UTC time">--:--:-- UTC</span>
+          <span class="operator-avatar" aria-label="Signed in as operator AR">AR</span>
+        </div>
+      </header>
+
+      <main id="overview" class="main-content">
+        <section class="page-heading" aria-labelledby="page-title">
+          <div>
+            <p class="overline">PRODUCTION <span aria-hidden="true">/</span> ALL REGIONS</p>
+            <h1 id="page-title">Operations overview</h1>
+            <p class="heading-note">Service health and incident activity in the current snapshot.</p>
+          </div>
+          <div class="heading-context">
+            <span class="context-label">ON-CALL</span>
+            <span class="context-value"><span class="presence-dot" aria-hidden="true"></span> Core platform</span>
+          </div>
+        </section>
+
+        <section class="metrics-grid" id="metric-grid" aria-label="Key operational metrics"></section>
+
+        <section class="throughput-panel panel" id="throughput" aria-labelledby="throughput-title">
+          <div class="panel-heading chart-heading">
+            <div>
+              <p class="section-kicker">TRAFFIC</p>
+              <h2 id="throughput-title">Throughput</h2>
+            </div>
+            <div class="chart-meta">
+              <span class="chart-current" id="chart-current">—</span>
+              <span class="chart-window">LAST 24 HOURS</span>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <svg class="throughput-chart" id="throughput-chart" viewBox="0 0 760 270" role="img" aria-labelledby="chart-svg-title chart-svg-desc">
+              <title id="chart-svg-title">24-hour event throughput</title>
+              <desc id="chart-svg-desc">Hourly throughput trend, with the latest value aligned to the current events-per-minute metric.</desc>
+            </svg>
+          </div>
+          <div class="chart-footer">
+            <span class="chart-legend"><span class="legend-line" aria-hidden="true"></span>Events per minute</span>
+            <span class="chart-footnote">Hourly sample <span aria-hidden="true">·</span> UTC</span>
+          </div>
+        </section>
+
+        <section class="incidents-section" id="incidents" aria-labelledby="incidents-title">
+          <div class="section-title-row">
+            <div>
+              <p class="section-kicker">RESPONSE QUEUE</p>
+              <h2 id="incidents-title">Active incidents <span class="title-count" id="active-incident-count">4</span></h2>
+            </div>
+            <span class="queue-updated"><span class="queue-live-dot" aria-hidden="true"></span> Current queue</span>
+          </div>
+
+          <div class="incident-tools" role="search" aria-label="Filter incidents">
+            <label class="search-field">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.7" cy="8.7" r="5.5"/><path d="m13 13 4 4"/></svg>
+              <span class="sr-only">Search incidents</span>
+              <input id="incident-search" type="search" placeholder="Search incidents" autocomplete="off">
+              <kbd>/</kbd>
+            </label>
+            <label class="filter-control"><span class="sr-only">Filter by severity</span>
+              <select id="severity-filter"><option value="all">All severities</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+            </label>
+            <label class="filter-control"><span class="sr-only">Filter by status</span>
+              <select id="status-filter"><option value="all">All statuses</option><option value="open">Open</option><option value="investigating">Investigating</option><option value="acknowledged">Acknowledged</option><option value="monitoring">Monitoring</option></select>
+            </label>
+            <button class="clear-filters" id="clear-filters" type="button">Clear filters</button>
+          </div>
+
+          <div class="incidents-layout">
+            <div class="table-panel panel">
+              <div class="table-scroll">
+                <table class="incident-table">
+                  <caption class="sr-only">Active incidents with severity, service, age, owner, and status</caption>
+                  <thead><tr><th scope="col">Incident</th><th scope="col">Severity</th><th scope="col">Service</th><th scope="col">Age</th><th scope="col">Owner</th><th scope="col">Status</th></tr></thead>
+                  <tbody id="incident-rows"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="empty-state" hidden>
+                <span class="empty-mark" aria-hidden="true">⌕</span>
+                <h3>No incidents match</h3>
+                <p>Try a different search or clear the selected filters.</p>
+                <button class="text-action" id="empty-clear" type="button">Clear all filters</button>
+              </div>
+              <div class="table-foot"><span id="visible-count">Showing 4 incidents</span><span>Sorted by severity <span aria-hidden="true">↓</span></span></div>
+            </div>
+
+            <aside class="detail-panel panel" id="incident-detail" aria-label="Incident details" aria-live="polite">
+              <div class="detail-empty" id="detail-empty" hidden>
+                <span class="detail-empty-mark" aria-hidden="true">↗</span>
+                <h3 id="detail-empty-heading">Select an incident</h3>
+                <p>Choose an incident from the queue to review its response details.</p>
+              </div>
+              <div class="detail-content" id="detail-content"></div>
+            </aside>
+          </div>
+        </section>
+        <footer class="page-footer"><span>Relay operations</span><span>PRODUCTION CONTROL PLANE <span aria-hidden="true">·</span> GLOBAL</span></footer>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

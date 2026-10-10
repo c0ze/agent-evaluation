@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f5ed">
+    <title>Moss — a little care goes a long way</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to today’s care</a>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#main" aria-label="Moss home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40" focusable="false">
+              <path d="M20 32V17" />
+              <path d="M20 21c-9 0-13-5-12-12 8 0 13 4 12 12Z" />
+              <path d="M20 17c0-7 5-11 12-11 1 8-4 12-12 11Z" />
+              <path d="M12 34h16l-2 3H14z" />
+            </svg>
+          </span>
+          <span class="brand-name">moss<span class="brand-period">.</span></span>
+        </a>
+        <div class="topbar-note"><span class="live-dot" aria-hidden="true"></span> your home, a little greener</div>
+        <span class="profile-button" aria-hidden="true">A</span>
+      </header>
+
+      <main id="main">
+        <section class="welcome-panel" aria-labelledby="welcome-title">
+          <div class="welcome-copy">
+            <p class="eyebrow" id="today-date">A gentle check-in</p>
+            <h1 id="welcome-title">A little care<br class="mobile-break"> goes a long way<span class="title-leaf" aria-hidden="true">↗</span></h1>
+            <p class="welcome-subtitle">Your plants are doing their thing. Here’s how you can help.</p>
+            <div class="welcome-meta">
+              <span class="weather-mark" aria-hidden="true">☼</span>
+              <span><strong id="queue-count">4 small things</strong> waiting for your hands</span>
+            </div>
+          </div>
+          <div class="welcome-art" aria-hidden="true">
+            <span class="sun-disc"></span>
+            <span class="art-spark spark-one">✳</span>
+            <span class="art-spark spark-two">·</span>
+            <svg class="hero-plant" viewBox="0 0 230 190" focusable="false">
+              <path class="hero-stem" d="M116 133c-2-29-1-59 2-95" />
+              <path class="hero-stem" d="M117 89c-18-19-32-24-53-22 4 24 21 34 52 31" />
+              <path class="hero-stem" d="M119 67c10-21 26-31 49-30 1 24-14 38-47 42" />
+              <path class="hero-stem" d="M115 110c-15-10-31-11-47-4 8 19 22 26 47 21" />
+              <path class="hero-stem" d="M119 102c13-15 28-20 46-17-4 21-18 31-47 31" />
+              <path class="hero-vein" d="M117 90 77 71m42-5 37-23m-42 67-35 1m43-9 39-16" />
+              <path class="pot-rim" d="M73 133h88l-9 14H82z" />
+              <path class="pot-body" d="m82 147 68 0-8 35H91z" />
+              <path class="pot-face" d="M105 162c2-3 5-3 7 0m13 0c2-3 5-3 7 0m-21 9c6 4 13 4 19 0" />
+              <path class="pot-shadow" d="M75 184h84" />
+            </svg>
+            <span class="art-caption">slow days count too</span>
+          </div>
+          <span class="welcome-stitch" aria-hidden="true"></span>
+        </section>
+
+        <div class="content-grid">
+          <section class="queue-section" aria-labelledby="queue-heading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow section-kicker">The little list</p>
+                <h2 id="queue-heading">Today’s care queue</h2>
+              </div>
+              <span class="queue-counter" id="queue-counter" aria-live="polite">04 <span>to tend</span></span>
+            </div>
+            <p class="queue-intro" id="queue-intro">First, one plant could use a bit of extra love.</p>
+            <div id="queue-list" class="queue-list" aria-live="off"></div>
+            <section id="snoozed-section" class="secondary-list" hidden aria-labelledby="snoozed-heading">
+              <div class="secondary-heading">
+                <h3 id="snoozed-heading">Taking a little breather</h3>
+                <span class="tiny-sun" aria-hidden="true">☼</span>
+              </div>
+              <div id="snoozed-list" class="queue-list queue-list-quiet"></div>
+            </section>
+            <section id="done-section" class="secondary-list" hidden aria-labelledby="done-heading">
+              <div class="secondary-heading">
+                <h3 id="done-heading">Lovely work, you two</h3>
+                <span class="tiny-sun" aria-hidden="true">✦</span>
+              </div>
+              <div id="done-list" class="queue-list queue-list-quiet"></div>
+            </section>
+            <section id="all-done" class="all-done" hidden aria-live="polite">
+              <span class="all-done-flower" aria-hidden="true">✿</span>
+              <div>
+                <p class="eyebrow">That’s the whole lot</p>
+                <h3>All tended. Now you can both grow.</h3>
+                <p>Your plants are set for today. Put the watering can back somewhere charming.</p>
+              </div>
+            </section>
+          </section>
+
+          <aside class="side-rail" aria-label="Your garden at a glance">
+            <section class="rhythm-card" aria-labelledby="rhythm-heading">
+              <div class="rail-heading">
+                <div>
+                  <p class="eyebrow">A soft little streak</p>
+                  <h2 id="rhythm-heading">Weekly rhythm</h2>
+                </div>
+                <span class="rhythm-badge" aria-hidden="true">THIS<br>WEEK</span>
+              </div>
+              <p class="rhythm-copy">Small check-ins add up to a happy home.</p>
+              <figure class="week-chart" id="week-chart" aria-label="Care check-ins this week">
+                <div class="chart-grid" aria-hidden="true"></div>
+                <div class="chart-bars" id="chart-bars"></div>
+                <figcaption class="visually-hidden">Number of care moments each day this week.</figcaption>
+              </figure>
+              <div class="rhythm-foot"><span><i class="legend-dot" aria-hidden="true"></i> care moments</span><strong id="week-total">16 this week</strong></div>
+            </section>
+
+            <section class="note-card" aria-labelledby="note-heading">
+              <div class="note-doodle" aria-hidden="true">
+                <svg viewBox="0 0 60 60" focusable="false">
+                  <path d="M29 50V28m0 11c-11 0-16-6-14-16 10 0 15 5 14 16Zm1-9c0-10 6-15 16-15 1 11-5 17-16 18Z" />
+                  <path d="M17 51h27l-3 6H20z" />
+                  <path d="M27 28c-4-5-5-9-3-13m8 4c4-5 8-7 12-7" />
+                </svg>
+              </div>
+              <p class="eyebrow">A note from Moss</p>
+              <h2 id="note-heading">No perfect plant parents here.</h2>
+              <p>Plants have good days and weird days. Showing up when you can is plenty.</p>
+              <span class="note-signoff">rooting for you <span aria-hidden="true">♡</span></span>
+            </section>
+
+            <p class="rail-footer"><span aria-hidden="true">✳</span> Made for the slow, lovely bits.</p>
+          </aside>
+        </div>
+      </main>
+
+      <footer class="page-footer">
+        <span>moss © 2026</span><span>Take what you need. Leave the rest to the leaves.</span>
+      </footer>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <span class="toast-message" id="toast-message"></span>
+      <button type="button" id="undo-action" class="undo-button">Undo</button>
+      <button type="button" id="dismiss-toast" class="dismiss-button" aria-label="Dismiss message">×</button>
+    </div>
+  </body>
+</html>

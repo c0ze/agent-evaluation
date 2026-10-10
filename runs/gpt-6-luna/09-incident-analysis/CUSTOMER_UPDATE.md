@@ -1,0 +1,3 @@
+# Customer update
+
+On September 23, some customers in our EU region experienced slower checkout responses and delays in queued work. We traced the issue to a recently enabled retry-policy path that caused some jobs to retry too quickly and contributed to pressure on our processing and database capacity. We disabled that path at 09:43 UTC, processing recovered, and the backlog was cleared by 10:18 UTC. We are reviewing the retry behavior and adding safeguards before enabling it again. We have not yet confirmed the full number of affected customers or whether any jobs were lost or duplicated. We will share an update if our review finds additional customer impact.

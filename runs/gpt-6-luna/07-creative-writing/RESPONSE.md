@@ -1,0 +1,1 @@
+The story begins in practical endurance, with Mara treating each unsent voice as a file to preserve and the future message as a warning to stay. It moves through unease into recognition: “home” becomes the company of voices carried beyond the doomed town, and leaving the building can coexist with keeping what matters.
