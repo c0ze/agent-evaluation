@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Relay · Operations control room</title>
+  <meta name="description" content="Relay: operations overview with throughput, incident triage and acknowledgement.">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    /* Apply a stored theme override before first paint to avoid a flash. */
+    (function () {
+      try {
+        var t = localStorage.getItem('relay-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { /* storage unavailable: fall back to the system theme */ }
+    })();
+  </script>
+</head>
+<body>
+
+<!-- Icon sprite (local, same-document references only) -->
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <symbol id="i-overview" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></symbol>
+  <symbol id="i-throughput" viewBox="0 0 16 16"><path d="M3 13V8.5M6.5 13V3.5M10 13V6.5M13.5 13V2.5"/></symbol>
+  <symbol id="i-incidents" viewBox="0 0 16 16"><path d="M8 2.5 14.2 13H1.8L8 2.5Z"/><path d="M8 6.6v3M8 11.4v.01"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.8"/><path d="M8 1.8v1.4M8 12.8v1.4M1.8 8h1.4M12.8 8h1.4M3.6 3.6l1 1M11.4 11.4l1 1M12.4 3.6l-1 1M4.6 11.4l-1 1"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 16 16"><path d="M13.4 9.6A5.6 5.6 0 0 1 6.4 2.6a5.6 5.6 0 1 0 7 7Z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.4"/><path d="m10.3 10.3 3.4 3.4"/></symbol>
+  <symbol id="i-search-off" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.4"/><path d="m10.3 10.3 3.4 3.4M5.3 5.3l3.4 3.4M8.7 5.3 5.3 8.7"/></symbol>
+  <symbol id="i-chev-down" viewBox="0 0 16 16"><path d="m4 6.2 4 4 4-4"/></symbol>
+  <symbol id="i-chev-up" viewBox="0 0 16 16"><path d="m4 9.8 4-4 4 4"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 16 16"><path d="M8 13V3.2M4 7l4-3.8L12 7"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 16 16"><path d="M8 3v9.8M4 9l4 3.8L12 9"/></symbol>
+  <symbol id="i-close" viewBox="0 0 16 16"><path d="m4 4 8 8M12 4l-8 8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="m3.4 8.6 3 3 6.2-7"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 16 16"><path d="M2 9.5 3.8 3.5h8.4L14 9.5v3H2v-3Z"/><path d="M2 9.5h3.6l.8 1.6h3.2l.8-1.6H14"/></symbol>
+</svg>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+<a class="skip-link skip-link-2" href="#incidents">Skip to incidents</a>
+
+<div class="app" id="app">
+
+  <!-- Navigation rail (bottom bar on narrow screens) -->
+  <nav class="rail" id="rail" aria-label="Primary">
+    <a class="rail-brand" href="#overview" aria-label="Relay, back to overview">
+      <svg class="brand-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="3.4" cy="12" r="1.7"/><circle cx="8" cy="4" r="1.7"/><circle cx="12.6" cy="12" r="1.7"/><path d="M4.3 10.4 7.1 5.6M8.9 5.6l2.8 4.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </a>
+    <ul class="rail-list">
+      <li><a class="rail-link" href="#overview" data-section="overview" aria-current="location"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-overview"/></svg><span>Overview</span></a></li>
+      <li><a class="rail-link" href="#throughput" data-section="throughput"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-throughput"/></svg><span>Throughput</span></a></li>
+      <li><a class="rail-link" href="#incidents" data-section="incidents"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-incidents"/></svg><span>Incidents</span><span class="rail-badge" id="rail-badge" hidden></span></a></li>
+    </ul>
+  </nav>
+
+  <div class="shell" id="shell">
+
+    <!-- Top status bar -->
+    <header class="topbar">
+      <h1 class="page-title"><span class="page-brand">Relay</span><span class="page-sep" aria-hidden="true">/</span><span class="page-name">Operations overview</span></h1>
+      <span class="env-chip">Production</span>
+      <div class="topbar-spacer"></div>
+      <div class="sys-status" id="sys-status">
+        <span class="sys-pill" id="sys-pill"><span class="sev-mark" aria-hidden="true"></span><span id="sys-text">Loading status</span></span>
+        <span class="sys-ack" id="sys-ack"></span>
+      </div>
+      <div class="clock" title="Coordinated Universal Time">
+        <span class="clock-label">Snapshot <time id="loaded">--:--:--</time></span>
+        <time class="clock-now" id="clock">--:--:-- UTC</time>
+      </div>
+      <button type="button" class="icon-btn" id="theme-toggle" aria-label="Switch theme">
+        <svg class="icon" aria-hidden="true" focusable="false"><use id="theme-icon" href="#i-moon"/></svg>
+      </button>
+      <div class="operator" title="Signed in operator">
+        <span class="avatar" aria-hidden="true">JR</span>
+        <span class="operator-meta"><span class="operator-name">J. Rivera</span><span class="operator-role">On call</span></span>
+      </div>
+    </header>
+
+    <main class="main" id="main" tabindex="-1">
+      <noscript><p class="noscript">Relay needs JavaScript to render live operations data.</p></noscript>
+
+      <!-- Summary metrics -->
+      <section id="overview" class="section" aria-labelledby="h-metrics">
+        <h2 class="sr-only" id="h-metrics">Key metrics</h2>
+        <dl class="metrics" id="metrics"></dl>
+      </section>
+
+      <!-- 24 h throughput -->
+      <section id="throughput" class="panel section" aria-labelledby="h-throughput">
+        <header class="panel-head">
+          <div>
+            <h2 id="h-throughput">Throughput, last 24 hours</h2>
+            <p class="panel-sub">Hourly throughput index, 00:00 to 23:00 UTC</p>
+          </div>
+          <div class="seg" role="group" aria-label="Throughput view">
+            <button type="button" class="seg-btn" id="view-chart" aria-pressed="true">Chart</button>
+            <button type="button" class="seg-btn" id="view-table" aria-pressed="false">Table</button>
+          </div>
+        </header>
+        <div class="chart-meta">
+          <dl class="chart-stats" id="chart-stats"></dl>
+          <p class="chart-readout" id="chart-readout"></p>
+        </div>
+        <div class="chart" id="chart"></div>
+        <div class="chart-table-wrap" id="chart-table-wrap" hidden></div>
+      </section>
+
+      <!-- Incident triage -->
+      <section id="incidents" class="panel section" aria-labelledby="h-incidents">
+        <header class="panel-head">
+          <div>
+            <h2 id="h-incidents">Incidents</h2>
+            <p class="panel-sub" id="incident-count" role="status">Loading</p>
+          </div>
+          <button type="button" class="link-btn" id="f-clear" hidden>Clear filters</button>
+        </header>
+
+        <div class="filters" role="search" aria-label="Filter incidents">
+          <div class="search">
+            <label class="sr-only" for="f-q">Search incidents by ID, title, service or owner</label>
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
+            <input id="f-q" type="search" placeholder="Search incidents" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="chip-group" id="f-sev" role="group" aria-label="Severity"></div>
+          <div class="chip-group" role="group" aria-label="Triage">
+            <button type="button" class="chip" id="f-unassigned" aria-pressed="false">Unassigned</button>
+            <button type="button" class="chip" id="f-unacked" aria-pressed="false">Unacknowledged</button>
+          </div>
+          <label class="select-field">
+            <span>Status</span>
+            <select id="f-status"></select>
+          </label>
+          <label class="select-field sort-select">
+            <span>Sort</span>
+            <select id="f-sort"></select>
+          </label>
+        </div>
+
+        <div class="table-wrap" id="table-wrap">
+          <table class="incidents" id="incident-table" role="table">
+            <caption class="sr-only">Incidents. Select a row to open its details. Column headers are sort buttons.</caption>
+            <thead role="rowgroup">
+              <tr role="row">
+                <th scope="col" role="columnheader" class="c-sev" data-sort="severity"></th>
+                <th scope="col" role="columnheader" class="c-inc" data-sort="incident"></th>
+                <th scope="col" role="columnheader" class="c-svc" data-sort="service"></th>
+                <th scope="col" role="columnheader" class="c-age" data-sort="age"></th>
+                <th scope="col" role="columnheader" class="c-owner" data-sort="owner"></th>
+                <th scope="col" role="columnheader" class="c-status" data-sort="status"></th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup" id="incident-body"></tbody>
+          </table>
+        </div>
+
+        <div class="empty" id="table-empty" hidden>
+          <svg class="icon empty-icon" aria-hidden="true" focusable="false"><use href="#i-search-off"/></svg>
+          <p class="empty-title">No incidents match these filters</p>
+          <p class="empty-body" id="empty-body"></p>
+          <button type="button" class="btn" id="empty-clear">Clear filters</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Incident detail: right inspector on wide screens, drawer/sheet otherwise -->
+  <aside class="detail" id="detail" aria-labelledby="d-title" tabindex="-1">
+    <div class="detail-empty" id="d-empty" hidden>
+      <svg class="icon empty-icon" aria-hidden="true" focusable="false"><use href="#i-inbox"/></svg>
+      <h2 class="empty-title" id="d-empty-title">No incident selected</h2>
+      <p class="empty-body">Select an incident from the table to see its impact, timeline and actions.</p>
+    </div>
+
+    <div class="detail-body" id="d-body">
+      <div class="detail-head">
+        <div class="detail-kicker">
+          <span class="sev" id="d-sev"><span class="sev-mark" aria-hidden="true"></span><span class="sev-text"></span></span>
+          <span class="mono detail-id" id="d-id"></span>
+          <button type="button" class="icon-btn detail-close" id="d-close" aria-label="Close incident details">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"/></svg>
+          </button>
+        </div>
+        <h2 class="detail-title" id="d-title">Incident details</h2>
+      </div>
+
+      <div class="detail-actions">
+        <button type="button" class="btn btn-primary" id="d-ack">
+          <svg class="icon" aria-hidden="true" focusable="false"><use id="d-ack-icon" href="#i-check"/></svg>
+          <span id="d-ack-label">Acknowledge</span>
+        </button>
+        <p class="ack-note" id="d-ack-note"></p>
+      </div>
+
+      <dl class="facts">
+        <div><dt>Service</dt><dd class="mono" id="d-service"></dd></div>
+        <div><dt>Status</dt><dd id="d-status"></dd></div>
+        <div><dt>Owner</dt><dd id="d-owner"></dd></div>
+        <div><dt>Open for</dt><dd id="d-age"></dd></div>
+        <div><dt>Acknowledgement</dt><dd id="d-ackfact"></dd></div>
+      </dl>
+
+      <section class="detail-section" aria-labelledby="d-h-impact">
+        <h3 id="d-h-impact">Impact</h3>
+        <p id="d-impact"></p>
+      </section>
+      <section class="detail-section" aria-labelledby="d-h-next">
+        <h3 id="d-h-next">Suggested next step</h3>
+        <p id="d-next"></p>
+      </section>
+      <section class="detail-section" aria-labelledby="d-h-timeline">
+        <h3 id="d-h-timeline">Timeline (UTC)</h3>
+        <ol class="timeline" id="d-timeline"></ol>
+      </section>
+    </div>
+  </aside>
+
+  <div class="scrim" id="scrim" hidden></div>
+</div>
+
+<!-- Polite announcements for assistive tech -->
+<div class="sr-only" id="live" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
