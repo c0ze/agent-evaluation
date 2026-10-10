@@ -1,0 +1,5 @@
+Between 09:07 and 10:18 UTC, our eu-west service experienced delays in queued work, and monitoring detected increased checkout latency. The database also reached its connection limit. We are still determining how many customers were affected and whether any jobs failed or produced duplicate results.
+
+Our current evidence suggests that the tenant-specific retry feature contributed to the disruption by retrying some work too quickly. We have not yet confirmed the exact cause. Rolling back the API release did not resolve the queued-work delays. We then disabled the retry feature at 09:43 UTC; recovery began within two minutes, and the backlog cleared at 10:18 UTC.
+
+No alert fired in the US region, where the feature was enabled for a smaller share of tenants. Our next steps are to check customer outcomes and investigate retry behavior and database connection use. We plan to validate corrective changes before enabling the feature more broadly. We will share confirmed impact and findings as the investigation progresses.
