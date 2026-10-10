@@ -1,0 +1,38 @@
+# Keep the build context minimal and secret-free. Anything not excluded here
+# is uploaded to the daemon and, if the Dockerfile said `COPY . .`, baked into
+# an image layer - where it survives even if you later delete the file.
+
+# Secrets and local state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Backups: dumps are data, not source
+backups/
+*.sql
+*.sql.gz
+*.dump
+
+# Version control and local tooling
+.git
+.gitignore
+.dockerignore
+.venv
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Docs and editor noise for the image
+*.md
+!app.py
+.idea/
+.vscode/
+.DS_Store
