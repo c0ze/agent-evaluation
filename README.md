@@ -1,31 +1,32 @@
-# Agent evaluation: 11 models, 13 tasks
+# Agent evaluation: 12 models, 13 tasks
 
 **Results site: https://c0ze.github.io/agent-evaluation/**
 
-Eleven coding agents (model plus harness) each got the same thirteen self-contained
+Twelve coding agents (model plus harness) each got the same thirteen self-contained
 tasks. The tasks cover feature building, bug fixing, infrastructure, project
 maintenance, technical writing, product planning, creative writing, social media,
 incident analysis, general operations and three frontend builds in different visual
 styles. Each output was graded blind against one rubric. The runs took place from
-2026-09-23 to 2026-10-04.
+2026-09-23 to 2026-10-11.
 
 | Model | Harness | Effort | Avg / task |
 |---|---|---|---|
-| Sonnet 5.5 | Claude Code (cloud) | extra | 9.31 |
-| Fable 5.1 | Claude Code (cloud) | extra | 8.96 |
-| Opus 5.5 | Claude Code (cloud) | high | 8.96 |
-| Grok 4.7 (12 tasks) | Grok CLI | xhigh | 8.67 |
-| GPT-6 Astra | Codex CLI | xhigh | 8.60 |
-| GPT-6.1 Sol | Codex CLI | xhigh | 8.52 |
-| muse | tincan | max | 7.21 |
-| GPT-6 Luna | Codex CLI | max | 7.10 |
-| mimo | tincan | default | 6.92 |
-| MiniMax M3.1 Flash | mcode | xhigh | 6.81 |
-| MiniMax M3 | mcode | default | 5.52 |
+| Sonnet 5.5 | Claude Code (cloud) | extra | 9.42 |
+| Fable 5.1 | Claude Code (cloud) | extra | 9.21 |
+| Opus 5.5 | Claude Code (cloud) | high | 9.19 |
+| Grok 4.7 (12 tasks) | Grok CLI | xhigh | 8.62 |
+| Haiku 5.5 | Claude Code CLI (headless) | xhigh | 8.54 |
+| GPT-6 Astra | Codex CLI | xhigh | 8.31 |
+| GPT-6.1 Sol | Codex CLI | xhigh | 8.25 |
+| muse | tincan | max | 7.27 |
+| MiniMax M3.1 Flash | mcode | xhigh | 7.17 |
+| mimo | tincan | default | 7.08 |
+| GPT-6 Luna | Codex CLI | max | 6.73 |
+| MiniMax M3 | mcode | default | 5.73 |
 
-These scores come from the eleven-way blind pass of 2026-10-04. The full write-up,
-covering what was observed, what was inferred, per-work-type recommendations and
-caveats, is in [`evaluation/REPORT.md`](evaluation/REPORT.md). Time, cost and token
+These scores come from the twelve-way blind pass of 2026-10-11, after Haiku 5.5 was
+added. The full write-up, covering what was observed, what was inferred, per-work-type
+recommendations and caveats, is in [`evaluation/REPORT.md`](evaluation/REPORT.md). Time, cost and token
 usage per run are in [`evaluation/RUN_METRICS.md`](evaluation/RUN_METRICS.md).
 
 ## Method
@@ -42,7 +43,7 @@ usage per run are in [`evaluation/RUN_METRICS.md`](evaluation/RUN_METRICS.md).
   scored blind against [`evaluation/RUBRIC.md`](evaluation/RUBRIC.md): each task got
   random letters, and names, paths and model IDs were stripped (see
   [`evaluation/tools/blind.py`](evaluation/tools/blind.py)). The blind pass was
-  re-run each time a model was added (4-way through 11-way), and every pass is kept
+  re-run each time a model was added (4-way through 12-way), and every pass is kept
   in `evaluation/scores-*.json`.
 
 ## Layout
@@ -67,6 +68,9 @@ unfolded, follow the merge's second parent:
 ```
 git log "$(git log --format=%H -1 -- runs/<model>)^2"
 ```
+
+Haiku 5.5 ran locally rather than from a GitHub repository: its run repository (fresh from the
+templates, outside the home directory) is merged into `runs/haiku-5.5/` the same way.
 
 mimo has no `runs/` entry. It ran through tincan directly inside this repository,
 and its logs are in `evaluation/run-logs/`.

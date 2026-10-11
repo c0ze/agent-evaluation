@@ -14,8 +14,10 @@ const server = http.createServer((req, res) => {
 (async () => {
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const browser = await chromium.launch();
-  const results = {};
+  const browser = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : {});
+  // Merge into the existing file so screenshotting one new model keeps everyone else's checks.
+  const checksFile = path.join(ROOT, 'evaluation/frontend-checks.json');
+  const results = fs.existsSync(checksFile) ? JSON.parse(fs.readFileSync(checksFile, 'utf8')) : {};
   for (const m of MODELS) for (const t of TASKS) {
     if (!fs.existsSync(path.join(ROOT, m, t, 'index.html'))) continue;
     const key = `${m}/${t}`, r = results[key] = {};
@@ -37,6 +39,6 @@ const server = http.createServer((req, res) => {
     }
     console.log(key, 'desktop overflow', r.desktop.horizontalOverflow, '| 390 overflow', r.mobile.horizontalOverflow, '| errors', r.desktop.consoleErrors.length + r.mobile.consoleErrors.length, '| remote', r.desktop.remoteRequests.length + r.mobile.remoteRequests.length, '| title', r.desktop.title);
   }
-  fs.writeFileSync(path.join(ROOT, 'evaluation/frontend-checks.json'), JSON.stringify(results, null, 1));
+  fs.writeFileSync(checksFile, JSON.stringify(results, null, 1));
   await browser.close(); server.close();
 })();

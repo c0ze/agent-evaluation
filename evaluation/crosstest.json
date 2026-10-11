@@ -162,6 +162,12 @@
       "test_jobqueue.PlanJobsTests.test_duplicate_entries_in_depends_on"
      ]
     ]
+   },
+   "haiku-5.5": {
+    "ran": 21,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
    }
   },
   "sonnet-5.5": {
@@ -845,6 +851,45 @@
      [
       "test_non_string_dependency_is_rejected",
       "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ]
+    ]
+   },
+   "haiku-5.5": {
+    "ran": 43,
+    "ok": false,
+    "detail": "failures=7, errors=1",
+    "failing": [
+     [
+      "test_float_priorities_are_supported",
+      "test_jobqueue.PlanJobsTests.test_float_priorities_are_supported"
+     ],
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_in_second_component_is_found",
+      "test_jobqueue.PlanJobsTests.test_cycle_in_second_component_is_found"
+     ],
+     [
+      "test_cycle_message_excludes_innocent_and_downstream_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_excludes_innocent_and_downstream_jobs"
+     ],
+     [
+      "test_cycle_message_lists_the_cycle_path",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_lists_the_cycle_path"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_node_cycle",
+      "test_jobqueue.PlanJobsTests.test_two_node_cycle"
      ]
     ]
    }
@@ -1564,6 +1609,49 @@
       "test_jobqueue.PlanJobsValidationTests.test_non_string_id_is_rejected"
      ]
     ]
+   },
+   "haiku-5.5": {
+    "ran": 36,
+    "ok": false,
+    "detail": "failures=9",
+    "failing": [
+     [
+      "test_longer_cycle_lists_only_the_cycle_members",
+      "test_jobqueue.PlanJobsCycleTests.test_longer_cycle_lists_only_the_cycle_members"
+     ],
+     [
+      "test_all_unknown_dependencies_of_a_job_are_listed",
+      "test_jobqueue.PlanJobsValidationTests.test_all_unknown_dependencies_of_a_job_are_listed"
+     ],
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsValidationTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_duplicate_id_is_rejected",
+      "test_jobqueue.PlanJobsValidationTests.test_duplicate_id_is_rejected"
+     ],
+     [
+      "test_empty_id_is_rejected",
+      "test_jobqueue.PlanJobsValidationTests.test_empty_id_is_rejected"
+     ],
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsValidationTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_string_id_is_rejected",
+      "test_jobqueue.PlanJobsValidationTests.test_non_string_id_is_rejected"
+     ],
+     [
+      "test_non_string_id_is_rejected",
+      "test_jobqueue.PlanJobsValidationTests.test_non_string_id_is_rejected"
+     ],
+     [
+      "test_non_string_id_is_rejected",
+      "test_jobqueue.PlanJobsValidationTests.test_non_string_id_is_rejected"
+     ]
+    ]
    }
   },
   "opus-5.5": {
@@ -2069,6 +2157,12 @@
       "test_jobqueue.PlanJobsTests.test_two_node_cycle_names_both_ids"
      ]
     ]
+   },
+   "haiku-5.5": {
+    "ran": 34,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
    }
   },
   "muse": {
@@ -2281,6 +2375,12 @@
       "test_jobqueue.PlanJobsTests.test_string_depends_on_rejected"
      ]
     ]
+   },
+   "haiku-5.5": {
+    "ran": 23,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
    }
   },
   "gpt-6-luna": {
@@ -2664,6 +2764,41 @@
      [
       "test_rejects_duplicate_ids",
       "test_jobqueue.PlanJobsTests.test_rejects_duplicate_ids"
+     ],
+     [
+      "test_rejects_invalid_dependencies",
+      "test_jobqueue.PlanJobsTests.test_rejects_invalid_dependencies"
+     ],
+     [
+      "test_rejects_invalid_dependencies",
+      "test_jobqueue.PlanJobsTests.test_rejects_invalid_dependencies"
+     ],
+     [
+      "test_rejects_invalid_dependencies",
+      "test_jobqueue.PlanJobsTests.test_rejects_invalid_dependencies"
+     ]
+    ]
+   },
+   "haiku-5.5": {
+    "ran": 12,
+    "ok": false,
+    "detail": "failures=7",
+    "failing": [
+     [
+      "test_rejects_duplicate_ids",
+      "test_jobqueue.PlanJobsTests.test_rejects_duplicate_ids"
+     ],
+     [
+      "test_rejects_empty_and_non_string_ids",
+      "test_jobqueue.PlanJobsTests.test_rejects_empty_and_non_string_ids"
+     ],
+     [
+      "test_rejects_empty_and_non_string_ids",
+      "test_jobqueue.PlanJobsTests.test_rejects_empty_and_non_string_ids"
+     ],
+     [
+      "test_rejects_empty_and_non_string_ids",
+      "test_jobqueue.PlanJobsTests.test_rejects_empty_and_non_string_ids"
      ],
      [
       "test_rejects_invalid_dependencies",
@@ -3379,6 +3514,81 @@
       "test_jobqueue.PlanJobsTests.test_missing_dependency_is_validated_even_in_a_cycle"
      ]
     ]
+   },
+   "haiku-5.5": {
+    "ran": 24,
+    "ok": false,
+    "detail": "failures=16, errors=1",
+    "failing": [
+     [
+      "test_valid_ids_need_not_be_identifiers",
+      "test_jobqueue.PlanJobsTests.test_valid_ids_need_not_be_identifiers"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_invalid_dependency_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependency_ids_are_rejected"
+     ],
+     [
+      "test_invalid_dependency_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependency_ids_are_rejected"
+     ],
+     [
+      "test_invalid_dependency_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependency_ids_are_rejected"
+     ],
+     [
+      "test_invalid_dependency_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependency_ids_are_rejected"
+     ],
+     [
+      "test_invalid_dependency_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependency_ids_are_rejected"
+     ],
+     [
+      "test_invalid_dependency_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependency_ids_are_rejected"
+     ],
+     [
+      "test_invalid_dependency_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependency_ids_are_rejected"
+     ],
+     [
+      "test_invalid_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_ids_are_rejected"
+     ],
+     [
+      "test_invalid_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_ids_are_rejected"
+     ],
+     [
+      "test_invalid_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_ids_are_rejected"
+     ],
+     [
+      "test_invalid_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_ids_are_rejected"
+     ],
+     [
+      "test_invalid_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_ids_are_rejected"
+     ],
+     [
+      "test_invalid_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_ids_are_rejected"
+     ],
+     [
+      "test_invalid_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_ids_are_rejected"
+     ],
+     [
+      "test_missing_dependency_is_validated_even_in_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_missing_dependency_is_validated_even_in_a_cycle"
+     ]
+    ]
    }
   },
   "gpt-6-astra": {
@@ -4038,6 +4248,73 @@
      [
       "test_cycle_with_downstream_and_disconnected_jobs",
       "test_jobqueue.PlanJobsTests.test_cycle_with_downstream_and_disconnected_jobs"
+     ],
+     [
+      "test_invalid_dependencies_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependencies_are_rejected"
+     ],
+     [
+      "test_invalid_dependencies_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependencies_are_rejected"
+     ],
+     [
+      "test_invalid_dependencies_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependencies_are_rejected"
+     ],
+     [
+      "test_invalid_dependencies_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependencies_are_rejected"
+     ],
+     [
+      "test_invalid_job_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_job_ids_are_rejected"
+     ],
+     [
+      "test_invalid_job_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_job_ids_are_rejected"
+     ],
+     [
+      "test_invalid_job_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_job_ids_are_rejected"
+     ],
+     [
+      "test_invalid_job_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_job_ids_are_rejected"
+     ],
+     [
+      "test_invalid_job_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_job_ids_are_rejected"
+     ],
+     [
+      "test_invalid_job_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_job_ids_are_rejected"
+     ]
+    ]
+   },
+   "haiku-5.5": {
+    "ran": 25,
+    "ok": false,
+    "detail": "failures=14, errors=1",
+    "failing": [
+     [
+      "test_nonempty_ids_are_not_normalized",
+      "test_jobqueue.PlanJobsTests.test_nonempty_ids_are_not_normalized"
+     ],
+     [
+      "test_cycle_with_downstream_and_disconnected_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_with_downstream_and_disconnected_jobs"
+     ],
+     [
+      "test_duplicate_job_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_job_ids_are_rejected"
+     ],
+     [
+      "test_invalid_dependencies_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependencies_are_rejected"
+     ],
+     [
+      "test_invalid_dependencies_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_invalid_dependencies_are_rejected"
      ],
      [
       "test_invalid_dependencies_are_rejected",
@@ -5461,6 +5738,121 @@
       "test_jobqueue.PlanJobsTests.test_disjoint_cycles_name_every_participant"
      ]
     ]
+   },
+   "haiku-5.5": {
+    "ran": 45,
+    "ok": false,
+    "detail": "failures=25, errors=2",
+    "failing": [
+     [
+      "test_blank_but_non_empty_id_is_allowed",
+      "test_jobqueue.PlanJobsTests.test_blank_but_non_empty_id_is_allowed"
+     ],
+     [
+      "test_non_iterable_jobs_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_jobs_are_rejected"
+     ],
+     [
+      "test_cycle_diagnostic_omits_runnable_and_merely_blocked_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_diagnostic_omits_runnable_and_merely_blocked_jobs"
+     ],
+     [
+      "test_dependency_match_is_exact_not_stringified",
+      "test_jobqueue.PlanJobsTests.test_dependency_match_is_exact_not_stringified"
+     ],
+     [
+      "test_disjoint_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_disjoint_cycles_name_every_participant"
+     ],
+     [
+      "test_long_cycle_reports_members_without_recursion_limit",
+      "test_jobqueue.PlanJobsTests.test_long_cycle_reports_members_without_recursion_limit"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_random_cycles_name_every_participant",
+      "test_jobqueue.PlanJobsTests.test_random_cycles_name_every_participant"
+     ],
+     [
+      "test_self_cycle_names_the_job",
+      "test_jobqueue.PlanJobsTests.test_self_cycle_names_the_job"
+     ],
+     [
+      "test_self_cycle_with_an_outside_dependency",
+      "test_jobqueue.PlanJobsTests.test_self_cycle_with_an_outside_dependency"
+     ],
+     [
+      "test_self_loop_plus_mutual_dependency",
+      "test_jobqueue.PlanJobsTests.test_self_loop_plus_mutual_dependency"
+     ],
+     [
+      "test_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_string_depends_on_is_rejected"
+     ],
+     [
+      "test_three_node_cycle_names_every_participant",
+      "test_jobqueue.PlanJobsTests.test_three_node_cycle_names_every_participant"
+     ],
+     [
+      "test_two_node_cycle_names_both_jobs",
+      "test_jobqueue.PlanJobsTests.test_two_node_cycle_names_both_jobs"
+     ]
+    ]
    }
   },
   "mcode-m3.1-flash": {
@@ -5878,6 +6270,17 @@
       "test_jobqueue.PlanJobsTests.test_whitespace_only_id_is_rejected"
      ]
     ]
+   },
+   "haiku-5.5": {
+    "ran": 44,
+    "ok": false,
+    "detail": "errors=1",
+    "failing": [
+     [
+      "test_non_iterable_input_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_input_is_rejected"
+     ]
+    ]
    }
   },
   "mcode-m3": {
@@ -6098,6 +6501,1113 @@
     "ok": true,
     "detail": "OK",
     "failing": []
+   },
+   "haiku-5.5": {
+    "ran": 20,
+    "ok": false,
+    "detail": "failures=3",
+    "failing": [
+     [
+      "test_cycle_diagnostic_excludes_unrelated_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_diagnostic_excludes_unrelated_jobs"
+     ],
+     [
+      "test_cycle_of_three_jobs_raises_with_ids_in_message",
+      "test_jobqueue.PlanJobsTests.test_cycle_of_three_jobs_raises_with_ids_in_message"
+     ],
+     [
+      "test_cycle_of_two_jobs_raises_with_ids_in_message",
+      "test_jobqueue.PlanJobsTests.test_cycle_of_two_jobs_raises_with_ids_in_message"
+     ]
+    ]
+   }
+  },
+  "haiku-5.5": {
+   "template": {
+    "ran": 26,
+    "ok": false,
+    "detail": "errors=57",
+    "failing": [
+     [
+      "test_accepts_generator_input",
+      "test_jobqueue.PlanJobsTests.test_accepts_generator_input"
+     ],
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_dependencies_override_priority",
+      "test_jobqueue.PlanJobsTests.test_dependencies_override_priority"
+     ],
+     [
+      "test_diamond_runs_shared_parent_first_and_join_last",
+      "test_jobqueue.PlanJobsTests.test_diamond_runs_shared_parent_first_and_join_last"
+     ],
+     [
+      "test_does_not_mutate_inputs",
+      "test_jobqueue.PlanJobsTests.test_does_not_mutate_inputs"
+     ],
+     [
+      "test_duplicate_dependency_names_are_harmless",
+      "test_jobqueue.PlanJobsTests.test_duplicate_dependency_names_are_harmless"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_empty_input_returns_empty_list",
+      "test_jobqueue.PlanJobsTests.test_empty_input_returns_empty_list"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_equal_priority_released_jobs_keep_input_order_not_alphabetical",
+      "test_jobqueue.PlanJobsTests.test_equal_priority_released_jobs_keep_input_order_not_alphabetical"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_list_valued_depends_on_is_accepted",
+      "test_jobqueue.PlanJobsTests.test_list_valued_depends_on_is_accepted"
+     ],
+     [
+      "test_newly_ready_high_priority_job_beats_waiting_low_priority_job",
+      "test_jobqueue.PlanJobsTests.test_newly_ready_high_priority_job_beats_waiting_low_priority_job"
+     ],
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ],
+     [
+      "test_random_dags_match_reference_and_respect_dependencies",
+      "test_jobqueue.PlanJobsTests.test_random_dags_match_reference_and_respect_dependencies"
+     ]
+    ]
+   },
+   "mimo": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=16, errors=4",
+    "failing": [
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ]
+    ]
+   },
+   "sonnet-5.5": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=12",
+    "failing": [
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ]
+    ]
+   },
+   "fable-5.1": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=16, errors=2",
+    "failing": [
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ],
+     [
+      "test_unknown_dependency_message_names_the_missing_job",
+      "test_jobqueue.PlanJobsTests.test_unknown_dependency_message_names_the_missing_job"
+     ]
+    ]
+   },
+   "opus-5.5": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=20",
+    "failing": [
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ],
+     [
+      "test_unknown_dependency_message_names_the_missing_job",
+      "test_jobqueue.PlanJobsTests.test_unknown_dependency_message_names_the_missing_job"
+     ]
+    ]
+   },
+   "muse": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=18",
+    "failing": [
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ]
+    ]
+   },
+   "gpt-6-luna": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=19",
+    "failing": [
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ]
+    ]
+   },
+   "gpt-6.1-sol": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=18, errors=3",
+    "failing": [
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ],
+     [
+      "test_unknown_dependency_message_names_the_missing_job",
+      "test_jobqueue.PlanJobsTests.test_unknown_dependency_message_names_the_missing_job"
+     ]
+    ]
+   },
+   "gpt-6-astra": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=18, errors=3",
+    "failing": [
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ],
+     [
+      "test_unknown_dependency_message_names_the_missing_job",
+      "test_jobqueue.PlanJobsTests.test_unknown_dependency_message_names_the_missing_job"
+     ]
+    ]
+   },
+   "grok-4.7": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=19",
+    "failing": [
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ]
+    ]
+   },
+   "mcode-m3.1-flash": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=20",
+    "failing": [
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ]
+    ]
+   },
+   "mcode-m3": {
+    "ran": 26,
+    "ok": false,
+    "detail": "failures=16, errors=5",
+    "failing": [
+     [
+      "test_duplicate_dependency_names_are_harmless",
+      "test_jobqueue.PlanJobsTests.test_duplicate_dependency_names_are_harmless"
+     ],
+     [
+      "test_non_iterable_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_iterable_depends_on_is_rejected"
+     ],
+     [
+      "test_non_job_items_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_job_items_are_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_bare_string_depends_on_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_bare_string_depends_on_is_rejected"
+     ],
+     [
+      "test_cycle_is_detected_alongside_acyclic_jobs",
+      "test_jobqueue.PlanJobsTests.test_cycle_is_detected_alongside_acyclic_jobs"
+     ],
+     [
+      "test_cycle_message_names_the_loop_even_when_it_starts_downstream",
+      "test_jobqueue.PlanJobsTests.test_cycle_message_names_the_loop_even_when_it_starts_downstream"
+     ],
+     [
+      "test_duplicate_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_duplicate_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_empty_or_blank_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_empty_or_blank_ids_are_rejected"
+     ],
+     [
+      "test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable",
+      "test_jobqueue.PlanJobsTests.test_jobs_blocked_by_a_cycle_are_listed_as_unschedulable"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_dependency_is_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_dependency_is_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_non_string_ids_are_rejected",
+      "test_jobqueue.PlanJobsTests.test_non_string_ids_are_rejected"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_priority_must_be_a_plain_int",
+      "test_jobqueue.PlanJobsTests.test_priority_must_be_a_plain_int"
+     ],
+     [
+      "test_self_dependency_is_a_cycle",
+      "test_jobqueue.PlanJobsTests.test_self_dependency_is_a_cycle"
+     ],
+     [
+      "test_two_job_cycle_reports_its_ids",
+      "test_jobqueue.PlanJobsTests.test_two_job_cycle_reports_its_ids"
+     ]
+    ]
+   },
+   "haiku-5.5": {
+    "ran": 26,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
    }
   }
  },
@@ -6211,6 +7721,12 @@
     "failing": []
    },
    "mcode-m3": {
+    "ran": 16,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "haiku-5.5": {
     "ran": 16,
     "ok": true,
     "detail": "OK",
@@ -6347,6 +7863,17 @@
     "ok": true,
     "detail": "OK",
     "failing": []
+   },
+   "haiku-5.5": {
+    "ran": 25,
+    "ok": false,
+    "detail": "failures=1",
+    "failing": [
+     [
+      "test_expired_get_removes_entry",
+      "test_ttl_cache.RegressionTests.test_expired_get_removes_entry"
+     ]
+    ]
    }
   },
   "fable-5.1": {
@@ -6572,6 +8099,25 @@
       "test_ttl_cache.TTLCacheTests.test_len_excludes_expired"
      ]
     ]
+   },
+   "haiku-5.5": {
+    "ran": 25,
+    "ok": false,
+    "detail": "failures=3",
+    "failing": [
+     [
+      "test_expired_get_purges_entry",
+      "test_ttl_cache.TTLCacheTests.test_expired_get_purges_entry"
+     ],
+     [
+      "test_len_excludes_expired",
+      "test_ttl_cache.TTLCacheTests.test_len_excludes_expired"
+     ],
+     [
+      "test_uses_injected_clock_not_wall_clock",
+      "test_ttl_cache.TTLCacheTests.test_uses_injected_clock_not_wall_clock"
+     ]
+    ]
    }
   },
   "opus-5.5": {
@@ -6696,6 +8242,17 @@
     "ok": true,
     "detail": "OK",
     "failing": []
+   },
+   "haiku-5.5": {
+    "ran": 19,
+    "ok": false,
+    "detail": "failures=1",
+    "failing": [
+     [
+      "test_expired_get_removes_entry",
+      "test_ttl_cache.TTLCacheTests.test_expired_get_removes_entry"
+     ]
+    ]
    }
   },
   "muse": {
@@ -6795,6 +8352,12 @@
     "failing": []
    },
    "mcode-m3": {
+    "ran": 14,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "haiku-5.5": {
     "ran": 14,
     "ok": true,
     "detail": "OK",
@@ -6906,6 +8469,12 @@
     "failing": []
    },
    "mcode-m3": {
+    "ran": 9,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "haiku-5.5": {
     "ran": 9,
     "ok": true,
     "detail": "OK",
@@ -7082,6 +8651,17 @@
     "ok": true,
     "detail": "OK",
     "failing": []
+   },
+   "haiku-5.5": {
+    "ran": 19,
+    "ok": false,
+    "detail": "failures=1",
+    "failing": [
+     [
+      "test_expired_get_removes_entry",
+      "test_ttl_cache.TTLCacheTests.test_expired_get_removes_entry"
+     ]
+    ]
    }
   },
   "gpt-6-astra": {
@@ -7245,6 +8825,12 @@
     "ok": true,
     "detail": "OK",
     "failing": []
+   },
+   "haiku-5.5": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
    }
   },
   "grok-4.7": {
@@ -7381,6 +8967,17 @@
     "ok": true,
     "detail": "OK",
     "failing": []
+   },
+   "haiku-5.5": {
+    "ran": 18,
+    "ok": false,
+    "detail": "failures=1",
+    "failing": [
+     [
+      "test_expired_falsy_value_raises_keyerror",
+      "test_ttl_cache.TTLCacheTests.test_expired_falsy_value_raises_keyerror"
+     ]
+    ]
    }
   },
   "mcode-m3.1-flash": {
@@ -7524,6 +9121,12 @@
     "ok": true,
     "detail": "OK",
     "failing": []
+   },
+   "haiku-5.5": {
+    "ran": 22,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
    }
   },
   "mcode-m3": {
@@ -7641,6 +9244,174 @@
    },
    "mcode-m3": {
     "ran": 15,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "haiku-5.5": {
+    "ran": 15,
+    "ok": false,
+    "detail": "failures=1",
+    "failing": [
+     [
+      "test_expired_get_removes_entry",
+      "test_ttl_cache.TTLCacheTests.test_expired_get_removes_entry"
+     ]
+    ]
+   }
+  },
+  "haiku-5.5": {
+   "template": {
+    "ran": 18,
+    "ok": false,
+    "detail": "failures=11, errors=8",
+    "failing": [
+     [
+      "test_get_returns_falsy_values",
+      "test_ttl_cache.TTLCacheTests.test_get_returns_falsy_values"
+     ],
+     [
+      "test_get_returns_falsy_values",
+      "test_ttl_cache.TTLCacheTests.test_get_returns_falsy_values"
+     ],
+     [
+      "test_get_returns_falsy_values",
+      "test_ttl_cache.TTLCacheTests.test_get_returns_falsy_values"
+     ],
+     [
+      "test_get_returns_falsy_values",
+      "test_ttl_cache.TTLCacheTests.test_get_returns_falsy_values"
+     ],
+     [
+      "test_get_returns_falsy_values",
+      "test_ttl_cache.TTLCacheTests.test_get_returns_falsy_values"
+     ],
+     [
+      "test_get_returns_falsy_values",
+      "test_ttl_cache.TTLCacheTests.test_get_returns_falsy_values"
+     ],
+     [
+      "test_get_returns_falsy_values",
+      "test_ttl_cache.TTLCacheTests.test_get_returns_falsy_values"
+     ],
+     [
+      "test_put_existing_key_at_capacity_does_not_evict_other_keys",
+      "test_ttl_cache.TTLCacheTests.test_put_existing_key_at_capacity_does_not_evict_other_keys"
+     ],
+     [
+      "test_capacity_evicts_least_recently_used_live_entry",
+      "test_ttl_cache.TTLCacheTests.test_capacity_evicts_least_recently_used_live_entry"
+     ],
+     [
+      "test_expires_at_boundary",
+      "test_ttl_cache.TTLCacheTests.test_expires_at_boundary"
+     ],
+     [
+      "test_get_does_not_refresh_ttl",
+      "test_ttl_cache.TTLCacheTests.test_get_does_not_refresh_ttl"
+     ],
+     [
+      "test_get_refreshes_lru",
+      "test_ttl_cache.TTLCacheTests.test_get_refreshes_lru"
+     ],
+     [
+      "test_put_existing_key_refreshes_timestamp",
+      "test_ttl_cache.TTLCacheTests.test_put_existing_key_refreshes_timestamp"
+     ],
+     [
+      "test_rejects_max_size_below_one",
+      "test_ttl_cache.TTLCacheTests.test_rejects_max_size_below_one"
+     ],
+     [
+      "test_rejects_max_size_below_one",
+      "test_ttl_cache.TTLCacheTests.test_rejects_max_size_below_one"
+     ],
+     [
+      "test_rejects_non_positive_ttl",
+      "test_ttl_cache.TTLCacheTests.test_rejects_non_positive_ttl"
+     ],
+     [
+      "test_rejects_non_positive_ttl",
+      "test_ttl_cache.TTLCacheTests.test_rejects_non_positive_ttl"
+     ],
+     [
+      "test_rejects_non_positive_ttl",
+      "test_ttl_cache.TTLCacheTests.test_rejects_non_positive_ttl"
+     ],
+     [
+      "test_ttl_uses_injected_clock",
+      "test_ttl_cache.TTLCacheTests.test_ttl_uses_injected_clock"
+     ]
+    ]
+   },
+   "mimo": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "sonnet-5.5": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "fable-5.1": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "opus-5.5": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "muse": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "gpt-6-luna": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "gpt-6.1-sol": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "gpt-6-astra": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "grok-4.7": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "mcode-m3.1-flash": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "mcode-m3": {
+    "ran": 18,
+    "ok": true,
+    "detail": "OK",
+    "failing": []
+   },
+   "haiku-5.5": {
+    "ran": 18,
     "ok": true,
     "detail": "OK",
     "failing": []

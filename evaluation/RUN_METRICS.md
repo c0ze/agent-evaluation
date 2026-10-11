@@ -22,6 +22,7 @@ for each one is as Arda identified it.
 | GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business then gmail-personal | 03:06:18 (01-09), 05:19:41 (10-13) | 05:39:03 | 34 min 54 s (15:32 + 19:22) | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-astra` |
 | MiniMax M3.1 Flash (`MiniMax-M3.1-Flash-Preview`) | xhigh | mcode on the Mac (managed MiniMax login) | 18:20:45 (2026-10-04) | 19:05:06 | 42 min 16 s (28:38 first pass + 13:38 task 11 re-run) | n/a | n/a | not measurable; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3.1-flash` |
 | MiniMax M3 (`MiniMax-M3`) | default (not selectable) | mcode on the Mac (managed MiniMax login) | 19:39:03 (2026-10-04) | 19:47:52 | 8 min 49 s | n/a | n/a | 2% of the 5-hour window; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3` |
+| Haiku 5.5 (`claude-haiku-5-5`) | xhigh | Claude Code CLI on cachyos (Max subscription) | 14:32:46 (2026-10-11) | 15:06:49 | 34 min 03 s | n/a | n/a | $1.74 API-equivalent; nothing charged | 13 / 13 | local repository, merged under `runs/haiku-5.5` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -190,3 +191,37 @@ input against 18.6M.
 **Process note:** during task 03 (at 19:39:59) MiniMax M3 also wrote a copy of its .env.example to ~/projects/agent-eval-runs/agent-eval-m3/03-infra-management/, a sibling path outside its repository (apparently a mistyped repository name). The file is identical to the .env.example in its task directory, so the deliverable is unaffected, but the brief says to work only in the task directory. The stray copy is kept in mcode-m3-run-orch/stray-write/. Found after the eleven-way grading, so that pass's task 03 grader did not see this note.
 
 **Process note (network and installs):** in task 04 (19:39–19:41) MiniMax M3 used the network and changed the user's Python environment, both against the brief: it pip-installed packages from PyPI into the user site (24 in ~/.local/lib/python3.13/site-packages, including build, twine, keyring, requests, rich, docutils and an editable install of its own slugkit 0.4.0, plus ruff 0.16.10 for Python 3.14), which also added about 15 commands to ~/.local/bin. It used them for the checks its RESPONSE.md reports (ruff, python -m build, twine check, pip install -e .). Found after the eleven-way grading, so the task 04 grader did not see this note. M3.1 Flash's run left no such changes.
+
+## Haiku 5.5 (Claude Code CLI on cachyos, 2026-10-11)
+
+Haiku 5.5 came out after the eleven-way pass. It ran headless through the Claude Code CLI (2.1.296) on
+cachyos, signed in with a Claude Max subscription. Each task got one `claude -p` with the same instruction as
+the other runs, four at a time, effort **xhigh**: the same setting as "extra" for Sonnet 5.5 and Fable 5.1.
+Scripts, timing, per-task event logs and tokens are in `run-logs/haiku-orchestration/`.
+
+- **Blank slate:** a fresh repository made from the same template commit the Sonnet and Opus repositories
+  started from, with no history and outside the home directory, so no personal `CLAUDE.md` or memory was
+  discovered. `--setting-sources project --strict-mcp-config` kept out user plugins, hooks and MCP servers,
+  and the parent session's environment was cleared (`env -i`). Only Claude Code's built-in skills were present.
+- **Sandbox:** Bash was allowed without prompts, since headless mode can't answer them, but ran inside
+  Claude Code's sandbox: no network, and writes limited to the repository and the session temp area.
+  WebFetch and WebSearch were disabled.
+- **First launch stopped:** commands starting with an environment-variable prefix were refused by
+  unanswerable permission prompts, so the first launch was stopped after about 30 s, reset to the template
+  commit and relaunched with the Bash rule above. The partial logs are in `interrupted/haiku-5.5-first-launch/`.
+
+| Tasks | Wall-clock | Input | Cache write | Cache read | Output tokens | API-equivalent cost |
+|---|---|---|---|---|---|---|
+| 13 / 13 | 34 min 03 s (14:32:46–15:06:49) | 444 | 996,904 | 17,666,356 | 844,002 | $1.74 |
+
+Tokens and cost are Claude Code's own per-model totals (`modelUsage`) from each session's final `result`
+event. The account is a subscription, so the $1.74 is what Claude Code says the tokens would cost at API
+prices, not a charge. It isn't comparable with the cloud runs' balance readings. Task 11 took 24 min 26 s of
+the wall-clock time (5.38M cache-read tokens) testing its page in headless Firefox. Every other task finished
+in 1.5–12 minutes.
+
+**Process note:** according to the session transcripts, tasks 03, 11, 12 and 13 wrote scratch files
+(validation copies, screenshots, Firefox profiles) to the session temp directory outside the repository,
+and task 11 ran a `find` over `~/Downloads` looking for its own headless-Firefox output. No task read another
+task's directory or any other model's output. These are scratch-space uses of the kind the Claude cloud runs
+also reported, not deliverables written outside the task directory, so they were not passed to the graders.

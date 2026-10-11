@@ -108,5 +108,15 @@
   "cost": null,
   "usage": "547k input + 4.78M cache-read input, 190k output tokens; 2% of the Token Plan's 5-hour window, weekly unchanged (1%)",
   "notes": "One mcode exec per task, four at a time, same protocol as MiniMax M3.1 Flash; mcode rejects --effort for M3, so it ran at its fixed default. Usage was polled every 2 minutes with a hold at 85%, never reached."
+ },
+ "haiku-5.5": {
+  "label": "Haiku 5.5",
+  "model": "claude-haiku-5-5",
+  "where": "Claude Code CLI 2.1.296 (headless) on cachyos, Max subscription, 2026-10-11",
+  "effort": "xhigh",
+  "duration": "~34 min",
+  "cost": "$1.74 API-equivalent (subscription; nothing charged)",
+  "usage": "444 input + 997k cache-write + 17.67M cache-read input, 844k output tokens; 225 turns",
+  "notes": "One claude -p per task, four at a time, in a fresh repository outside the home directory: no CLAUDE.md, memory, plugins, hooks or MCP; Bash sandboxed with no network. A 30-second first launch was stopped over headless permission prompts and relaunched clean. Task 11 took 24 of the 34 minutes."
  }
 }

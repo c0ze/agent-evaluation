@@ -22,17 +22,17 @@ and <code>None</code>; it raises <code>KeyError</code> only for missing or expir
 and exact test result. Work only in this directory.</p>
 </div>
       <p class="muted">Inputs given: <a href="../../../_templates/02-bug-fixing/test_ttl_cache.py" target="_blank" rel="noopener" class="mono">test_ttl_cache.py</a>, <a href="../../../_templates/02-bug-fixing/ttl_cache.py" target="_blank" rel="noopener" class="mono">ttl_cache.py</a></p></details>
-    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">GPT-6.1 Sol</th><th scope="col">GPT-6 Astra</th><th scope="col">Grok 4.7</th><th scope="col">Fable 5.1</th><th scope="col">mimo</th><th scope="col">muse</th><th scope="col">GPT-6 Luna</th><th scope="col">MiniMax M3</th><th scope="col">MiniMax M3.1 Flash</th></tr>
-    <tr><th scope="row">behavioral correctness <span class="muted">(7)</span></th><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:0.76">6</td></tr><tr><th scope="row">diagnosis <span class="muted">(1)</span></th><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat" style="--h:0.58">0.75</td></tr><tr><th scope="row">regression coverage <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.58">1.5</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.58">1.5</td></tr>
-    <tr class="total"><th scope="row">Total (10)</th><td class="num">10</td><td class="num">10</td><td class="num">10</td><td class="num">10</td><td class="num">10</td><td class="num">9.75</td><td class="num">9.5</td><td class="num">9</td><td class="num">8.75</td><td class="num">8.75</td><td class="num">8.25</td></tr></table></div>
-    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = Sonnet 5.5, B = Fable 5.1, C = mimo, D = GPT-6.1 Sol, E = MiniMax M3.1 Flash, F = Opus 5.5, G = GPT-6 Luna, H = GPT-6 Astra, I = MiniMax M3, J = Grok 4.7, K = muse.</p><div class="prose"><p>len() question: the brief gives no contract for <strong>len</strong>, so test_len_excludes_expired (B) is not required. Implementations failing it were not penalized, and B lost 0.25 regression points for pinning unspecified behavior that fails 9 correct implementations. Removing an expired entry on get is also not stated in the brief, but the hidden contract tests it, so E lost 1 correctness point. All 11 implementations matched the reference model over 4000 traces on get/put results. Regression scores come from a 19-mutant matrix; B&#39;s suite was run without its len test. X6 (expired get kept) was treated as informational, not a required mutant. Ties at 10 (F, A, J, H, D) are ordered by response quality: F&#39;s mutation self-check, A&#39;s completeness, J&#39;s diagnosis. I is ranked over G at 8.75 because its suite misses 2 original bugs, not 3.</p>
+    <section class="card"><h2>Scores</h2><div class="scroll"><table class="grid"><tr><th scope="col">Criterion (max)</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">GPT-6.1 Sol</th><th scope="col">Grok 4.7</th><th scope="col">Fable 5.1</th><th scope="col">GPT-6 Astra</th><th scope="col">mimo</th><th scope="col">muse</th><th scope="col">Haiku 5.5</th><th scope="col">GPT-6 Luna</th><th scope="col">MiniMax M3</th><th scope="col">MiniMax M3.1 Flash</th></tr>
+    <tr><th scope="row">behavioral correctness <span class="muted">(7)</span></th><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:0.76">6</td><td class="num heat" style="--h:1.00">7</td><td class="num heat" style="--h:0.94">6.75</td><td class="num heat" style="--h:0.76">6</td></tr><tr><th scope="row">diagnosis <span class="muted">(1)</span></th><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:1.00">1</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat" style="--h:0.58">0.75</td><td class="num heat" style="--h:0.58">0.75</td></tr><tr><th scope="row">regression coverage <span class="muted">(2)</span></th><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:1.00">2</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.38">1.25</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.79">1.75</td><td class="num heat" style="--h:0.00">0.75</td><td class="num heat" style="--h:0.17">1</td><td class="num heat" style="--h:0.38">1.25</td></tr>
+    <tr class="total"><th scope="row">Total (10)</th><td class="num">10</td><td class="num">10</td><td class="num">10</td><td class="num">10</td><td class="num">9.75</td><td class="num">9.75</td><td class="num">9.25</td><td class="num">9</td><td class="num">8.75</td><td class="num">8.5</td><td class="num">8.5</td><td class="num">8</td></tr></table></div>
+    <details class="notes"><summary>Grader's notes</summary><p class="muted">Letters in the grader's text: A = GPT-6.1 Sol, B = GPT-6 Astra, C = muse, D = Sonnet 5.5, E = MiniMax M3.1 Flash, F = mimo, G = Grok 4.7, H = Fable 5.1, I = Opus 5.5, J = GPT-6 Luna, K = MiniMax M3, L = Haiku 5.5.</p><div class="prose"><p>Probe harness (22 behavioural checks) and 16 mutants of a reference fix (falsy check, wall clock, &gt; boundary, get without LRU refresh, get refreshes TTL, put without recency/timestamp refresh, put-existing evicts other key, no purge, purge-front-only, evict MRU, 4 validation variants, expired get not deleted) were run against each suite in _work/02-bug-fixing. Four submissions (A, D, G, I) are correct and their suites kill every mutant, so they tie at 10. D and H each say in RESPONSE that they copied the original outside the task directory. There was no process_note, so this was used only to break ties: D ranks last among the 10s and H below B. I ranks first for documenting its own mutation testing. B vs H: both 9.75; H&#39;s over-specified len test fails every other correct implementation. E and L share the same defect (an expired get does not delete the entry). The task text does not literally require deletion, but the hidden contract test does and len() overcounts, so each loses 1 point of behavioural correctness. L ranks above E for honest disclosure and stronger tests. K&#39;s per-entry clock reads cost 0.25: they do not break any contract behaviour, but purge decisions are made against different instants. I could not see the hidden contract tests themselves, only their names and results.</p>
 </div></details></section>
-    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">10</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">10</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">GPT-6.1 Sol <span class="pill">10</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">GPT-6 Astra <span class="pill">10</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">Grok 4.7 <span class="pill">10</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9.75</span></button><button role="tab" id="tab-6" aria-controls="panel-6" aria-selected="false" tabindex="-1">mimo <span class="pill">9.5</span></button><button role="tab" id="tab-7" aria-controls="panel-7" aria-selected="false" tabindex="-1">muse <span class="pill">9</span></button><button role="tab" id="tab-8" aria-controls="panel-8" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">8.75</span></button><button role="tab" id="tab-9" aria-controls="panel-9" aria-selected="false" tabindex="-1">MiniMax M3 <span class="pill">8.75</span></button><button role="tab" id="tab-10" aria-controls="panel-10" aria-selected="false" tabindex="-1">MiniMax M3.1 Flash <span class="pill">8.25</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
-        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
-        <p>Correct fix: single clock read per put, full purge, no eviction on update, expired get deletes. Diagnosis covers all seven root causes including why recency order differs from timestamp order. The 25-test suite kills all 9 original-bug mutants and all 9 required extra mutants.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 reference traces; validation and injected-clock probes all correct</li><li>Suite kills every mutant, including front-only purge (X3) and update-evicts-at-capacity (M6)</li><li>Accurate design note that len() semantics are unspecified</li></ul></div><div><h4>Weaknesses</h4><ul><li>None material</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>fuzz.py A/ttl_cache.py -&gt; mismatches 0; validation (0,10),(-1,10),(0.5,10),(1,0),(1,-1),(1,-0.5) all ValueError</li><li>Wall-clock poisoned (time.time/monotonic raise) -&gt; ok</li><li>Mutant matrix: A suite fails on all 19 mutants</li><li>Hidden contract: all 6 pass; own 25 tests OK (matches RESPONSE)</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 25 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=11, errors=2; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
+    <section><div class="tabs" role="tablist" aria-label="Models"><button role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" tabindex="0">Sonnet 5.5 <span class="pill">10</span></button><button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1">Opus 5.5 <span class="pill">10</span></button><button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">GPT-6.1 Sol <span class="pill">10</span></button><button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">Grok 4.7 <span class="pill">10</span></button><button role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">Fable 5.1 <span class="pill">9.75</span></button><button role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">GPT-6 Astra <span class="pill">9.75</span></button><button role="tab" id="tab-6" aria-controls="panel-6" aria-selected="false" tabindex="-1">mimo <span class="pill">9.25</span></button><button role="tab" id="tab-7" aria-controls="panel-7" aria-selected="false" tabindex="-1">muse <span class="pill">9</span></button><button role="tab" id="tab-8" aria-controls="panel-8" aria-selected="false" tabindex="-1">Haiku 5.5 <span class="pill">8.75</span></button><button role="tab" id="tab-9" aria-controls="panel-9" aria-selected="false" tabindex="-1">GPT-6 Luna <span class="pill">8.5</span></button><button role="tab" id="tab-10" aria-controls="panel-10" aria-selected="false" tabindex="-1">MiniMax M3 <span class="pill">8.5</span></button><button role="tab" id="tab-11" aria-controls="panel-11" aria-selected="false" tabindex="-1">MiniMax M3.1 Flash <span class="pill">8</span></button></div><div role="tabpanel" id="panel-0" aria-labelledby="tab-0" ><section class="card eval">
+        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
+        <p>Correct, well-commented fix with the strongest documentation: a root-cause table, a design note on len semantics, and a 25-test suite that kills all mutants. Its RESPONSE says the mutation check copied the original into a scratch directory outside the task directory, against &#39;Work only in this directory&#39;. That is used only as a tie-break.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Hidden 6/6, probes 22/22</li><li>Suite killed 16/16 mutants, including a non-first expired entry being purged and put-existing at capacity</li><li>Root-cause table is accurate and the len() design note is honest</li></ul></div><div><h4>Weaknesses</h4><ul><li>RESPONSE: &#39;copied to a scratch directory outside the task directory&#39;, a minor breach of the work-only-here rule</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>mut/run.sh D: killed=16, survived none</li><li>D&#39;s suite fails on E and L (test_expired_get_removes_entry), so it catches the bug they share</li><li>probe.py D: 0 failures</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 25 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=11, errors=2; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass; Haiku 5.5: failures=1</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="0-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="0-1" aria-selected="false">TASK.md</button><button role="tab" data-file="0-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="0-3" aria-selected="false">ttl_cache.py</button></div>
         <div class="file" id="file-0-0" ><p class="path mono">sonnet-5.5/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Task 02 - TTL/LRU cache bug fixing</h1>
 <p>Files changed: <code>ttl_cache.py</code> (fixes) and <code>test_ttl_cache.py</code> (3 original tests kept,
@@ -434,11 +434,11 @@ class TTLCache:
     def __len__(self):
         return len(self._items)
 </code></pre></div></section></div><div role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission F</span></h3>
-        <p>Correct implementation. Clear root-cause table that names the update-recency and update-eviction bugs. The suite kills all mutants, and RESPONSE describes a real mutation check, including the gap it found and closed.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 traces</li><li>Suite kills all 19 mutants</li><li>Self-run mutation testing, honestly reported</li></ul></div><div><h4>Weaknesses</h4><ul><li>None material</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>Mutant matrix: F suite fails on all 19 mutants</li><li>fuzz.py -&gt; mismatches 0</li><li>Hidden 6/6; own 19 OK</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 19 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=9, errors=2; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
+        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission I</span></h3>
+        <p>Correct fix. Its 19 tests kill every mutant, and RESPONSE documents its own mutation testing, including a gap it found and closed (eviction on update). Accurate diagnosis with 8 root causes.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Hidden 6/6, probes 22/22</li><li>Suite killed 16/16</li><li>Reports which tests pass on the original by coincidence and why</li></ul></div><div><h4>Weaknesses</h4><ul><li>Used git show HEAD to get the original, which reads repo state outside the task files (read-only)</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>mut/run.sh I: killed=16</li><li>I&#39;s suite fails on E and L (test_expired_get_removes_entry)</li><li>probe.py I: 0 failures</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 19 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=9, errors=2; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass; Haiku 5.5: failures=1</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="1-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="1-1" aria-selected="false">TASK.md</button><button role="tab" data-file="1-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="1-3" aria-selected="false">ttl_cache.py</button></div>
         <div class="file" id="file-1-0" ><p class="path mono">opus-5.5/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Task 02: TTL/LRU cache bug fix</h1>
 <p>The public API is unchanged: <code>TTLCache(max_size, ttl_seconds, clock=time.monotonic)</code>,
@@ -799,11 +799,11 @@ class TTLCache:
     def __len__(self):
         return len(self._items)
 </code></pre></div></section></div><div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission D</span></h3>
-        <p>Correct insert-then-evict-if-over-capacity design, equivalent to the reference. Diagnosis covers every bug. The 19-test suite (with subtests) kills all original and extra mutants.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 traces</li><li>Suite kills all 19 mutants including M6 and X3</li><li>Includes expired-but-recently-accessed purge case</li></ul></div><div><h4>Weaknesses</h4><ul><li>RESPONSE prints only the result footer, not the full verbose output (minor)</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>Mutant matrix: D suite fails on all 19 mutants</li><li>fuzz.py -&gt; mismatches 0; validation all correct</li><li>Hidden 6/6; own 19 OK; template fails 23 subtest entries, matching the &#39;16 failures and 7 errors&#39; claim</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 19 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=16, errors=7; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
+        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission A</span></h3>
+        <p>Correct fix: validation, single clock sample per put, full-scan purge, insert-then-trim eviction, expired get deletes. 19-test suite kills every mutant I tried. Full marks.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Passes all 6 hidden contract tests and all 22 of my behavioural probes</li><li>Own suite killed 16/16 mutants, including the expired-MRU/live-LRU purge case and put-existing-evicts on the MRU key</li><li>RESPONSE covers all seven root causes and reports a baseline run against the original (16 failures, 7 errors)</li></ul></div><div><h4>Weaknesses</h4><ul><li>Insert-then-pop eviction is slightly less obvious than check-before-insert, though behaviour is the same</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>OBJECTIVE_CHECKS: hidden all 6 pass, own 19 OK</li><li>probe.py on A/ttl_cache.py: 0 failures</li><li>mut/run.sh A: killed=16, survived none</li><li>Every other implementation passes A&#39;s suite except E and L (test_expired_get_removes_entry)</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 19 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=16, errors=7; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass; Haiku 5.5: failures=1</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="2-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="2-1" aria-selected="false">TASK.md</button><button role="tab" data-file="2-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="2-3" aria-selected="false">ttl_cache.py</button></div>
         <div class="file" id="file-2-0" ><p class="path mono">gpt-6.1-sol/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>TTL/LRU cache bug fix</h1>
 <p>All deliverables are complete: the cache is fixed without changing its public
@@ -1110,310 +1110,13 @@ class TTLCache:
     def __len__(self):
         return len(self._items)
 </code></pre></div></section></div><div role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission H</span></h3>
-        <p>Correct insert-then-evict design. The diagnosis is complete, including why the purge must scan the whole map. The suite kills every original and required extra mutant.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 traces</li><li>Suite kills all original and required extra mutants (only X6, not required, survives)</li><li>Expired MRU vs live LRU test catches front-only purge</li></ul></div><div><h4>Weaknesses</h4><ul><li>None material</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>Mutant matrix: H suite passes only on X6</li><li>fuzz.py -&gt; mismatches 0</li><li>Hidden 6/6; own 18 OK; &#39;16 failures, 6 errors&#39; on template matches the 22 entries</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 18 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=16, errors=6; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
+        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission G</span></h3>
+        <p>Correct fix with a clear explanation of how a get can put an expired entry at the MRU end. Its 18 tests kill all mutants, including expired falsy values and replacing an expired key without evicting a live neighbour.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Hidden 6/6, probes 22/22</li><li>Suite killed 16/16</li><li>Root-cause explanation of the expired-MRU/live-LRU interaction is precise</li></ul></div><div><h4>Weaknesses</h4><ul><li>The &#39;from None&#39; re-raise in get is extra noise (harmless)</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>mut/run.sh G: killed=16</li><li>G&#39;s suite fails on E and L (test_expired_falsy_value_raises_keyerror checks removal)</li><li>probe.py G: 0 failures</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 18 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=8, errors=6; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass; Haiku 5.5: failures=1</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="3-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="3-1" aria-selected="false">TASK.md</button><button role="tab" data-file="3-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="3-3" aria-selected="false">ttl_cache.py</button></div>
-        <div class="file" id="file-3-0" ><p class="path mono">gpt-6-astra/02-bug-fixing/RESPONSE.md</p><div class="prose"><p>Completed every deliverable: fixed <code>ttl_cache.py</code> without changing the public
-API, expanded <code>test_ttl_cache.py</code> from 3 to 18 tests, ran the tests locally, and
-documented the results here. No network access was used.</p>
-<p>Root causes and fixes:</p>
-<ul>
-<li><code>put</code> used <code>time.time()</code> while <code>get</code> used the injected monotonic clock, making
-entry ages inconsistent. Both operations now use the injected clock; each
-<code>put</code> takes one timestamp for expiration cleanup and the stored value.</li>
-<li><code>get</code> treated falsy values as absent. It now relies on dictionary lookup for
-missing keys and returns stored values unchanged, including <code>0</code>, <code>False</code>, and
-<code>None</code>.</li>
-<li>Expiration used <code>age &gt; ttl_seconds</code>. It now uses <code>age &gt;= ttl_seconds</code>, and an
-expired lookup removes the entry before raising <code>KeyError</code>.</li>
-<li>Successful reads did not refresh recency. They now move the key to the end of
-the ordered dictionary while preserving its insertion/update timestamp.</li>
-<li><code>put</code> evicted before checking whether it was updating an existing key, and
-assignment alone did not refresh recency. It now stores the new value and
-timestamp, moves the key to the most recent position, and evicts only when
-the resulting size exceeds capacity.</li>
-<li>Capacity enforcement ignored expired entries. Every <code>put</code> now removes all
-expired entries before enforcing capacity, scanning the entire dictionary
-because LRU order can differ from expiration order. Any remaining eviction
-removes the least recently used live entry.</li>
-<li>Constructor arguments were not validated. <code>max_size &lt; 1</code> and
-<code>ttl_seconds &lt;= 0</code> now raise <code>ValueError</code>.</li>
-</ul>
-<p>Regression cases use an injected, manually advanced clock without sleeping:</p>
-<ul>
-<li>Normal and falsy value round trips; missing-key errors.</li>
-<li>Reads just before, exactly at, and after the TTL boundary.</li>
-<li>Successful reads refresh LRU recency without extending TTL.</li>
-<li>Updates replace values, reset TTL, refresh recency, and preserve other entries
-when the cache is full; expired keys can be inserted again with a fresh TTL.</li>
-<li>Capacity eviction with and without reads, including a one-entry cache.</li>
-<li>An expired most recently used entry is removed before a live least recently
-used entry; all expired entries are purged even below capacity.</li>
-<li>Zero, negative, and sub-one capacities; zero and negative TTLs.</li>
-</ul>
-<p>The original suite reproduced two failures out of three tests before the fix.
-The expanded suite also ran against the faulty implementation and reported
-<code>FAILED (failures=16, errors=6)</code> across 18 test methods, including subtest results.</p>
-<p>Final command, run from this directory:</p>
-<pre><code class="language-sh">python3 -m unittest discover -s . -p &#39;test_*.py&#39; -v
-</code></pre>
-<p>Exact final test summary:</p>
-<pre><code class="language-text">----------------------------------------------------------------------
-Ran 18 tests in 0.000s
-
-OK
-</code></pre>
-<p>Exit code: <code>0</code>. Every test passed.</p>
-<p>Exact model ID: <code>gpt-6-astra</code>.</p>
-</div></div><div class="file" id="file-3-1" hidden><p class="path mono">gpt-6-astra/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
-<p><code>ttl_cache.py</code> is a deliberately faulty implementation. Fix it without changing
-the public API and add regression tests.</p>
-<p>Required behavior:</p>
-<ul>
-<li><code>get(key)</code> returns the stored value, including falsy values such as <code>0</code>, <code>False</code>
-and <code>None</code>; it raises <code>KeyError</code> only for missing or expired entries.</li>
-<li>TTL uses the injected monotonic <code>clock</code> and expires at <code>age &gt;= ttl_seconds</code>.</li>
-<li>A successful <code>get</code> refreshes LRU recency but does not refresh TTL.</li>
-<li><code>put</code> updates an existing key&#39;s value, timestamp and recency.</li>
-<li>Before enforcing capacity, expired entries are removed.</li>
-<li>Capacity eviction removes the least recently used live entry.</li>
-<li><code>max_size &lt; 1</code> and <code>ttl_seconds &lt;= 0</code> raise <code>ValueError</code>.</li>
-</ul>
-<p>Run the tests. Write <code>RESPONSE.md</code> with the root causes, fixes, regression cases,
-and exact test result. Work only in this directory.</p>
-</div></div><div class="file" id="file-3-2" hidden><p class="path mono">gpt-6-astra/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
-
-from ttl_cache import TTLCache
-
-
-class Clock:
-    def __init__(self):
-        self.now = 100.0
-
-    def __call__(self):
-        return self.now
-
-
-class TTLCacheTests(unittest.TestCase):
-    def setUp(self):
-        self.clock = Clock()
-
-    def test_round_trip(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
-
-    def test_falsy_values_round_trip(self):
-        for value in (0, False, None, &quot;&quot;, [], {}):
-            with self.subTest(value=value):
-                cache = TTLCache(1, 10, self.clock)
-                cache.put(&quot;a&quot;, value)
-                self.assertIs(cache.get(&quot;a&quot;), value)
-
-    def test_missing_key_raises_key_error(self):
-        cache = TTLCache(2, 10, self.clock)
-        with self.assertRaises(KeyError) as error:
-            cache.get(&quot;missing&quot;)
-        self.assertEqual(error.exception.args, (&quot;missing&quot;,))
-
-    def test_live_just_before_expiration(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        self.clock.now += 9.999
-        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
-
-    def test_expires_at_boundary(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        self.clock.now += 10
-        with self.assertRaises(KeyError) as error:
-            cache.get(&quot;a&quot;)
-        self.assertEqual(error.exception.args, (&quot;a&quot;,))
-
-    def test_expires_after_boundary(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        self.clock.now += 11
-        with self.assertRaises(KeyError):
-            cache.get(&quot;a&quot;)
-
-    def test_get_does_not_refresh_ttl(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        self.clock.now += 6
-        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
-        self.clock.now += 4
-        with self.assertRaises(KeyError):
-            cache.get(&quot;a&quot;)
-
-    def test_get_refreshes_lru(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        cache.put(&quot;b&quot;, &quot;B&quot;)
-        cache.get(&quot;a&quot;)
-        cache.put(&quot;c&quot;, &quot;C&quot;)
-        with self.assertRaises(KeyError):
-            cache.get(&quot;b&quot;)
-        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
-        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
-        self.assertEqual(len(cache), 2)
-
-    def test_put_updates_value_and_timestamp(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;old&quot;)
-        self.clock.now += 6
-        cache.put(&quot;a&quot;, &quot;new&quot;)
-        self.assertEqual(len(cache), 1)
-        self.clock.now += 4
-        self.assertEqual(cache.get(&quot;a&quot;), &quot;new&quot;)
-        self.clock.now += 6
-        with self.assertRaises(KeyError):
-            cache.get(&quot;a&quot;)
-
-    def test_put_existing_key_at_capacity_preserves_other_entries(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        cache.put(&quot;b&quot;, &quot;B&quot;)
-        cache.put(&quot;b&quot;, &quot;updated&quot;)
-        self.assertEqual(len(cache), 2)
-        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
-        self.assertEqual(cache.get(&quot;b&quot;), &quot;updated&quot;)
-
-    def test_put_refreshes_lru(self):
-        cache = TTLCache(3, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        cache.put(&quot;b&quot;, &quot;B&quot;)
-        cache.put(&quot;a&quot;, &quot;updated&quot;)
-        cache.put(&quot;c&quot;, &quot;C&quot;)
-        cache.put(&quot;d&quot;, &quot;D&quot;)
-        with self.assertRaises(KeyError):
-            cache.get(&quot;b&quot;)
-        self.assertEqual(cache.get(&quot;a&quot;), &quot;updated&quot;)
-        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
-        self.assertEqual(cache.get(&quot;d&quot;), &quot;D&quot;)
-
-    def test_capacity_evicts_oldest_without_reads(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        cache.put(&quot;b&quot;, &quot;B&quot;)
-        cache.put(&quot;c&quot;, &quot;C&quot;)
-        with self.assertRaises(KeyError):
-            cache.get(&quot;a&quot;)
-        self.assertEqual(cache.get(&quot;b&quot;), &quot;B&quot;)
-        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
-
-    def test_expired_mru_is_removed_before_live_lru(self):
-        cache = TTLCache(2, 10, self.clock)
-        cache.put(&quot;expired&quot;, &quot;old&quot;)
-        self.clock.now += 6
-        cache.put(&quot;live&quot;, &quot;keep&quot;)
-        cache.get(&quot;expired&quot;)
-        self.clock.now += 4
-        cache.put(&quot;new&quot;, &quot;new&quot;)
-        self.assertEqual(cache.get(&quot;live&quot;), &quot;keep&quot;)
-        self.assertEqual(cache.get(&quot;new&quot;), &quot;new&quot;)
-        self.assertEqual(len(cache), 2)
-        with self.assertRaises(KeyError):
-            cache.get(&quot;expired&quot;)
-
-    def test_put_removes_all_expired_entries_below_capacity(self):
-        cache = TTLCache(4, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        cache.put(&quot;b&quot;, &quot;B&quot;)
-        self.clock.now += 10
-        cache.put(&quot;c&quot;, &quot;C&quot;)
-        self.assertEqual(len(cache), 1)
-        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
-        for key in (&quot;a&quot;, &quot;b&quot;):
-            with self.subTest(key=key), self.assertRaises(KeyError):
-                cache.get(key)
-
-    def test_put_replaces_expired_key_with_fresh_ttl(self):
-        cache = TTLCache(1, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;old&quot;)
-        self.clock.now += 10
-        cache.put(&quot;a&quot;, &quot;new&quot;)
-        self.clock.now += 9
-        self.assertEqual(cache.get(&quot;a&quot;), &quot;new&quot;)
-        self.assertEqual(len(cache), 1)
-        self.clock.now += 1
-        with self.assertRaises(KeyError):
-            cache.get(&quot;a&quot;)
-
-    def test_single_entry_capacity(self):
-        cache = TTLCache(1, 10, self.clock)
-        cache.put(&quot;a&quot;, &quot;A&quot;)
-        cache.put(&quot;b&quot;, &quot;B&quot;)
-        self.assertEqual(len(cache), 1)
-        with self.assertRaises(KeyError):
-            cache.get(&quot;a&quot;)
-        self.assertEqual(cache.get(&quot;b&quot;), &quot;B&quot;)
-
-    def test_rejects_invalid_capacity(self):
-        for max_size in (0, -1, -10, 0.5):
-            with self.subTest(max_size=max_size), self.assertRaises(ValueError):
-                TTLCache(max_size, 10, self.clock)
-
-    def test_rejects_nonpositive_ttl(self):
-        for ttl_seconds in (0, -1, -0.5):
-            with self.subTest(ttl_seconds=ttl_seconds), self.assertRaises(ValueError):
-                TTLCache(2, ttl_seconds, self.clock)
-
-
-if __name__ == &quot;__main__&quot;:
-    unittest.main()
-</code></pre></div><div class="file" id="file-3-3" hidden><p class="path mono">gpt-6-astra/02-bug-fixing/ttl_cache.py</p><pre><code>import time
-from collections import OrderedDict
-
-
-class TTLCache:
-    def __init__(self, max_size, ttl_seconds, clock=time.monotonic):
-        if max_size &lt; 1:
-            raise ValueError(&quot;max_size must be at least 1&quot;)
-        if ttl_seconds &lt;= 0:
-            raise ValueError(&quot;ttl_seconds must be positive&quot;)
-        self.max_size = max_size
-        self.ttl_seconds = ttl_seconds
-        self.clock = clock
-        self._items = OrderedDict()
-
-    def put(self, key, value):
-        now = self.clock()
-        # LRU order can differ from expiration order after reads or updates.
-        expired_keys = [
-            stored_key
-            for stored_key, (_, created) in self._items.items()
-            if now - created &gt;= self.ttl_seconds
-        ]
-        for expired_key in expired_keys:
-            del self._items[expired_key]
-
-        self._items[key] = (value, now)
-        self._items.move_to_end(key)
-        if len(self._items) &gt; self.max_size:
-            self._items.popitem(last=False)
-
-    def get(self, key):
-        value, created = self._items[key]
-        if self.clock() - created &gt;= self.ttl_seconds:
-            del self._items[key]
-            raise KeyError(key)
-        self._items.move_to_end(key)
-        return value
-
-    def __len__(self):
-        return len(self._items)
-</code></pre></div></section></div><div role="tabpanel" id="panel-4" aria-labelledby="tab-4" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">10 / 10</span> <span class="muted small">graded blind as submission J</span></h3>
-        <p>Correct implementation and the best root-cause write-up: it explains how a get leaves an expired entry at the MRU end while a live entry is LRU. The suite kills all original and extra mutants.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 traces</li><li>Suite kills all 19 mutants</li><li>Precise diagnosis of the purge and recency interaction</li></ul></div><div><h4>Weaknesses</h4><ul><li>None material</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>Mutant matrix: J suite fails on all 19 mutants</li><li>fuzz.py -&gt; mismatches 0</li><li>Hidden 6/6; own 18 OK</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 18 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=8, errors=6; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
-      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="4-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="4-1" aria-selected="false">TASK.md</button><button role="tab" data-file="4-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="4-3" aria-selected="false">ttl_cache.py</button></div>
-        <div class="file" id="file-4-0" ><p class="path mono">grok-4.7/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>TTL/LRU cache fixes</h1>
+        <div class="file" id="file-3-0" ><p class="path mono">grok-4.7/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>TTL/LRU cache fixes</h1>
 <p>Public API is unchanged: <code>TTLCache(max_size, ttl_seconds, clock=time.monotonic)</code>, <code>put</code>, <code>get</code>, and <code>__len__</code>.</p>
 <h2>Root causes</h2>
 <ul>
@@ -1480,7 +1183,7 @@ Ran 18 tests in 0.000s
 
 OK
 </code></pre>
-</div></div><div class="file" id="file-4-1" hidden><p class="path mono">grok-4.7/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+</div></div><div class="file" id="file-3-1" hidden><p class="path mono">grok-4.7/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
 <p><code>ttl_cache.py</code> is a deliberately faulty implementation. Fix it without changing
 the public API and add regression tests.</p>
 <p>Required behavior:</p>
@@ -1496,7 +1199,7 @@ and <code>None</code>; it raises <code>KeyError</code> only for missing or expir
 </ul>
 <p>Run the tests. Write <code>RESPONSE.md</code> with the root causes, fixes, regression cases,
 and exact test result. Work only in this directory.</p>
-</div></div><div class="file" id="file-4-2" hidden><p class="path mono">grok-4.7/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
+</div></div><div class="file" id="file-3-2" hidden><p class="path mono">grok-4.7/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
 
 from ttl_cache import TTLCache
 
@@ -1704,7 +1407,7 @@ class TTLCacheTests(unittest.TestCase):
 if __name__ == &quot;__main__&quot;:
     unittest.main()
 
-</code></pre></div><div class="file" id="file-4-3" hidden><p class="path mono">grok-4.7/02-bug-fixing/ttl_cache.py</p><pre><code>import time
+</code></pre></div><div class="file" id="file-3-3" hidden><p class="path mono">grok-4.7/02-bug-fixing/ttl_cache.py</p><pre><code>import time
 from collections import OrderedDict
 
 
@@ -1755,14 +1458,14 @@ class TTLCache:
         ]
         for key in expired:
             del self._items[key]
-</code></pre></div></section></div><div role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">9.75 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
-        <p>Correct implementation that also purges in <strong>len</strong> (an allowed choice). Thorough root-cause table. The suite kills every original and extra mutant, but it includes test_len_excludes_expired, which pins len() semantics the brief never specifies, so it fails every other correct implementation.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 traces</li><li>Strongest single test for purge: expired MRU entry with live LRU (kills M6, M7, X3)</li><li>Clean test that poisons the time module to prove only the injected clock is used</li></ul></div><div><h4>Weaknesses</h4><ul><li>test_len_excludes_expired asserts unspecified behavior; 9 correct implementations fail it in cross-tests, which makes the suite a poor regression contract</li><li><strong>len</strong> mutates state (minor)</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>Cross-tests: B suite -&gt; A,C,D,F,G,H,I,J,K each fail only test_len_excludes_expired</li><li>With that test excluded, B suite kills all 19 mutants</li><li>fuzz.py -&gt; mismatches 0; hidden 6/6 pass; own 25 OK</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 25 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=15, errors=8; mimo: failures=1; Sonnet 5.5: failures=1; Fable 5.1: pass; Opus 5.5: failures=1; muse: failures=1; GPT-6 Luna: failures=1; GPT-6.1 Sol: failures=1; GPT-6 Astra: failures=1; Grok 4.7: failures=1; MiniMax M3.1 Flash: failures=3; MiniMax M3: failures=1</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: pass; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
-      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="5-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="5-1" aria-selected="false">TASK.md</button><button role="tab" data-file="5-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="5-3" aria-selected="false">ttl_cache.py</button></div>
-        <div class="file" id="file-5-0" ><p class="path mono">fable-5.1/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Task 02 — TTL/LRU cache bug fix</h1>
+</code></pre></div></section></div><div role="tabpanel" id="panel-4" aria-labelledby="tab-4" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">9.75 / 10</span> <span class="muted small">graded blind as submission H</span></h3>
+        <p>Correct and very thoroughly documented. It also changes <strong>len</strong> to purge expired entries, which the task did not ask for. Its suite kills all mutants, but test_len_excludes_expired pins that extra len semantics and fails against every other correct implementation. RESPONSE also says the original was kept outside the task directory for comparison.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Hidden 6/6, probes 22/22</li><li>Excluding the len test, the suite still kills 16/16 mutants</li><li>Patches ttl_cache.time so that wall-clock use raises, a strong injected-clock test</li></ul></div><div><h4>Weaknesses</h4><ul><li>test_len_excludes_expired (H/test_ttl_cache.py:239) asserts behaviour beyond the contract and fails on 11 of the other 11 implementations</li><li>RESPONSE: &#39;kept outside this directory&#39;, a minor breach of the work-only-here rule</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>Cross-test: the H suite fails on every other implementation (failures=1, test_len_excludes_expired)</li><li>My reference fix also fails only that test; mutation run excluding it: all 16 mutants produce failures</li><li>H/ttl_cache.py:62-64 <strong>len</strong> purges</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 25 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=15, errors=8; mimo: failures=1; Sonnet 5.5: failures=1; Fable 5.1: pass; Opus 5.5: failures=1; muse: failures=1; GPT-6 Luna: failures=1; GPT-6.1 Sol: failures=1; GPT-6 Astra: failures=1; Grok 4.7: failures=1; MiniMax M3.1 Flash: failures=3; MiniMax M3: failures=1; Haiku 5.5: failures=3</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: pass; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="4-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="4-1" aria-selected="false">TASK.md</button><button role="tab" data-file="4-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="4-3" aria-selected="false">ttl_cache.py</button></div>
+        <div class="file" id="file-4-0" ><p class="path mono">fable-5.1/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Task 02 — TTL/LRU cache bug fix</h1>
 <p>Files changed (all inside this directory):</p>
 <ul>
 <li><code>ttl_cache.py</code> — fixed implementation, public API unchanged
@@ -2035,7 +1738,7 @@ OK
 <code>25 passed, 10 subtests passed in 0.05s</code>, exit status 0.</p>
 <p>For comparison, the same 25-test suite run against a copy of the original <code>ttl_cache.py</code>
 (kept outside this directory) reports <code>FAILED (failures=15, errors=8)</code>.</p>
-</div></div><div class="file" id="file-5-1" hidden><p class="path mono">fable-5.1/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+</div></div><div class="file" id="file-4-1" hidden><p class="path mono">fable-5.1/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
 <p><code>ttl_cache.py</code> is a deliberately faulty implementation. Fix it without changing
 the public API and add regression tests.</p>
 <p>Required behavior:</p>
@@ -2051,7 +1754,7 @@ and <code>None</code>; it raises <code>KeyError</code> only for missing or expir
 </ul>
 <p>Run the tests. Write <code>RESPONSE.md</code> with the root causes, fixes, regression cases,
 and exact test result. Work only in this directory.</p>
-</div></div><div class="file" id="file-5-2" hidden><p class="path mono">fable-5.1/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
+</div></div><div class="file" id="file-4-2" hidden><p class="path mono">fable-5.1/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
 from unittest import mock
 
 import ttl_cache
@@ -2326,7 +2029,7 @@ class TTLCacheTests(unittest.TestCase):
 
 if __name__ == &quot;__main__&quot;:
     unittest.main()
-</code></pre></div><div class="file" id="file-5-3" hidden><p class="path mono">fable-5.1/02-bug-fixing/ttl_cache.py</p><pre><code>import time
+</code></pre></div><div class="file" id="file-4-3" hidden><p class="path mono">fable-5.1/02-bug-fixing/ttl_cache.py</p><pre><code>import time
 from collections import OrderedDict
 
 
@@ -2390,12 +2093,309 @@ class TTLCache:
     def __len__(self):
         self._purge_expired(self.clock())
         return len(self._items)
+</code></pre></div></section></div><div role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">9.75 / 10</span> <span class="muted small">graded blind as submission B</span></h3>
+        <p>Fix is the same as A&#39;s and correct on every probe. Its 18 tests catch everything except an expired get that leaves the entry in place.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Hidden 6/6, probes 22/22</li><li>Comment explains the full-scan purge (LRU order differs from expiry order)</li><li>Suite killed 15/16 mutants, including purge-front-only and put-existing-evicts</li></ul></div><div><h4>Weaknesses</h4><ul><li>No test asserts that an expired get removes the entry (the expired_get_no_delete mutant survived), and that is the behaviour E and L got wrong</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>mut/run.sh B: killed=15 SURVIVED: expired_get_no_delete</li><li>probe.py B: 0 failures</li><li>Cross-test: every implementation, E and L included, passes B&#39;s suite</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 18 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=16, errors=6; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass; Haiku 5.5: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="5-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="5-1" aria-selected="false">TASK.md</button><button role="tab" data-file="5-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="5-3" aria-selected="false">ttl_cache.py</button></div>
+        <div class="file" id="file-5-0" ><p class="path mono">gpt-6-astra/02-bug-fixing/RESPONSE.md</p><div class="prose"><p>Completed every deliverable: fixed <code>ttl_cache.py</code> without changing the public
+API, expanded <code>test_ttl_cache.py</code> from 3 to 18 tests, ran the tests locally, and
+documented the results here. No network access was used.</p>
+<p>Root causes and fixes:</p>
+<ul>
+<li><code>put</code> used <code>time.time()</code> while <code>get</code> used the injected monotonic clock, making
+entry ages inconsistent. Both operations now use the injected clock; each
+<code>put</code> takes one timestamp for expiration cleanup and the stored value.</li>
+<li><code>get</code> treated falsy values as absent. It now relies on dictionary lookup for
+missing keys and returns stored values unchanged, including <code>0</code>, <code>False</code>, and
+<code>None</code>.</li>
+<li>Expiration used <code>age &gt; ttl_seconds</code>. It now uses <code>age &gt;= ttl_seconds</code>, and an
+expired lookup removes the entry before raising <code>KeyError</code>.</li>
+<li>Successful reads did not refresh recency. They now move the key to the end of
+the ordered dictionary while preserving its insertion/update timestamp.</li>
+<li><code>put</code> evicted before checking whether it was updating an existing key, and
+assignment alone did not refresh recency. It now stores the new value and
+timestamp, moves the key to the most recent position, and evicts only when
+the resulting size exceeds capacity.</li>
+<li>Capacity enforcement ignored expired entries. Every <code>put</code> now removes all
+expired entries before enforcing capacity, scanning the entire dictionary
+because LRU order can differ from expiration order. Any remaining eviction
+removes the least recently used live entry.</li>
+<li>Constructor arguments were not validated. <code>max_size &lt; 1</code> and
+<code>ttl_seconds &lt;= 0</code> now raise <code>ValueError</code>.</li>
+</ul>
+<p>Regression cases use an injected, manually advanced clock without sleeping:</p>
+<ul>
+<li>Normal and falsy value round trips; missing-key errors.</li>
+<li>Reads just before, exactly at, and after the TTL boundary.</li>
+<li>Successful reads refresh LRU recency without extending TTL.</li>
+<li>Updates replace values, reset TTL, refresh recency, and preserve other entries
+when the cache is full; expired keys can be inserted again with a fresh TTL.</li>
+<li>Capacity eviction with and without reads, including a one-entry cache.</li>
+<li>An expired most recently used entry is removed before a live least recently
+used entry; all expired entries are purged even below capacity.</li>
+<li>Zero, negative, and sub-one capacities; zero and negative TTLs.</li>
+</ul>
+<p>The original suite reproduced two failures out of three tests before the fix.
+The expanded suite also ran against the faulty implementation and reported
+<code>FAILED (failures=16, errors=6)</code> across 18 test methods, including subtest results.</p>
+<p>Final command, run from this directory:</p>
+<pre><code class="language-sh">python3 -m unittest discover -s . -p &#39;test_*.py&#39; -v
+</code></pre>
+<p>Exact final test summary:</p>
+<pre><code class="language-text">----------------------------------------------------------------------
+Ran 18 tests in 0.000s
+
+OK
+</code></pre>
+<p>Exit code: <code>0</code>. Every test passed.</p>
+<p>Exact model ID: <code>gpt-6-astra</code>.</p>
+</div></div><div class="file" id="file-5-1" hidden><p class="path mono">gpt-6-astra/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+<p><code>ttl_cache.py</code> is a deliberately faulty implementation. Fix it without changing
+the public API and add regression tests.</p>
+<p>Required behavior:</p>
+<ul>
+<li><code>get(key)</code> returns the stored value, including falsy values such as <code>0</code>, <code>False</code>
+and <code>None</code>; it raises <code>KeyError</code> only for missing or expired entries.</li>
+<li>TTL uses the injected monotonic <code>clock</code> and expires at <code>age &gt;= ttl_seconds</code>.</li>
+<li>A successful <code>get</code> refreshes LRU recency but does not refresh TTL.</li>
+<li><code>put</code> updates an existing key&#39;s value, timestamp and recency.</li>
+<li>Before enforcing capacity, expired entries are removed.</li>
+<li>Capacity eviction removes the least recently used live entry.</li>
+<li><code>max_size &lt; 1</code> and <code>ttl_seconds &lt;= 0</code> raise <code>ValueError</code>.</li>
+</ul>
+<p>Run the tests. Write <code>RESPONSE.md</code> with the root causes, fixes, regression cases,
+and exact test result. Work only in this directory.</p>
+</div></div><div class="file" id="file-5-2" hidden><p class="path mono">gpt-6-astra/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
+
+from ttl_cache import TTLCache
+
+
+class Clock:
+    def __init__(self):
+        self.now = 100.0
+
+    def __call__(self):
+        return self.now
+
+
+class TTLCacheTests(unittest.TestCase):
+    def setUp(self):
+        self.clock = Clock()
+
+    def test_round_trip(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+
+    def test_falsy_values_round_trip(self):
+        for value in (0, False, None, &quot;&quot;, [], {}):
+            with self.subTest(value=value):
+                cache = TTLCache(1, 10, self.clock)
+                cache.put(&quot;a&quot;, value)
+                self.assertIs(cache.get(&quot;a&quot;), value)
+
+    def test_missing_key_raises_key_error(self):
+        cache = TTLCache(2, 10, self.clock)
+        with self.assertRaises(KeyError) as error:
+            cache.get(&quot;missing&quot;)
+        self.assertEqual(error.exception.args, (&quot;missing&quot;,))
+
+    def test_live_just_before_expiration(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 9.999
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+
+    def test_expires_at_boundary(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 10
+        with self.assertRaises(KeyError) as error:
+            cache.get(&quot;a&quot;)
+        self.assertEqual(error.exception.args, (&quot;a&quot;,))
+
+    def test_expires_after_boundary(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 11
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_get_does_not_refresh_ttl(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 6
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.clock.now += 4
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_get_refreshes_lru(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.get(&quot;a&quot;)
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;b&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+        self.assertEqual(len(cache), 2)
+
+    def test_put_updates_value_and_timestamp(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;old&quot;)
+        self.clock.now += 6
+        cache.put(&quot;a&quot;, &quot;new&quot;)
+        self.assertEqual(len(cache), 1)
+        self.clock.now += 4
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;new&quot;)
+        self.clock.now += 6
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_put_existing_key_at_capacity_preserves_other_entries(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.put(&quot;b&quot;, &quot;updated&quot;)
+        self.assertEqual(len(cache), 2)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;b&quot;), &quot;updated&quot;)
+
+    def test_put_refreshes_lru(self):
+        cache = TTLCache(3, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.put(&quot;a&quot;, &quot;updated&quot;)
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        cache.put(&quot;d&quot;, &quot;D&quot;)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;b&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;updated&quot;)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+        self.assertEqual(cache.get(&quot;d&quot;), &quot;D&quot;)
+
+    def test_capacity_evicts_oldest_without_reads(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+        self.assertEqual(cache.get(&quot;b&quot;), &quot;B&quot;)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+
+    def test_expired_mru_is_removed_before_live_lru(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;expired&quot;, &quot;old&quot;)
+        self.clock.now += 6
+        cache.put(&quot;live&quot;, &quot;keep&quot;)
+        cache.get(&quot;expired&quot;)
+        self.clock.now += 4
+        cache.put(&quot;new&quot;, &quot;new&quot;)
+        self.assertEqual(cache.get(&quot;live&quot;), &quot;keep&quot;)
+        self.assertEqual(cache.get(&quot;new&quot;), &quot;new&quot;)
+        self.assertEqual(len(cache), 2)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;expired&quot;)
+
+    def test_put_removes_all_expired_entries_below_capacity(self):
+        cache = TTLCache(4, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        self.clock.now += 10
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        self.assertEqual(len(cache), 1)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+        for key in (&quot;a&quot;, &quot;b&quot;):
+            with self.subTest(key=key), self.assertRaises(KeyError):
+                cache.get(key)
+
+    def test_put_replaces_expired_key_with_fresh_ttl(self):
+        cache = TTLCache(1, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;old&quot;)
+        self.clock.now += 10
+        cache.put(&quot;a&quot;, &quot;new&quot;)
+        self.clock.now += 9
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;new&quot;)
+        self.assertEqual(len(cache), 1)
+        self.clock.now += 1
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_single_entry_capacity(self):
+        cache = TTLCache(1, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        self.assertEqual(len(cache), 1)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+        self.assertEqual(cache.get(&quot;b&quot;), &quot;B&quot;)
+
+    def test_rejects_invalid_capacity(self):
+        for max_size in (0, -1, -10, 0.5):
+            with self.subTest(max_size=max_size), self.assertRaises(ValueError):
+                TTLCache(max_size, 10, self.clock)
+
+    def test_rejects_nonpositive_ttl(self):
+        for ttl_seconds in (0, -1, -0.5):
+            with self.subTest(ttl_seconds=ttl_seconds), self.assertRaises(ValueError):
+                TTLCache(2, ttl_seconds, self.clock)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre></div><div class="file" id="file-5-3" hidden><p class="path mono">gpt-6-astra/02-bug-fixing/ttl_cache.py</p><pre><code>import time
+from collections import OrderedDict
+
+
+class TTLCache:
+    def __init__(self, max_size, ttl_seconds, clock=time.monotonic):
+        if max_size &lt; 1:
+            raise ValueError(&quot;max_size must be at least 1&quot;)
+        if ttl_seconds &lt;= 0:
+            raise ValueError(&quot;ttl_seconds must be positive&quot;)
+        self.max_size = max_size
+        self.ttl_seconds = ttl_seconds
+        self.clock = clock
+        self._items = OrderedDict()
+
+    def put(self, key, value):
+        now = self.clock()
+        # LRU order can differ from expiration order after reads or updates.
+        expired_keys = [
+            stored_key
+            for stored_key, (_, created) in self._items.items()
+            if now - created &gt;= self.ttl_seconds
+        ]
+        for expired_key in expired_keys:
+            del self._items[expired_key]
+
+        self._items[key] = (value, now)
+        self._items.move_to_end(key)
+        if len(self._items) &gt; self.max_size:
+            self._items.popitem(last=False)
+
+    def get(self, key):
+        value, created = self._items[key]
+        if self.clock() - created &gt;= self.ttl_seconds:
+            del self._items[key]
+            raise KeyError(key)
+        self._items.move_to_end(key)
+        return value
+
+    def __len__(self):
+        return len(self._items)
 </code></pre></div></section></div><div role="tabpanel" id="panel-6" aria-labelledby="tab-6" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">9.5 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
-        <p>Correct implementation (two clock reads per put, harmless with a monotonic clock). Diagnosis lists all eight root causes. Regression tests in a separate file miss the update-evicts-at-capacity original bug, because the &#39;does not evict&#39; test updates the LRU key, which the buggy code also handled.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 traces</li><li>Clear root-cause list with update-recency and update-eviction separated</li><li>Catches M7 via len==1 after a purge</li></ul></div><div><h4>Weaknesses</h4><ul><li>test_put_existing_key_at_capacity_does_not_evict is vacuous: it updates the LRU key &#39;a&#39;, so M6 passes</li><li>Misses front-only purge (X3) and never constructs max_size=1 (X10 survives)</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>Mutant matrix: C suite passes on M6, X3, X10 (and X6, not required)</li><li>fuzz.py -&gt; mismatches 0; clock called 7 times for 3 puts + 1 get</li><li>Hidden 6/6; own 16 OK</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 16 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=8, errors=2; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
+        <h3>Evaluation <span class="pill big">9.25 / 10</span> <span class="muted small">graded blind as submission F</span></h3>
+        <p>Correct, compact fix. Put reads the clock twice (once for the purge, once for the timestamp), which does no harm with a monotonic clock. Regression tests are in a separate file and miss the expired-MRU purge case, put-existing eviction on the MRU key, and expired-get removal.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Hidden 6/6, probes pass except the stylistic single-clock-read check</li><li>Root-cause list covers all 8 issues</li></ul></div><div><h4>Weaknesses</h4><ul><li>Suite survived purge_front_only, put_existing_evicts and expired_get_no_delete (13/16)</li><li>put() calls self.clock() twice (lines 20 and 30)</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>probe.py F: clock_calls_put calls=2 (only deviation)</li><li>mut/run.sh F: killed=13</li><li>Cross-test: every implementation, E and L included, passes F&#39;s suite</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 16 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=8, errors=2; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass; Haiku 5.5: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="6-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="6-1" aria-selected="false">TASK.md</button><button role="tab" data-file="6-2" aria-selected="false">test_ttl_cache_regression.py</button><button role="tab" data-file="6-3" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="6-4" aria-selected="false">ttl_cache.py</button></div>
         <div class="file" id="file-6-0" ><p class="path mono">mimo/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Response — Task 02: TTL/LRU cache bug fixes</h1>
 <h2>Root causes</h2>
@@ -2731,11 +2731,11 @@ class TTLCache:
     def __len__(self):
         return len(self._items)
 </code></pre></div></section></div><div role="tabpanel" id="panel-7" aria-labelledby="tab-7" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">9 / 10</span> <span class="muted small">graded blind as submission K</span></h3>
-        <p>Correct observable behavior. Put on an existing key skips the purge, which only affects len(). The diagnosis is complete and accurate. The regression tests look thorough but miss three original bugs. Both purge tests put the expired entry at the LRU position, the update-recency test calls get before inserting, and the no-evict test updates the LRU key.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 traces</li><li>Clear 8-item root-cause list</li></ul></div><div><h4>Weaknesses</h4><ul><li>test_expired_purged_before_capacity_eviction and test_expired_entry_does_not_cause_live_eviction both pass without a purge</li><li>M5 masked by get(&#39;a&#39;) before put(&#39;c&#39;); M6 masked by updating the LRU key</li><li>No max_size=1 or front-only purge coverage</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>Mutant matrix: K suite passes on M5, M6, M7, X3, X10 (and X6)</li><li>fuzz.py -&gt; mismatches 0; hidden 6/6; own 14 OK</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 14 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=6, errors=1; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
+        <h3>Evaluation <span class="pill big">9 / 10</span> <span class="muted small">graded blind as submission C</span></h3>
+        <p>Implementation is correct. It skips the purge when updating an existing key, which is harmless because no capacity check happens on that path. The tests are thin on the hard cases: the only expired-entry capacity test has the expired entry at the LRU end, so removing the purge entirely goes unnoticed.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Hidden 6/6, probes 22/22</li><li>Clear root-cause list of 8 items, including the lingering expired entry</li></ul></div><div><h4>Weaknesses</h4><ul><li>5 of 16 mutants survived: expired_get_no_delete, no_purge, purge_front_only, put_existing_evicts, put_no_recency</li><li>test_put_updates_value_timestamp_and_recency calls get(&#39;a&#39;) before put(&#39;c&#39;), so the get refresh hides a missing put recency refresh</li><li>test_put_existing_key_does_not_evict updates the LRU key, so an unconditional evict-LRU bug goes unnoticed</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>mut/run.sh C: killed=11</li><li>C/test_ttl_cache.py test_expired_entry_does_not_cause_live_eviction: expired &#39;a&#39; is the LRU entry, so plain LRU eviction gives the same result</li><li>probe.py C: 0 failures</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 14 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=6, errors=1; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass; Haiku 5.5: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="7-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="7-1" aria-selected="false">TASK.md</button><button role="tab" data-file="7-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="7-3" aria-selected="false">ttl_cache.py</button></div>
         <div class="file" id="file-7-0" ><p class="path mono">muse/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Response — Task 02: TTL/LRU cache bug fix</h1>
 <p>Public API unchanged: <code>TTLCache(max_size, ttl_seconds, clock)</code>, <code>put</code>, <code>get</code>, <code>__len__</code>.</p>
@@ -3017,13 +3017,479 @@ class TTLCache:
     def __len__(self):
         return len(self._items)
 </code></pre></div></section></div><div role="tabpanel" id="panel-8" aria-labelledby="tab-8" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">8.75 / 10</span> <span class="muted small">graded blind as submission G</span></h3>
-        <p>The implementation is correct. The diagnosis is compact and leaves out that assigning to an existing OrderedDict key does not refresh recency. With only 9 tests, the suite misses three of the original bugs: update recency, update-evicts-at-capacity and purge-before-capacity. The purge test passes without any purge because the expired entry is already the LRU.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 traces</li><li>Covers falsy, boundary, get-not-refresh-TTL and validation</li></ul></div><div><h4>Weaknesses</h4><ul><li>test_put_removes_expired_entries_before_capacity_eviction passes on the no-purge mutant</li><li>Update-recency test calls get(&#39;a&#39;) before the insert, which masks M5</li><li>No max_size=1 or front-only purge coverage</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>Mutant matrix: G suite passes on M5, M6, M7, X3, X10 (and X6)</li><li>fuzz.py -&gt; mismatches 0; hidden 6/6; own 9 OK</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 9 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=8, errors=1; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
+        <h3>Evaluation <span class="pill big">8.75 / 10</span> <span class="muted small">graded blind as submission L</span></h3>
+        <p>Thorough, honest RESPONSE with a per-test original-vs-fixed table and in-memory mutation checks. It chooses not to delete expired entries on get, which fails the hidden test_expiry_boundary_removes_entry and leaves len() overcounting. The choice is disclosed, but the consequence is the same as E&#39;s.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Diagnosis complete and accurate; open points (len semantics, O(n) purge) are flagged</li><li>Suite killed 15/16 mutants, including purge and put-existing at capacity</li></ul></div><div><h4>Weaknesses</h4><ul><li>L/ttl_cache.py:28-29 raises on expiry without deleting the entry</li><li>Fails hidden contract test test_expiry_boundary_removes_entry (5/6)</li><li>No test for expired-get removal (expired_get_no_delete survived)</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>OBJECTIVE_CHECKS: hidden FAILURES (1 of 6)</li><li>probe.py L: expired_get_removes FAIL</li><li>Cross-test: L fails the D, I, A, G and K suites on removal tests and 3 of H&#39;s tests</li><li>mut/run.sh L: killed=15</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: failures</li><li>Own tests: Ran 18 tests in 0.001s / OK</li><li>This model&#39;s tests against each implementation — original: failures=11, errors=8; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass; Haiku 5.5: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=1; Fable 5.1&#39;s tests: failures=3; Opus 5.5&#39;s tests: failures=1; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: failures=1; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: failures=1; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: failures=1; Haiku 5.5&#39;s tests: pass</li></ul>
       </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="8-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="8-1" aria-selected="false">TASK.md</button><button role="tab" data-file="8-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="8-3" aria-selected="false">ttl_cache.py</button></div>
-        <div class="file" id="file-8-0" ><p class="path mono">gpt-6-luna/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>TTL/LRU cache fix</h1>
+        <div class="file" id="file-8-0" ><p class="path mono">haiku-5.5/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Response: TTL/LRU cache bug fixes</h1>
+<p>Files changed: <code>ttl_cache.py</code> (fixed), <code>test_ttl_cache.py</code> (15 regression tests added;
+the 3 original tests are unchanged). The public API (<code>TTLCache(max_size, ttl_seconds, clock)</code>,
+<code>put</code>, <code>get</code>, <code>__len__</code>) is unchanged.</p>
+<h2>Root causes</h2>
+<ol>
+<li><strong>Wall clock used for timestamps (<code>put</code>).</strong> <code>put</code> stored <code>time.time()</code> while <code>get</code>
+measured age with the injected <code>self.clock()</code>. Mixing the two clocks produces a
+hugely negative age, so entries never expire. This also ignored the injected clock.</li>
+<li><strong>Falsy values reported as missing (<code>get</code>).</strong> <code>if not value: raise KeyError</code> treated
+<code>0</code>, <code>False</code>, <code>None</code>, <code>&quot;&quot;</code>, <code>[]</code>, <code>{}</code> as absent.</li>
+<li><strong>Off-by-one at the TTL boundary (<code>get</code>).</strong> The check was <code>age &gt; ttl_seconds</code>, so an
+entry was still live at <code>age == ttl_seconds</code>. The spec requires <code>age &gt;= ttl_seconds</code>.</li>
+<li><strong>Reads did not refresh recency (<code>get</code>).</strong> No <code>move_to_end</code>, so eviction was
+effectively insertion-order (FIFO), not LRU.</li>
+<li><strong>Updating an existing key could evict another entry (<code>put</code>).</strong> The capacity check ran
+before checking whether the key already existed. At capacity, <code>put(&quot;b&quot;, ...)</code> on an
+existing <code>b</code> evicted the oldest entry. Also, assigning to an existing <code>OrderedDict</code> key
+keeps its position, so <code>put</code> never refreshed recency.</li>
+<li><strong>Expired entries were never purged (<code>put</code>).</strong> They kept occupying capacity slots, so
+live entries could be evicted while dead ones remained. Once recency is fixed, this
+violates &quot;evict the LRU <em>live</em> entry&quot;.</li>
+<li><strong>No argument validation (<code>__init__</code>).</strong> <code>max_size=0</code> made <code>put</code> call <code>popitem</code> on an
+empty dict and raise an unrelated <code>KeyError</code>. <code>ttl_seconds &lt;= 0</code> was accepted silently.</li>
+</ol>
+<h2>Fixes</h2>
+<table>
+<thead>
+<tr>
+<th>Root cause</th>
+<th>Fix in <code>ttl_cache.py</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><code>put</code> stores <code>self.clock()</code>; all age checks use the same clock.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>get</code> returns the stored value whenever the entry exists and is live; the falsy check is removed.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>_is_expired</code> uses <code>now - created &gt;= self.ttl_seconds</code>.</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>get</code> calls <code>move_to_end(key)</code> after the liveness check; it does not touch the timestamp.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>put</code> checks <code>key in self._items</code> first: an existing key is moved to the MRU end and overwritten, with no eviction. Only a new key triggers capacity eviction.</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>put</code> calls <code>_purge_expired(now)</code> before any capacity decision.</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>__init__</code> raises <code>ValueError</code> for <code>max_size &lt; 1</code> and <code>ttl_seconds &lt;= 0</code>.</td>
+</tr>
+</tbody></table>
+<p><code>put</code> order: purge expired → if existing key, move to MRU → else evict LRU while full →
+store <code>(value, now)</code>. Because the purge runs first, every eviction candidate is live.</p>
+<h2>Regression cases</h2>
+<p>Result on the <strong>original</strong> code (<code>TTLCache</code> before the fix), using the new test file:</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Covers</th>
+<th>Original code</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>test_round_trip</code> (existing)</td>
+<td>basic put/get</td>
+<td>pass</td>
+</tr>
+<tr>
+<td><code>test_expires_at_boundary</code> (existing)</td>
+<td>root cause 1, 3</td>
+<td><strong>fail</strong></td>
+</tr>
+<tr>
+<td><code>test_get_refreshes_lru</code> (existing)</td>
+<td>root cause 4</td>
+<td><strong>fail</strong></td>
+</tr>
+<tr>
+<td><code>test_get_missing_key_raises_key_error</code></td>
+<td><code>KeyError</code> for missing key</td>
+<td>pass (guard)</td>
+</tr>
+<tr>
+<td><code>test_get_returns_falsy_values</code></td>
+<td>root cause 2 (0, 0.0, False, None, &quot;&quot;, [], {})</td>
+<td><strong>error</strong> (7 subtests)</td>
+</tr>
+<tr>
+<td><code>test_expired_falsy_value_raises_key_error</code></td>
+<td>expiry still applies to falsy values</td>
+<td>pass (guard)</td>
+</tr>
+<tr>
+<td><code>test_ttl_uses_injected_clock</code></td>
+<td>root cause 1</td>
+<td><strong>fail</strong></td>
+</tr>
+<tr>
+<td><code>test_get_does_not_refresh_ttl</code></td>
+<td><code>get</code> leaves TTL unchanged</td>
+<td><strong>fail</strong></td>
+</tr>
+<tr>
+<td><code>test_put_existing_key_updates_value</code></td>
+<td><code>put</code> overwrites value</td>
+<td>pass (guard)</td>
+</tr>
+<tr>
+<td><code>test_put_existing_key_refreshes_timestamp</code></td>
+<td><code>put</code> resets age</td>
+<td><strong>fail</strong></td>
+</tr>
+<tr>
+<td><code>test_put_existing_key_refreshes_recency</code></td>
+<td><code>put</code> marks key MRU</td>
+<td>pass (see note)</td>
+</tr>
+<tr>
+<td><code>test_put_existing_key_at_capacity_does_not_evict_other_keys</code></td>
+<td>root cause 5</td>
+<td><strong>error</strong></td>
+</tr>
+<tr>
+<td><code>test_expired_entries_are_purged_before_capacity_eviction</code></td>
+<td>root cause 6</td>
+<td>pass (see note)</td>
+</tr>
+<tr>
+<td><code>test_capacity_evicts_least_recently_used_live_entry</code></td>
+<td>LRU eviction order</td>
+<td><strong>fail</strong></td>
+</tr>
+<tr>
+<td><code>test_max_size_one_keeps_only_latest_entry</code></td>
+<td>boundary <code>max_size=1</code></td>
+<td>pass (guard)</td>
+</tr>
+<tr>
+<td><code>test_rejects_max_size_below_one</code></td>
+<td>root cause 7 (0, -1)</td>
+<td><strong>fail</strong> (2 subtests)</td>
+</tr>
+<tr>
+<td><code>test_rejects_non_positive_ttl</code></td>
+<td>root cause 7 (0, -1, -0.5)</td>
+<td><strong>fail</strong> (3 subtests)</td>
+</tr>
+<tr>
+<td><code>test_accepts_minimal_valid_arguments</code></td>
+<td>smallest valid config still works</td>
+<td>pass (guard)</td>
+</tr>
+</tbody></table>
+<p>&quot;Guard&quot; means the test pins correct behavior that the original already had, so it protects
+against a future regression rather than reproducing a bug.</p>
+<p><strong>Notes on tests that pass on the original.</strong> <code>test_expired_entries_are_purged_before_capacity_eviction</code>
+and <code>test_put_existing_key_refreshes_recency</code> pass on the original only by coincidence: the
+original never refreshes recency, so the expired entry happens to be the oldest. They are
+meaningful for the fixed code, and I checked them against deliberately broken variants
+(below).</p>
+<p><strong>Mutation checks.</strong> I ran the new tests against three in-memory variants of the fixed class
+(nothing was written to disk):</p>
+<ul>
+<li><code>put</code> without the expired purge → <code>test_expired_entries_are_purged_before_capacity_eviction</code> errors (the live entry is evicted).</li>
+<li><code>get</code> that also refreshes the TTL → <code>test_get_does_not_refresh_ttl</code>, <code>test_put_existing_key_refreshes_timestamp</code>, <code>test_ttl_uses_injected_clock</code> fail, and the purge test errors.</li>
+<li><code>put</code> on an existing key that does not move it to MRU → <code>test_put_existing_key_refreshes_recency</code> fails.</li>
+</ul>
+<h2>Test results</h2>
+<p>Commands run from this directory: <code>python3 -B -m unittest -v</code></p>
+<p>Baseline, original code and original tests:</p>
+<pre><code>Ran 3 tests in 0.003s
+
+FAILED (failures=2)
+</code></pre>
+<p>(<code>test_expires_at_boundary</code> and <code>test_get_refreshes_lru</code> failed.)</p>
+<p>New tests against the original code: <code>FAILED (failures=11, errors=8)</code> across 18 test methods
+(subtests count separately).</p>
+<p>Final, fixed code and all 18 tests:</p>
+<pre><code>test_accepts_minimal_valid_arguments (test_ttl_cache.TTLCacheTests.test_accepts_minimal_valid_arguments) ... ok
+test_capacity_evicts_least_recently_used_live_entry (test_ttl_cache.TTLCacheTests.test_capacity_evicts_least_recently_used_live_entry) ... ok
+test_expired_entries_are_purged_before_capacity_eviction (test_ttl_cache.TTLCacheTests.test_expired_entries_are_purged_before_capacity_eviction) ... ok
+test_expired_falsy_value_raises_key_error (test_ttl_cache.TTLCacheTests.test_expired_falsy_value_raises_key_error) ... ok
+test_expires_at_boundary (test_ttl_cache.TTLCacheTests.test_expires_at_boundary) ... ok
+test_get_does_not_refresh_ttl (test_ttl_cache.TTLCacheTests.test_get_does_not_refresh_ttl) ... ok
+test_get_missing_key_raises_key_error (test_ttl_cache.TTLCacheTests.test_get_missing_key_raises_key_error) ... ok
+test_get_refreshes_lru (test_ttl_cache.TTLCacheTests.test_get_refreshes_lru) ... ok
+test_get_returns_falsy_values (test_ttl_cache.TTLCacheTests.test_get_returns_falsy_values) ... ok
+test_max_size_one_keeps_only_latest_entry (test_ttl_cache.TTLCacheTests.test_max_size_one_keeps_only_latest_entry) ... ok
+test_put_existing_key_at_capacity_does_not_evict_other_keys (test_ttl_cache.TTLCacheTests.test_put_existing_key_at_capacity_does_not_evict_other_keys) ... ok
+test_put_existing_key_refreshes_recency (test_ttl_cache.TTLCacheTests.test_put_existing_key_refreshes_recency) ... ok
+test_put_existing_key_refreshes_timestamp (test_ttl_cache.TTLCacheTests.test_put_existing_key_refreshes_timestamp) ... ok
+test_put_existing_key_updates_value (test_ttl_cache.TTLCacheTests.test_put_existing_key_updates_value) ... ok
+test_rejects_max_size_below_one (test_ttl_cache.TTLCacheTests.test_rejects_max_size_below_one) ... ok
+test_rejects_non_positive_ttl (test_ttl_cache.TTLCacheTests.test_rejects_non_positive_ttl) ... ok
+test_round_trip (test_ttl_cache.TTLCacheTests.test_round_trip) ... ok
+test_ttl_uses_injected_clock (test_ttl_cache.TTLCacheTests.test_ttl_uses_injected_clock) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.003s
+
+OK
+</code></pre>
+<p>Exit code 0.</p>
+<h2>Design decisions and open points</h2>
+<ul>
+<li><strong>Purge on every <code>put</code>, not only when at capacity.</strong> This keeps <code>len()</code> close to the number
+of live entries after each write. The cost is an O(n) scan per <code>put</code>, because recency order
+is not expiry order. That is fine for a small cache; a heap or per-entry expiry index would
+be needed for large ones.</li>
+<li><strong><code>__len__</code> is unchanged</strong> and returns the stored count. Between writes it can include
+expired entries that no <code>put</code> has purged yet. The spec does not define <code>len()</code> for expired
+entries, and changing it would alter the API, so I left it alone. Flagging it in case you want
+<code>len()</code> to count only live entries.</li>
+<li><strong><code>get</code> on an expired key raises <code>KeyError</code> but does not delete the entry.</strong> It is removed on
+the next <code>put</code>.</li>
+<li><strong>Error message text</strong> for the <code>ValueError</code>s was chosen by me; the spec only requires the
+exception type.</li>
+</ul>
+</div></div><div class="file" id="file-8-1" hidden><p class="path mono">haiku-5.5/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+<p><code>ttl_cache.py</code> is a deliberately faulty implementation. Fix it without changing
+the public API and add regression tests.</p>
+<p>Required behavior:</p>
+<ul>
+<li><code>get(key)</code> returns the stored value, including falsy values such as <code>0</code>, <code>False</code>
+and <code>None</code>; it raises <code>KeyError</code> only for missing or expired entries.</li>
+<li>TTL uses the injected monotonic <code>clock</code> and expires at <code>age &gt;= ttl_seconds</code>.</li>
+<li>A successful <code>get</code> refreshes LRU recency but does not refresh TTL.</li>
+<li><code>put</code> updates an existing key&#39;s value, timestamp and recency.</li>
+<li>Before enforcing capacity, expired entries are removed.</li>
+<li>Capacity eviction removes the least recently used live entry.</li>
+<li><code>max_size &lt; 1</code> and <code>ttl_seconds &lt;= 0</code> raise <code>ValueError</code>.</li>
+</ul>
+<p>Run the tests. Write <code>RESPONSE.md</code> with the root causes, fixes, regression cases,
+and exact test result. Work only in this directory.</p>
+</div></div><div class="file" id="file-8-2" hidden><p class="path mono">haiku-5.5/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
+
+from ttl_cache import TTLCache
+
+
+class Clock:
+    def __init__(self):
+        self.now = 100.0
+
+    def __call__(self):
+        return self.now
+
+
+class TTLCacheTests(unittest.TestCase):
+    def setUp(self):
+        self.clock = Clock()
+
+    def test_round_trip(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+
+    def test_expires_at_boundary(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 10
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_get_refreshes_lru(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.get(&quot;a&quot;)
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;b&quot;)
+
+    def test_get_missing_key_raises_key_error(self):
+        cache = TTLCache(2, 10, self.clock)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;missing&quot;)
+
+    def test_get_returns_falsy_values(self):
+        cache = TTLCache(8, 10, self.clock)
+        values = [0, 0.0, False, None, &quot;&quot;, [], {}]
+        for key, value in enumerate(values):
+            cache.put(key, value)
+        for key, value in enumerate(values):
+            with self.subTest(value=value):
+                self.assertIs(cache.get(key), value)
+
+    def test_expired_falsy_value_raises_key_error(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, None)
+        self.clock.now += 10
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_ttl_uses_injected_clock(self):
+        self.clock.now = 0.0
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now = 9.5
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.clock.now = 10.0
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_get_does_not_refresh_ttl(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 6
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.clock.now += 4
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_put_existing_key_updates_value(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;old&quot;)
+        cache.put(&quot;a&quot;, &quot;new&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;new&quot;)
+        self.assertEqual(len(cache), 1)
+
+    def test_put_existing_key_refreshes_timestamp(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.clock.now += 8
+        cache.put(&quot;a&quot;, &quot;A2&quot;)
+        self.clock.now += 8  # 8s since re-put, 16s since first put
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A2&quot;)
+        self.clock.now += 2  # 10s since re-put
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+
+    def test_put_existing_key_refreshes_recency(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.put(&quot;a&quot;, &quot;A2&quot;)  # &quot;a&quot; becomes most recently used
+        cache.put(&quot;c&quot;, &quot;C&quot;)  # must evict &quot;b&quot;, not &quot;a&quot;
+        with self.assertRaises(KeyError):
+            cache.get(&quot;b&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A2&quot;)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+
+    def test_put_existing_key_at_capacity_does_not_evict_other_keys(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.put(&quot;b&quot;, &quot;B2&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;b&quot;), &quot;B2&quot;)
+        self.assertEqual(len(cache), 2)
+
+    def test_expired_entries_are_purged_before_capacity_eviction(self):
+        cache = TTLCache(2, 10, self.clock)
+        self.clock.now = 100.0
+        cache.put(&quot;expired&quot;, &quot;E&quot;)
+        self.clock.now = 105.0
+        cache.put(&quot;live&quot;, &quot;L&quot;)
+        self.clock.now = 109.0
+        self.assertEqual(cache.get(&quot;expired&quot;), &quot;E&quot;)  # now LRU order: live, expired
+        self.clock.now = 110.0  # &quot;expired&quot; is 10s old, &quot;live&quot; is 5s old
+        cache.put(&quot;new&quot;, &quot;N&quot;)  # must drop the expired entry, not &quot;live&quot;
+        self.assertEqual(cache.get(&quot;live&quot;), &quot;L&quot;)
+        self.assertEqual(cache.get(&quot;new&quot;), &quot;N&quot;)
+        self.assertEqual(len(cache), 2)
+
+    def test_capacity_evicts_least_recently_used_live_entry(self):
+        cache = TTLCache(3, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        cache.put(&quot;c&quot;, &quot;C&quot;)
+        cache.get(&quot;a&quot;)  # LRU order: b, c, a
+        cache.put(&quot;d&quot;, &quot;D&quot;)  # evicts &quot;b&quot;
+        with self.assertRaises(KeyError):
+            cache.get(&quot;b&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;c&quot;), &quot;C&quot;)
+        self.assertEqual(cache.get(&quot;d&quot;), &quot;D&quot;)
+
+    def test_max_size_one_keeps_only_latest_entry(self):
+        cache = TTLCache(1, 10, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        cache.put(&quot;b&quot;, &quot;B&quot;)
+        with self.assertRaises(KeyError):
+            cache.get(&quot;a&quot;)
+        self.assertEqual(cache.get(&quot;b&quot;), &quot;B&quot;)
+
+    def test_rejects_max_size_below_one(self):
+        for max_size in (0, -1):
+            with self.subTest(max_size=max_size):
+                with self.assertRaises(ValueError):
+                    TTLCache(max_size, 10, self.clock)
+
+    def test_rejects_non_positive_ttl(self):
+        for ttl_seconds in (0, -1, -0.5):
+            with self.subTest(ttl_seconds=ttl_seconds):
+                with self.assertRaises(ValueError):
+                    TTLCache(2, ttl_seconds, self.clock)
+
+    def test_accepts_minimal_valid_arguments(self):
+        cache = TTLCache(1, 0.001, self.clock)
+        cache.put(&quot;a&quot;, &quot;A&quot;)
+        self.assertEqual(cache.get(&quot;a&quot;), &quot;A&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre></div><div class="file" id="file-8-3" hidden><p class="path mono">haiku-5.5/02-bug-fixing/ttl_cache.py</p><pre><code>import time
+from collections import OrderedDict
+
+
+class TTLCache:
+    def __init__(self, max_size, ttl_seconds, clock=time.monotonic):
+        if max_size &lt; 1:
+            raise ValueError(&quot;max_size must be at least 1&quot;)
+        if ttl_seconds &lt;= 0:
+            raise ValueError(&quot;ttl_seconds must be greater than 0&quot;)
+        self.max_size = max_size
+        self.ttl_seconds = ttl_seconds
+        self.clock = clock
+        self._items = OrderedDict()
+
+    def put(self, key, value):
+        now = self.clock()
+        self._purge_expired(now)
+        if key in self._items:
+            self._items.move_to_end(key)
+        else:
+            while len(self._items) &gt;= self.max_size:
+                self._items.popitem(last=False)
+        self._items[key] = (value, now)
+
+    def get(self, key):
+        value, created = self._items[key]
+        if self._is_expired(created, self.clock()):
+            raise KeyError(key)
+        self._items.move_to_end(key)
+        return value
+
+    def _is_expired(self, created, now):
+        return now - created &gt;= self.ttl_seconds
+
+    def _purge_expired(self, now):
+        expired = [key for key, (_, created) in self._items.items() if self._is_expired(created, now)]
+        for key in expired:
+            del self._items[key]
+
+    def __len__(self):
+        return len(self._items)
+</code></pre></div></section></div><div role="tabpanel" id="panel-9" aria-labelledby="tab-9" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">8.5 / 10</span> <span class="muted small">graded blind as submission J</span></h3>
+        <p>Correct implementation. RESPONSE and tests are the thinnest. Diagnosis is terse and does not mention that put failed to refresh recency for an existing key. The 9 tests miss 5 mutants, including removing the purge entirely.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Hidden 6/6, probes 22/22</li><li>Clean, minimal implementation</li></ul></div><div><h4>Weaknesses</h4><ul><li>Only 9 tests; 5/16 mutants survived (expired_get_no_delete, no_purge, purge_front_only, put_existing_evicts, put_no_recency)</li><li>The put-recency test calls get before the eviction, which hides a missing put recency refresh</li><li>Root causes collapse several bugs into single sentences and omit put recency</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>mut/run.sh J: killed=11</li><li>J/test_ttl_cache.py test_put_removes_expired_entries_before_capacity_eviction: the expired entry is the LRU one, so the no-purge mutant passes</li><li>probe.py J: 0 failures</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 9 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=8, errors=1; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass; Haiku 5.5: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="9-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="9-1" aria-selected="false">TASK.md</button><button role="tab" data-file="9-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="9-3" aria-selected="false">ttl_cache.py</button></div>
+        <div class="file" id="file-9-0" ><p class="path mono">gpt-6-luna/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>TTL/LRU cache fix</h1>
 <h2>Root causes</h2>
 <ul>
 <li><code>put</code> timestamped entries with <code>time.time()</code> instead of the injected monotonic clock, so deterministic clocks and TTL comparisons were inconsistent.</li>
@@ -3064,7 +3530,7 @@ Ran 9 tests in 0.000s
 
 OK
 </code></pre>
-</div></div><div class="file" id="file-8-1" hidden><p class="path mono">gpt-6-luna/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+</div></div><div class="file" id="file-9-1" hidden><p class="path mono">gpt-6-luna/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
 <p><code>ttl_cache.py</code> is a deliberately faulty implementation. Fix it without changing
 the public API and add regression tests.</p>
 <p>Required behavior:</p>
@@ -3080,7 +3546,7 @@ and <code>None</code>; it raises <code>KeyError</code> only for missing or expir
 </ul>
 <p>Run the tests. Write <code>RESPONSE.md</code> with the root causes, fixes, regression cases,
 and exact test result. Work only in this directory.</p>
-</div></div><div class="file" id="file-8-2" hidden><p class="path mono">gpt-6-luna/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
+</div></div><div class="file" id="file-9-2" hidden><p class="path mono">gpt-6-luna/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
 
 from ttl_cache import TTLCache
 
@@ -3184,7 +3650,7 @@ class TTLCacheTests(unittest.TestCase):
 
 if __name__ == &quot;__main__&quot;:
     unittest.main()
-</code></pre></div><div class="file" id="file-8-3" hidden><p class="path mono">gpt-6-luna/02-bug-fixing/ttl_cache.py</p><pre><code>import time
+</code></pre></div><div class="file" id="file-9-3" hidden><p class="path mono">gpt-6-luna/02-bug-fixing/ttl_cache.py</p><pre><code>import time
 from collections import OrderedDict
 
 
@@ -3231,14 +3697,14 @@ class TTLCache:
 
     def __len__(self):
         return len(self._items)
-</code></pre></div></section></div><div role="tabpanel" id="panel-9" aria-labelledby="tab-9" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">8.75 / 10</span> <span class="muted small">graded blind as submission I</span></h3>
-        <p>The implementation is correct but reads the clock once per entry during the purge (harmless with a monotonic clock). The root-cause list skips the put-on-existing-key bugs; the numbering jumps from 4 to 6. The purge regression test never advances the clock (clock.now = 100.0 is the start value), so it does not test expiry, and the suite misses M6, M7, X2, X3 and X10.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 mismatches over 4000 traces</li><li>Tests expired-get removal and update recency</li></ul></div><div><h4>Weaknesses</h4><ul><li>Purge test is broken: the comment says time advances, but it doesn&#39;t; M7 survives</li><li>No test for update not evicting at capacity, or for put refreshing the timestamp (X2 survives)</li><li>Diagnosis omits the update-recency and update-eviction root causes</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>I/test_ttl_cache.py test_put_purges_expired_before_evicting sets clock.now = 100.0 (unchanged)</li><li>Mutant matrix: I suite passes on M6, M7, X2, X3, X10</li><li>fuzz.py -&gt; mismatches 0; hidden 6/6; own 15 OK</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 15 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=7, errors=3; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass</li></ul>
-      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="9-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="9-1" aria-selected="false">TASK.md</button><button role="tab" data-file="9-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="9-3" aria-selected="false">ttl_cache.py</button></div>
-        <div class="file" id="file-9-0" ><p class="path mono">mcode-m3/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+</code></pre></div></section></div><div role="tabpanel" id="panel-10" aria-labelledby="tab-10" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">8.5 / 10</span> <span class="muted small">graded blind as submission K</span></h3>
+        <p>Behaviour is correct on every contract probe. _is_expired reads the clock once per entry, so a put makes N+1 clock calls and judges entries against different instants. The root-cause list skips item 5 and never names the put-existing-key eviction/recency bug, though the code fixes it. Tests miss the purge requirement and the put timestamp refresh.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Hidden 6/6, contract probes pass</li><li>Includes an expired-get removal test</li></ul></div><div><h4>Weaknesses</h4><ul><li>K/ttl_cache.py:16-17 calls self.clock() inside _is_expired, so 5 clock reads for one put on a 4-entry cache</li><li>RESPONSE root causes are numbered 1,2,3,4,6,7,8, with the put-existing bug missing</li><li>4/16 mutants survived: no_purge, purge_front_only, put_existing_evicts, put_no_ts</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>probe.py K: clock_calls_put calls=5</li><li>mut/run.sh K: killed=12</li><li>K&#39;s suite fails on E and L (test_expired_get_removes_entry)</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: all 11 pass</li><li>Own tests: Ran 15 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=7, errors=3; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: failures=1; MiniMax M3: pass; Haiku 5.5: failures=1</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: pass; Fable 5.1&#39;s tests: failures=1; Opus 5.5&#39;s tests: pass; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: pass; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: pass; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: pass; Haiku 5.5&#39;s tests: pass</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="10-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="10-1" aria-selected="false">TASK.md</button><button role="tab" data-file="10-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="10-3" aria-selected="false">ttl_cache.py</button></div>
+        <div class="file" id="file-10-0" ><p class="path mono">mcode-m3/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
 <h2>Root causes in the original <code>ttl_cache.py</code></h2>
 <ol>
 <li><p><strong><code>put</code> ignored the injected clock.</strong> Line 15 recorded timestamps with
@@ -3338,7 +3804,7 @@ Ran 15 tests in 0.000s
 OK
 </code></pre>
 <p>All 15 tests pass (3 original + 12 new regression tests).</p>
-</div></div><div class="file" id="file-9-1" hidden><p class="path mono">mcode-m3/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+</div></div><div class="file" id="file-10-1" hidden><p class="path mono">mcode-m3/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
 <p><code>ttl_cache.py</code> is a deliberately faulty implementation. Fix it without changing
 the public API and add regression tests.</p>
 <p>Required behavior:</p>
@@ -3354,7 +3820,7 @@ and <code>None</code>; it raises <code>KeyError</code> only for missing or expir
 </ul>
 <p>Run the tests. Write <code>RESPONSE.md</code> with the root causes, fixes, regression cases,
 and exact test result. Work only in this directory.</p>
-</div></div><div class="file" id="file-9-2" hidden><p class="path mono">mcode-m3/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
+</div></div><div class="file" id="file-10-2" hidden><p class="path mono">mcode-m3/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
 
 from ttl_cache import TTLCache
 
@@ -3500,7 +3966,7 @@ class TTLCacheTests(unittest.TestCase):
 
 
 if __name__ == &quot;__main__&quot;:
-    unittest.main()</code></pre></div><div class="file" id="file-9-3" hidden><p class="path mono">mcode-m3/02-bug-fixing/ttl_cache.py</p><pre><code>import time
+    unittest.main()</code></pre></div><div class="file" id="file-10-3" hidden><p class="path mono">mcode-m3/02-bug-fixing/ttl_cache.py</p><pre><code>import time
 from collections import OrderedDict
 
 
@@ -3548,14 +4014,14 @@ class TTLCache:
         return value
 
     def __len__(self):
-        return len(self._items)</code></pre></div></section></div><div role="tabpanel" id="panel-10" aria-labelledby="tab-10" hidden><section class="card eval">
-        <h3>Evaluation <span class="pill big">8.25 / 10</span> <span class="muted small">graded blind as submission E</span></h3>
-        <p>Matches the reference on all get/put traces, but an expired get raises without deleting the entry, so dead entries stay in the map and in len() until the next put. That fails the hidden contract test test_expiry_boundary_removes_entry and four other suites&#39; removal tests. The suite misses the update-evicts-at-capacity bug.</p>
-        <div class="two"><div><h4>Strengths</h4><ul><li>0 get/put mismatches over 4000 traces; purge before capacity is correct</li><li>Honest note that some tests pass on the original by accident</li></ul></div><div><h4>Weaknesses</h4><ul><li>Expired get does not remove the entry (hidden contract failure)</li><li>Root cause 4 wording is garbled; the update-recency bug is not named as its own cause</li><li>test_put_on_existing_key_does_not_evict updates the LRU key, so M6 survives; X3 also survives</li></ul></div></div>
-        <details><summary>Evidence the grader checked</summary><ul><li>OBJECTIVE_CHECKS: hidden &#39;FAILURES (1 of 6): test_expiry_boundary_removes_entry&#39;</li><li>Cross-tests: A/D/F/I suites fail E on test_expired_get_removes_entry; J on test_expired_falsy_value_raises_keyerror; B on 3 tests</li><li>Mutant matrix: E suite passes on M6, X3, X6</li><li>g02/fuzz.py: 4000 random traces (max_size 1-5, ttl incl. 2.5, ticks of 0/ttl/ttl-0.5/0.001, falsy values) vs reference model. Mutants (g02/mutants): originals M1 falsy, M2 time.time in put, M3 &#39;&gt;&#39; boundary, M4 get no LRU, M5 put-update no recency, M6 put-update evicts at capacity, M7 no purge, M8/M9 no validation; extras X1 get refreshes TTL, X2 put-update keeps timestamp, X3 front-only purge, X4 ttl=0 accepted, X5 evict MRU, X7 time.monotonic direct, X8 None-only falsy check, X9 put keeps old value, X10 max_size&lt;=1 rejected</li></ul></details>
-        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: failures</li><li>Own tests: Ran 22 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=15, errors=2; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=1; Fable 5.1&#39;s tests: failures=3; Opus 5.5&#39;s tests: failures=1; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: failures=1; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: failures=1; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: failures=1</li></ul>
-      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="10-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="10-1" aria-selected="false">TASK.md</button><button role="tab" data-file="10-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="10-3" aria-selected="false">ttl_cache.py</button></div>
-        <div class="file" id="file-10-0" ><p class="path mono">mcode-m3.1-flash/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+        return len(self._items)</code></pre></div></section></div><div role="tabpanel" id="panel-11" aria-labelledby="tab-11" hidden><section class="card eval">
+        <h3>Evaluation <span class="pill big">8 / 10</span> <span class="muted small">graded blind as submission E</span></h3>
+        <p>Mostly correct, but an expired get raises without deleting the entry, so len() keeps counting dead entries. This fails the hidden test_expiry_boundary_removes_entry. RESPONSE claims &#39;Expired entries were never removed&#39; is fixed and that the dict lookup is &#39;the only source of KeyError&#39;, both inaccurate. Tests miss three mutants.</p>
+        <div class="two"><div><h4>Strengths</h4><ul><li>Purge-before-capacity, put-existing and LRU handling are correct</li><li>Tests cover falsy values, the boundary, repeated gets not extending TTL, and validation</li></ul></div><div><h4>Weaknesses</h4><ul><li>E/ttl_cache.py:42-43 raises KeyError on expiry without del, so the stale entry stays in _items and in len()</li><li>Fails hidden contract test test_expiry_boundary_removes_entry (5/6)</li><li>Suite survived expired_get_no_delete, purge_front_only and put_existing_evicts (13/16)</li><li>RESPONSE says &#39;The self._items[key] lookup is now the only source of KeyError&#39;, which is wrong because the expiry check also raises</li></ul></div></div>
+        <details><summary>Evidence the grader checked</summary><ul><li>OBJECTIVE_CHECKS: hidden FAILURES (1 of 6)</li><li>probe.py E: expired_get_removes FAIL (len(_items)=1)</li><li>Cross-test: E fails the D, I, A, G and K suites on the expired-get removal tests and 3 of H&#39;s tests</li><li>mut/run.sh E: killed=13</li></ul></details>
+        <h4>Objective checks</h4><ul class="checks"><li>Hidden contract tests: failures</li><li>Own tests: Ran 22 tests in 0.000s / OK</li><li>This model&#39;s tests against each implementation — original: failures=15, errors=2; mimo: pass; Sonnet 5.5: pass; Fable 5.1: pass; Opus 5.5: pass; muse: pass; GPT-6 Luna: pass; GPT-6.1 Sol: pass; GPT-6 Astra: pass; Grok 4.7: pass; MiniMax M3.1 Flash: pass; MiniMax M3: pass; Haiku 5.5: pass</li><li>Other models&#39; tests against this implementation — mimo&#39;s tests: pass; Sonnet 5.5&#39;s tests: failures=1; Fable 5.1&#39;s tests: failures=3; Opus 5.5&#39;s tests: failures=1; muse&#39;s tests: pass; GPT-6 Luna&#39;s tests: pass; GPT-6.1 Sol&#39;s tests: failures=1; GPT-6 Astra&#39;s tests: pass; Grok 4.7&#39;s tests: failures=1; MiniMax M3.1 Flash&#39;s tests: pass; MiniMax M3&#39;s tests: failures=1; Haiku 5.5&#39;s tests: pass</li></ul>
+      </section><section class="card files"><h3>Files</h3><div class="filebar" role="tablist" aria-label="Files"><button role="tab" data-file="11-0" aria-selected="true">RESPONSE.md</button><button role="tab" data-file="11-1" aria-selected="false">TASK.md</button><button role="tab" data-file="11-2" aria-selected="false">test_ttl_cache.py</button><button role="tab" data-file="11-3" aria-selected="false">ttl_cache.py</button></div>
+        <div class="file" id="file-11-0" ><p class="path mono">mcode-m3.1-flash/02-bug-fixing/RESPONSE.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
 <p>Files changed: <code>ttl_cache.py</code> (fix), <code>test_ttl_cache.py</code> (regression suite), plus this
 report. No other file in the directory or repository was touched, and no network was used.</p>
 <h2>Baseline: the faulty implementation</h2>
@@ -3628,7 +4094,7 @@ Ran 22 tests in 0.000s
 OK
 </code></pre>
 <p>Exit status 0 — 22 tests, 22 passed, 0 failures, 0 errors. Python 3.14.3.</p>
-</div></div><div class="file" id="file-10-1" hidden><p class="path mono">mcode-m3.1-flash/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
+</div></div><div class="file" id="file-11-1" hidden><p class="path mono">mcode-m3.1-flash/02-bug-fixing/TASK.md</p><div class="prose"><h1>Task 02 — Bug fixing: TTL/LRU cache</h1>
 <p><code>ttl_cache.py</code> is a deliberately faulty implementation. Fix it without changing
 the public API and add regression tests.</p>
 <p>Required behavior:</p>
@@ -3644,7 +4110,7 @@ and <code>None</code>; it raises <code>KeyError</code> only for missing or expir
 </ul>
 <p>Run the tests. Write <code>RESPONSE.md</code> with the root causes, fixes, regression cases,
 and exact test result. Work only in this directory.</p>
-</div></div><div class="file" id="file-10-2" hidden><p class="path mono">mcode-m3.1-flash/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
+</div></div><div class="file" id="file-11-2" hidden><p class="path mono">mcode-m3.1-flash/02-bug-fixing/test_ttl_cache.py</p><pre><code>import unittest
 
 from ttl_cache import TTLCache
 
@@ -3857,7 +4323,7 @@ class TTLCacheTests(unittest.TestCase):
 
 if __name__ == &quot;__main__&quot;:
     unittest.main()
-</code></pre></div><div class="file" id="file-10-3" hidden><p class="path mono">mcode-m3.1-flash/02-bug-fixing/ttl_cache.py</p><pre><code>import time
+</code></pre></div><div class="file" id="file-11-3" hidden><p class="path mono">mcode-m3.1-flash/02-bug-fixing/ttl_cache.py</p><pre><code>import time
 from collections import OrderedDict
 
 

@@ -10,8 +10,8 @@ cross = json.loads((ROOT / "evaluation/crosstest.json").read_text())
 fe = json.loads((ROOT / "evaluation/frontend-checks.json").read_text())
 notes_file = ROOT / "evaluation/blind-notes.json"
 NOTES = json.loads(notes_file.read_text()) if notes_file.exists() else {}
-PATH_RE = re.compile(r"/(home/user|home/arda|Users/arda/projects(/agent-eval-runs)?)/agent-eval[a-z0-9.\-]*(-2026-09-23)?(/(" + "|".join(map(re.escape, MODELS)) + r"))?")
-ID_RE = re.compile(r"(?i)\b(gpt-[0-9][0-9a-z.\-]*|grok[ -]?[0-9][0-9a-z.\-]*(?:-build)?|claude-[a-z0-9.\-]+|(?:claude )?(?:sonnet|opus|fable) [0-9.]+|muse[- ]spark[0-9a-z.\-]*|muse code|meta muse spark|xiaomi/mimo[0-9a-z.\-]*|mimo-v[0-9a-z.\-]*|(?:minimax/)?minimax[- ]?m[0-9][0-9a-z.\-]*|minimax code|mcode)\b")
+PATH_RE = re.compile(r"/(home/user|home/arda|Users/arda/projects(/agent-eval-runs)?|tmp/claude-[0-9]+/[^/\s]+/[^/\s]+/scratchpad)/agent-eval[a-z0-9.\-]*(-2026-09-23)?(/(" + "|".join(map(re.escape, MODELS)) + r"))?")
+ID_RE = re.compile(r"(?i)\b(gpt-[0-9][0-9a-z.\-]*|grok[ -]?[0-9][0-9a-z.\-]*(?:-build)?|claude-[a-z0-9.\-]+|(?:claude )?(?:sonnet|opus|fable|haiku) [0-9.]+|muse[- ]spark[0-9a-z.\-]*|muse code|meta muse spark|xiaomi/mimo[0-9a-z.\-]*|mimo-v[0-9a-z.\-]*|(?:minimax/)?minimax[- ]?m[0-9][0-9a-z.\-]*|minimax code|mcode)\b")
 HIDDEN_FAILS = {}
 def hidden_failures(m):
     import subprocess
