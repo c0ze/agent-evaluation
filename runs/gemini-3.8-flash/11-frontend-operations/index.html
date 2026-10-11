@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relay — Operations Control Room</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Accessible skip link for keyboard operators -->
+  <a href="#main-content" class="skip-link">Skip to main console</a>
+
+  <div class="app-layout">
+    <!-- Left Navigation Rail -->
+    <nav class="nav-rail" aria-label="Control Room Navigation">
+      <div class="rail-top">
+        <a href="#overview" class="rail-brand" title="Relay Operations Console" aria-label="Relay Operations Console">
+          <div class="brand-glyph" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.75"/>
+              <circle cx="10" cy="10" r="3.5" fill="var(--accent)"/>
+              <line x1="10" y1="2" x2="10" y2="5" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="10" y1="15" x2="10" y2="18" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="2" y1="10" x2="5" y2="10" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="15" y1="10" x2="18" y2="10" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <span class="brand-name">RELAY</span>
+        </a>
+
+        <div class="nav-links" role="tablist" aria-orientation="vertical">
+          <button type="button" class="nav-item active" role="tab" aria-selected="true" id="tab-overview" aria-controls="overview-view" title="Overview (Alt+1)">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="9" rx="1"/>
+              <rect x="14" y="3" width="7" height="5" rx="1"/>
+              <rect x="14" y="12" width="7" height="9" rx="1"/>
+              <rect x="3" y="16" width="7" height="5" rx="1"/>
+            </svg>
+            <span class="nav-label">Overview</span>
+          </button>
+
+          <button type="button" class="nav-item" role="tab" aria-selected="false" id="tab-incidents" aria-controls="incidents-section" title="Incidents (Alt+2)">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="12 2 2 22 22 22 12 2"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <span class="nav-label">Incidents</span>
+            <span class="nav-badge" id="rail-incident-badge" aria-label="4 active incidents">4</span>
+          </button>
+
+          <button type="button" class="nav-item" role="tab" aria-selected="false" id="tab-telemetry" title="Telemetry Metrics (Alt+3)">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            <span class="nav-label">Telemetry</span>
+          </button>
+
+          <button type="button" class="nav-item" role="tab" aria-selected="false" id="tab-topology" title="Service Topology (Alt+4)">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="6" height="6" rx="1"/>
+              <rect x="16" y="2" width="6" height="6" rx="1"/>
+              <rect x="9" y="16" width="6" height="6" rx="1"/>
+              <path d="M5 8v4a2 2 0 0 0 2 2h5m7-6v4a2 2 0 0 1-2 2h-5m0 0v2"/>
+            </svg>
+            <span class="nav-label">Services</span>
+          </button>
+
+          <button type="button" class="nav-item" role="tab" aria-selected="false" id="tab-logs" title="System Audit Logs (Alt+5)">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="4" y1="6" x2="20" y2="6"/>
+              <line x1="4" y1="12" x2="20" y2="12"/>
+              <line x1="4" y1="18" x2="14" y2="18"/>
+            </svg>
+            <span class="nav-label">Audit Log</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="rail-bottom">
+        <button type="button" class="rail-action-btn" id="btn-sound-toggle" aria-label="Toggle Audible Telemetry" title="Audible Alert Ping: Muted">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <line x1="23" y1="9" x2="17" y2="15"/>
+            <line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+        </button>
+
+        <button type="button" class="rail-action-btn" id="btn-shortcuts" aria-label="Keyboard Shortcuts Guide" title="Keyboard Shortcuts (?)">
+          <span class="key-glyph" aria-hidden="true">?</span>
+        </button>
+
+        <div class="rail-operator" title="Current Operator: M. Chen (Level-3 SRE)">
+          <span class="operator-initials" aria-hidden="true">MC</span>
+          <span class="operator-status-dot online" aria-hidden="true"></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Operational Workspace -->
+    <div class="workspace-area">
+      <!-- Top Status Bar -->
+      <header class="top-status-bar" role="banner">
+        <div class="status-bar-left">
+          <div class="cluster-badge">
+            <span class="cluster-env">PROD</span>
+            <span class="cluster-region">US-EAST-1</span>
+          </div>
+
+          <div class="system-health-pill degraded" id="system-health-pill" role="status" aria-live="polite">
+            <span class="health-dot" aria-hidden="true"></span>
+            <span class="health-label" id="health-text">DEGRADED &mdash; 1 CRITICAL INCIDENT</span>
+          </div>
+        </div>
+
+        <div class="status-bar-right">
+          <!-- Live Stream / Pause Toggle -->
+          <div class="telemetry-stream">
+            <span class="pulse-indicator" aria-hidden="true"></span>
+            <span class="stream-text" id="stream-status">STREAM ACTIVE (1s)</span>
+            <button type="button" class="btn-stream-toggle" id="btn-stream-toggle" aria-label="Pause Live Telemetry Stream" title="Toggle live telemetry stream">
+              <span id="stream-toggle-label">Pause</span>
+            </button>
+          </div>
+
+          <!-- Live UTC Clock -->
+          <div class="clock-display" aria-label="Current UTC Timestamp">
+            <span class="clock-icon" aria-hidden="true">UTC</span>
+            <time id="live-utc-clock" class="tabular-num">2026-10-11 10:38:42</time>
+          </div>
+
+          <!-- Quick search trigger hint -->
+          <div class="command-hint" title="Press / to filter incidents">
+            <kbd aria-label="Press slash to focus incident filter">/</kbd>
+            <span class="hint-text">Filter</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Operational Console Body -->
+      <main id="main-content" class="console-body" role="main">
+        <!-- SECTION 1: Summary Metrics -->
+        <section class="section-metrics" aria-label="Key Performance Indicators">
+          <div class="metrics-grid" id="metrics-grid">
+            <!-- Dynamically populated & rendered with fallback -->
+            <article class="metric-card" id="metric-card-0" tabindex="0">
+              <div class="metric-header">
+                <span class="metric-label">Events / min</span>
+                <span class="metric-trend-pill up favorable" aria-label="Up 8.2 percent">
+                  <span class="trend-arrow" aria-hidden="true">&#9650;</span> +8.2%
+                </span>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-number tabular-num">18,420</span>
+              </div>
+              <div class="metric-footer">
+                <span class="metric-context">vs 1h rolling avg</span>
+                <svg class="mini-sparkline" width="64" height="18" viewBox="0 0 64 18" aria-hidden="true">
+                  <path d="M0,14 L12,12 L24,15 L36,10 L48,8 L64,3" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </article>
+
+            <article class="metric-card" id="metric-card-1" tabindex="0">
+              <div class="metric-header">
+                <span class="metric-label">P95 latency</span>
+                <span class="metric-trend-pill down favorable" aria-label="Down 12 milliseconds">
+                  <span class="trend-arrow" aria-hidden="true">&#9660;</span> &minus;12 ms
+                </span>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-number tabular-num">184 ms</span>
+              </div>
+              <div class="metric-footer">
+                <span class="metric-context">target &le; 200 ms</span>
+                <svg class="mini-sparkline" width="64" height="18" viewBox="0 0 64 18" aria-hidden="true">
+                  <path d="M0,4 L12,6 L24,8 L36,12 L48,11 L64,15" fill="none" stroke="var(--trend-positive)" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </article>
+
+            <article class="metric-card alert-state" id="metric-card-2" tabindex="0">
+              <div class="metric-header">
+                <span class="metric-label">Error rate</span>
+                <span class="metric-trend-pill up critical" aria-label="Up 0.08 percentage points">
+                  <span class="trend-arrow" aria-hidden="true">&#9650;</span> +0.08 pp
+                </span>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-number tabular-num text-critical">0.37%</span>
+              </div>
+              <div class="metric-footer">
+                <span class="metric-context">SLO budget 94.2%</span>
+                <svg class="mini-sparkline" width="64" height="18" viewBox="0 0 64 18" aria-hidden="true">
+                  <path d="M0,15 L12,14 L24,13 L36,11 L48,7 L64,3" fill="none" stroke="var(--sev-critical)" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </article>
+
+            <article class="metric-card" id="metric-card-3" tabindex="0">
+              <div class="metric-header">
+                <span class="metric-label">Queue depth</span>
+                <span class="metric-trend-pill down favorable" aria-label="Down 19 percent">
+                  <span class="trend-arrow" aria-hidden="true">&#9660;</span> &minus;19%
+                </span>
+              </div>
+              <div class="metric-value-row">
+                <span class="metric-number tabular-num">2,841</span>
+              </div>
+              <div class="metric-footer">
+                <span class="metric-context">drain rate 420/s</span>
+                <svg class="mini-sparkline" width="64" height="18" viewBox="0 0 64 18" aria-hidden="true">
+                  <path d="M0,3 L12,5 L24,9 L36,11 L48,13 L64,16" fill="none" stroke="var(--trend-positive)" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- SECTION 2: 24-Hour Throughput Visualization -->
+        <section class="section-throughput" aria-label="24-Hour Throughput Telemetry">
+          <div class="panel-box throughput-panel">
+            <div class="panel-header throughput-header">
+              <div class="throughput-title-group">
+                <h2 class="panel-title">24-HOUR EVENT THROUGHPUT</h2>
+                <span class="panel-subtitle">Rolling distribution across 24 hourly buckets (k req/s)</span>
+              </div>
+
+              <div class="throughput-stats-readout" aria-label="Summary statistics">
+                <div class="stat-pill">
+                  <span class="stat-name">CURRENT</span>
+                  <span class="stat-val tabular-num" id="tp-stat-current">41k req/s</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-name">PEAK (T-4h)</span>
+                  <span class="stat-val tabular-num" id="tp-stat-peak">88k req/s</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-name">24H AVG</span>
+                  <span class="stat-val tabular-num" id="tp-stat-avg">58.6k req/s</span>
+                </div>
+                <div class="stat-pill highlight-slo">
+                  <span class="stat-name">SLO CEILING</span>
+                  <span class="stat-val tabular-num">80k req/s</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-wrapper" id="throughput-chart-container" tabindex="0" role="region" aria-label="Interactive 24-hour throughput bar and area chart. Use left and right arrow keys to inspect hourly values.">
+              <!-- SVG chart dynamically rendered with inline SVG -->
+              <svg id="throughput-svg" class="throughput-svg" viewBox="0 0 960 180" preserveAspectRatio="none" role="img" aria-label="24-hour throughput line and step graph">
+                <!-- Fallback content populated by JavaScript -->
+              </svg>
+
+              <!-- Chart interactive scrub tooltip -->
+              <div id="chart-tooltip" class="chart-tooltip hidden" role="tooltip" aria-hidden="true">
+                <div class="tooltip-time" id="tooltip-hour">Hour T-04h</div>
+                <div class="tooltip-val" id="tooltip-val">88,000 req/s</div>
+                <div class="tooltip-delta" id="tooltip-delta">+50.1% vs 24h avg</div>
+              </div>
+            </div>
+
+            <div class="chart-x-labels" aria-hidden="true">
+              <span>-24h (19:00)</span>
+              <span>-20h (23:00)</span>
+              <span>-16h (03:00)</span>
+              <span>-12h (07:00)</span>
+              <span>-8h (11:00)</span>
+              <span>-4h (15:00)</span>
+              <span class="now-label">NOW (19:38)</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mobile View Mode Switcher (Visible on small screens <= 768px) -->
+        <div class="mobile-view-tabs" role="tablist" aria-label="Mobile View Selector">
+          <button type="button" class="mobile-tab-btn active" role="tab" id="mobile-tab-list" aria-selected="true" aria-controls="pane-incident-list">
+            Incidents <span class="tab-count" id="mobile-incident-count">4</span>
+          </button>
+          <button type="button" class="mobile-tab-btn" role="tab" id="mobile-tab-detail" aria-selected="false" aria-controls="pane-incident-detail">
+            Selected Detail <span class="tab-active-id" id="mobile-selected-id">INC-2841</span>
+          </button>
+        </div>
+
+        <!-- SECTION 3: Filterable Incident Console & Detail Panel -->
+        <section class="section-incidents" id="incidents-section" aria-label="Incident Management Console">
+          <div class="incidents-split-layout">
+
+            <!-- LEFT COLUMN: Incident Table & Controls -->
+            <div class="incident-list-pane" id="pane-incident-list">
+              <!-- Filter Toolbar -->
+              <div class="toolbar-container" role="search" aria-label="Incident Filters">
+                <div class="search-box-row">
+                  <div class="search-input-wrapper">
+                    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="11" cy="11" r="8"/>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="text" id="incident-search-input" class="search-input" placeholder="Filter by ID, service, title, owner... (/)" aria-label="Search incidents" autocomplete="off" spellcheck="false">
+                    <button type="button" id="btn-search-clear" class="btn-clear hidden" aria-label="Clear search input">&times;</button>
+                  </div>
+
+                  <button type="button" id="btn-reset-filters" class="btn-reset-filters hidden" aria-label="Reset all filters">
+                    Reset Filters
+                  </button>
+                </div>
+
+                <div class="filter-controls-row">
+                  <!-- Severity filter pills -->
+                  <div class="filter-group" role="group" aria-label="Filter by Severity">
+                    <span class="filter-group-label">SEV:</span>
+                    <button type="button" class="filter-pill active" data-sev="all" aria-pressed="true">All</button>
+                    <button type="button" class="filter-pill sev-crit" data-sev="critical" aria-pressed="false">Crit</button>
+                    <button type="button" class="filter-pill sev-high" data-sev="high" aria-pressed="false">High</button>
+                    <button type="button" class="filter-pill sev-med" data-sev="medium" aria-pressed="false">Med</button>
+                    <button type="button" class="filter-pill sev-low" data-sev="low" aria-pressed="false">Low</button>
+                  </div>
+
+                  <!-- Service selector dropdown -->
+                  <div class="filter-select-wrapper">
+                    <label for="filter-service-select" class="filter-select-label">SERVICE:</label>
+                    <select id="filter-service-select" class="filter-select" aria-label="Filter by service">
+                      <option value="all">All Services</option>
+                      <option value="payments-api">payments-api</option>
+                      <option value="event-router">event-router</option>
+                      <option value="search-index">search-index</option>
+                      <option value="webhooks">webhooks</option>
+                    </select>
+                  </div>
+
+                  <!-- Status selector dropdown -->
+                  <div class="filter-select-wrapper">
+                    <label for="filter-status-select" class="filter-select-label">STATUS:</label>
+                    <select id="filter-status-select" class="filter-select" aria-label="Filter by status">
+                      <option value="all">All Statuses</option>
+                      <option value="open">Open</option>
+                      <option value="investigating">Investigating</option>
+                      <option value="monitoring">Monitoring</option>
+                      <option value="acknowledged">Acknowledged</option>
+                      <option value="resolved">Resolved</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="filter-summary-row">
+                  <span id="filter-readout" class="filter-readout tabular-num" aria-live="polite">Showing 4 of 4 active incidents</span>
+                  <span class="keyboard-nav-hint" aria-hidden="true">&uarr;&darr; navigate &bull; Enter select &bull; 'A' ack</span>
+                </div>
+              </div>
+
+              <!-- Table Container -->
+              <div class="table-responsive-container" id="table-scroll-container">
+                <table class="incidents-table" id="incidents-table" role="grid" aria-label="Incidents Table">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="th-severity sortable" data-sort="severity" aria-sort="none">
+                        <button type="button" class="th-sort-btn" aria-label="Sort by severity">
+                          SEV <span class="sort-icon" aria-hidden="true">&varr;</span>
+                        </button>
+                      </th>
+                      <th scope="col" class="th-id sortable" data-sort="id" aria-sort="none">
+                        <button type="button" class="th-sort-btn" aria-label="Sort by ID">
+                          ID <span class="sort-icon" aria-hidden="true">&varr;</span>
+                        </button>
+                      </th>
+                      <th scope="col" class="th-title sortable" data-sort="title" aria-sort="none">
+                        <button type="button" class="th-sort-btn" aria-label="Sort by title">
+                          TITLE / SUMMARY <span class="sort-icon" aria-hidden="true">&varr;</span>
+                        </button>
+                      </th>
+                      <th scope="col" class="th-service sortable" data-sort="service" aria-sort="none">
+                        <button type="button" class="th-sort-btn" aria-label="Sort by service">
+                          SERVICE <span class="sort-icon" aria-hidden="true">&varr;</span>
+                        </button>
+                      </th>
+                      <th scope="col" class="th-age sortable" data-sort="age" aria-sort="none">
+                        <button type="button" class="th-sort-btn" aria-label="Sort by age">
+                          AGE <span class="sort-icon" aria-hidden="true">&varr;</span>
+                        </button>
+                      </th>
+                      <th scope="col" class="th-owner sortable" data-sort="owner" aria-sort="none">
+                        <button type="button" class="th-sort-btn" aria-label="Sort by owner">
+                          OWNER <span class="sort-icon" aria-hidden="true">&varr;</span>
+                        </button>
+                      </th>
+                      <th scope="col" class="th-status sortable" data-sort="status" aria-sort="none">
+                        <button type="button" class="th-sort-btn" aria-label="Sort by status">
+                          STATUS <span class="sort-icon" aria-hidden="true">&varr;</span>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="incidents-tbody">
+                    <tr class="selected" data-id="INC-2841" tabindex="0" role="row" aria-selected="true">
+                      <td class="col-sev"><span class="badge-sev critical">critical</span></td>
+                      <td class="col-id tabular-num">INC-2841</td>
+                      <td class="col-title" title="Card authorization timeouts">Card authorization timeouts</td>
+                      <td class="col-service"><span class="service-pill">payments-api</span></td>
+                      <td class="col-age tabular-num">12m</td>
+                      <td class="col-owner"><span class="owner-name">M. Chen</span></td>
+                      <td class="col-status">
+                        <span class="badge-status investigating"><span class="status-dot" aria-hidden="true"></span>investigating</span>
+                      </td>
+                    </tr>
+                    <tr data-id="INC-2839" tabindex="0" role="row" aria-selected="false">
+                      <td class="col-sev"><span class="badge-sev high">high</span></td>
+                      <td class="col-id tabular-num">INC-2839</td>
+                      <td class="col-title" title="EU retry queue growth">EU retry queue growth</td>
+                      <td class="col-service"><span class="service-pill">event-router</span></td>
+                      <td class="col-age tabular-num">31m</td>
+                      <td class="col-owner"><span class="owner-unassigned">Unassigned</span></td>
+                      <td class="col-status">
+                        <span class="badge-status open"><span class="status-dot" aria-hidden="true"></span>open</span>
+                      </td>
+                    </tr>
+                    <tr data-id="INC-2837" tabindex="0" role="row" aria-selected="false">
+                      <td class="col-sev"><span class="badge-sev medium">medium</span></td>
+                      <td class="col-id tabular-num">INC-2837</td>
+                      <td class="col-title" title="Index freshness outside SLO">Index freshness outside SLO</td>
+                      <td class="col-service"><span class="service-pill">search-index</span></td>
+                      <td class="col-age tabular-num">1h 08m</td>
+                      <td class="col-owner"><span class="owner-name">A. Silva</span></td>
+                      <td class="col-status">
+                        <span class="badge-status monitoring"><span class="status-dot" aria-hidden="true"></span>monitoring</span>
+                      </td>
+                    </tr>
+                    <tr data-id="INC-2832" tabindex="0" role="row" aria-selected="false">
+                      <td class="col-sev"><span class="badge-sev low">low</span></td>
+                      <td class="col-id tabular-num">INC-2832</td>
+                      <td class="col-title" title="Elevated partner delivery lag">Elevated partner delivery lag</td>
+                      <td class="col-service"><span class="service-pill">webhooks</span></td>
+                      <td class="col-age tabular-num">3h 42m</td>
+                      <td class="col-owner"><span class="owner-name">R. Patel</span></td>
+                      <td class="col-status">
+                        <span class="badge-status open"><span class="status-dot" aria-hidden="true"></span>open</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Empty State (Shown when 0 matches) -->
+                <div id="incidents-empty-state" class="empty-state-card hidden" role="status">
+                  <div class="empty-state-icon" aria-hidden="true">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
+                      <circle cx="11" cy="11" r="8"/>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                      <line x1="8" y1="11" x2="14" y2="11"/>
+                    </svg>
+                  </div>
+                  <h3 class="empty-state-title">No matching incidents</h3>
+                  <p class="empty-state-desc">No operational incidents match your filter or search query.</p>
+                  <button type="button" class="btn-empty-clear" id="btn-empty-reset">Clear all filters</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Incident Detail Panel -->
+            <aside class="incident-detail-pane" id="pane-incident-detail" aria-label="Incident Detail Inspector">
+              <div class="panel-box detail-panel" id="incident-detail-card">
+                <!-- Populated dynamically by JavaScript -->
+                <div class="detail-header">
+                  <div class="detail-title-group">
+                    <div class="detail-badge-row">
+                      <span class="detail-sev-badge" id="detail-sev-badge">CRITICAL</span>
+                      <span class="detail-id tabular-num" id="detail-id">INC-2841</span>
+                      <span class="detail-service-code" id="detail-service">payments-api</span>
+                    </div>
+                    <h3 class="detail-headline" id="detail-title">Card authorization timeouts</h3>
+                  </div>
+
+                  <!-- Primary Action: Working Acknowledge Action -->
+                  <div class="detail-actions-bar">
+                    <button type="button" class="btn-action-ack" id="btn-ack-incident" aria-label="Acknowledge incident INC-2841">
+                      <svg class="ack-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                      <span id="btn-ack-text">Acknowledge Incident</span>
+                    </button>
+
+                    <button type="button" class="btn-action-secondary" id="btn-resolve-incident" aria-label="Resolve incident">
+                      Resolve
+                    </button>
+                  </div>
+                </div>
+
+                <div class="detail-body">
+                  <!-- Metadata Key-Value Grid -->
+                  <div class="detail-meta-grid">
+                    <div class="meta-item">
+                      <span class="meta-label">CURRENT STATUS</span>
+                      <span class="meta-value" id="detail-status-pill">
+                        <span class="status-indicator-dot investigating" aria-hidden="true"></span>
+                        <span id="detail-status-text">investigating</span>
+                      </span>
+                    </div>
+
+                    <div class="meta-item">
+                      <span class="meta-label">INCIDENT AGE</span>
+                      <span class="meta-value tabular-num" id="detail-age">12m</span>
+                    </div>
+
+                    <div class="meta-item">
+                      <span class="meta-label">ASSIGNED OWNER</span>
+                      <div class="meta-owner-wrap">
+                        <span class="meta-value" id="detail-owner">M. Chen</span>
+                        <button type="button" class="btn-assign-self" id="btn-assign-self" title="Claim incident ownership">Claim</button>
+                      </div>
+                    </div>
+
+                    <div class="meta-item">
+                      <span class="meta-label">SLO IMPACT</span>
+                      <span class="meta-value text-critical" id="detail-impact">High &bull; 4.2% timeout rate</span>
+                    </div>
+                  </div>
+
+                  <!-- Technical Context & Runbook -->
+                  <div class="detail-section">
+                    <h4 class="detail-section-title">DIAGNOSTIC CONTEXT</h4>
+                    <p class="detail-description" id="detail-desc">
+                      Downstream issuer gateway latency spiked past 3,500 ms in EU-West-1. Retry queues exceeding rate ceiling. Fallback gateway routing is pending operator acknowledgment.
+                    </p>
+                    <div class="detail-tags-list" id="detail-tags">
+                      <span class="tech-tag">Region: eu-west-1</span>
+                      <span class="tech-tag">Endpoint: /v2/authorizations</span>
+                      <span class="tech-tag">Target: stripe-gateway</span>
+                    </div>
+                  </div>
+
+                  <!-- Runbook Guidance -->
+                  <div class="detail-section runbook-section">
+                    <div class="runbook-header">
+                      <span class="runbook-icon" aria-hidden="true">&#128214;</span>
+                      <span class="runbook-title">ATTACHED RUNBOOK</span>
+                    </div>
+                    <div class="runbook-card">
+                      <span class="runbook-code" id="detail-runbook">RB-PAY-042: Payment Gateway Failover Protocol</span>
+                      <p class="runbook-step" id="detail-runbook-step">Step 1: Acknowledge alert &rarr; Step 2: Shift 50% traffic to Secondary Acquirer &rarr; Step 3: Monitor auth success rate for 5m.</p>
+                    </div>
+                  </div>
+
+                  <!-- Incident Audit Timeline -->
+                  <div class="detail-section">
+                    <div class="timeline-header">
+                      <h4 class="detail-section-title">INCIDENT TIMELINE</h4>
+                      <span class="timeline-count" id="timeline-count">3 entries</span>
+                    </div>
+                    <ol class="incident-timeline" id="incident-timeline" aria-label="Incident audit log">
+                      <!-- Rendered by JavaScript -->
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+          </div>
+        </section>
+      </main>
+
+      <!-- System Notification Toast Stack -->
+      <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+      <!-- Live Screen Reader Announcement Region -->
+      <div id="sr-announcer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+      <!-- Keyboard Shortcuts Dialog Modal -->
+      <div id="shortcuts-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-box" role="document">
+          <div class="modal-header">
+            <h3 id="modal-title" class="modal-title">Relay Operations — Keyboard Shortcuts</h3>
+            <button type="button" class="btn-modal-close" id="btn-close-modal" aria-label="Close shortcuts dialog">&times;</button>
+          </div>
+          <div class="modal-body">
+            <dl class="shortcuts-list">
+              <div class="shortcut-row">
+                <dt><kbd>/</kbd></dt>
+                <dd>Focus incident search and filter</dd>
+              </div>
+              <div class="shortcut-row">
+                <dt><kbd>&uarr;</kbd> / <kbd>&darr;</kbd></dt>
+                <dd>Navigate incident rows</dd>
+              </div>
+              <div class="shortcut-row">
+                <dt><kbd>Enter</kbd> / <kbd>Space</kbd></dt>
+                <dd>Select incident and open detail panel</dd>
+              </div>
+              <div class="shortcut-row">
+                <dt><kbd>A</kbd></dt>
+                <dd>Acknowledge selected incident</dd>
+              </div>
+              <div class="shortcut-row">
+                <dt><kbd>R</kbd></dt>
+                <dd>Resolve selected incident</dd>
+              </div>
+              <div class="shortcut-row">
+                <dt><kbd>&larr;</kbd> / <kbd>&rarr;</kbd></dt>
+                <dd>Scrub 24h throughput timeline when chart is focused</dd>
+              </div>
+              <div class="shortcut-row">
+                <dt><kbd>Esc</kbd></dt>
+                <dd>Clear filter / dismiss dialog</dd>
+              </div>
+              <div class="shortcut-row">
+                <dt><kbd>?</kbd></dt>
+                <dd>Open this shortcuts guide</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="modal-footer">
+            <span class="modal-note">Relay Control Room Console v4.8 &bull; Strict Local Mode</span>
+            <button type="button" class="btn-modal-done" id="btn-modal-done">Done</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

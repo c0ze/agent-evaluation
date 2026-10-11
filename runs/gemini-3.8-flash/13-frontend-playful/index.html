@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Moss — A gentle, tactile household plant-care companion.">
+  <title>Moss — Gentle Plant Care</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to care queue</a>
+
+  <!-- Top App Navigation & Header -->
+  <header class="app-header" role="banner">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-mascot" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="36" height="36" class="moss-sprout-icon">
+            <path d="M20 36 C16 30 14 22 20 14 C26 22 24 30 20 36 Z" fill="#557A46" />
+            <path d="M19 24 C13 22 9 16 11 10 C16 12 19 17 19 24 Z" fill="#7CA96E" />
+            <path d="M21 20 C27 18 31 12 29 6 C24 8 21 14 21 20 Z" fill="#8FBC7A" />
+            <circle cx="20" cy="37" r="3" fill="#D65D38" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Moss</h1>
+          <p class="brand-subtitle">gentle plant companion</p>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div class="household-badge" id="household-status" aria-label="Household care status">
+          <span class="status-dot alert" id="header-status-dot" aria-hidden="true"></span>
+          <span id="header-status-text">1 overdue · 2 today</span>
+        </div>
+        <button id="shortcuts-btn" class="icon-btn" aria-label="Open keyboard shortcuts cheat sheet" title="Keyboard shortcuts (?)">
+          <span aria-hidden="true">⌨️</span>
+          <span class="shortcut-key-hint">?</span>
+        </button>
+        <button id="sound-toggle-btn" class="icon-btn" aria-label="Toggle subtle audio effects" title="Toggle audio feedback">
+          <span id="sound-icon" aria-hidden="true">🌱</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout Container -->
+  <div class="layout-wrapper">
+    <!-- Left Sidebar: Household context, filters, and weekly rhythm -->
+    <aside class="app-sidebar" aria-label="Plant summary and weekly rhythm">
+      <!-- Household Companion Card -->
+      <section class="tactile-card sidebar-card companion-mood-card">
+        <div class="card-eyebrow">Home Atmosphere</div>
+        <h2 class="sidebar-heading">South-Facing Sanctuary</h2>
+        <p class="companion-note">
+          Frida is parched in the bathroom steam, while Orbit leans into the morning light.
+        </p>
+        <div class="micro-stats">
+          <div class="stat-pill">
+            <span class="stat-num" id="total-plants-count">4</span>
+            <span class="stat-lbl">friends</span>
+          </div>
+          <div class="stat-pill urgency-pill">
+            <span class="stat-num" id="urgent-tasks-count">1</span>
+            <span class="stat-lbl">thirsty</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-num" id="completed-tasks-count">0</span>
+            <span class="stat-lbl">tended</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Weekly Rhythm Visualization Component -->
+      <section class="tactile-card sidebar-card weekly-rhythm-widget" id="weekly-rhythm-section" aria-labelledby="rhythm-heading">
+        <div class="rhythm-header">
+          <div>
+            <div class="card-eyebrow">Weekly Rhythm</div>
+            <h2 id="rhythm-heading" class="sidebar-heading">Care Distribution</h2>
+          </div>
+          <span class="rhythm-total-badge" id="weekly-total-badge">16 moments</span>
+        </div>
+        <p class="rhythm-caption">Care rhythm across the seven days. Thursday carries today's peak.</p>
+
+        <div class="rhythm-bars" role="group" aria-label="Care moments per day of the week">
+          <!-- Populated dynamically by app.js with tactile day columns -->
+        </div>
+
+        <div class="rhythm-legend">
+          <span class="legend-item"><span class="legend-swatch today-swatch"></span> Today (Peak)</span>
+          <span class="legend-item"><span class="legend-swatch done-swatch"></span> Completed</span>
+          <span class="legend-item"><span class="legend-swatch pending-swatch"></span> Scheduled</span>
+        </div>
+      </section>
+
+      <!-- Room Filter Pills -->
+      <section class="tactile-card sidebar-card filter-card" aria-labelledby="location-filter-heading">
+        <div class="card-eyebrow">Locations</div>
+        <h2 id="location-filter-heading" class="sidebar-heading">Filter by Room</h2>
+        <div class="location-filters" role="group" aria-label="Filter plants by room">
+          <button class="filter-chip active" data-filter="all" aria-pressed="true">All Rooms <span class="chip-count">4</span></button>
+          <button class="filter-chip" data-filter="Bathroom" aria-pressed="false">Bathroom <span class="chip-count">1</span></button>
+          <button class="filter-chip" data-filter="Bookshelf" aria-pressed="false">Bookshelf <span class="chip-count">1</span></button>
+          <button class="filter-chip" data-filter="South window" aria-pressed="false">South window <span class="chip-count">1</span></button>
+          <button class="filter-chip" data-filter="Bedroom" aria-pressed="false">Bedroom <span class="chip-count">1</span></button>
+        </div>
+      </section>
+
+      <!-- Ambient Care Observation Tip -->
+      <div class="sidebar-ambient-tip" aria-hidden="true">
+        <span class="tip-icon">🪨</span>
+        <span class="tip-text">Tactile tip: Touch top 2 inches of soil before watering Dot the cactus.</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area: Today's Care Queue -->
+    <main id="main-content" class="app-main" tabindex="-1">
+      <!-- Care Queue Header & Urgency Banner -->
+      <section class="queue-header-area">
+        <div class="queue-title-row">
+          <div>
+            <span class="section-tag">Care Agenda</span>
+            <h2 class="main-heading">Today's Plant Queue</h2>
+          </div>
+          <div class="queue-actions-bar">
+            <button id="reset-data-btn" class="text-action-btn" title="Reset all plants to initial demo state">
+              ↺ Reset demo
+            </button>
+          </div>
+        </div>
+
+        <!-- Overdue Priority Spotlight Banner -->
+        <div class="urgency-banner" id="overdue-banner" role="alert">
+          <div class="banner-icon-bubble" aria-hidden="true">💧!</div>
+          <div class="banner-body">
+            <div class="banner-tag">PRIORITY CARE NEEDED</div>
+            <h3 class="banner-title">Frida is thirsty (2 days overdue)</h3>
+            <p class="banner-desc">Boston ferns crave humidity and damp soil. Give Frida a deep drink in the bathroom sink.</p>
+          </div>
+          <button class="banner-quick-action-btn" id="banner-quench-btn" aria-label="Quick water Frida now">
+            Water Frida Now
+          </button>
+        </div>
+      </section>
+
+      <!-- Active Care Queue List -->
+      <section class="queue-list-section" aria-label="Plants requiring care today">
+        <h3 class="sr-only">Active Plant Tasks</h3>
+        <ul class="plants-list" id="active-plants-list" aria-live="polite">
+          <!-- Plant cards injected here by app.js -->
+        </ul>
+      </section>
+
+      <!-- All-Done State (shown when queue is empty) -->
+      <section class="all-done-card" id="all-done-state" hidden aria-live="polite">
+        <div class="all-done-illustration" aria-hidden="true">
+          <svg viewBox="0 0 200 160" width="180" height="144" class="all-done-svg">
+            <!-- Warm Sunbeam & Gentle botanical scene -->
+            <circle cx="100" cy="70" r="54" fill="#F8E8C8" />
+            <circle cx="100" cy="70" r="44" fill="#EBB04D" opacity="0.3" />
+            <!-- Gentle Pot -->
+            <path d="M70 120 L130 120 L124 146 L76 146 Z" fill="#D65D38" />
+            <rect x="66" y="114" width="68" height="8" rx="4" fill="#B94926" />
+            <!-- Sprouting Foliage -->
+            <path d="M100 114 Q90 80 72 65 Q92 78 100 114 Z" fill="#557A46" />
+            <path d="M100 114 Q110 80 128 65 Q108 78 100 114 Z" fill="#7CA96E" />
+            <path d="M100 114 Q100 70 100 48 Q106 68 100 114 Z" fill="#8FBC7A" />
+            <!-- Floating Little Sparkles / Spores -->
+            <circle cx="64" cy="52" r="3" fill="#D65D38" />
+            <circle cx="136" cy="48" r="3.5" fill="#557A46" />
+            <circle cx="100" cy="30" r="2.5" fill="#EBB04D" />
+          </svg>
+        </div>
+        <div class="all-done-content">
+          <span class="done-tag">ALL TENDED</span>
+          <h3 class="all-done-title">Every leaf is resting easy.</h3>
+          <p class="all-done-desc">
+            You've attended to all four plants for today. Moisture is balanced, pots are rotated, and soil is checked.
+          </p>
+          <div class="all-done-next-step">
+            <span class="next-step-icon">🌿</span>
+            <div class="next-step-info">
+              <strong>Up Next Tomorrow:</strong> Drama (Calathea) will want a gentle morning misting in the bedroom.
+            </div>
+          </div>
+          <div class="all-done-actions">
+            <button class="pill-btn secondary-btn" id="all-done-reset-btn">
+              Reset Demo Queue
+            </button>
+            <button class="pill-btn outline-btn" id="all-done-history-btn">
+              Review Completed Logs
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Completed Plants Drawer / Tray -->
+      <section class="completed-tray-section" id="completed-tray" hidden>
+        <div class="completed-tray-header">
+          <button class="completed-toggle-btn" id="completed-toggle-btn" aria-expanded="true">
+            <span class="toggle-icon">▼</span>
+            <span class="toggle-text">Tended Today (<span id="completed-count-badge">0</span>)</span>
+          </button>
+        </div>
+        <ul class="completed-plants-list" id="completed-plants-list">
+          <!-- Completed items injected here -->
+        </ul>
+      </section>
+    </main>
+
+    <!-- Right Column / Drawer: Plant Detail Inspector -->
+    <aside class="plant-inspector" id="plant-inspector" aria-labelledby="inspector-plant-name" aria-hidden="true">
+      <div class="inspector-card">
+        <!-- Inspector Mobile Close Header -->
+        <div class="inspector-header">
+          <span class="inspector-eyebrow">Plant Inspection</span>
+          <button class="inspector-close-btn" id="inspector-close-btn" aria-label="Close plant detail inspector">
+            <span aria-hidden="true">✕</span>
+          </button>
+        </div>
+
+        <!-- Plant Portrait & Title -->
+        <div class="inspector-portrait" id="inspector-portrait">
+          <!-- Injected SVG illustration -->
+        </div>
+
+        <div class="inspector-identity">
+          <div class="inspector-meta-top">
+            <span class="inspector-species" id="inspector-species">Species Name</span>
+            <span class="inspector-location-badge" id="inspector-location">Location</span>
+          </div>
+          <h2 class="inspector-name" id="inspector-plant-name">Plant Name</h2>
+          <div class="inspector-status-badge" id="inspector-status-pill">Due status</div>
+        </div>
+
+        <!-- Care Needs Grid (Light, Water, Soil) -->
+        <div class="care-needs-grid">
+          <div class="need-box">
+            <div class="need-icon">☀️</div>
+            <div class="need-label">Light Preference</div>
+            <div class="need-value" id="inspector-light">Medium, indirect</div>
+          </div>
+          <div class="need-box">
+            <div class="need-icon">💧</div>
+            <div class="need-label">Scheduled Task</div>
+            <div class="need-value" id="inspector-task">Water</div>
+          </div>
+          <div class="need-box">
+            <div class="need-icon">🪴</div>
+            <div class="need-label">Soil Moisture</div>
+            <div class="need-value" id="inspector-moisture">Moist (70-80%)</div>
+          </div>
+          <div class="need-box">
+            <div class="need-icon">🌫️</div>
+            <div class="need-label">Humidity Need</div>
+            <div class="need-value" id="inspector-humidity">High</div>
+          </div>
+        </div>
+        <div class="care-guidance-callout" id="inspector-water-rule">
+          Keep soil consistently damp; never allow root ball to dry out completely.
+        </div>
+
+        <!-- Interactive Action Bar for Selected Plant -->
+        <div class="inspector-action-row" id="inspector-actions">
+          <button class="pill-btn primary-btn flex-btn" id="inspector-action-primary">
+            <span id="inspector-primary-icon">💧</span>
+            <span id="inspector-primary-label">Mark Watered</span>
+          </button>
+          <button class="pill-btn secondary-btn" id="inspector-action-snooze" title="Snooze task by 1 day">
+            <span>⏰ Snooze +1d</span>
+          </button>
+        </div>
+
+        <!-- Observation History Section -->
+        <section class="inspector-history-section" aria-labelledby="history-heading">
+          <div class="history-header">
+            <h3 id="history-heading" class="history-title">Observation Log</h3>
+            <span class="history-count" id="history-count-badge">3 entries</span>
+          </div>
+
+          <!-- Add Note Form -->
+          <form class="quick-observation-form" id="observation-form">
+            <label for="new-observation-input" class="sr-only">Record a new observation for this plant</label>
+            <div class="input-with-button">
+              <input type="text" id="new-observation-input" placeholder="Note new leaf, dry tip, or turn..." required maxlength="80">
+              <button type="submit" class="submit-note-btn" aria-label="Log observation">+</button>
+            </div>
+          </form>
+
+          <!-- History Timeline -->
+          <ul class="history-timeline" id="inspector-history-list">
+            <!-- Timeline items injected here -->
+          </ul>
+        </section>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Accessible Modal Backdrop for Mobile Drawer -->
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true"></div>
+
+  <!-- Toast / Undo Notification Bar -->
+  <aside class="toast-region" id="toast-region" aria-live="assertive" aria-atomic="true">
+    <div class="toast-card" id="toast-card" hidden>
+      <div class="toast-icon" id="toast-icon" aria-hidden="true">🌱</div>
+      <div class="toast-message" id="toast-message">Task updated.</div>
+      <button class="toast-undo-btn" id="toast-undo-btn">
+        <span>Undo</span>
+        <span class="toast-timer-bar" id="toast-timer-bar"></span>
+      </button>
+      <button class="toast-dismiss-btn" id="toast-dismiss-btn" aria-label="Dismiss notification">✕</button>
+    </div>
+  </aside>
+
+  <!-- Keyboard Shortcuts Cheat Sheet Dialog -->
+  <div class="dialog-container" id="shortcuts-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" hidden>
+    <div class="dialog-card">
+      <div class="dialog-header">
+        <h2 id="dialog-title" class="dialog-title">Keyboard Navigation</h2>
+        <button class="icon-btn close-dialog-btn" id="close-shortcuts-dialog" aria-label="Close shortcuts dialog">✕</button>
+      </div>
+      <p class="dialog-desc">Moss is crafted for effortless, mouse-free plant care.</p>
+      <ul class="shortcuts-list">
+        <li><kbd>1</kbd>–<kbd>4</kbd> <span>Select plant card in queue</span></li>
+        <li><kbd>W</kbd> or <kbd>D</kbd> <span>Mark selected plant cared / watered</span></li>
+        <li><kbd>S</kbd> <span>Snooze task by 1 day</span></li>
+        <li><kbd>Enter</kbd> or <kbd>O</kbd> <span>Open plant detail inspection</span></li>
+        <li><kbd>Z</kbd> <span>Undo recent care or snooze</span></li>
+        <li><kbd>Esc</kbd> <span>Close drawer or modal</span></li>
+        <li><kbd>?</kbd> <span>Toggle this shortcuts guide</span></li>
+      </ul>
+      <div class="dialog-footer">
+        <button class="pill-btn primary-btn" id="shortcuts-done-btn">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen Reader Live Announcements -->
+  <div class="sr-only" aria-live="polite" id="sr-announcer"></div>
+
+  <!-- Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
