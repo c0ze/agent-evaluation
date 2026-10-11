@@ -1,0 +1,1777 @@
+/* ==========================================================================
+   Moss — Household Plant Companion Design System
+   Visual Direction: Warm, tactile, optimistic, and a little odd.
+   No frameworks, no remote fonts, no glass panels, no neon gradients.
+   ========================================================================== */
+
+:root {
+  /* Earth & Botanical Color Palette */
+  --canvas-bg: #F7F4EB;
+  --surface-bg: #FCFBF7;
+  --surface-alt: #F1ECE0;
+  --surface-accent: #EFE7D7;
+  
+  /* Moss & Foliage Greens */
+  --moss-900: #1B2E21;
+  --moss-800: #264330;
+  --moss-700: #335940;
+  --moss-600: #427252;
+  --moss-500: #558B67;
+  --moss-200: #C4DEC9;
+  --moss-100: #E6F2E9;
+  --moss-50:  #F2F8F4;
+
+  /* Terracotta & Soil (Warmth, urgent alerts, clay pots) */
+  --clay-900: #5A2312;
+  --clay-800: #8A371B;
+  --clay-700: #B84A24;
+  --clay-600: #D05E32;
+  --clay-500: #E2764B;
+  --clay-200: #F7C6B3;
+  --clay-100: #FAEBE5;
+  --clay-50:  #FDF5F2;
+
+  /* Sunlight & Marigold */
+  --sun-700: #9E5D0E;
+  --sun-600: #C87B19;
+  --sun-500: #ECA130;
+  --sun-300: #FAD178;
+  --sun-100: #FDF3D8;
+  --sun-50:  #FEF9EC;
+
+  /* Moisture & Dew */
+  --dew-800: #1C4852;
+  --dew-600: #316E7D;
+  --dew-500: #458B9C;
+  --dew-200: #B8DEE6;
+  --dew-100: #E2F2F5;
+
+  /* High Contrast Loamy Inks for Typography */
+  --ink-950: #151A16;
+  --ink-900: #1F2722;
+  --ink-800: #2D3931;
+  --ink-600: #4F5E54;
+  --ink-500: #6B7B71;
+  --ink-300: #9FADA4;
+  --ink-200: #C9D4CC;
+  --ink-100: #E3E9E5;
+
+  /* Tactile Outlines & Depth */
+  --border-ink: #222B25;
+  --border-soft: #D7D2C4;
+  --border-muted: #E6E1D4;
+
+  /* Organic Whimsical Shape Language */
+  --radius-blob-1: 28px 18px 24px 18px;
+  --radius-blob-2: 18px 26px 16px 24px;
+  --radius-pot: 20px 20px 28px 28px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* Tactile Shadows */
+  --shadow-press: 0 1px 0 var(--border-ink);
+  --shadow-tactile-sm: 0 2.5px 0 var(--border-ink);
+  --shadow-tactile-md: 0 4px 0 var(--border-ink);
+  --shadow-tactile-lg: 0 6px 0 var(--border-ink);
+  --shadow-paper: 0 8px 24px rgba(27, 46, 33, 0.08);
+
+  /* Typography Stack - System font fallbacks */
+  --font-serif: "Charter", "Iowan Old Style", "Palatino", "Georgia", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Motion timing */
+  --transition-tactile: transform 0.14s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.14s cubic-bezier(0.2, 0, 0, 1);
+  --transition-smooth: all 0.22s ease-out;
+}
+
+/* ==========================================================================
+   CSS Reset & Base Rules
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  background-color: var(--canvas-bg);
+  color: var(--ink-900);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--canvas-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Accessible Skip Link */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 20px;
+  background: var(--moss-900);
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  z-index: 9999;
+  text-decoration: none;
+  box-shadow: var(--shadow-tactile-md);
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 16px;
+  outline: 3px solid var(--sun-500);
+  outline-offset: 3px;
+}
+
+/* Focus styles for keyboard users */
+:focus-visible {
+  outline: 3px solid var(--moss-700);
+  outline-offset: 3px;
+}
+
+button:focus-visible, a:focus-visible {
+  outline: 3px solid var(--moss-700);
+  outline-offset: 3px;
+}
+
+/* Helper to visually hide elements */
+.hidden {
+  display: none !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   Tactile App Layout
+   Mobile-First: Single stream on mobile, 3-column dashboard on desktop
+   ========================================================================== */
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 16px 16px 90px 16px; /* 90px bottom padding for mobile bar */
+  gap: 20px;
+}
+
+/* ==========================================================================
+   Left Column: Sidebar & Brand
+   ========================================================================== */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Brand Header */
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--surface-bg);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-blob-1);
+  box-shadow: var(--shadow-tactile-sm);
+}
+
+.brand-mascot {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  animation: subtleFloat 4s ease-in-out infinite;
+}
+
+.mascot-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 0 rgba(0,0,0,0.06));
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.brand-name {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--moss-900);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.badge-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--moss-100);
+  color: var(--moss-800);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--moss-200);
+}
+
+.brand-tagline {
+  font-size: 0.85rem;
+  color: var(--ink-600);
+}
+
+/* Companion Note Card */
+.companion-note {
+  background: var(--surface-bg);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-tactile-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.companion-note::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--moss-500) 0,
+    var(--moss-500) 12px,
+    var(--clay-500) 12px,
+    var(--clay-500) 24px,
+    var(--sun-500) 24px,
+    var(--sun-500) 36px
+  );
+}
+
+.note-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.note-icon {
+  font-size: 1.1rem;
+}
+
+.note-title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.note-body {
+  font-size: 0.88rem;
+  color: var(--ink-700);
+  line-height: 1.45;
+  margin-bottom: 14px;
+}
+
+.companion-quick-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stat-pill {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-ink);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.stat-overdue {
+  background: var(--clay-100);
+  color: var(--clay-900);
+  border-color: var(--clay-800);
+}
+
+.stat-overdue .stat-num {
+  font-weight: 800;
+  color: var(--clay-800);
+}
+
+.stat-today {
+  background: var(--sun-100);
+  color: var(--sun-700);
+  border-color: var(--sun-700);
+}
+
+.stat-today .stat-num {
+  font-weight: 800;
+}
+
+.stat-done {
+  background: var(--moss-100);
+  color: var(--moss-800);
+  border-color: var(--moss-700);
+}
+
+.stat-done .stat-num {
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   Weekly Rhythm Visualization
+   ========================================================================== */
+
+.weekly-rhythm-card {
+  background: var(--surface-bg);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-tactile-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rhythm-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.rhythm-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.rhythm-subtitle {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--ink-500);
+}
+
+.rhythm-total-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--surface-alt);
+  color: var(--ink-800);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-soft);
+}
+
+.rhythm-chart {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  align-items: flex-end;
+  height: 104px;
+  padding: 8px 4px 4px 4px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-muted);
+}
+
+.rhythm-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  position: relative;
+  border-radius: var(--radius-sm);
+  transition: transform 0.15s ease;
+}
+
+.rhythm-col:hover {
+  transform: translateY(-2px);
+}
+
+.rhythm-col:focus-visible {
+  outline: 2px solid var(--moss-700);
+  outline-offset: 2px;
+}
+
+.rhythm-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-700);
+  margin-bottom: 3px;
+  transition: transform 0.15s ease;
+}
+
+.rhythm-col:hover .rhythm-count {
+  transform: scale(1.15);
+  color: var(--moss-900);
+}
+
+.rhythm-bar-track {
+  width: 100%;
+  max-width: 28px;
+  height: 60px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8px 8px 4px 4px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.rhythm-bar-fill {
+  width: 100%;
+  background: var(--moss-500);
+  border-radius: 8px 8px 0 0;
+  transition: height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease;
+}
+
+.rhythm-day-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-600);
+  margin-top: 5px;
+}
+
+/* Highlight "Today" (Thu - 4 tasks) */
+.rhythm-col.is-today .rhythm-bar-fill {
+  background: var(--clay-600);
+}
+
+.rhythm-col.is-today .rhythm-day-label {
+  color: var(--clay-800);
+  font-weight: 800;
+  position: relative;
+}
+
+.rhythm-col.is-today::after {
+  content: "today";
+  position: absolute;
+  top: -12px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--clay-800);
+  background: var(--clay-100);
+  padding: 1px 4px;
+  border-radius: 4px;
+  border: 1px solid var(--clay-200);
+}
+
+.rhythm-caption {
+  font-size: 0.8rem;
+  color: var(--ink-600);
+  line-height: 1.4;
+  padding: 2px 2px 0 2px;
+}
+
+/* Room Nav */
+.room-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-heading {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-500);
+  padding-left: 2px;
+}
+
+.room-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  background: var(--surface-bg);
+  border: 1.5px solid var(--border-soft);
+  color: var(--ink-700);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: var(--transition-tactile);
+  min-height: 34px;
+}
+
+.chip:hover {
+  border-color: var(--border-ink);
+  background: var(--surface-accent);
+}
+
+.chip.active {
+  background: var(--moss-900);
+  color: #FFFFFF;
+  border-color: var(--border-ink);
+  box-shadow: 0 2px 0 var(--border-ink);
+}
+
+.sidebar-footer {
+  font-size: 0.74rem;
+  color: var(--ink-500);
+  padding: 8px 4px;
+}
+
+/* ==========================================================================
+   Center Column: Main Care Queue
+   ========================================================================== */
+
+.main-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.queue-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.queue-heading-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.queue-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.queue-heading {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--moss-900);
+  letter-spacing: -0.01em;
+}
+
+.queue-counter {
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: var(--moss-200);
+  color: var(--moss-900);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-ink);
+}
+
+.queue-subtext {
+  font-size: 0.9rem;
+  color: var(--ink-600);
+}
+
+/* Queue Tab Controls */
+.queue-tabs {
+  display: inline-flex;
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border-ink);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+  gap: 4px;
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--ink-700);
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  min-height: 38px;
+}
+
+.tab-btn:hover {
+  color: var(--ink-900);
+}
+
+.tab-btn.active {
+  background: var(--surface-bg);
+  color: var(--ink-900);
+  border: 1px solid var(--border-ink);
+  box-shadow: 0 2px 0 var(--border-ink);
+  font-weight: 700;
+}
+
+/* Priority Attention Banner */
+.priority-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--clay-100);
+  border: 2px solid var(--clay-800);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-tactile-sm);
+  animation: gentlePulse 3s ease-in-out infinite;
+}
+
+.banner-badge {
+  background: var(--clay-800);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.banner-content {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  color: var(--clay-900);
+  line-height: 1.35;
+}
+
+.banner-content strong {
+  font-size: 0.92rem;
+}
+
+/* ==========================================================================
+   Plant Cards List
+   Tactile cards with distinct botanical personalities
+   ========================================================================== */
+
+.plant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Individual Plant Card */
+.plant-card {
+  background: var(--surface-bg);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-tactile-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  transition: var(--transition-tactile);
+}
+
+.plant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-tactile-lg);
+}
+
+/* Selected Card Highlight (Desktop Inspector Sync) */
+.plant-card.is-selected {
+  outline: 3px solid var(--moss-600);
+  outline-offset: 1px;
+}
+
+/* Priority / Overdue Card Styling */
+.plant-card.is-overdue {
+  border-color: var(--clay-800);
+  background: linear-gradient(180deg, #FFF9F6 0%, var(--surface-bg) 40%);
+  box-shadow: 0 4px 0 var(--clay-800);
+}
+
+.plant-card.is-overdue:hover {
+  box-shadow: 0 6px 0 var(--clay-800);
+}
+
+/* Completed Card Styling */
+.plant-card.is-completed {
+  opacity: 0.85;
+  background: var(--moss-50);
+  border-color: var(--moss-700);
+  box-shadow: 0 2px 0 var(--moss-700);
+}
+
+.plant-card.is-completed .plant-name {
+  text-decoration: line-through;
+  text-decoration-color: var(--moss-500);
+  text-decoration-thickness: 2px;
+}
+
+/* Snoozed Card Styling */
+.plant-card.is-snoozed {
+  opacity: 0.88;
+  background: var(--sun-50);
+  border-color: var(--sun-700);
+  box-shadow: 0 2px 0 var(--sun-700);
+}
+
+/* Card Main Content Row */
+.card-main {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* Plant Botanical Avatar Container */
+.plant-avatar-wrap {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: var(--radius-blob-2);
+  background: var(--surface-alt);
+  border: 2px solid var(--border-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-press);
+}
+
+.plant-avatar-svg {
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+}
+
+/* Plant Card Info */
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.plant-name {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ink-950);
+  line-height: 1.2;
+}
+
+.due-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-ink);
+  white-space: nowrap;
+}
+
+.due-badge.badge-overdue {
+  background: var(--clay-200);
+  color: var(--clay-900);
+  border-color: var(--clay-800);
+}
+
+.due-badge.badge-today {
+  background: var(--sun-300);
+  color: var(--ink-950);
+  border-color: var(--sun-700);
+}
+
+.due-badge.badge-tomorrow {
+  background: var(--surface-alt);
+  color: var(--ink-700);
+  border-color: var(--border-soft);
+}
+
+.due-badge.badge-done {
+  background: var(--moss-200);
+  color: var(--moss-900);
+  border-color: var(--moss-700);
+}
+
+.plant-species-row {
+  font-size: 0.84rem;
+  color: var(--ink-600);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.species-name {
+  font-style: italic;
+}
+
+.location-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--surface-accent);
+  padding: 1px 7px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--ink-800);
+}
+
+/* Task Callout Strip */
+.task-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 6px 10px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+  font-size: 0.84rem;
+}
+
+.task-icon-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-bg);
+  border: 1px solid var(--border-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+
+.task-description {
+  color: var(--ink-800);
+  font-weight: 600;
+  flex: 1;
+}
+
+.light-hint {
+  font-size: 0.75rem;
+  color: var(--ink-500);
+}
+
+/* Action Controls Bar */
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+  border-top: 1px dashed var(--border-soft);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-ink);
+  cursor: pointer;
+  transition: var(--transition-tactile);
+  min-height: 44px; /* Accessible 44px touch target */
+  min-width: 44px;
+  text-decoration: none;
+  background: var(--surface-bg);
+  color: var(--ink-900);
+  box-shadow: var(--shadow-tactile-sm);
+}
+
+.btn:hover {
+  transform: translateY(-1.5px);
+  box-shadow: var(--shadow-tactile-md);
+}
+
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-press);
+}
+
+/* Primary Action Button (Water / Done) */
+.btn-primary {
+  background: var(--moss-700);
+  color: #FFFFFF;
+  border-color: var(--border-ink);
+  flex: 1;
+}
+
+.btn-primary:hover {
+  background: var(--moss-800);
+}
+
+.btn-primary.is-overdue-action {
+  background: var(--clay-700);
+}
+
+.btn-primary.is-overdue-action:hover {
+  background: var(--clay-800);
+}
+
+.btn-secondary {
+  background: var(--surface-bg);
+  color: var(--ink-800);
+}
+
+.btn-secondary:hover {
+  background: var(--surface-alt);
+}
+
+.btn-icon {
+  background: var(--surface-bg);
+  border: 1.5px solid var(--border-ink);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-tactile);
+  box-shadow: var(--shadow-tactile-sm);
+  color: var(--ink-800);
+}
+
+.btn-icon:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-tactile-md);
+  background: var(--surface-accent);
+}
+
+.btn-icon:active {
+  transform: translateY(1.5px);
+  box-shadow: var(--shadow-press);
+}
+
+.btn-details-toggle {
+  font-size: 0.82rem;
+  padding: 8px 14px;
+  font-weight: 600;
+  color: var(--ink-700);
+  background: transparent;
+  border-color: var(--border-soft);
+  box-shadow: none;
+}
+
+.btn-details-toggle:hover {
+  border-color: var(--border-ink);
+  background: var(--surface-alt);
+  box-shadow: var(--shadow-tactile-sm);
+}
+
+/* Completed Badge & Undo in card */
+.completed-note {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--moss-700);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+/* ==========================================================================
+   Useful All-Done State Screen
+   ========================================================================== */
+
+.all-done-state {
+  background: var(--surface-bg);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: var(--shadow-tactile-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.all-done-artwork {
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 8px;
+}
+
+.all-done-svg {
+  width: 100%;
+  height: auto;
+}
+
+.all-done-title {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--moss-900);
+  line-height: 1.2;
+}
+
+.all-done-description {
+  font-size: 0.94rem;
+  color: var(--ink-700);
+  max-width: 480px;
+  line-height: 1.5;
+}
+
+.all-done-next-card {
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border-ink);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  width: 100%;
+  max-width: 420px;
+  text-align: left;
+}
+
+.next-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-500);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.next-plant-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.next-icon {
+  font-size: 1.5rem;
+}
+
+.next-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.next-info strong {
+  color: var(--ink-950);
+}
+
+.next-info span {
+  color: var(--ink-600);
+}
+
+.all-done-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   Right Column / Plant Detail Inspector
+   ========================================================================== */
+
+.detail-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.inspector-card {
+  background: var(--surface-bg);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-tactile-md);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 480px;
+}
+
+.inspector-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  min-height: 380px;
+  color: var(--ink-600);
+  padding: 24px;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.inspector-placeholder h3 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  color: var(--ink-800);
+  margin-bottom: 8px;
+}
+
+.inspector-placeholder p {
+  font-size: 0.88rem;
+  max-width: 240px;
+  line-height: 1.45;
+}
+
+/* Active Plant Inspector View */
+.inspector-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+  padding-bottom: 16px;
+  border-bottom: 2px dashed var(--border-soft);
+}
+
+.inspector-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-blob-1);
+  background: var(--surface-alt);
+  border: 2px solid var(--border-ink);
+  padding: 4px;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-press);
+}
+
+.inspector-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.inspector-name {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--moss-900);
+  line-height: 1.15;
+}
+
+.inspector-species {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--ink-600);
+}
+
+.inspector-badge-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.close-inspector-btn {
+  display: none; /* Shown on mobile sheet modal */
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* Care Requirements Grid */
+.inspector-specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.spec-box {
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border-ink);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.spec-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-500);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.spec-value {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink-950);
+}
+
+.sun-meter {
+  display: flex;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.sun-pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-ink);
+  background: transparent;
+}
+
+.sun-pip.active {
+  background: var(--sun-500);
+}
+
+/* Observation & Care History Timeline */
+.history-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.history-title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.history-count {
+  font-size: 0.76rem;
+  color: var(--ink-500);
+}
+
+.history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.history-timeline::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 6px;
+  width: 2px;
+  background: var(--border-soft);
+}
+
+.timeline-item {
+  position: relative;
+  font-size: 0.84rem;
+  color: var(--ink-800);
+  background: var(--surface-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--moss-600);
+  border: 1.5px solid var(--border-ink);
+}
+
+.timeline-date {
+  font-weight: 700;
+  color: var(--moss-900);
+  margin-right: 4px;
+}
+
+/* Add Observation Form */
+.add-observation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.quick-tag-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag-btn {
+  background: var(--surface-bg);
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-700);
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.tag-btn:hover {
+  background: var(--surface-accent);
+  border-color: var(--border-ink);
+}
+
+.observation-input-wrap {
+  display: flex;
+  gap: 6px;
+}
+
+.observation-input {
+  flex: 1;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  background: var(--surface-bg);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-sm);
+  color: var(--ink-900);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.observation-input:focus {
+  outline: 3px solid var(--moss-600);
+  outline-offset: 1px;
+}
+
+.btn-add-obs {
+  font-size: 0.82rem;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+/* Inspector Bottom Actions */
+.inspector-actions-bar {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 2px dashed var(--border-soft);
+}
+
+/* ==========================================================================
+   Mobile Bottom Bar & Modal Sheets
+   ========================================================================== */
+
+.mobile-bottom-bar {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface-bg);
+  border-top: 2px solid var(--border-ink);
+  padding: 8px 16px max(8px, env(safe-area-inset-bottom));
+  justify-content: space-around;
+  z-index: 100;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+}
+
+.mobile-bar-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-600);
+  gap: 2px;
+  cursor: pointer;
+  min-width: 64px;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+}
+
+.bar-icon {
+  font-size: 1.25rem;
+}
+
+.mobile-bar-btn.active {
+  color: var(--moss-900);
+  font-weight: 800;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(21, 26, 22, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+}
+
+/* Mobile Rhythm Dialog */
+.rhythm-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--surface-bg);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-tactile-lg);
+  z-index: 250;
+  width: 90%;
+  max-width: 440px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-header h2 {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--moss-900);
+}
+
+/* ==========================================================================
+   Floating Tactile Undo Toast
+   ========================================================================== */
+
+.undo-toast {
+  position: fixed;
+  bottom: 80px; /* Above mobile bar on mobile */
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-bg);
+  border: 2.5px solid var(--border-ink);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-tactile-lg);
+  padding: 12px 16px 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 300;
+  width: 92%;
+  max-width: 440px;
+  overflow: hidden;
+  animation: slideUpBounce 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.toast-indicator {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.toast-check-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-message {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-950);
+}
+
+.toast-subtext {
+  font-size: 0.78rem;
+  color: var(--ink-600);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toast-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-undo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--sun-400);
+  color: var(--ink-950);
+  border: 1.5px solid var(--border-ink);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  box-shadow: var(--shadow-tactile-sm);
+  min-height: 38px;
+  transition: var(--transition-tactile);
+}
+
+.btn-undo:hover {
+  background: var(--sun-500);
+  transform: translateY(-1px);
+}
+
+.btn-undo:active {
+  transform: translateY(1.5px);
+  box-shadow: var(--shadow-press);
+}
+
+.undo-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-toast-dismiss {
+  background: transparent;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-500);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-toast-dismiss:hover {
+  color: var(--ink-950);
+  background: var(--surface-alt);
+}
+
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: var(--moss-600);
+  width: 100%;
+  transform-origin: left;
+  animation: countdown 6s linear forwards;
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes subtleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes gentlePulse {
+  0%, 100% { border-color: var(--clay-800); }
+  50% { border-color: var(--clay-600); }
+}
+
+@keyframes slideUpBounce {
+  from {
+    transform: translate(-50%, 40px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes countdown {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* ==========================================================================
+   Desktop Responsive Breakpoints
+   Makes excellent use of wide space without stretching mobile column!
+   ========================================================================== */
+
+/* Tablet (>= 768px) */
+@media (min-width: 768px) {
+  .app-layout {
+    padding: 24px 24px 24px 24px;
+  }
+  
+  .mobile-bottom-bar {
+    display: none; /* Hide mobile bottom nav */
+  }
+
+  .undo-toast {
+    bottom: 24px;
+  }
+}
+
+/* Desktop Split Layout (>= 980px) */
+@media (min-width: 980px) {
+  .app-layout {
+    display: grid;
+    grid-template-columns: 290px 1fr 340px;
+    align-items: start;
+    gap: 24px;
+    padding: 32px;
+  }
+
+  /* Pinned Left & Right Columns */
+  .sidebar {
+    position: sticky;
+    top: 24px;
+  }
+
+  .detail-sidebar {
+    position: sticky;
+    top: 24px;
+  }
+
+  .close-inspector-btn {
+    display: none; /* Always inline in right column on desktop */
+  }
+}
+
+/* Large Displays (>= 1280px) */
+@media (min-width: 1280px) {
+  .app-layout {
+    grid-template-columns: 320px 1fr 380px;
+    gap: 28px;
+  }
+}
+
+/* Small Screens / Mobile Drawer Behavior */
+@media (max-width: 979px) {
+  .detail-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 220;
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(0.32, 1, 0.23, 1);
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .detail-sidebar.is-open {
+    transform: translateY(0);
+  }
+
+  .detail-sidebar .inspector-card {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-bottom: none;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.18);
+  }
+
+  .close-inspector-btn {
+    display: flex;
+  }
+}
+
+/* ==========================================================================
+   Reduced Motion Support
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .brand-mascot {
+    animation: none;
+  }
+
+  .priority-banner {
+    animation: none;
+  }
+
+  .toast-progress {
+    display: none;
+  }
+
+  .undo-toast {
+    animation: none;
+  }
+
+  .detail-sidebar {
+    transition: none;
+  }
+}

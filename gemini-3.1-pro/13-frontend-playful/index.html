@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moss — Household Plant Companion</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Accessibility Skip Link -->
+  <a href="#main-queue" class="skip-link">Skip to care queue</a>
+
+  <!-- App Shell -->
+  <div class="app-layout">
+    
+    <!-- Left Column / Companion Sidebar on Desktop -->
+    <aside class="sidebar" aria-label="Companion overview">
+      <header class="app-brand">
+        <div class="brand-mascot" aria-hidden="true">
+          <!-- Playful Marimo Moss Ball Mascot SVG -->
+          <svg class="mascot-svg" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="36" cy="62" rx="24" ry="6" fill="#1C231F" opacity="0.12" />
+            <!-- Fluffy moss body -->
+            <path d="M36 14 C48 14 60 23 60 38 C60 52 48 60 36 60 C22 60 12 52 12 38 C12 23 22 14 36 14Z" fill="#3D6A4B" />
+            <path d="M38 18 C48 18 56 26 56 38 C56 49 47 56 36 56 C25 56 16 49 16 38 C16 26 26 18 38 18Z" fill="#4D845D" />
+            <!-- Mossy texture tufts -->
+            <path d="M22 28 C20 22 26 20 28 24" stroke="#68A57A" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M48 24 C52 20 56 26 50 29" stroke="#68A57A" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M18 42 C14 45 18 50 22 47" stroke="#68A57A" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M52 44 C56 47 52 52 48 49" stroke="#68A57A" stroke-width="2.5" stroke-linecap="round" />
+            <!-- Tiny head sprout -->
+            <path d="M36 14 C36 8 32 4 28 5 C28 9 32 12 36 14 Z" fill="#9CCF82" />
+            <path d="M36 14 C38 7 44 5 45 9 C43 12 39 13 36 14 Z" fill="#7EBB63" />
+            <!-- Friendly face -->
+            <circle cx="29" cy="38" r="3" fill="#1C231F" />
+            <circle cx="43" cy="38" r="3" fill="#1C231F" />
+            <ellipse cx="28" cy="37" rx="1" ry="1" fill="#FFFFFF" />
+            <ellipse cx="42" cy="37" rx="1" ry="1" fill="#FFFFFF" />
+            <!-- Rosy warm cheeks -->
+            <ellipse cx="24" cy="42" rx="3.5" ry="2" fill="#E88B68" opacity="0.6" />
+            <ellipse cx="48" cy="42" rx="3.5" ry="2" fill="#E88B68" opacity="0.6" />
+            <!-- Gentle smile -->
+            <path d="M33 42 C34.5 45 37.5 45 39 42" stroke="#1C231F" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title-wrap">
+            <h1 class="brand-name">Moss</h1>
+            <span class="badge-tag">companion</span>
+          </div>
+          <p class="brand-tagline">Gentle household plant-care</p>
+        </div>
+      </header>
+
+      <!-- Daily Botanical Whisper Card -->
+      <section class="companion-note" aria-labelledby="companion-greeting">
+        <div class="note-header">
+          <span class="note-icon" aria-hidden="true">🌱</span>
+          <h2 id="companion-greeting" class="note-title">Good morning, grower</h2>
+        </div>
+        <p class="note-body" id="companion-message">
+          Four quiet green lives under your roof today. Frida's fronds are asking for moisture first.
+        </p>
+        <div class="companion-quick-stats" aria-label="Care progress summary">
+          <div class="stat-pill stat-overdue" id="stat-overdue-pill">
+            <span class="stat-num" id="stat-overdue-count">1</span>
+            <span class="stat-label">overdue</span>
+          </div>
+          <div class="stat-pill stat-today" id="stat-today-pill">
+            <span class="stat-num" id="stat-today-count">2</span>
+            <span class="stat-label">due today</span>
+          </div>
+          <div class="stat-pill stat-done" id="stat-done-pill">
+            <span class="stat-num" id="stat-done-count">0</span>
+            <span class="stat-label">completed</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Compact Weekly Rhythm Visualization -->
+      <section class="weekly-rhythm-card" aria-labelledby="rhythm-heading">
+        <div class="rhythm-card-header">
+          <div class="rhythm-titles">
+            <h2 id="rhythm-heading" class="rhythm-title">Weekly Rhythm</h2>
+            <span class="rhythm-subtitle">Care cadence across 7 days</span>
+          </div>
+          <span class="rhythm-total-badge" id="rhythm-total-label">16 tasks</span>
+        </div>
+
+        <div class="rhythm-chart" id="rhythm-chart" role="region" aria-label="Care load per day of week">
+          <!-- Injected via JavaScript from PLANTS.json week array [1,3,2,4,2,1,3] -->
+        </div>
+
+        <p class="rhythm-caption" id="rhythm-caption">
+          <strong>Thursday</strong> is your peak watering day (4 tasks). Friday eases up gently.
+        </p>
+      </section>
+
+      <!-- Room Filter Badges -->
+      <nav class="room-nav" aria-label="Filter plants by room">
+        <h3 class="nav-heading">Filter by Room</h3>
+        <div class="room-chips" role="toolbar" aria-label="Location filters">
+          <button type="button" class="chip active" data-room="all" aria-pressed="true">All Rooms (4)</button>
+          <button type="button" class="chip" data-room="Bathroom" aria-pressed="false">Bathroom (1)</button>
+          <button type="button" class="chip" data-room="Bookshelf" aria-pressed="false">Bookshelf (1)</button>
+          <button type="button" class="chip" data-room="South window" aria-pressed="false">South window (1)</button>
+          <button type="button" class="chip" data-room="Bedroom" aria-pressed="false">Bedroom (1)</button>
+        </div>
+      </nav>
+      
+      <!-- Footer note -->
+      <footer class="sidebar-footer">
+        <p class="footer-tip">Moss runs completely offline. No tracking, no hurry.</p>
+      </footer>
+    </aside>
+
+    <!-- Center Column / Main Care Queue -->
+    <main id="main-queue" class="main-queue" tabindex="-1">
+      
+      <!-- Queue Header with Status & Filter Tabs -->
+      <header class="queue-header">
+        <div class="queue-heading-group">
+          <div class="queue-title-row">
+            <h2 class="queue-heading">Today's Care Queue</h2>
+            <span class="queue-counter" id="active-queue-counter" aria-label="3 items remaining">3 left</span>
+          </div>
+          <p class="queue-subtext">Arranged with love, putting overdue plants first so nothing wilts.</p>
+        </div>
+
+        <!-- Filter toggle tabs -->
+        <div class="queue-tabs" role="tablist" aria-label="Care queue views">
+          <button type="button" role="tab" id="tab-todo" class="tab-btn active" aria-selected="true" aria-controls="plant-list-panel" data-filter="todo">
+            To Do (<span id="todo-tab-count">3</span>)
+          </button>
+          <button type="button" role="tab" id="tab-all" class="tab-btn" aria-selected="false" aria-controls="plant-list-panel" data-filter="all">
+            All Plants (4)
+          </button>
+          <button type="button" role="tab" id="tab-completed" class="tab-btn" aria-selected="false" aria-controls="plant-list-panel" data-filter="completed">
+            Done (<span id="done-tab-count">0</span>)
+          </button>
+        </div>
+      </header>
+
+      <!-- Urgent Attention Banner (Shown dynamically when overdue tasks exist) -->
+      <section class="priority-banner" id="priority-banner" role="alert" aria-live="polite">
+        <div class="banner-badge">Urgent Care</div>
+        <div class="banner-content">
+          <strong>Frida the Boston Fern is 2 days overdue!</strong>
+          <span>Her soil dries quickly in bathroom air. A thorough drink recommended.</span>
+        </div>
+      </section>
+
+      <!-- Plant Cards Queue Container -->
+      <div id="plant-list-panel" class="plant-list" role="region" aria-label="Plants list" aria-live="polite">
+        <!-- Rendered by app.js -->
+      </div>
+
+      <!-- Useful All-Done State Screen (Hidden when tasks remain, revealed when all done) -->
+      <section id="all-done-state" class="all-done-state hidden" aria-labelledby="all-done-heading">
+        <div class="all-done-artwork" aria-hidden="true">
+          <!-- Whimsical Inline SVG of content, hydrated plants basking together -->
+          <svg class="all-done-svg" viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Warm floor line -->
+            <path d="M20 170 H300" stroke="#2C352E" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="4 6" />
+            <!-- Soft sun glow -->
+            <circle cx="160" cy="50" r="38" fill="#FDF1D6" />
+            <circle cx="160" cy="50" r="26" fill="#F8DE9E" opacity="0.7" />
+            <!-- Gentle sun rays -->
+            <path d="M160 8 V20 M160 80 V92 M118 50 H130 M190 50 H202 M130 20 L138 28 M182 72 L190 80 M130 80 L138 72 M182 28 L190 20" stroke="#E5A638" stroke-width="2.5" stroke-linecap="round" />
+            
+            <!-- Happy Frida pot -->
+            <path d="M50 170 L55 130 H85 L90 170 Z" fill="#D2744B" stroke="#2C352E" stroke-width="2" />
+            <!-- Fern fronds arching contentedly -->
+            <path d="M70 130 C45 105 30 115 25 125" stroke="#3D6A4B" stroke-width="3" stroke-linecap="round" fill="none" />
+            <path d="M70 130 C60 90 75 80 80 85" stroke="#4A7C59" stroke-width="3" stroke-linecap="round" fill="none" />
+            <path d="M70 130 C90 100 110 105 115 120" stroke="#3D6A4B" stroke-width="3" stroke-linecap="round" fill="none" />
+            
+            <!-- Resting watering can -->
+            <path d="M135 170 L140 140 H180 L185 170 Z" fill="#437785" stroke="#2C352E" stroke-width="2" />
+            <path d="M140 145 C125 140 120 155 138 162" stroke="#2C352E" stroke-width="2" fill="none" />
+            <path d="M175 145 C190 130 205 135 210 140" stroke="#2C352E" stroke-width="2.5" fill="none" />
+            <circle cx="212" cy="142" r="3" fill="#6BB0BE" />
+            <!-- Resting droplets -->
+            <path d="M218 152 C218 155 215 157 213 157 C211 157 208 155 211 150 C214 146 218 150 218 152Z" fill="#6BB0BE" />
+
+            <!-- Happy Dot cactus -->
+            <path d="M230 170 L234 136 H266 L270 170 Z" fill="#C9945F" stroke="#2C352E" stroke-width="2" />
+            <ellipse cx="250" cy="115" rx="14" ry="22" fill="#63986F" stroke="#2C352E" stroke-width="2" />
+            <ellipse cx="240" cy="95" rx="8" ry="12" fill="#75A881" stroke="#2C352E" stroke-width="2" />
+            <ellipse cx="260" cy="98" rx="7" ry="10" fill="#75A881" stroke="#2C352E" stroke-width="2" />
+            <!-- Little flower -->
+            <circle cx="238" cy="85" r="3.5" fill="#E86E6E" />
+
+            <!-- Little happy heart sparkle -->
+            <path d="M160 115 C160 112 156 110 154 113 C152 110 148 112 148 115 C148 119 154 122 154 122 C154 122 160 119 160 115Z" fill="#D9534F" />
+          </svg>
+        </div>
+
+        <h3 id="all-done-heading" class="all-done-title">All quiet on the green front!</h3>
+        <p class="all-done-description">
+          Every companion due for care today has been nurtured. Soil is checked, leaves are turned, and everyone is basking in the quiet light.
+        </p>
+
+        <div class="all-done-next-card">
+          <span class="next-label">Next on deck:</span>
+          <div class="next-plant-row">
+            <span class="next-icon" aria-hidden="true">🌿</span>
+            <div class="next-info">
+              <strong>Drama (Calathea orbifolia)</strong>
+              <span>Scheduled for a gentle mist tomorrow morning.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="all-done-actions">
+          <button type="button" class="btn btn-secondary" id="btn-view-completed">
+            View completed log
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-reset-demo">
+            Reset demo queue
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Right Column: Interactive Plant Inspector & Care Diary (Desktop Split + Mobile Bottom Sheet / Modal) -->
+    <aside class="detail-sidebar" id="plant-inspector-container" aria-label="Plant details and history">
+      <div class="inspector-card" id="inspector-card">
+        <!-- Rendered by app.js based on selected plant -->
+        <div class="inspector-placeholder" id="inspector-placeholder">
+          <div class="placeholder-icon" aria-hidden="true">🪴</div>
+          <h3>Select a plant</h3>
+          <p>Tap any card in the queue to inspect its light preference, moisture requirements, and observation history.</p>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Mobile Floating Quick Bar (Visible on small screens) -->
+  <div class="mobile-bottom-bar" aria-label="Mobile quick navigation">
+    <button type="button" class="mobile-bar-btn active" id="mob-btn-queue" aria-pressed="true">
+      <span class="bar-icon" aria-hidden="true">🌱</span>
+      <span class="bar-label">Queue (<span id="mob-queue-count">3</span>)</span>
+    </button>
+    <button type="button" class="mobile-bar-btn" id="mob-btn-rhythm" aria-pressed="false">
+      <span class="bar-icon" aria-hidden="true">📊</span>
+      <span class="bar-label">Rhythm</span>
+    </button>
+    <button type="button" class="mobile-bar-btn" id="mob-btn-allplants" aria-pressed="false">
+      <span class="bar-icon" aria-hidden="true">🪴</span>
+      <span class="bar-label">Plants (4)</span>
+    </button>
+  </div>
+
+  <!-- Modal / Drawer Backdrop for Mobile Plant Inspector -->
+  <div class="modal-backdrop hidden" id="modal-backdrop" aria-hidden="true"></div>
+
+  <!-- Mobile Rhythm Modal Dialog -->
+  <dialog class="rhythm-modal" id="rhythm-modal" aria-labelledby="mob-rhythm-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="mob-rhythm-title">Weekly Rhythm</h2>
+        <button type="button" class="btn-icon close-modal-btn" id="close-rhythm-modal" aria-label="Close weekly rhythm dialog">✕</button>
+      </div>
+      <div id="mob-rhythm-body">
+        <!-- Cloned or rendered weekly rhythm view -->
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Floating Undo Toast Notification -->
+  <div id="undo-toast" class="undo-toast hidden" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-indicator" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" class="toast-check-icon">
+        <circle cx="10" cy="10" r="9" fill="#3D6A4B" />
+        <path d="M6 10 L9 13 L14 7" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+    <div class="toast-content">
+      <span class="toast-message" id="toast-message">Watered Frida</span>
+      <span class="toast-subtext" id="toast-subtext">She looks noticeably perkier!</span>
+    </div>
+    <div class="toast-actions">
+      <button type="button" class="btn-undo" id="btn-undo" aria-label="Undo last action">
+        <svg viewBox="0 0 16 16" fill="none" class="undo-icon" aria-hidden="true">
+          <path d="M3 7 H11 C13.2 7 15 8.8 15 11 C15 13.2 13.2 15 11 15 H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M6 4 L3 7 L6 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Undo
+      </button>
+      <button type="button" class="btn-toast-dismiss" id="btn-toast-dismiss" aria-label="Dismiss notification">✕</button>
+    </div>
+    <!-- 6-second countdown progress bar -->
+    <div class="toast-progress" id="toast-progress" aria-hidden="true"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
