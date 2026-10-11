@@ -1,0 +1,430 @@
+{
+ "note": "First fourteen-way grading of task 11 (2026-10-11), superseded: Gemini 3.1 Pro's submission here is the cut-off first attempt (no RESPONSE.md; agy ended the session on a permission it can't prompt for headless). Task 11 was re-run for Gemini 3.1 Pro and re-graded by a fresh blind grader with new letters; scores.json holds the re-grade.",
+ "blind_key": {
+  "A": "mcode-m3",
+  "B": "gemini-3.1-pro",
+  "C": "gemini-3.8-flash",
+  "D": "haiku-5.5",
+  "E": "muse",
+  "F": "mcode-m3.1-flash",
+  "G": "gpt-6.1-sol",
+  "H": "opus-5.5",
+  "I": "sonnet-5.5",
+  "J": "mimo",
+  "K": "gpt-6-luna",
+  "L": "grok-4.7",
+  "M": "fable-5.1",
+  "N": "gpt-6-astra"
+ },
+ "task": {
+  "rubric": {
+   "visual hierarchy/taste": 3,
+   "responsive design": 2,
+   "interaction and task completion": 2,
+   "accessibility": 2,
+   "implementation quality": 1
+  },
+  "models": {
+   "mcode-m3": {
+    "criteria": {
+     "visual hierarchy/taste": 2.0,
+     "responsive design": 1.0,
+     "interaction and task completion": 1.5,
+     "accessibility": 1.5,
+     "implementation quality": 0.5
+    },
+    "total": 6.5,
+    "summary": "Dark, compact console with mono numerics, a teal accent, a side detail panel with a timeline, and acknowledge that works. Two real defects pull it down: the throughput chart draws its x-axis labels twice, and on mobile the severity/search filters never hide rows.",
+    "strengths": [
+     "Compact desktop layout with numbers in monospace and severity badges that are easy to tell apart",
+     "Acknowledge disables the button, adds 'Acknowledged by Mira Okafor \u00b7 time', and updates the row status",
+     "Skip link, aria-live regions, th[scope] and prefers-reduced-motion are all present"
+    ],
+    "weaknesses": [
+     "Throughput chart puts axis labels inside the SVG and again in HTML below it; '0/m' overlaps '24:00' (A-desktop.png)",
+     "At 390 px, filtering to 'zzzz' sets the count to 0 and shows the empty state, but all 4 incident cards stay visible: `.table tr {display:block}` (styles.css:1053) overrides `row.hidden` (app.js:293)",
+     "Mobile puts the detail panel above the incident list",
+     "37 of 98 visible text nodes are below 4.5:1 contrast (muted labels at 11-12 px)"
+    ],
+    "evidence": [
+     "Playwright mobile: filled the search with 'zzzz', and the page text still contained INC-2841/2839/2837/2832 next to 'No incidents match your filters' (out/A-mobile-empty2.png)",
+     "Desktop harness: search, severity filter, row select and acknowledge all worked; no horizontal overflow at 1440 or 390",
+     "Contrast scan: 37/98 below 4.5:1"
+    ],
+    "letter": "A"
+   },
+   "gemini-3.1-pro": {
+    "criteria": {
+     "visual hierarchy/taste": 1.5,
+     "responsive design": 1.0,
+     "interaction and task completion": 1.75,
+     "accessibility": 1.25,
+     "implementation quality": 0.5
+    },
+    "total": 6.0,
+    "summary": "Neon 'telemetry console' with a lot of invented detail (sparklines, runbooks, a notes box, sort, keyboard shortcuts). The interactions work, but RESPONSE.md, a required deliverable, is missing; the look is busy and uses several accents; and on mobile the detail drawer is open on load and covers the dashboard.",
+    "strengths": [
+     "Many working interactions: severity buttons, status/service selects, sortable headers with aria-sort, acknowledge with toast and timeline entry, Escape closes the panel",
+     "Detailed ARIA: aria-sort on 6 headers, role=status regions, skip link"
+    ],
+    "weaknesses": [
+     "RESPONSE.md is absent from the submission directory (a required deliverable)",
+     "At 390 px the detail drawer covers the page on first load (B-mobile.png), the '1 CRITICAL INCIDENT ACTIVE' chip is clipped at the right edge, and the table scrolls sideways inside its container",
+     "Visual direction goes against the brief: cyan/red/green/purple accents, gradient bars plus a line, neon glow buttons, 8-9 px labels",
+     "66 of 191 text nodes are below 4.5:1 contrast; no prefers-reduced-motion rule"
+    ],
+    "evidence": [
+     "`find B -type f`: styles.css, index.html, app.js, TASK.md, DATA.json, no RESPONSE.md",
+     "Playwright: search 'zzzz' shows 'No incidents match active criteria'; clicking the 'High' button left only EU retry queue growth; acknowledge produced 'Incident INC-2837 successfully acknowledged'",
+     "Contrast scan 66/191 below 4.5:1; the reduced-motion media rule was not found"
+    ],
+    "letter": "B"
+   },
+   "gemini-3.8-flash": {
+    "criteria": {
+     "visual hierarchy/taste": 1.75,
+     "responsive design": 1.5,
+     "interaction and task completion": 2.0,
+     "accessibility": 1.25,
+     "implementation quality": 0.75
+    },
+    "total": 7.25,
+    "summary": "A sibling of B's neon console, better organized: a degraded banner, an SLO-ceiling chart, a sortable table, and a rich detail panel with acknowledge and resolve. Mobile uses an Incidents / Selected Detail tab switch that opens the detail automatically on selection. Visually loud for a calm control room, it has no h1, and many small low-contrast labels.",
+    "strengths": [
+     "Selecting a row on mobile switches to the 'Selected Detail' tab, and acknowledge works there (out/C-mobile-selected.png)",
+     "Full filter set (search, severity segmented control, service, status), sort with aria-sort, and empty state 'No matching incidents' with a clear button",
+     "Arrow-key row navigation and an 'A' shortcut for acknowledge"
+    ],
+    "weaknesses": [
+     "No <h1> on the page",
+     "Header clock shows the real time while the chart axis says 'NOW (19:38)', which contradicts it",
+     "Mobile table is cut off at the SERVICE column and scrolls inside its container; chart axis labels are microscopic at 390 px",
+     "50 of 140 text nodes are below 4.5:1 contrast; no prefers-reduced-motion"
+    ],
+    "evidence": [
+     "Structure probe: h1=[]; 7 aria-sort headers; 5 live regions",
+     "Playwright keyboard: Tab reached a row after 32 presses, Enter selected it, ArrowDown moved to the next row; severity 'High' filter left one row",
+     "Contrast scan 50/140"
+    ],
+    "letter": "C"
+   },
+   "haiku-5.5": {
+    "criteria": {
+     "visual hierarchy/taste": 2.25,
+     "responsive design": 1.75,
+     "interaction and task completion": 2.0,
+     "accessibility": 1.75,
+     "implementation quality": 1.0
+    },
+    "total": 8.75,
+    "summary": "Calm, readable dark dashboard: grouped summary metrics with 'Favorable/Unfavorable' trend wording, a plain grey bar chart with only the latest hour in the accent colour, a four-filter incident table, and a fixed detail column with acknowledge. Taste is restrained and correct, though less dense, and the detail panel is sparse.",
+    "strengths": [
+     "Restrained palette with one accent; trend text spells out favorable/unfavorable instead of relying on colour",
+     "Four labelled filters (search, severity, service, status, owner), 'Showing 0 of 4' and 'No incidents match these filters' with clear buttons",
+     "Acknowledge disables the button, writes 'Acknowledged by you at 20:00:59', updates the '3 unacknowledged' count and announces through aria-live",
+     "Mobile turns rows into readable cards with no overflow; the table has a caption and th[scope]"
+    ],
+    "weaknesses": [
+     "Large native selects and generous padding make it less dense than a control room needs",
+     "Detail panel has no timeline or context beyond the four fields",
+     "h1 is just 'Relay'"
+    ],
+    "evidence": [
+     "Harness: search, severity, select and ack all worked on both viewports; keyboard Tab reached the row button in 11 steps and Enter selected it",
+     "Contrast scan 24/150 below 4.5:1, mostly chart bar labels",
+     "D-mobile-full.png: cards stack cleanly and detail follows the list"
+    ],
+    "letter": "D"
+   },
+   "muse": {
+    "criteria": {
+     "visual hierarchy/taste": 2.5,
+     "responsive design": 1.0,
+     "interaction and task completion": 2.0,
+     "accessibility": 1.75,
+     "implementation quality": 0.75
+    },
+    "total": 8.0,
+    "summary": "Clean light dashboard with good hierarchy on desktop: a highlighted peak bar, a detail panel with signals and a timeline, and acknowledge plus copy ID. The mobile card layout is broken: the SERVICE and AGE cells occupy the same box, so 'payments-api' and '12m' print over each other on every card.",
+    "strengths": [
+     "Strong desktop composition with one blue accent, tabular numerals, and a peak-hour annotation",
+     "Detail panel has signals, a timeline, playbook reference, acknowledge and Copy ID; ack disables and announces",
+     "Skip link, caption, role=status, reduced-motion rule, theme toggle"
+    ],
+    "weaknesses": [
+     "At 390 px the SERVICE td (x41,y452,w309) and AGE td (x41,y452,w207) overlap, so the text collides on every card (out/E-mobile-rowview.png)",
+     "Mobile throughput chart shrinks to illegible axis text; the top tab nav is cut off at the right",
+     "'\u00b7 vs prev hr' and similar muted text is about 3.07:1 contrast"
+    ],
+    "evidence": [
+     "Playwright bounding boxes of the first incident row's tds on mobile show overlapping SERVICE and AGE cells",
+     "Harness: empty state 'No incidents match these filters' with clear; ack produced 'Acknowledged by D. Reyes (you)'",
+     "Contrast scan 13/171"
+    ],
+    "letter": "E"
+   },
+   "mcode-m3.1-flash": {
+    "criteria": {
+     "visual hierarchy/taste": 2.75,
+     "responsive design": 1.75,
+     "interaction and task completion": 2.0,
+     "accessibility": 1.75,
+     "implementation quality": 1.0
+    },
+    "total": 9.25,
+    "summary": "The most convincing control room: dense dark layout, mono numerals, sparklines, a throughput area chart with a peak-budget line and range toggle, a severity-chip table, and a side detail panel with acknowledge, assign-to-me, runbook and activity log. Mobile turns into clean cards with a bottom tab bar. Polished and consistent, with very few contrast problems.",
+    "strengths": [
+     "Desktop hierarchy is clear: status bar with degraded state and on-call, four metric tiles, chart, and detail panel beside it; one blue accent, with severity colour kept for meaning only",
+     "Severity checkbox chips, status/service selects and a sort select all work; the empty state names the search and offers 'Clear all filters'",
+     "Acknowledge stops paging, records owner and time, updates '1 acknowledged', and announces 'INC-2837 acknowledged. Paging stopped'",
+     "Only 1 text node below 4.5:1; tables have captions; chart has keyboard stepping and a screen-reader table"
+    ],
+    "weaknesses": [
+     "Invents nav sections (Deploys, SLOs, On-call) and sparkline histories that DATA.json does not provide",
+     "On a 390 px phone the fixed bottom nav covers part of the content while scrolling",
+     "Severity chips are checkboxes without a group 'All' reset"
+    ],
+    "evidence": [
+     "Playwright: checking 'high' left only EU retry; adding 'critical' showed 2 rows; no overflow at 390",
+     "Harness ack: button became 'Acknowledged 20:01:22 [disabled]' and the activity log gained 'Acknowledged \u2014 paging stopped \u00b7 A. Rivera'",
+     "Contrast scan 1/185 (a decorative '/')"
+    ],
+    "letter": "F"
+   },
+   "gpt-6.1-sol": {
+    "criteria": {
+     "visual hierarchy/taste": 2.0,
+     "responsive design": 1.75,
+     "interaction and task completion": 2.0,
+     "accessibility": 1.5,
+     "implementation quality": 1.0
+    },
+    "total": 8.25,
+    "summary": "Refined light editorial design (green accent, mono numbers, explorable bar chart, persisted acknowledgement with undo). It ignores the brief's density requirement: a large 'Operations overview' heading, incident rows 69 px tall with 9-10 px text, and a lot of whitespace.",
+    "strengths": [
+     "Acknowledgement is stored in localStorage with 'Undo acknowledgment' and an honest note: 'Saved on this device. The incident remains active.'",
+     "Chart hours can be explored with arrow keys, and there is a hourly-values disclosure table",
+     "Strong empty state ('No results for \u201czzzz\u201d with these filters\u2026'), skip link, caption, and visible 3 px focus outline"
+    ],
+    "weaknesses": [
+     "Table text is 9-10 px in 69 px-tall rows: low density and hard to read for an expert console",
+     "Large page heading and roomy cards go against 'compact spacing' and 'avoid giant headings'",
+     "Chart labels the last hour '24:00'"
+    ],
+    "evidence": [
+     "Computed styles: EU retry row height 69 px, font sizes 9-11 px",
+     "Harness: ack gave 'Incident acknowledged [disabled]' plus an undo link; severity select filtered to one row",
+     "Contrast scan 3/192"
+    ],
+    "letter": "G"
+   },
+   "opus-5.5": {
+    "criteria": {
+     "visual hierarchy/taste": 2.5,
+     "responsive design": 1.0,
+     "interaction and task completion": 1.75,
+     "accessibility": 2.0,
+     "implementation quality": 0.75
+    },
+    "total": 8.0,
+    "summary": "Excellent dense light desktop: a degraded status bar, metrics marked better/worse, a capacity chart with scale-out threshold, severity toggles with counts, and a detail panel with acknowledge and undo. The 390 px incident layout fails: the ID/title column collapses to about 37 px, so titles truncate to 'Card aut\u2026 tim\u2026'.",
+    "strengths": [
+     "Desktop is dense and well organised, with tabular numbers and severity shown by glyph plus colour",
+     "Zero text nodes below 4.5:1; captions on both tables, aria-sort, role=status announcements",
+     "Acknowledge (offered for open incidents) records 'Acknowledged by You at 11:04 UTC' and offers undo"
+    ],
+    "weaknesses": [
+     "At 390 px the first incident cell is 37 px wide, so titles wrap to one-word ellipses (out/H-mobile-rowview.png)",
+     "The acknowledge button is hidden for investigating/monitoring incidents, which some operators will read as missing",
+     "Uses an orange highlight for the peak bar alongside the blue accent"
+    ],
+    "evidence": [
+     "Playwright row geometry on mobile: td[1] width 37 px containing 'INC-2841 | Card authorization'",
+     "Checkbox chips: unchecking high hid EU retry; checking only high left EU retry",
+     "Contrast scan 0/175"
+    ],
+    "letter": "H"
+   },
+   "sonnet-5.5": {
+    "criteria": {
+     "visual hierarchy/taste": 2.5,
+     "responsive design": 1.75,
+     "interaction and task completion": 2.0,
+     "accessibility": 2.0,
+     "implementation quality": 1.0
+    },
+    "total": 9.25,
+    "summary": "Polished light dashboard: compact metrics with Improving/Worsening text, a bar chart with mean line and a Chart/Table toggle, severity chips plus Unassigned/Unacknowledged quick filters, and a full-height detail column with impact, next step, timeline, and acknowledge with undo. Mobile opens the detail as a full-screen sheet.",
+    "strengths": [
+     "Chart/Table toggle and arrow-key bar inspection give the chart an accessible alternative",
+     "Acknowledge logs 'Acknowledged by J. Rivera at 11:04 UTC', adds a timeline entry, updates '3 unacknowledged', and supports undo",
+     "Zero text nodes below 4.5:1; two skip links, captions, aria-sort, aria-pressed chips, theme toggle"
+    ],
+    "weaknesses": [
+     "The status bar is mostly hidden on mobile (only the critical chip and theme toggle remain)",
+     "On mobile the severity chips wrap to two rows and the last chip sits under the fixed bottom nav",
+     "The h1 is a breadcrumb ('Relay / Operations overview')"
+    ],
+    "evidence": [
+     "Playwright desktop and mobile: clicked INC-2837 then Acknowledge; the text gained 'Undo acknowledgement' and 'Acknowledged by J. Rivera' (out/I-mobile-acked2.png)",
+     "Keyboard: Tab reached the row button in 26 steps; Enter selected; ArrowDown moved to the next row",
+     "Contrast scan 0/160"
+    ],
+    "letter": "I"
+   },
+   "mimo": {
+    "criteria": {
+     "visual hierarchy/taste": 1.75,
+     "responsive design": 1.5,
+     "interaction and task completion": 1.75,
+     "accessibility": 1.25,
+     "implementation quality": 0.75
+    },
+    "total": 7.0,
+    "summary": "Dark mono-styled console with a functional table, filters and acknowledge. Visible flaws: duplicated chart axis labels, an 'All systems nominal' pill next to a critical incident, a clipped 'HROUGHPUT' rail label, and a detail panel stacked under the table, so on desktop it is below the fold.",
+    "strengths": [
+     "Filters (severity/status/service/search) plus reset work; empty state 'NO INCIDENTS MATCH' with clear",
+     "Acknowledge records 'Acknowledged by J. Okonkwo \u2026' with a toast; Enter moves focus into the detail",
+     "Mobile cards are readable with no overflow"
+    ],
+    "weaknesses": [
+     "Chart x-axis labels appear twice (inside and below the SVG)",
+     "Status pill says 'All systems nominal' while INC-2841 is critical",
+     "Nav rail label is clipped to 'HROUGHPUT' at 1440 px",
+     "Detail panel sits under the table with nothing selected by default, so selection needs a scroll to see results",
+     "29 of 99 text nodes below 4.5:1; no prefers-reduced-motion; no aside/complementary landmark"
+    ],
+    "evidence": [
+     "J-desktop.png shows the doubled axis labels and the clipped rail label",
+     "Harness ack: 'Acknowledged [disabled]' plus toast 'INC-2837 acknowledged \u00b7 owner A. Silva'",
+     "Contrast scan 29/99"
+    ],
+    "letter": "J"
+   },
+   "gpt-6-luna": {
+    "criteria": {
+     "visual hierarchy/taste": 1.75,
+     "responsive design": 1.25,
+     "interaction and task completion": 1.5,
+     "accessibility": 1.25,
+     "implementation quality": 0.5
+    },
+    "total": 6.25,
+    "summary": "Editorial light design with a dark green rail, but low density: the throughput chart is huge, the heading is large, and the table text is 8-10 px. A CSS bug shows the 'Select an incident' placeholder and the selected incident's detail together at all times, on desktop and mobile.",
+    "strengths": [
+     "Clean metric tiles in monospace, and the chart scaled to the events/min figure",
+     "Acknowledge works ('Acknowledged by AR just now'), with an empty state and clear filters"
+    ],
+    "weaknesses": [
+     "`.detail-empty` overrides `[hidden]`, so the 'Select an incident' placeholder renders above the active detail (K-desktop-full.png, out/K-mobile-selected.png)",
+     "Table text is 8-10 px in 58 px-tall rows; the chart takes about 500 px of height: wasteful for an expert console",
+     "41 of 120 text nodes below 4.5:1"
+    ],
+    "evidence": [
+     "index.html:137 `detail-empty ... hidden` is still visible in screenshots after selection",
+     "Computed font sizes on the incident row: 8-10 px",
+     "Contrast scan 41/120"
+    ],
+    "letter": "K"
+   },
+   "grok-4.7": {
+    "criteria": {
+     "visual hierarchy/taste": 2.5,
+     "responsive design": 1.75,
+     "interaction and task completion": 2.0,
+     "accessibility": 1.75,
+     "implementation quality": 1.0
+    },
+    "total": 9.0,
+    "summary": "Sharp, restrained light console: square edges, one teal accent, a semantic-HTML bar chart with min/max/mean/last stats, a compact sortable table, and a detail panel with clear acknowledge copy and undo. Dense and honest, though plain and a little stark.",
+    "strengths": [
+     "Closest match to 'compact, restrained': 36 px rows at 13 px, no decorative chrome, severity shown by shape plus colour",
+     "Roving-tabindex rows (Tab to the selected row, Arrow keys move, Enter opens), plus chart hours as buttons with arrow keys",
+     "Acknowledge records 'Acknowledged by Desk 4 at \u2026 UTC. Severity is unchanged.' with undo; the empty state names the query"
+    ],
+    "weaknesses": [
+     "Plain styling: the nav rail and headings feel bare",
+     "Mobile cards use labelled stacked fields, so they get long",
+     "h1 is just 'Relay'"
+    ],
+    "evidence": [
+     "Keyboard: Tab to row, ArrowDown, Enter showed 'EU retry queue growth' in the detail",
+     "Contrast scan 1/135 (disabled reset button)",
+     "Harness: severity select left one row; no overflow at 390"
+    ],
+    "letter": "L"
+   },
+   "fable-5.1": {
+    "criteria": {
+     "visual hierarchy/taste": 2.5,
+     "responsive design": 2.0,
+     "interaction and task completion": 2.0,
+     "accessibility": 1.75,
+     "implementation quality": 1.0
+    },
+    "total": 9.25,
+    "summary": "Polished light dashboard: a degraded pill in the status bar, compact metrics, a capacity bar chart with stats and a data-table disclosure, segmented severity filters with counts, and a detail panel with acknowledge, copy ID and undo. The best mobile layout here: one-line incident rows and a bottom-sheet detail.",
+    "strengths": [
+     "Mobile rows are compact (severity, ID, age, status on one line), and the detail opens as a bottom sheet (out/M-mobile-selected.png)",
+     "Roving tabindex with arrow keys; '/' focuses search; useful empty state ('4 active incidents are hidden by the current filters')",
+     "Zero text nodes below 4.5:1; captions, aria-sort, status regions, reduced-motion and theme handling"
+    ],
+    "weaknesses": [
+     "No <h1>",
+     "On desktop the detail column is a mostly empty 'No incident selected' card at load, leaving the right side blank",
+     "Chart units ('% of provisioned capacity') are invented on top of the data"
+    ],
+    "evidence": [
+     "Harness ack: 'Acknowledged [disabled]', '4 active \u00b7 3 unacknowledged', 'Undo'",
+     "Keyboard: Tab to row, ArrowDown, Enter opened INC-2839",
+     "Contrast scan 0/162"
+    ],
+    "letter": "M"
+   },
+   "gpt-6-astra": {
+    "criteria": {
+     "visual hierarchy/taste": 2.0,
+     "responsive design": 1.75,
+     "interaction and task completion": 2.0,
+     "accessibility": 1.5,
+     "implementation quality": 1.0
+    },
+    "total": 8.25,
+    "summary": "Same editorial green family as G: tidy and accessible, with acknowledgement stored locally and an offline verify.mjs (19 checks pass). It is not a dense control room: a large heading, marketing tagline, 72 px rows with 9-10 px text, and a tall chart.",
+    "strengths": [
+     "Acknowledgement copy is honest ('does not mean it is resolved'), stored in localStorage with a status update",
+     "Bundled verify.mjs runs 19 passing checks (labels, unique IDs, chart values, compact selection)",
+     "Good empty state, skip link, caption, and visible 3 px focus ring"
+    ],
+    "weaknesses": [
+     "Incident rows 72 px tall with 9-10 px text; large 'Operations overview' heading and the tagline 'The signal you need. The context to act.'",
+     "Chart says 'units not provided', which is honest but leaves the visual less informative",
+     "Some decorative numerals are about 1.65:1 contrast"
+    ],
+    "evidence": [
+     "`node verify.mjs`: '19 offline checks passed'",
+     "Computed row height 72 px, font sizes 9-11 px",
+     "Harness: ack gave 'Acknowledged [disabled]' and '3 need acknowledgement'"
+    ],
+    "letter": "N"
+   }
+  },
+  "ranking": [
+   "mcode-m3.1-flash",
+   "sonnet-5.5",
+   "fable-5.1",
+   "grok-4.7",
+   "haiku-5.5",
+   "gpt-6.1-sol",
+   "gpt-6-astra",
+   "opus-5.5",
+   "muse",
+   "gemini-3.8-flash",
+   "mimo",
+   "mcode-m3",
+   "gpt-6-luna",
+   "gemini-3.1-pro"
+  ],
+  "notes": "F, I and M all total 9.25. F leads on visual hierarchy, the most heavily weighted criterion, as the most convincing dense control room. I and M are a little more accessible (no contrast failures) and M has the best mobile layout, but M's empty right column at load and missing h1 put I ahead of it. L (9.0) is very close and arguably the most literal reading of the brief. H and E both have strong desktops but broken 390 px incident layouts (H truncated titles; E overlapping cells), so they score 8.0; H ranks above E for its zero contrast failures. G and N tie at 8.25: both are polished and accessible but ignore the density brief. B is the only submission missing RESPONSE.md, and its mobile view opens with the detail drawer covering the page. All 14 pages log a favicon 404 when served over http, which I ignore. I verified flows with Playwright at 1440 and 390 px (search empty state, severity filter, row select by mouse and keyboard, acknowledge), plus computed-style, contrast and geometry probes. I did not test with a real screen reader. The contrast scan is heuristic: it uses the nearest opaque ancestor background and skips SVG text."
+ }
+}

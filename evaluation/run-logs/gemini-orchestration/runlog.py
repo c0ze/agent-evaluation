@@ -9,7 +9,7 @@ tag, label, variant, repo = sys.argv[1:5]; repo = Path(repo); notes = sys.argv[5
 times = {}
 for l in (O / "times.log").read_text().splitlines():
     m = re.match(rf"{re.escape(tag)} (\d\d-\S+) (start|end) (\S+ \S+)(?: rc=(\d+) secs=(\d+))?", l)
-    if not m: continue
+    if not m or "interrupted" in l: continue
     t = times.setdefault(m[1], {}); t[m[2]] = m[3][11:]
     if m[2] == "end": t.update(rc=m[4], secs=int(m[5]))
 

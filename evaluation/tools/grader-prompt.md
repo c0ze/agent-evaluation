@@ -11,7 +11,7 @@ You are the blind grader for one task of a coding-agent evaluation: **{TASK}**.
 
 ## Rules
 
-- Grade only from this folder. Do not read anything else on the filesystem (in particular nothing under `/home/arda/projects/agent-evaluation` or any other agent-eval directory), do not use the network, and do not try to work out which model wrote which submission.
+- Grade only from this folder. If you start a server or any other background process, stop it before you finish. Do not read anything else on the filesystem (in particular nothing under `/home/arda/projects/agent-evaluation` or any other agent-eval directory), do not use the network, and do not try to work out which model wrote which submission.
 - Never modify the submission directories. Copy what you need into `{BLIND}/_work/{TASK}/` and run things there.
 - Verify claims yourself rather than trusting RESPONSE.md. Examples: run each suite; write a harness or reference implementation and probe edge cases; mutation-test the submissions' own tests where it is cheap; render or lint configs where a tool is available (`docker compose config` on a copy with dummy secrets works; no containers may be started); count limits; check facts in prose against the provided source files; for frontends open each page with Playwright and use it at 1440 px and 390 px (main task flow, empty/edge states, keyboard focus, labels). Playwright: `NODE_PATH={TOOLS}/node_modules node script.js`, launching with `chromium.launch({ executablePath: '/usr/sbin/google-chrome-stable' })`; serve the folder with `python3 -m http.server` on 127.0.0.1 if a page needs http.
 

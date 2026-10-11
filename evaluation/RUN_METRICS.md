@@ -23,6 +23,8 @@ for each one is as Arda identified it.
 | MiniMax M3.1 Flash (`MiniMax-M3.1-Flash-Preview`) | xhigh | mcode on the Mac (managed MiniMax login) | 18:20:45 (2026-10-04) | 19:05:06 | 42 min 16 s (28:38 first pass + 13:38 task 11 re-run) | n/a | n/a | not measurable; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3.1-flash` |
 | MiniMax M3 (`MiniMax-M3`) | default (not selectable) | mcode on the Mac (managed MiniMax login) | 19:39:03 (2026-10-04) | 19:47:52 | 8 min 49 s | n/a | n/a | 2% of the 5-hour window; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3` |
 | Haiku 5.5 (`claude-haiku-5-5`) | xhigh | Claude Code CLI on cachyos (Max subscription) | 14:32:46 (2026-10-11) | 15:06:49 | 34 min 03 s | n/a | n/a | $1.74 API-equivalent; nothing charged | 13 / 13 | local repository, merged under `runs/haiku-5.5` |
+| Gemini 3.1 Pro (`gemini-3.1-pro-high`) | high | Antigravity CLI on cachyos (Google account) | 19:30:45 (2026-10-11) | 20:30:09 (task 11 re-run) | 27 min 23 s (17:07 first pass + 10:16 task 11 re-run) | n/a | n/a | not reported; see tokens | 13 / 13 | local repository, merged under `runs/gemini-3.1-pro` |
+| Gemini 3.8 Flash (`gemini-3.8-flash-high`) | high | Antigravity CLI on cachyos (Google account) | 19:30:45 (2026-10-11) | 19:53:12 | 22 min 27 s | n/a | n/a | not reported; see tokens | 13 / 13 | local repository, merged under `runs/gemini-3.8-flash` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -225,3 +227,53 @@ in 1.5–12 minutes.
 and task 11 ran a `find` over `~/Downloads` looking for its own headless-Firefox output. No task read another
 task's directory or any other model's output. These are scratch-space uses of the kind the Claude cloud runs
 also reported, not deliverables written outside the task directory, so they were not passed to the graders.
+
+## Gemini 3.1 Pro and Gemini 3.8 Flash (Antigravity CLI on cachyos, 2026-10-11)
+
+Both models ran headless through the Antigravity CLI (`agy` 1.3.3) on cachyos, signed in with the user's
+Google account. Each task got one `agy -p` with the same instruction as the other runs, four at a time per
+model, with both models running at once. Settings were "high": agy's High variants (`gemini-3.1-pro-high`,
+`gemini-3.8-flash-high`) plus `--effort high`. Scripts, timing, per-task event logs and tokens are in
+`run-logs/gemini-orchestration/`.
+
+- **Blank slate:** each model got a fresh repository made from the same template commit as the others, with
+  no history and outside the home directory. Each *task* ran with its own empty `HOME`, holding only a link
+  to the agy sign-in token and a settings file. agy otherwise keeps rules, knowledge items, implicit memory,
+  conversation summaries, user skills and an MCP server (tincan) under `~/.gemini`, so none of those
+  reached the models, and tasks couldn't see each other's sessions. Only agy's two built-in skills were present.
+- **Sandbox:** `enableTerminalSandbox: true` with `toolPermission: proceed-in-sandbox`, file access allowed in
+  the repository, and `read_url(*)` and `execute_url(*)` denied. In agy's sandbox, terminal commands have no
+  network and can write only to the workspace and temp directories. A smoke test confirmed the network was
+  blocked; `--dangerously-skip-permissions` was not used, since in testing it left the network open.
+
+| Model | Tasks | Wall-clock | Input tokens | Cache-read input | Output tokens | of which thinking | Tool calls |
+|---|---|---|---|---|---|---|---|
+| Gemini 3.1 Pro | 13 / 13 | 27 min 23 s (17:07 first pass + 10:16 task 11 re-run) | 1,562,838 | 7,447,373 | 530,058 | 317,467 | 196 |
+| Gemini 3.8 Flash | 13 / 13 | 22 min 27 s (19:30:45–19:53:12) | 2,347,685 | 16,068,920 | 511,996 | 288,652 | 314 |
+
+Tokens come from each session's final `result` event. They cover the graded sessions, so for Gemini 3.1 Pro they
+include task 11's re-run, not its cut-off first attempt.
+
+**Gemini 3.1 Pro, task 11 re-run:** the first attempt (19:38:53–19:44:00) was ended by agy, not the model.
+The model tried to read `/usr/bin/google-chrome-stable`, outside the workspace, to set up a browser check.
+Headless agy can't prompt for that permission, so it auto-denied it and ended the session with an empty
+reply. That left no `RESPONSE.md`; stderr reads "no output produced — a tool required the "read_file"
+permission that headless mode cannot prompt for". As with Astra's tasks 10–13 and M3.1 Flash's task 11, the
+task was reset to the template and re-run once, alone, with the identical command (20:19:53–20:30:09). The
+cut-off attempt is in `interrupted/gemini-3.1-pro-11-attempt1/`. It was found after the fourteen-way grading,
+so task 11 was re-graded on its own by a fresh blind grader with new letters (see REPORT.md).
+
+**No browser for self-checks:** agy's sandbox blocks headless Chrome (it can't reach the real binary behind
+the `/usr/bin` wrapper) and headless Firefox ("CanCreateUserNamespace() clone() failure: ENOSYS"). So the
+Gemini models mostly couldn't screenshot their own pages; Flash's task 11 managed some Firefox screenshots
+after many attempts. Haiku's sandbox allowed headless Firefox. This is a harness difference, not a model one. agy reports no cost and the account shows no
+per-run usage, so tokens are the record. Gemini 3.8 Flash's task 11 took 14 min 33 s testing its page in
+headless Firefox; every other task finished in 2–8 minutes.
+
+**Process note:** according to the session transcripts, Gemini 3.8 Flash's tasks 07, 11 and 13 wrote
+scratch files (a word-count copy of the story, test pages, screenshots) to `/tmp`. Gemini 3.1 Pro did no
+work outside its task directories. No task read another task's directory or any other model's output.
+
+**Objective-check note:** both models' task-04 suites import the third-party `packaging` module. It isn't
+installed on cachyos, so their own task-04 results were taken in a scratch venv with `packaging` added.
+As a control, muse and MiniMax M3 give the same results there as they did on the Mac.

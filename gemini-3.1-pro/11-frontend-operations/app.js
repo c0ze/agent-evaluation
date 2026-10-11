@@ -1,1152 +1,1152 @@
 /**
- * RELAY - Operations Control Room
- * High-density operations dashboard for expert operators.
- * Vanilla JavaScript (ES6+), zero external libraries or network calls.
+ * RELAY — Operations Control Room
+ * Pure Vanilla JavaScript: Telemetry stream, state management,
+ * keyboard accessibility, and real-time incident workflow.
  */
 
 (function () {
   'use strict';
 
-  // Seed realistic content matching DATA.json
-  const SEED_DATA = {
-    metrics: [
-      { label: "Events / min", value: "18,420", change: "+8.2%", direction: "up", baseline: "17,020", slo: "> 15,000 / min" },
-      { label: "P95 latency", value: "184 ms", change: "−12 ms", direction: "down", baseline: "196 ms", slo: "< 250 ms" },
-      { label: "Error rate", value: "0.37%", change: "+0.08 pp", direction: "up", baseline: "0.29%", slo: "< 0.10% (Breached)" },
-      { label: "Queue depth", value: "2,841", change: "−19%", direction: "down", baseline: "3,507", slo: "Cap: 25,000 msgs" }
+  // Fallback seed data identical to DATA.json
+  const FALLBACK_DATA = {
+    "metrics": [
+      { "label": "Events / min", "value": "18,420", "change": "+8.2%", "direction": "up" },
+      { "label": "P95 latency", "value": "184 ms", "change": "−12 ms", "direction": "down" },
+      { "label": "Error rate", "value": "0.37%", "change": "+0.08 pp", "direction": "up" },
+      { "label": "Queue depth", "value": "2,841", "change": "−19%", "direction": "down" }
     ],
-    throughput: [31, 28, 24, 22, 20, 23, 34, 48, 62, 71, 76, 73, 68, 72, 80, 84, 79, 75, 82, 88, 77, 63, 52, 41],
-    incidents: [
-      {
-        id: "INC-2841",
-        severity: "critical",
-        service: "payments-api",
-        age: "12m",
-        ageMinutes: 12,
-        owner: "M. Chen",
-        status: "investigating",
-        title: "Card authorization timeouts",
-        synopsis: "Downstream payment gateway handshake latency exceeds timeout threshold of 1.2s. 3 out of 8 authorization pods are rejecting connections. Ingestion queue is buffering retries.",
-        slo: "Auth Latency > 1200ms (Breached)",
-        runbook: "RB-PAY-204 (Gateway Circuit Breaker Recovery)",
-        errors: "418 err/min (+340%)",
-        replicas: "3 / 8 hosts failing healthcheck",
-        upstream: "checkout-web, subscription-worker",
-        timeline: [
-          { time: "19:26:45 UTC", event: "Automated alert triggered: SLO breach latency > 1200ms", author: "System Monitor" },
-          { time: "19:28:10 UTC", event: "Paged on-call engineer M. Chen", author: "PagerDuty" },
-          { time: "19:30:22 UTC", event: "Status moved to Investigating. Began drain on US-East pod pool.", author: "M. Chen" }
-        ]
-      },
-      {
-        id: "INC-2839",
-        severity: "high",
-        service: "event-router",
-        age: "31m",
-        ageMinutes: 31,
-        owner: "Unassigned",
-        status: "open",
-        title: "EU retry queue growth",
-        synopsis: "Cross-region Kafka mirror maker experiencing partition rebalance lag. Inbound event buffer growing at 140 msgs/sec in frankfurt-dc01 cluster.",
-        slo: "Queue Lag > 5,000 msgs",
-        runbook: "RB-EVT-102 (Kafka Mirror Partition Rebalance)",
-        errors: "140 uncommitted offsets/sec",
-        replicas: "Broker node-04 CPU > 92%",
-        upstream: "audit-logger, analytics-consumer",
-        timeline: [
-          { time: "19:07:30 UTC", event: "Buffer depth crossed warning threshold (3,000 msgs)", author: "System Monitor" },
-          { time: "19:12:15 UTC", event: "Incident created with severity High. Unassigned.", author: "Ops Auto-triage" }
-        ]
-      },
-      {
-        id: "INC-2837",
-        severity: "medium",
-        service: "search-index",
-        age: "1h 08m",
-        ageMinutes: 68,
-        owner: "A. Silva",
-        status: "monitoring",
-        title: "Index freshness outside SLO",
-        synopsis: "Elasticsearch indexing queue worker saturated by bulk catalog sync. Mutation delta lag currently 4.8 minutes against 2.0 minute SLO target.",
-        slo: "Freshness SLO: 120s (Current: 288s)",
-        runbook: "RB-SRC-044 (Elasticsearch Bulk Index Throttle)",
-        errors: "Bulk ingestion throttled at 429",
-        replicas: "Cluster health YELLOW (1 unassigned replica shard)",
-        upstream: "catalog-api, product-search",
-        timeline: [
-          { time: "18:30:00 UTC", event: "Hourly product catalog bulk ingest started", author: "Cron Scheduler" },
-          { time: "18:39:12 UTC", event: "Freshness SLO warning triggered. A. Silva acknowledged.", author: "A. Silva" },
-          { time: "19:00:00 UTC", event: "Throttled bulk batch size from 500 to 200. Monitoring recovery.", author: "A. Silva" }
-        ]
-      },
-      {
-        id: "INC-2832",
-        severity: "low",
-        service: "webhooks",
-        age: "3h 42m",
-        ageMinutes: 222,
-        owner: "R. Patel",
-        status: "open",
-        title: "Elevated partner delivery lag",
-        synopsis: "Outbound webhook dispatch latency elevated for 2 external partner endpoints returning intermittent HTTP 504. Backoff queue is handling retries cleanly.",
-        slo: "Dispatch P95: 5.4s (SLO: 10.0s)",
-        runbook: "RB-WH-012 (Partner Rate Limit Backoff)",
-        errors: "6.2% retry rate on partner-hook-vendor",
-        replicas: "Worker pool nominal (12/12 active)",
-        upstream: "billing-lifecycle, notification-service",
-        timeline: [
-          { time: "15:56:00 UTC", event: "Partner endpoint acme-corp returning 504 Gateway Timeout", author: "Webhook Dispatcher" },
-          { time: "16:15:30 UTC", event: "Exponential backoff active. Incident logged as Low severity.", author: "R. Patel" }
-        ]
-      }
+    "throughput": [31, 28, 24, 22, 20, 23, 34, 48, 62, 71, 76, 73, 68, 72, 80, 84, 79, 75, 82, 88, 77, 63, 52, 41],
+    "incidents": [
+      { "id": "INC-2841", "severity": "critical", "service": "payments-api", "age": "12m", "owner": "M. Chen", "status": "investigating", "title": "Card authorization timeouts" },
+      { "id": "INC-2839", "severity": "high", "service": "event-router", "age": "31m", "owner": "Unassigned", "status": "open", "title": "EU retry queue growth" },
+      { "id": "INC-2837", "severity": "medium", "service": "search-index", "age": "1h 08m", "owner": "A. Silva", "status": "monitoring", "title": "Index freshness outside SLO" },
+      { "id": "INC-2832", "severity": "low", "service": "webhooks", "age": "3h 42m", "owner": "R. Patel", "status": "open", "title": "Elevated partner delivery lag" }
     ]
+  };
+
+  // Diagnostic metadata & runbooks to enrich seed data
+  const INCIDENT_METADATA = {
+    "INC-2841": {
+      slo: "BREACHED (SLO < 200ms)",
+      runbook: "RB-PAY-04: Auth Gateway Failover",
+      telemetry: "POST /v1/charges/authorize: 504 Gateway Timeout rate spiked to 4.2%. Downstream issuer proxy pool unresponsive.",
+      initialLog: [
+        { time: "T-12m", msg: "Synthetic healthcheck failed on primary gateway cluster." },
+        { time: "T-10m", msg: "PagerDuty triggered tier-1 escalation to on-call." },
+        { time: "T-06m", msg: "M. Chen joined triage bridge, initial diagnostic initiated." }
+      ]
+    },
+    "INC-2839": {
+      slo: "WARNING (Queue > 20k)",
+      runbook: "RB-EVT-12: Backpressure Shedding",
+      telemetry: "Dead letter queue depth reached 22,400 messages across eu-west-1 consumer groups.",
+      initialLog: [
+        { time: "T-31m", msg: "High retry consumer backpressure detected in Frankfurt region." },
+        { time: "T-22m", msg: "Automated rate limiting engaged on ingress ingress-router-04." }
+      ]
+    },
+    "INC-2837": {
+      slo: "SLO RISK (Freshness > 5m)",
+      runbook: "RB-SRCH-02: Elastic Bulk Shard Recovery",
+      telemetry: "Segment replication lag: 420s on cluster elastic-prod-blue. Index mutation rate exceeds write capacity.",
+      initialLog: [
+        { time: "T-1h 08m", msg: "Replication lag exceeded 300s SLA threshold." },
+        { time: "T-45m", msg: "A. Silva assigned, throttling background compaction tasks." }
+      ]
+    },
+    "INC-2832": {
+      slo: "MONITORING (Delivery > 2s)",
+      runbook: "RB-WH-09: Egress Rate Limiter Check",
+      telemetry: "Delivery queue p99 latency at 2,410ms to tier-2 webhooks endpoints.",
+      initialLog: [
+        { time: "T-3h 42m", msg: "Webhook latency alert threshold exceeded for 3 consecutive intervals." },
+        { time: "T-3h 10m", msg: "R. Patel reviewed egress socket pool health." }
+      ]
+    }
   };
 
   // Application State
   const state = {
-    metrics: JSON.parse(JSON.stringify(SEED_DATA.metrics)),
-    throughput: [...SEED_DATA.throughput],
-    incidents: JSON.parse(JSON.stringify(SEED_DATA.incidents)),
-    selectedId: "INC-2841",
+    metrics: [],
+    throughput: [],
+    incidents: [],
+    activityLogs: {},
+    selectedIncidentId: "INC-2841",
+    chartMode: "area", // 'area' or 'bars'
     filters: {
+      search: "",
       severity: "all",
       status: "all",
-      service: "all",
-      searchQuery: ""
+      service: "all"
     },
     sort: {
       column: "severity",
-      direction: "asc"
-    },
-    audioMuted: true,
-    lastSyncTime: new Date()
+      direction: "asc" // 'asc' or 'desc'
+    }
   };
 
   // Severity Weight for sorting
   const SEVERITY_WEIGHT = {
-    critical: 1,
-    high: 2,
-    medium: 3,
-    low: 4
-  };
-
-  // DOM Elements
-  const dom = {
-    liveAnnouncer: document.getElementById("live-announcer"),
-    utcClock: document.getElementById("live-utc-clock"),
-    statusHeadline: document.getElementById("status-headline"),
-    statusHeadlineText: document.getElementById("status-headline-text"),
-    statusQueueMetric: document.getElementById("status-queue-metric"),
-    statusIncidentMetric: document.getElementById("status-incident-metric"),
-    btnRefresh: document.getElementById("btn-refresh"),
-    btnAudioToggle: document.getElementById("btn-audio-toggle"),
-    btnToggleRail: document.getElementById("btn-toggle-rail"),
-    btnShortcuts: document.getElementById("btn-shortcuts"),
-    shortcutsDialog: document.getElementById("shortcuts-dialog"),
-    btnCloseShortcuts: document.getElementById("btn-close-shortcuts"),
-    btnDismissShortcuts: document.getElementById("btn-dismiss-shortcuts"),
-    navIncidentCount: document.getElementById("nav-incident-count"),
-
-    // Throughput Chart
-    tpSvg: document.getElementById("throughput-svg"),
-    chartWrapper: document.getElementById("throughput-chart-wrapper"),
-    chartTooltip: document.getElementById("chart-tooltip"),
-    tpStatPeak: document.getElementById("tp-stat-peak"),
-    tpStatMean: document.getElementById("tp-stat-mean"),
-    tpStatMin: document.getElementById("tp-stat-min"),
-    tpStatCurrent: document.getElementById("tp-stat-current"),
-
-    // Incident Table & Filters
-    incidentCounterTag: document.getElementById("incident-counter-tag"),
-    searchInput: document.getElementById("incident-search-input"),
-    btnClearSearch: document.getElementById("btn-clear-search"),
-    severityPills: document.getElementById("severity-filter-pills"),
-    selectStatusFilter: document.getElementById("select-status-filter"),
-    selectServiceFilter: document.getElementById("select-service-filter"),
-    btnResetFilters: document.getElementById("btn-reset-filters"),
-    tableContainer: document.getElementById("table-container"),
-    tableBody: document.getElementById("incident-table-body"),
-    emptyState: document.getElementById("incident-empty-state"),
-    emptyStateDetail: document.getElementById("empty-state-detail"),
-    btnEmptyReset: document.getElementById("btn-empty-reset"),
-
-    // Detail Panel
-    detailPanel: document.getElementById("incident-detail-panel"),
-    btnCloseDetail: document.getElementById("btn-close-detail"),
-    detailSevBadge: document.getElementById("detail-sev-badge"),
-    detailStatusBadge: document.getElementById("detail-status-badge"),
-    detailIdText: document.getElementById("detail-id-text"),
-    detailTitleText: document.getElementById("detail-title-text"),
-    btnAcknowledgeAction: document.getElementById("btn-acknowledge-action"),
-    btnAckLabel: document.getElementById("btn-ack-label"),
-    detailStatusSelect: document.getElementById("detail-status-select"),
-    btnEscalate: document.getElementById("btn-escalate"),
-    detailServiceText: document.getElementById("detail-service-text"),
-    detailAgeText: document.getElementById("detail-age-text"),
-    detailOwnerText: document.getElementById("detail-owner-text"),
-    btnAssignSelf: document.getElementById("btn-assign-self"),
-    detailSloText: document.getElementById("detail-slo-text"),
-    detailSynopsisText: document.getElementById("detail-synopsis-text"),
-    detailRunbookText: document.getElementById("detail-runbook-text"),
-    detailTelErrors: document.getElementById("detail-tel-errors"),
-    detailTelReplicas: document.getElementById("detail-tel-replicas"),
-    detailTimelineList: document.getElementById("detail-timeline-list"),
-    formOperatorNote: document.getElementById("form-operator-note"),
-    inputOperatorNote: document.getElementById("input-operator-note")
+    "critical": 1,
+    "high": 2,
+    "medium": 3,
+    "low": 4
   };
 
   /**
-   * Screen reader announcer
+   * Initialize Application
    */
-  function announce(message) {
-    if (dom.liveAnnouncer) {
-      dom.liveAnnouncer.textContent = "";
-      setTimeout(() => {
-        dom.liveAnnouncer.textContent = message;
-      }, 50);
+  async function init() {
+    try {
+      // Attempt local fetch of DATA.json, fall back smoothly if running on file:// or network restricted
+      const response = await fetch("DATA.json");
+      if (response.ok) {
+        const data = await response.json();
+        loadData(data);
+      } else {
+        loadData(FALLBACK_DATA);
+      }
+    } catch (e) {
+      // Local file or fetch restriction - seamlessly use fallback
+      loadData(FALLBACK_DATA);
+    }
+
+    setupClock();
+    setupEventListeners();
+    renderAll();
+  }
+
+  /**
+   * Load seed data into state
+   */
+  function loadData(data) {
+    state.metrics = data.metrics || FALLBACK_DATA.metrics;
+    state.throughput = data.throughput || FALLBACK_DATA.throughput;
+    state.incidents = (data.incidents || FALLBACK_DATA.incidents).map(inc => ({ ...inc }));
+
+    // Initialize activity logs
+    state.incidents.forEach(inc => {
+      const meta = INCIDENT_METADATA[inc.id] || {
+        slo: "MONITORING",
+        runbook: "RB-GEN-01: Standard Incident Response",
+        telemetry: "Telemetry metrics within nominal tolerances.",
+        initialLog: [{ time: "T-" + inc.age, msg: "Incident created." }]
+      };
+
+      state.activityLogs[inc.id] = [
+        ...meta.initialLog,
+        { time: "NOW", msg: `Current status: ${inc.status.toUpperCase()} (${inc.owner})` }
+      ];
+    });
+
+    // Default selection
+    if (state.incidents.length > 0 && !state.selectedIncidentId) {
+      state.selectedIncidentId = state.incidents[0].id;
     }
   }
 
   /**
-   * Format UTC Date for clock
+   * Live Clocks (UTC & Local)
    */
-  function updateClock() {
-    const now = new Date();
-    const hours = String(now.getUTCHours()).padStart(2, '0');
-    const minutes = String(now.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(now.getUTCSeconds()).padStart(2, '0');
-    dom.utcClock.textContent = `${hours}:${minutes}:${seconds}`;
+  function setupClock() {
+    const utcEl = document.getElementById("clock-utc");
+    const localEl = document.getElementById("clock-local");
+
+    function update() {
+      const now = new Date();
+      if (utcEl) utcEl.textContent = now.toUTCString().slice(17, 25);
+      if (localEl) {
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+        localEl.textContent = `${hrs}:${mins}:${secs}`;
+      }
+    }
+    update();
+    setInterval(update, 1000);
   }
 
   /**
-   * Renders the 4 summary metrics cards and sparklines
+   * Render All Dashboard Modules
    */
-  function renderMetrics() {
-    state.metrics.forEach((metric, index) => {
-      const valEl = document.getElementById(`val-metric-${index}`);
-      const badgeEl = document.getElementById(`badge-metric-${index}`);
-      const sparkEl = document.getElementById(`spark-metric-${index}`);
-
-      if (valEl) valEl.textContent = metric.value;
-      if (badgeEl) {
-        const valSpan = badgeEl.querySelector(".badge-val");
-        if (valSpan) valSpan.textContent = metric.change;
-      }
-
-      // Generate SVG sparkline
-      if (sparkEl) {
-        let sparkPoints = [];
-        if (index === 0) sparkPoints = [12, 14, 13, 15, 16, 14, 17, 19, 18, 20];
-        if (index === 1) sparkPoints = [22, 21, 20, 18, 17, 19, 16, 15, 14, 12];
-        if (index === 2) sparkPoints = [4, 5, 4, 6, 5, 7, 8, 9, 11, 14];
-        if (index === 3) sparkPoints = [24, 23, 21, 20, 18, 17, 16, 15, 14, 12];
-
-        const min = Math.min(...sparkPoints);
-        const max = Math.max(...sparkPoints);
-        const range = max - min || 1;
-        const width = 80;
-        const height = 20;
-
-        const pointsAttr = sparkPoints.map((val, i) => {
-          const x = (i / (sparkPoints.length - 1)) * width;
-          const y = height - 2 - ((val - min) / range) * (height - 4);
-          return `${x.toFixed(1)},${y.toFixed(1)}`;
-        }).join(" ");
-
-        const strokeColor = index === 2 ? "#ef4444" : index === 1 ? "#10b981" : "#38bdf8";
-
-        sparkEl.innerHTML = `
-          <polyline points="${pointsAttr}" fill="none" stroke="${strokeColor}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-        `;
-      }
-    });
+  function renderAll() {
+    renderTopStatusBar();
+    renderSummaryMetrics();
+    renderThroughputChart();
+    renderIncidentsTable();
+    renderIncidentDetail();
   }
 
   /**
-   * 24-Hour Throughput Visualization (SVG Bar & Line Chart)
+   * Render Top Status Bar indicators
+   */
+  function renderTopStatusBar() {
+    const railBadge = document.getElementById("rail-incident-badge");
+    const headerCount = document.getElementById("incident-header-count");
+    const topPill = document.getElementById("top-health-pill");
+    const topDetail = document.getElementById("top-health-detail");
+
+    const activeIncidents = state.incidents.filter(i => i.status !== "resolved");
+    const critCount = state.incidents.filter(i => i.severity === "critical" && i.status !== "resolved").length;
+    const highCount = state.incidents.filter(i => i.severity === "high" && i.status !== "resolved").length;
+
+    if (railBadge) railBadge.textContent = activeIncidents.length;
+    if (headerCount) headerCount.textContent = `${activeIncidents.length} Active`;
+
+    if (critCount > 0) {
+      if (topPill) {
+        topPill.className = "operational-health-pill status-degraded";
+        topPill.querySelector(".health-label").textContent = "SYSTEM DEGRADED";
+      }
+      if (topDetail) topDetail.textContent = `${critCount} CRITICAL • ${highCount} HIGH`;
+    } else if (highCount > 0) {
+      if (topPill) {
+        topPill.className = "operational-health-pill status-degraded";
+        topPill.style.backgroundColor = "var(--sev-high-bg)";
+        topPill.style.borderColor = "var(--sev-high-border)";
+        topPill.style.color = "var(--sev-high-fg)";
+        topPill.querySelector(".health-label").textContent = "DEGRADED (HIGH)";
+      }
+      if (topDetail) topDetail.textContent = `${highCount} HIGH ACTIVE`;
+    } else {
+      if (topPill) {
+        topPill.className = "operational-health-pill";
+        topPill.style.backgroundColor = "var(--status-ok-bg)";
+        topPill.style.borderColor = "var(--status-ok-border)";
+        topPill.style.color = "var(--status-ok-fg)";
+        topPill.querySelector(".health-label").textContent = "SYSTEM OPERATIONAL";
+      }
+      if (topDetail) topDetail.textContent = "NOMINAL • 0 CRITICAL";
+    }
+  }
+
+  /**
+   * Render Four Summary Metrics with Trend Context
+   */
+  function renderSummaryMetrics() {
+    const container = document.getElementById("metrics-grid");
+    if (!container) return;
+
+    // Context metadata for each of the 4 metrics
+    const METRIC_CONTEXTS = [
+      {
+        tag: "NORMAL",
+        tagType: "tag-ok",
+        trendType: "trend-neutral",
+        context: "SLO Target: > 15k / min",
+        sparklinePoints: [22, 24, 25, 23, 27, 30, 31, 33]
+      },
+      {
+        tag: "WITHIN SLO",
+        tagType: "tag-ok",
+        trendType: "trend-positive", // Latency decrease is good
+        context: "SLO Budget: < 200 ms",
+        sparklinePoints: [32, 30, 29, 27, 26, 25, 24, 22]
+      },
+      {
+        tag: "ELEVATED",
+        tagType: "tag-warn",
+        trendType: "trend-negative", // Error rate increase is bad
+        context: "SLO Target: < 0.10% (BREACH)",
+        sparklinePoints: [10, 11, 12, 14, 18, 22, 28, 34]
+      },
+      {
+        tag: "DRAINING",
+        tagType: "tag-ok",
+        trendType: "trend-positive", // Queue decrease is good
+        context: "Drain Rate: ~420 / min",
+        sparklinePoints: [38, 36, 33, 31, 28, 24, 21, 18]
+      }
+    ];
+
+    container.innerHTML = state.metrics.map((m, idx) => {
+      const ctx = METRIC_CONTEXTS[idx] || METRIC_CONTEXTS[0];
+      const arrow = m.direction === "up" ? "▲" : "▼";
+
+      // Generate mini sparkline SVG
+      const sparkSvg = generateSparkline(ctx.sparklinePoints, ctx.trendType);
+
+      return `
+        <article class="metric-card" aria-label="${m.label}">
+          <div class="metric-card-top">
+            <span class="metric-label">${escapeHtml(m.label)}</span>
+            <span class="metric-status-tag ${ctx.tagType}">${ctx.tag}</span>
+          </div>
+
+          <div class="metric-card-body">
+            <span class="metric-main-value font-mono">${escapeHtml(m.value)}</span>
+            <span class="metric-trend-pill ${ctx.trendType}">
+              <span>${arrow}</span>
+              <span>${escapeHtml(m.change)}</span>
+            </span>
+          </div>
+
+          <div class="metric-card-bottom">
+            <span class="metric-context-text">${ctx.context}</span>
+            <div class="metric-sparkline-svg" aria-hidden="true">
+              ${sparkSvg}
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  /**
+   * Helper to build inline SVG sparkline
+   */
+  function generateSparkline(points, trendType) {
+    const width = 68;
+    const height = 20;
+    const min = Math.min(...points);
+    const max = Math.max(...points);
+    const range = (max - min) || 1;
+
+    const coords = points.map((p, i) => {
+      const x = (i / (points.length - 1)) * (width - 4) + 2;
+      const y = height - 3 - ((p - min) / range) * (height - 6);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(" ");
+
+    let strokeColor = "var(--text-secondary)";
+    if (trendType === "trend-positive") strokeColor = "var(--status-ok-fg)";
+    if (trendType === "trend-negative") strokeColor = "var(--sev-crit-fg)";
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <polyline points="${coords}" fill="none" stroke="${strokeColor}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `;
+  }
+
+  /**
+   * Render 24-Hour Throughput Visualization (Inline SVG)
    */
   function renderThroughputChart() {
-    const data = state.throughput;
-    const peak = Math.max(...data);
-    const min = Math.min(...data);
-    const sum = data.reduce((a, b) => a + b, 0);
-    const mean = (sum / data.length).toFixed(1);
-    const current = data[data.length - 1];
+    const container = document.getElementById("throughput-chart-container");
+    if (!container) return;
 
-    dom.tpStatPeak.textContent = `${peak} k/s`;
-    dom.tpStatMin.textContent = `${min} k/s`;
-    dom.tpStatMean.textContent = `${mean} k/s`;
-    dom.tpStatCurrent.textContent = `${current} k/s`;
+    const data = state.throughput;
+    const peakVal = Math.max(...data);
+    const meanVal = (data.reduce((a, b) => a + b, 0) / data.length).toFixed(1);
 
     const svgWidth = 840;
-    const svgHeight = 220;
-    const padLeft = 46;
-    const padRight = 24;
-    const padTop = 22;
-    const padBottom = 34;
+    const svgHeight = 180;
+    const padLeft = 45;
+    const padRight = 20;
+    const padTop = 20;
+    const padBottom = 30;
 
     const chartW = svgWidth - padLeft - padRight;
     const chartH = svgHeight - padTop - padBottom;
 
-    // Y Axis scaling (0 to 100 k/s)
+    // Y scale range 0 to 100k eps
     const yMax = 100;
     const getY = (val) => padTop + chartH - (val / yMax) * chartH;
     const getX = (i) => padLeft + (i / (data.length - 1)) * chartW;
 
-    let svgHtml = '';
-
-    // Horizontal Grid Lines & Y-axis labels
+    // Grid lines at 25, 50, 75, 100
     const gridYValues = [0, 25, 50, 75, 100];
-    gridYValues.forEach(val => {
-      const y = getY(val);
-      svgHtml += `
+    const gridLinesSvg = gridYValues.map(v => {
+      const y = getY(v);
+      return `
         <line x1="${padLeft}" y1="${y}" x2="${svgWidth - padRight}" y2="${y}" class="chart-grid-line" />
-        <text x="${padLeft - 8}" y="${y + 3}" text-anchor="end" class="chart-axis-text">${val}k</text>
+        <text x="${padLeft - 6}" y="${y}" class="chart-axis-label">${v}k</text>
       `;
-    });
+    }).join("");
 
-    // 24h Mean Baseline
-    const meanY = getY(parseFloat(mean));
-    svgHtml += `
-      <line x1="${padLeft}" y1="${meanY}" x2="${svgWidth - padRight}" y2="${meanY}" class="chart-mean-line" />
-      <text x="${svgWidth - padRight + 4}" y="${meanY + 3}" class="chart-axis-text" fill="#94a3b8">AVG</text>
+    // X Axis hourly labels: -24h, -20h, -16h, -12h, -8h, -4h, Now
+    const xIntervals = [0, 4, 8, 12, 16, 20, 23];
+    const xLabelsSvg = xIntervals.map(i => {
+      const x = getX(i);
+      const label = i === 23 ? "NOW" : `T-${24 - i}h`;
+      return `
+        <line x1="${x}" y1="${padTop + chartH}" x2="${x}" y2="${padTop + chartH + 4}" stroke="var(--border-strong)" stroke-width="1" />
+        <text x="${x}" y="${padTop + chartH + 16}" class="chart-x-label">${label}</text>
+      `;
+    }).join("");
+
+    // Baseline Mean Line
+    const avgY = getY(parseFloat(meanVal));
+    const meanLineSvg = `
+      <line x1="${padLeft}" y1="${avgY}" x2="${svgWidth - padRight}" y2="${avgY}" class="chart-avg-line" />
+      <text x="${svgWidth - padRight - 4}" y="${avgY - 5}" class="chart-avg-text" text-anchor="end">MEAN: ${meanVal}k eps</text>
     `;
 
-    // Bar Columns (width ~20px each)
-    const barWidth = Math.floor(chartW / data.length) - 5;
-    data.forEach((val, i) => {
-      const xCenter = padLeft + (i + 0.5) * (chartW / data.length);
-      const x = xCenter - barWidth / 2;
-      const y = getY(val);
-      const h = (padTop + chartH) - y;
-      const isLatest = i === data.length - 1;
+    // Data elements (Area/Stroke OR Bars depending on mode)
+    let dataVisualSvg = "";
 
-      svgHtml += `
-        <rect class="chart-bar-rect ${isLatest ? 'latest-bar' : ''}" 
-              x="${x.toFixed(1)}" y="${y.toFixed(1)}" 
-              width="${barWidth}" height="${h.toFixed(1)}" 
-              rx="1.5"
-              data-index="${i}" data-val="${val}"
-              aria-label="Hour T-${23 - i}: ${val} k ops/sec" />
+    if (state.chartMode === "bars") {
+      // High-Density Column Bar Chart
+      const barStep = chartW / data.length;
+      const barWidth = Math.max(barStep - 4, 6);
+
+      dataVisualSvg = data.map((val, i) => {
+        const x = padLeft + i * barStep + 2;
+        const y = getY(val);
+        const h = (padTop + chartH) - y;
+        const isPeak = val === peakVal;
+        const peakClass = isPeak ? "peak-bar" : "";
+
+        return `
+          <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${h.toFixed(1)}"
+                class="chart-bar-rect ${peakClass}"
+                data-idx="${i}" data-val="${val}" tabindex="0" role="button"
+                aria-label="Hour T-${24 - i}h: ${val}k events per second" />
+        `;
+      }).join("");
+    } else {
+      // Stepped Area & Polyline with Gradient Fill
+      const pts = data.map((val, i) => `${getX(i).toFixed(1)},${getY(val).toFixed(1)}`).join(" ");
+      const areaPoints = `${padLeft},${padTop + chartH} ${pts} ${padLeft + chartW},${padTop + chartH}`;
+
+      // Interactive hover dots
+      const dotsSvg = data.map((val, i) => {
+        const cx = getX(i);
+        const cy = getY(val);
+        const isPeak = val === peakVal;
+        const r = isPeak ? 4.5 : 3;
+        return `
+          <circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}"
+                  class="chart-data-dot ${isPeak ? 'active' : ''}"
+                  data-idx="${i}" data-val="${val}" tabindex="0" role="button"
+                  aria-label="Hour T-${24 - i}h: ${val}k events per second" />
+        `;
+      }).join("");
+
+      // Hover hit columns for easier cursor tracking
+      const colStep = chartW / (data.length - 1);
+      const hitColsSvg = data.map((val, i) => {
+        const cx = getX(i);
+        const startX = cx - colStep / 2;
+        return `
+          <rect x="${startX.toFixed(1)}" y="${padTop}" width="${colStep.toFixed(1)}" height="${chartH}"
+                class="chart-hover-col" data-idx="${i}" data-val="${val}" />
+        `;
+      }).join("");
+
+      dataVisualSvg = `
+        <polygon points="${areaPoints}" class="chart-area-path" />
+        <polyline points="${pts}" class="chart-stroke-path" />
+        ${dotsSvg}
+        ${hitColsSvg}
       `;
-    });
-
-    // Area & Line Path
-    const points = data.map((val, i) => {
-      const x = padLeft + (i + 0.5) * (chartW / data.length);
-      const y = getY(val);
-      return { x, y, val, i };
-    });
-
-    let pathD = `M ${points[0].x} ${points[0].y}`;
-    for (let i = 1; i < points.length; i++) {
-      pathD += ` L ${points[i].x} ${points[i].y}`;
     }
 
-    const areaD = `${pathD} L ${points[points.length - 1].x} ${padTop + chartH} L ${points[0].x} ${padTop + chartH} Z`;
+    container.innerHTML = `
+      <svg class="chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="throughputGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.32" />
+            <stop offset="60%" stop-color="#f59e0b" stop-opacity="0.08" />
+            <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.0" />
+          </linearGradient>
+        </defs>
 
-    svgHtml += `<path d="${areaD}" class="chart-area-path" />`;
-    svgHtml += `<path d="${pathD}" class="chart-line-path" />`;
+        <!-- Background grid -->
+        ${gridLinesSvg}
+        ${xLabelsSvg}
+        ${meanLineSvg}
 
-    // Data dots
-    points.forEach(p => {
-      svgHtml += `
-        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" 
-                class="chart-dot" 
-                data-index="${p.i}" data-val="${p.val}" />
-      `;
-    });
-
-    // X-Axis Hour Labels (every 4 hours)
-    for (let i = 0; i < data.length; i += 4) {
-      const x = padLeft + (i + 0.5) * (chartW / data.length);
-      const label = i === 23 ? 'NOW' : `T-${23 - i}h`;
-      svgHtml += `
-        <text x="${x.toFixed(1)}" y="${padTop + chartH + 18}" text-anchor="middle" class="chart-axis-text">${label}</text>
-      `;
-    }
-    // Also label the latest (T-0) explicitly
-    const lastX = padLeft + (23.5) * (chartW / data.length);
-    svgHtml += `
-      <text x="${lastX.toFixed(1)}" y="${padTop + chartH + 18}" text-anchor="middle" class="chart-axis-text" font-weight="700" fill="#38bdf8">NOW</text>
+        <!-- Primary visual -->
+        ${dataVisualSvg}
+      </svg>
     `;
 
-    dom.tpSvg.innerHTML = svgHtml;
-
-    // Attach chart hover and touch listeners
-    bindChartInteractions(points, mean);
+    // Attach hover & focus handlers to chart data points
+    attachChartInteractions();
   }
 
   /**
-   * Tooltip handler for chart
+   * Chart hover & focus interaction
    */
-  function bindChartInteractions(points, meanVal) {
-    const bars = dom.tpSvg.querySelectorAll(".chart-bar-rect, .chart-dot");
-    const tooltip = dom.chartTooltip;
+  function attachChartInteractions() {
+    const readout = document.getElementById("throughput-readout");
+    const container = document.getElementById("throughput-chart-container");
+    if (!readout || !container) return;
 
-    const showTip = (target) => {
-      const idx = parseInt(target.getAttribute("data-index"), 10);
-      const val = target.getAttribute("data-val");
-      const p = points[idx];
-      const hourLabel = idx === 23 ? "Current Interval (T-0)" : `T-${23 - idx} hours ago`;
-      const delta = (val - meanVal).toFixed(1);
-      const deltaSign = delta >= 0 ? `+${delta}` : delta;
-      const deltaColor = delta >= 0 ? "#38bdf8" : "#94a3b8";
+    const meanVal = 58.3;
 
-      tooltip.innerHTML = `
-        <div class="tt-hour">${hourLabel}</div>
-        <div class="tt-value">${val},000 ops / sec</div>
-        <div class="tt-delta" style="color: ${deltaColor}">
-          ${deltaSign} k/s (${((delta / meanVal) * 100).toFixed(1)}% vs 24h mean)
+    function showTelemetry(idx, val) {
+      const hourStr = idx === 23 ? "CURRENT BUCKET (Now)" : `T-${24 - idx}h (${24 - idx} hours ago)`;
+      const delta = (((val - meanVal) / meanVal) * 100).toFixed(1);
+      const deltaSign = delta >= 0 ? `+${delta}%` : `${delta}%`;
+      const deltaClass = delta >= 0 ? "accent" : "";
+
+      readout.innerHTML = `
+        <div class="readout-active">
+          <div class="readout-segment">
+            <span class="readout-k">WINDOW:</span>
+            <span class="readout-v">${hourStr}</span>
+          </div>
+          <div class="readout-segment">
+            <span class="readout-k">THROUGHPUT:</span>
+            <span class="readout-v accent">${val},000 eps</span>
+          </div>
+          <div class="readout-segment">
+            <span class="readout-k">VS MEAN:</span>
+            <span class="readout-v ${deltaClass}">${deltaSign}</span>
+          </div>
         </div>
       `;
-      tooltip.classList.add("visible");
+    }
 
-      const rect = dom.chartWrapper.getBoundingClientRect();
-      const svgRect = dom.tpSvg.getBoundingClientRect();
-      const scaleX = svgRect.width / 840;
-      const scaleY = svgRect.height / 220;
+    function resetTelemetry() {
+      readout.innerHTML = `
+        <span class="readout-default">Hover or navigate data points across 24h timeline to inspect telemetry buckets</span>
+      `;
+    }
 
-      const leftPx = (p.x * scaleX) + (svgRect.left - rect.left);
-      const topPx = (p.y * scaleY) + (svgRect.top - rect.top);
+    const interactiveEls = container.querySelectorAll("[data-idx]");
+    interactiveEls.forEach(el => {
+      const idx = parseInt(el.getAttribute("data-idx"), 10);
+      const val = parseInt(el.getAttribute("data-val"), 10);
 
-      tooltip.style.left = `${leftPx}px`;
-      tooltip.style.top = `${topPx}px`;
-    };
-
-    bars.forEach(el => {
-      el.addEventListener("mouseenter", () => showTip(el));
-      el.addEventListener("mouseleave", () => tooltip.classList.remove("visible"));
-      el.addEventListener("touchstart", (e) => {
-        e.preventDefault();
-        showTip(el);
-      }, { passive: false });
+      el.addEventListener("mouseenter", () => showTelemetry(idx, val));
+      el.addEventListener("focus", () => showTelemetry(idx, val));
+      el.addEventListener("mouseleave", resetTelemetry);
+      el.addEventListener("blur", resetTelemetry);
     });
-
-    dom.chartWrapper.addEventListener("mouseleave", () => tooltip.classList.remove("visible"));
   }
 
   /**
-   * Filters and sorts incident list based on active state
+   * Filter and Sort Incidents
    */
   function getFilteredIncidents() {
-    let list = [...state.incidents];
+    return state.incidents.filter(inc => {
+      // Search filter
+      if (state.filters.search) {
+        const q = state.filters.search.toLowerCase();
+        const match =
+          inc.id.toLowerCase().includes(q) ||
+          inc.title.toLowerCase().includes(q) ||
+          inc.service.toLowerCase().includes(q) ||
+          inc.owner.toLowerCase().includes(q) ||
+          inc.severity.toLowerCase().includes(q) ||
+          inc.status.toLowerCase().includes(q);
+        if (!match) return false;
+      }
 
-    // Filter by Severity
-    if (state.filters.severity !== "all") {
-      list = list.filter(inc => inc.severity.toLowerCase() === state.filters.severity.toLowerCase());
-    }
+      // Severity filter
+      if (state.filters.severity !== "all" && inc.severity !== state.filters.severity) {
+        return false;
+      }
 
-    // Filter by Status
-    if (state.filters.status !== "all") {
-      list = list.filter(inc => inc.status.toLowerCase() === state.filters.status.toLowerCase());
-    }
+      // Status filter
+      if (state.filters.status !== "all" && inc.status !== state.filters.status) {
+        return false;
+      }
 
-    // Filter by Service
-    if (state.filters.service !== "all") {
-      list = list.filter(inc => inc.service.toLowerCase() === state.filters.service.toLowerCase());
-    }
+      // Service filter
+      if (state.filters.service !== "all" && inc.service !== state.filters.service) {
+        return false;
+      }
 
-    // Filter by Search Query
-    if (state.filters.searchQuery.trim() !== "") {
-      const q = state.filters.searchQuery.toLowerCase().trim();
-      list = list.filter(inc =>
-        inc.id.toLowerCase().includes(q) ||
-        inc.service.toLowerCase().includes(q) ||
-        inc.title.toLowerCase().includes(q) ||
-        inc.owner.toLowerCase().includes(q) ||
-        inc.status.toLowerCase().includes(q) ||
-        inc.severity.toLowerCase().includes(q)
-      );
-    }
-
-    // Sort
-    list.sort((a, b) => {
-      let valA, valB;
+      return true;
+    }).sort((a, b) => {
+      const dir = state.sort.direction === "asc" ? 1 : -1;
       const col = state.sort.column;
 
       if (col === "severity") {
-        valA = SEVERITY_WEIGHT[a.severity] || 99;
-        valB = SEVERITY_WEIGHT[b.severity] || 99;
-      } else if (col === "age") {
-        valA = a.ageMinutes || 0;
-        valB = b.ageMinutes || 0;
-      } else {
-        valA = (a[col] || "").toString().toLowerCase();
-        valB = (b[col] || "").toString().toLowerCase();
+        return (SEVERITY_WEIGHT[a.severity] - SEVERITY_WEIGHT[b.severity]) * dir;
       }
-
-      if (valA < valB) return state.sort.direction === "asc" ? -1 : 1;
-      if (valA > valB) return state.sort.direction === "asc" ? 1 : -1;
+      if (col === "age") {
+        return parseAge(a.age) > parseAge(b.age) ? dir : -dir;
+      }
+      if (a[col] < b[col]) return -dir;
+      if (a[col] > b[col]) return dir;
       return 0;
     });
-
-    return list;
   }
 
   /**
-   * Renders the Incident Table
+   * Parse age string (e.g. '12m', '1h 08m') to minutes
    */
-  function renderIncidentTable() {
+  function parseAge(ageStr) {
+    let total = 0;
+    if (ageStr.includes("h")) {
+      const parts = ageStr.split("h");
+      total += parseInt(parts[0], 10) * 60;
+      if (parts[1] && parts[1].includes("m")) {
+        total += parseInt(parts[1].replace("m", "").trim(), 10) || 0;
+      }
+    } else if (ageStr.includes("m")) {
+      total += parseInt(ageStr.replace("m", "").trim(), 10) || 0;
+    }
+    return total;
+  }
+
+  /**
+   * Render Filterable Incidents Table
+   */
+  function renderIncidentsTable() {
+    const tbody = document.getElementById("incidents-tbody");
+    const emptyBox = document.getElementById("table-empty-box");
+    const footerStatus = document.getElementById("table-footer-status");
+    const resetBtn = document.getElementById("btn-reset-filters");
+    if (!tbody) return;
+
     const filtered = getFilteredIncidents();
+    const hasActiveFilters =
+      state.filters.search !== "" ||
+      state.filters.severity !== "all" ||
+      state.filters.status !== "all" ||
+      state.filters.service !== "all";
 
-    // Update filter badge counts
-    updateFilterCounts();
+    if (resetBtn) {
+      resetBtn.style.display = hasActiveFilters ? "inline-flex" : "none";
+    }
 
-    // Check empty state
+    // Update Severity Chip counts
+    updateSeverityChipCounts();
+
     if (filtered.length === 0) {
-      dom.tableBody.innerHTML = '';
-      dom.emptyState.classList.remove("hidden");
-      dom.incidentCounterTag.textContent = "0 matches";
-
-      const constraints = [];
-      if (state.filters.severity !== "all") constraints.push(`Severity: ${state.filters.severity}`);
-      if (state.filters.status !== "all") constraints.push(`Status: ${state.filters.status}`);
-      if (state.filters.service !== "all") constraints.push(`Service: ${state.filters.service}`);
-      if (state.filters.searchQuery) constraints.push(`Query: "${state.filters.searchQuery}"`);
-
-      dom.emptyStateDetail.textContent = constraints.length > 0
-        ? `No active incidents match criteria (${constraints.join(" • ")}).`
-        : "No incidents in queue.";
+      tbody.innerHTML = "";
+      if (emptyBox) emptyBox.style.display = "flex";
+      if (footerStatus) footerStatus.textContent = `Showing 0 of ${state.incidents.length} incidents`;
+      renderIncidentDetail(); // Update detail view when selection is hidden
       return;
     }
 
-    dom.emptyState.classList.add("hidden");
-    dom.incidentCounterTag.textContent = `${filtered.length} active`;
+    if (emptyBox) emptyBox.style.display = "none";
+    if (footerStatus) {
+      footerStatus.textContent = `Showing ${filtered.length} of ${state.incidents.length} incidents`;
+    }
 
-    let rowsHtml = '';
-    filtered.forEach(inc => {
-      const isSelected = inc.id === state.selectedId;
-      const isAck = inc.status.toLowerCase() === "acknowledged";
-      const sevSymbol = inc.severity === "critical" ? "⬢" : inc.severity === "high" ? "▲" : inc.severity === "medium" ? "◼" : "●";
+    // Check if current selection is in filtered results; if not, select first
+    const isSelectedVisible = filtered.some(i => i.id === state.selectedIncidentId);
+    if (!isSelectedVisible && filtered.length > 0) {
+      state.selectedIncidentId = filtered[0].id;
+    }
 
-      rowsHtml += `
-        <tr class="${isSelected ? 'selected' : ''}" 
-            data-id="${inc.id}" 
-            tabindex="0" 
-            role="row" 
-            aria-selected="${isSelected}">
-          <td class="td-severity">
-            <span class="badge sev-badge-${inc.severity}">
-              <span class="badge-symbol">${sevSymbol}</span>
-              ${inc.severity}
+    tbody.innerHTML = filtered.map(inc => {
+      const isSelected = inc.id === state.selectedIncidentId;
+      const rowClass = `incident-row ${isSelected ? 'active' : ''}`;
+      const unassignedClass = inc.owner.toLowerCase() === 'unassigned' ? 'unassigned' : '';
+
+      return `
+        <tr class="${rowClass}" data-id="${inc.id}" tabindex="0" role="row" aria-selected="${isSelected}">
+          <td class="col-sev">
+            <span class="sev-badge sev-${inc.severity}">
+              <span class="sev-dot" aria-hidden="true"></span>
+              <span>${inc.severity.slice(0, 4)}</span>
             </span>
           </td>
-          <td class="td-id">${inc.id}</td>
-          <td class="td-service">${inc.service}</td>
-          <td class="td-title">${inc.title}</td>
-          <td class="td-age">${inc.age}</td>
-          <td class="td-owner ${inc.owner === 'Unassigned' ? 'unassigned' : ''}">
-            ${inc.owner}
+          <td class="col-id font-mono">
+            <span class="incident-id-link">${inc.id}</span>
           </td>
-          <td class="td-status">
-            <span class="status-badge ${inc.status.toLowerCase()}">
-              ${inc.status}
-            </span>
+          <td class="col-title">
+            <span class="incident-summary-text">${escapeHtml(inc.title)}</span>
           </td>
-          <td class="td-actions">
-            <button class="btn-table-ack ${isAck ? 'is-ack' : ''}" 
-                    data-action="ack" 
-                    data-id="${inc.id}" 
-                    aria-label="Acknowledge incident ${inc.id}">
-              ${isAck ? '✓ ACK' : 'ACK'}
-            </button>
+          <td class="col-service font-mono">
+            <span class="service-code">${escapeHtml(inc.service)}</span>
+          </td>
+          <td class="col-age cell-age font-mono">${escapeHtml(inc.age)}</td>
+          <td class="col-owner cell-owner ${unassignedClass}">${escapeHtml(inc.owner)}</td>
+          <td class="col-status">
+            <span class="status-badge status-${inc.status}">${escapeHtml(inc.status)}</span>
           </td>
         </tr>
       `;
-    });
+    }).join("");
 
-    dom.tableBody.innerHTML = rowsHtml;
+    // Attach click and keyboard handlers to rows
+    tbody.querySelectorAll(".incident-row").forEach(row => {
+      const id = row.getAttribute("data-id");
 
-    // Attach row events
-    const rows = dom.tableBody.querySelectorAll("tr");
-    rows.forEach(row => {
-      row.addEventListener("click", (e) => {
-        // If clicked on ACK button inside row
-        const ackBtn = e.target.closest("[data-action='ack']");
-        if (ackBtn) {
-          e.stopPropagation();
-          const incId = ackBtn.getAttribute("data-id");
-          acknowledgeIncident(incId);
-          return;
-        }
-
-        const incId = row.getAttribute("data-id");
-        selectIncident(incId);
+      row.addEventListener("click", () => {
+        selectIncident(id);
       });
 
       row.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          selectIncident(row.getAttribute("data-id"));
-        } else if (e.key === "a" || e.key === "A") {
-          e.preventDefault();
-          acknowledgeIncident(row.getAttribute("data-id"));
+          selectIncident(id);
         }
       });
     });
 
-    // Update overall system health indicator in top status bar
-    updateSystemHealthHeadline();
+    renderIncidentDetail();
   }
 
   /**
-   * Updates count numbers on filter buttons and reset button visibility
+   * Update count badges on Severity filter chips
    */
-  function updateFilterCounts() {
-    const allCount = state.incidents.length;
-    const critCount = state.incidents.filter(i => i.severity === "critical").length;
-    const highCount = state.incidents.filter(i => i.severity === "high").length;
-    const medCount = state.incidents.filter(i => i.severity === "medium").length;
-    const lowCount = state.incidents.filter(i => i.severity === "low").length;
-
-    const countAll = document.getElementById("count-sev-all");
-    const countCrit = document.getElementById("count-sev-critical");
-    const countHigh = document.getElementById("count-sev-high");
-    const countMed = document.getElementById("count-sev-medium");
-    const countLow = document.getElementById("count-sev-low");
-
-    if (countAll) countAll.textContent = allCount;
-    if (countCrit) countCrit.textContent = critCount;
-    if (countHigh) countHigh.textContent = highCount;
-    if (countMed) countMed.textContent = medCount;
-    if (countLow) countLow.textContent = lowCount;
-
-    if (dom.navIncidentCount) dom.navIncidentCount.textContent = allCount;
-    if (dom.statusIncidentMetric) dom.statusIncidentMetric.textContent = `${allCount} TOTAL`;
-
-    // Reset button visibility
-    const isFiltered = state.filters.severity !== "all" ||
-                       state.filters.status !== "all" ||
-                       state.filters.service !== "all" ||
-                       state.filters.searchQuery !== "";
-
-    if (dom.btnResetFilters) {
-      if (isFiltered) dom.btnResetFilters.classList.remove("hidden");
-      else dom.btnResetFilters.classList.add("hidden");
-    }
+  function updateSeverityChipCounts() {
+    const chips = document.querySelectorAll("#severity-chip-group .filter-chip");
+    chips.forEach(chip => {
+      const sev = chip.getAttribute("data-severity");
+      let count = 0;
+      if (sev === "all") {
+        count = state.incidents.length;
+        chip.textContent = `All (${count})`;
+      } else {
+        count = state.incidents.filter(i => i.severity === sev).length;
+        const label = sev === "critical" ? "Critical" : sev === "high" ? "High" : sev === "medium" ? "Med" : "Low";
+        chip.textContent = `${label} (${count})`;
+      }
+    });
   }
 
   /**
-   * Updates top status bar headline based on active incidents status
-   */
-  function updateSystemHealthHeadline() {
-    const criticals = state.incidents.filter(i => i.severity === "critical");
-    const unAckCrit = criticals.filter(i => i.status !== "acknowledged" && i.status !== "resolved");
-
-    if (unAckCrit.length > 0) {
-      dom.statusHeadline.className = "system-health-pill critical";
-      dom.statusHeadlineText.textContent = `${unAckCrit.length} CRITICAL INCIDENT ACTIVE`;
-    } else if (criticals.length > 0 && criticals.every(i => i.status === "acknowledged")) {
-      dom.statusHeadline.className = "system-health-pill acknowledged";
-      dom.statusHeadlineText.textContent = `CRITICAL INCIDENT ACKNOWLEDGED`;
-    } else {
-      dom.statusHeadline.className = "system-health-pill nominal";
-      dom.statusHeadlineText.textContent = `ALL PRIMARY SYSTEMS NOMINAL`;
-    }
-  }
-
-  /**
-   * Select an incident and update the detail panel
+   * Select an incident
    */
   function selectIncident(id) {
-    state.selectedId = id;
-    renderIncidentTable();
-    renderDetailPanel();
+    if (state.selectedIncidentId === id) return;
+    state.selectedIncidentId = id;
 
-    dom.detailPanel.classList.remove("closed");
-    dom.detailPanel.setAttribute("aria-hidden", "false");
+    // Update table row styling
+    const rows = document.querySelectorAll(".incident-row");
+    rows.forEach(r => {
+      const match = r.getAttribute("data-id") === id;
+      r.classList.toggle("active", match);
+      r.setAttribute("aria-selected", match ? "true" : "false");
+    });
+
+    renderIncidentDetail();
   }
 
   /**
-   * Render the detail panel with the currently selected incident
+   * Render Selected Incident Detail Inspector
    */
-  function renderDetailPanel() {
-    const inc = state.incidents.find(i => i.id === state.selectedId);
-    if (!inc) return;
+  function renderIncidentDetail() {
+    const container = document.getElementById("detail-body-container");
+    const statusBadge = document.getElementById("inspector-status-badge");
+    if (!container) return;
 
-    dom.detailIdText.textContent = inc.id;
-    dom.detailTitleText.textContent = inc.title;
+    const incident = state.incidents.find(i => i.id === state.selectedIncidentId);
 
-    // Severity Badge
-    const sevSymbol = inc.severity === "critical" ? "⬢" : inc.severity === "high" ? "▲" : inc.severity === "medium" ? "◼" : "●";
-    dom.detailSevBadge.className = `badge sev-badge-${inc.severity}`;
-    dom.detailSevBadge.innerHTML = `<span class="badge-symbol">${sevSymbol}</span> ${inc.severity.toUpperCase()}`;
-
-    // Status Badge
-    dom.detailStatusBadge.className = `badge status-badge-${inc.status.toLowerCase()}`;
-    dom.detailStatusBadge.textContent = inc.status.toUpperCase();
-    dom.detailStatusSelect.value = inc.status;
-
-    // Acknowledge Button State
-    const isAck = inc.status.toLowerCase() === "acknowledged";
-    if (isAck) {
-      dom.btnAcknowledgeAction.classList.add("is-acknowledged");
-      dom.btnAckLabel.textContent = "✓ Acknowledged";
-      dom.btnAcknowledgeAction.setAttribute("aria-pressed", "true");
-    } else {
-      dom.btnAcknowledgeAction.classList.remove("is-acknowledged");
-      dom.btnAckLabel.textContent = "Acknowledge Incident";
-      dom.btnAcknowledgeAction.setAttribute("aria-pressed", "false");
-    }
-
-    // Grid data
-    dom.detailServiceText.textContent = inc.service;
-    dom.detailAgeText.textContent = inc.age;
-    dom.detailOwnerText.textContent = inc.owner;
-    dom.detailSloText.textContent = inc.slo || "SLO Breach under investigation";
-    dom.detailSynopsisText.textContent = inc.synopsis || "Investigating telemetry degradation across cluster pods.";
-    dom.detailRunbookText.textContent = inc.runbook || "RB-GEN-001 (General Triage Playbook)";
-    dom.detailTelErrors.textContent = inc.errors || "Elevated rate";
-    dom.detailTelReplicas.textContent = inc.replicas || "Replicas under inspection";
-
-    // Render Timeline
-    renderTimeline(inc);
-  }
-
-  /**
-   * Render timeline items in detail panel
-   */
-  function renderTimeline(inc) {
-    if (!inc.timeline || inc.timeline.length === 0) {
-      dom.detailTimelineList.innerHTML = '<li class="timeline-item"><div class="timeline-content">No events logged yet.</div></li>';
+    if (!incident) {
+      if (statusBadge) statusBadge.textContent = "NO SELECTION";
+      container.innerHTML = `
+        <div class="detail-empty-state">
+          <div class="detail-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h3 class="detail-empty-title">NO INCIDENT SELECTED</h3>
+          <p class="detail-empty-desc">Select an incident from the queue or navigate with keyboard arrows to inspect telemetry, runbooks, and operator actions.</p>
+        </div>
+      `;
       return;
     }
 
-    let itemsHtml = '';
-    inc.timeline.slice().reverse().forEach(t => {
-      const isAckEvent = t.event.toLowerCase().includes("acknowledged");
-      itemsHtml += `
-        <li class="timeline-item ${isAckEvent ? 'ack' : ''}">
-          <span class="timeline-dot" aria-hidden="true"></span>
-          <div class="timeline-meta">
-            <span class="timeline-time">${t.time}</span>
-            <span class="timeline-author">// ${t.author}</span>
-          </div>
-          <div class="timeline-content">${t.event}</div>
-        </li>
-      `;
-    });
+    if (statusBadge) statusBadge.textContent = incident.id;
 
-    dom.detailTimelineList.innerHTML = itemsHtml;
+    const meta = INCIDENT_METADATA[incident.id] || {
+      slo: "SLO RISK",
+      runbook: "RB-OPS-01: General Operations",
+      telemetry: "Nominal operational telemetry."
+    };
+
+    const isAcknowledged = incident.status === "acknowledged" || incident.status === "investigating";
+    const isResolved = incident.status === "resolved";
+    const logs = state.activityLogs[incident.id] || [];
+
+    const ackButtonLabel = isResolved
+      ? "Incident Resolved"
+      : incident.status === "acknowledged"
+      ? "✓ Acknowledged"
+      : incident.status === "investigating"
+      ? "✓ In Investigation (Acked)"
+      : "Acknowledge Incident";
+
+    const ackButtonDisabled = isResolved || incident.status === "acknowledged" || incident.status === "investigating";
+
+    container.innerHTML = `
+      <div class="inspector-card">
+        
+        <!-- Header: ID, Severity, Title -->
+        <div class="incident-key-header">
+          <div class="key-title-group">
+            <div class="key-id-row">
+              <span class="key-id-val">${incident.id}</span>
+              <span class="sev-badge sev-${incident.severity}">
+                <span class="sev-dot" aria-hidden="true"></span>
+                <span>${incident.severity.toUpperCase()}</span>
+              </span>
+              <span class="status-badge status-${incident.status}">${incident.status}</span>
+            </div>
+            <h3 class="key-incident-title">${escapeHtml(incident.title)}</h3>
+          </div>
+        </div>
+
+        <!-- Primary Action Area: Acknowledge & Resolve -->
+        <div class="action-box">
+          <button id="btn-ack-incident"
+                  class="btn-acknowledge ${ackButtonDisabled ? 'is-acked' : ''}"
+                  type="button"
+                  ${ackButtonDisabled ? 'disabled' : ''}
+                  aria-label="Acknowledge incident ${incident.id}">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>${ackButtonLabel}</span>
+          </button>
+
+          ${!isResolved ? `
+            <button id="btn-resolve-incident" class="btn-resolve-secondary" type="button">
+              Resolve Incident
+            </button>
+          ` : ''}
+        </div>
+
+        <!-- Key Attributes Grid -->
+        <div class="detail-attr-grid">
+          <div class="attr-item">
+            <span class="attr-label">SERVICE</span>
+            <span class="attr-value">${escapeHtml(incident.service)}</span>
+          </div>
+          <div class="attr-item">
+            <span class="attr-label">CURRENT OWNER</span>
+            <span class="attr-value">${escapeHtml(incident.owner)}</span>
+          </div>
+          <div class="attr-item">
+            <span class="attr-label">AGE / ELAPSED</span>
+            <span class="attr-value">${escapeHtml(incident.age)}</span>
+          </div>
+          <div class="attr-item">
+            <span class="attr-label">SLO STATUS</span>
+            <span class="attr-value">${meta.slo}</span>
+          </div>
+        </div>
+
+        <!-- Diagnostic Telemetry -->
+        <div class="detail-diagnostics-box">
+          <span class="diag-title">DIAGNOSTIC TELEMETRY</span>
+          <pre class="diag-code"><code>${escapeHtml(meta.telemetry)}</code></pre>
+          <div class="runbook-link-box">
+            <span>RUNBOOK:</span>
+            <span class="font-mono">${meta.runbook}</span>
+          </div>
+        </div>
+
+        <!-- Activity Timeline / Audit Trail -->
+        <div class="detail-timeline-box">
+          <span class="timeline-title">ACTIVITY LOG & AUDIT TRAIL</span>
+          <ul class="timeline-list">
+            ${logs.map((log, i) => `
+              <li class="timeline-entry">
+                <span class="timeline-time">[${log.time}]</span>
+                <span class="timeline-msg ${i === logs.length - 1 ? 'highlight' : ''}">${escapeHtml(log.msg)}</span>
+              </li>
+            `).join("")}
+          </ul>
+        </div>
+
+      </div>
+    `;
+
+    // Attach Acknowledge & Resolve Listeners
+    const ackBtn = document.getElementById("btn-ack-incident");
+    if (ackBtn && !ackButtonDisabled) {
+      ackBtn.addEventListener("click", () => acknowledgeIncident(incident.id));
+    }
+
+    const resolveBtn = document.getElementById("btn-resolve-incident");
+    if (resolveBtn) {
+      resolveBtn.addEventListener("click", () => resolveIncident(incident.id));
+    }
   }
 
   /**
-   * WORKING ACKNOWLEDGE ACTION
+   * Working Acknowledge Action
    */
   function acknowledgeIncident(id) {
-    const inc = state.incidents.find(i => i.id === id);
-    if (!inc) return;
+    const incident = state.incidents.find(i => i.id === id);
+    if (!incident) return;
 
-    const now = new Date();
-    const timeStr = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`;
-
-    if (inc.status === "acknowledged") {
-      // Toggle back to investigating
-      inc.status = "investigating";
-      inc.timeline.push({
-        time: timeStr,
-        event: "Acknowledgment cleared; status reset to investigating.",
-        author: "J. Mercer (Operator)"
-      });
-      announce(`Incident ${inc.id} status returned to investigating`);
-    } else {
-      // Acknowledge action
-      inc.status = "acknowledged";
-      if (inc.owner === "Unassigned") {
-        inc.owner = "J. Mercer";
-      }
-      inc.timeline.push({
-        time: timeStr,
-        event: "Incident acknowledged by Console Operator J. Mercer. Escalation paused.",
-        author: "J. Mercer (Operator)"
-      });
-      announce(`Incident ${inc.id} successfully acknowledged`);
+    if (incident.status === "acknowledged" || incident.status === "investigating") {
+      showToast(`Incident ${id} is already acknowledged.`);
+      return;
     }
 
-    // Refresh UI
-    renderIncidentTable();
-    if (state.selectedId === id) {
-      renderDetailPanel();
+    const prevStatus = incident.status;
+    incident.status = "investigating"; // Mark under active investigation
+    if (incident.owner === "Unassigned") {
+      incident.owner = "M. Chen";
     }
+
+    // Append to audit log
+    const now = new Date().toUTCString().slice(17, 25) + " UTC";
+    if (!state.activityLogs[id]) state.activityLogs[id] = [];
+    state.activityLogs[id].push({
+      time: now,
+      msg: `Acknowledged by Operator M. Chen (Transitioned ${prevStatus.toUpperCase()} → INVESTIGATING).`
+    });
+
+    showToast(`✓ Acknowledged ${id}: Assigned to M. Chen`);
+    renderTopStatusBar();
+    renderIncidentsTable();
+    renderIncidentDetail();
   }
 
   /**
-   * Change status of an incident
+   * Resolve Action
    */
-  function changeIncidentStatus(id, newStatus) {
-    const inc = state.incidents.find(i => i.id === id);
-    if (!inc || inc.status === newStatus) return;
+  function resolveIncident(id) {
+    const incident = state.incidents.find(i => i.id === id);
+    if (!incident) return;
 
-    const now = new Date();
-    const timeStr = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`;
+    incident.status = "resolved";
 
-    inc.status = newStatus;
-    inc.timeline.push({
-      time: timeStr,
-      event: `Operational status manually changed to ${newStatus.toUpperCase()}.`,
-      author: "J. Mercer (Operator)"
+    const now = new Date().toUTCString().slice(17, 25) + " UTC";
+    if (!state.activityLogs[id]) state.activityLogs[id] = [];
+    state.activityLogs[id].push({
+      time: now,
+      msg: `Incident marked RESOLVED by Operator M. Chen.`
     });
 
-    announce(`Incident ${inc.id} status updated to ${newStatus}`);
-    renderIncidentTable();
-    renderDetailPanel();
+    showToast(`✓ Incident ${id} resolved`);
+    renderTopStatusBar();
+    renderIncidentsTable();
+    renderIncidentDetail();
   }
 
   /**
-   * Assign incident to current operator
+   * Toast notification feedback
    */
-  function assignToSelf(id) {
-    const inc = state.incidents.find(i => i.id === id);
-    if (!inc) return;
+  function showToast(message) {
+    const region = document.getElementById("toast-region");
+    if (!region) return;
 
-    const now = new Date();
-    const timeStr = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`;
+    const toast = document.createElement("div");
+    toast.className = "toast-msg success";
+    toast.textContent = message;
+    region.appendChild(toast);
 
-    inc.owner = "J. Mercer";
-    inc.timeline.push({
-      time: timeStr,
-      event: "Ownership taken by Console Operator J. Mercer.",
-      author: "J. Mercer (Operator)"
-    });
-
-    announce(`Incident ${inc.id} assigned to J. Mercer`);
-    renderIncidentTable();
-    renderDetailPanel();
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      toast.style.transition = "opacity 0.3s ease";
+      setTimeout(() => toast.remove(), 300);
+    }, 3200);
   }
 
   /**
-   * Post custom operator note
+   * Setup Event Listeners for Filters, Sorting, Chart Modes, and Hotkeys
    */
-  function postOperatorNote(id, noteText) {
-    const inc = state.incidents.find(i => i.id === id);
-    if (!inc || !noteText.trim()) return;
+  function setupEventListeners() {
+    // 1. Search Input
+    const searchInput = document.getElementById("input-search");
+    if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+        state.filters.search = e.target.value.trim();
+        renderIncidentsTable();
+      });
+    }
 
-    const now = new Date();
-    const timeStr = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`;
-
-    inc.timeline.push({
-      time: timeStr,
-      event: noteText.trim(),
-      author: "J. Mercer (Note)"
-    });
-
-    announce(`Operational note added to ${inc.id}`);
-    renderDetailPanel();
-  }
-
-  /**
-   * Setup Event Listeners
-   */
-  function bindEvents() {
-    // Acknowledge Action Button in detail panel
-    dom.btnAcknowledgeAction.addEventListener("click", () => {
-      acknowledgeIncident(state.selectedId);
-    });
-
-    // Detail Panel Status Dropdown
-    dom.detailStatusSelect.addEventListener("change", (e) => {
-      changeIncidentStatus(state.selectedId, e.target.value);
-    });
-
-    // Take ownership button
-    dom.btnAssignSelf.addEventListener("click", () => {
-      assignToSelf(state.selectedId);
-    });
-
-    // Escalate Button
-    dom.btnEscalate.addEventListener("click", () => {
-      const inc = state.incidents.find(i => i.id === state.selectedId);
-      if (inc) {
-        inc.timeline.push({
-          time: new Date().toTimeString().split(" ")[0] + " UTC",
-          event: "Incident escalated to Senior Incident Commander and SRE Escalation Rota.",
-          author: "J. Mercer (Operator)"
+    // 2. Severity Chip Filters
+    const severityChips = document.querySelectorAll("#severity-chip-group .filter-chip");
+    severityChips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        severityChips.forEach(c => {
+          c.classList.remove("active");
+          c.setAttribute("aria-checked", "false");
         });
-        announce(`Incident ${inc.id} escalated`);
-        renderDetailPanel();
-      }
+        chip.classList.add("active");
+        chip.setAttribute("aria-checked", "true");
+
+        state.filters.severity = chip.getAttribute("data-severity");
+        renderIncidentsTable();
+      });
     });
 
-    // Close detail panel
-    dom.btnCloseDetail.addEventListener("click", () => {
-      dom.detailPanel.classList.add("closed");
-      dom.detailPanel.setAttribute("aria-hidden", "true");
-      announce("Incident detail panel closed");
-    });
+    // 3. Status Select Filter
+    const statusSelect = document.getElementById("select-status");
+    if (statusSelect) {
+      statusSelect.addEventListener("change", (e) => {
+        state.filters.status = e.target.value;
+        renderIncidentsTable();
+      });
+    }
 
-    // Note submission form
-    dom.formOperatorNote.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const note = dom.inputOperatorNote.value;
-      postOperatorNote(state.selectedId, note);
-      dom.inputOperatorNote.value = "";
-    });
+    // 4. Service Select Filter
+    const serviceSelect = document.getElementById("select-service");
+    if (serviceSelect) {
+      serviceSelect.addEventListener("change", (e) => {
+        state.filters.service = e.target.value;
+        renderIncidentsTable();
+      });
+    }
 
-    // Search Input
-    dom.searchInput.addEventListener("input", (e) => {
-      state.filters.searchQuery = e.target.value;
-      if (e.target.value) {
-        dom.btnClearSearch.classList.remove("hidden");
-      } else {
-        dom.btnClearSearch.classList.add("hidden");
-      }
-      renderIncidentTable();
-    });
+    // 5. Reset Filters Buttons
+    const resetBtn = document.getElementById("btn-reset-filters");
+    const emptyResetBtn = document.getElementById("btn-empty-reset");
 
-    // Clear search button
-    dom.btnClearSearch.addEventListener("click", () => {
-      dom.searchInput.value = "";
-      state.filters.searchQuery = "";
-      dom.btnClearSearch.classList.add("hidden");
-      dom.searchInput.focus();
-      renderIncidentTable();
-    });
-
-    // Severity Filter Pills
-    dom.severityPills.addEventListener("click", (e) => {
-      const pill = e.target.closest("[data-filter='severity']");
-      if (!pill) return;
-
-      dom.severityPills.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
-      pill.classList.add("active");
-
-      state.filters.severity = pill.getAttribute("data-value");
-      renderIncidentTable();
-    });
-
-    // Status Filter Select
-    dom.selectStatusFilter.addEventListener("change", (e) => {
-      state.filters.status = e.target.value;
-      renderIncidentTable();
-    });
-
-    // Service Filter Select
-    dom.selectServiceFilter.addEventListener("change", (e) => {
-      state.filters.service = e.target.value;
-      renderIncidentTable();
-    });
-
-    // Reset Filters Button
-    const resetAllFilters = () => {
+    function resetFilters() {
+      state.filters.search = "";
       state.filters.severity = "all";
       state.filters.status = "all";
       state.filters.service = "all";
-      state.filters.searchQuery = "";
 
-      dom.searchInput.value = "";
-      dom.btnClearSearch.classList.add("hidden");
-      dom.selectStatusFilter.value = "all";
-      dom.selectServiceFilter.value = "all";
+      if (searchInput) searchInput.value = "";
+      if (statusSelect) statusSelect.value = "all";
+      if (serviceSelect) serviceSelect.value = "all";
 
-      dom.severityPills.querySelectorAll(".pill").forEach(p => {
-        if (p.getAttribute("data-value") === "all") p.classList.add("active");
-        else p.classList.remove("active");
+      severityChips.forEach(c => {
+        const isAll = c.getAttribute("data-severity") === "all";
+        c.classList.toggle("active", isAll);
+        c.setAttribute("aria-checked", isAll ? "true" : "false");
       });
 
-      renderIncidentTable();
-      announce("All filters reset to defaults");
-    };
+      renderIncidentsTable();
+      showToast("Filter criteria cleared.");
+    }
 
-    dom.btnResetFilters.addEventListener("click", resetAllFilters);
-    dom.btnEmptyReset.addEventListener("click", resetAllFilters);
+    if (resetBtn) resetBtn.addEventListener("click", resetFilters);
+    if (emptyResetBtn) emptyResetBtn.addEventListener("click", resetFilters);
 
-    // Sortable Table Column Headers
-    const thButtons = document.querySelectorAll(".th-sort-btn");
-    thButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const th = btn.closest(".th-sortable");
-        const sortCol = th.getAttribute("data-sort");
-
-        if (state.sort.column === sortCol) {
+    // 6. Table Column Sorting
+    const sortHeaders = document.querySelectorAll(".data-table th[data-col]");
+    sortHeaders.forEach(th => {
+      th.addEventListener("click", () => {
+        const col = th.getAttribute("data-col");
+        if (state.sort.column === col) {
           state.sort.direction = state.sort.direction === "asc" ? "desc" : "asc";
         } else {
-          state.sort.column = sortCol;
+          state.sort.column = col;
           state.sort.direction = "asc";
         }
 
-        // Update ARIA sort attributes on all th
-        document.querySelectorAll(".th-sortable").forEach(header => {
-          if (header === th) {
-            header.setAttribute("aria-sort", state.sort.direction === "asc" ? "ascending" : "descending");
+        // Update ARIA sort attributes
+        sortHeaders.forEach(h => {
+          if (h === th) {
+            h.setAttribute("aria-sort", state.sort.direction === "asc" ? "ascending" : "descending");
           } else {
-            header.setAttribute("aria-sort", "none");
+            h.setAttribute("aria-sort", "none");
           }
         });
 
-        renderIncidentTable();
+        renderIncidentsTable();
       });
     });
 
-    // Refresh Telemetry Button
-    dom.btnRefresh.addEventListener("click", () => {
-      state.lastSyncTime = new Date();
-      // Slight simulated jitter on latest throughput
-      const latestVal = 40 + Math.floor(Math.random() * 5);
-      state.throughput[state.throughput.length - 1] = latestVal;
-      renderThroughputChart();
-      renderMetrics();
-      renderIncidentTable();
-      announce("Telemetry refreshed and synchronized with cluster.");
-    });
+    // 7. Chart Rendering Mode Toggles (Area vs Bars)
+    const btnArea = document.getElementById("btn-chart-mode-area");
+    const btnBars = document.getElementById("btn-chart-mode-bars");
 
-    // Audio Mute Toggle
-    dom.btnAudioToggle.addEventListener("click", () => {
-      state.audioMuted = !state.audioMuted;
-      dom.btnAudioToggle.setAttribute("aria-pressed", (!state.audioMuted).toString());
-      announce(state.audioMuted ? "Alarms muted" : "Alarms unmuted");
-    });
+    if (btnArea && btnBars) {
+      btnArea.addEventListener("click", () => {
+        state.chartMode = "area";
+        btnArea.classList.add("active");
+        btnArea.setAttribute("aria-pressed", "true");
+        btnBars.classList.remove("active");
+        btnBars.setAttribute("aria-pressed", "false");
+        renderThroughputChart();
+      });
 
-    // Mobile Rail Toggle
-    dom.btnToggleRail.addEventListener("click", () => {
-      const rail = document.querySelector(".nav-rail");
-      if (rail) {
-        const isShown = rail.style.display === "flex";
-        rail.style.display = isShown ? "none" : "flex";
-      }
-    });
+      btnBars.addEventListener("click", () => {
+        state.chartMode = "bars";
+        btnBars.classList.add("active");
+        btnBars.setAttribute("aria-pressed", "true");
+        btnArea.classList.remove("active");
+        btnArea.setAttribute("aria-pressed", "false");
+        renderThroughputChart();
+      });
+    }
 
-    // Keyboard Shortcuts Dialog
-    dom.btnShortcuts.addEventListener("click", () => dom.shortcutsDialog.showModal());
-    dom.btnCloseShortcuts.addEventListener("click", () => dom.shortcutsDialog.close());
-    dom.btnDismissShortcuts.addEventListener("click", () => dom.shortcutsDialog.close());
+    // 8. Manual Sync Button
+    const syncBtn = document.getElementById("btn-manual-sync");
+    if (syncBtn) {
+      syncBtn.addEventListener("click", () => {
+        showToast("Synchronized telemetry with US-EAST cluster.");
+      });
+    }
 
-    // Global Keyboard Navigation
-    document.addEventListener("keydown", (e) => {
-      // If typing inside an input/select/textarea, ignore shortcuts except Escape
-      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-      if (['input', 'textarea', 'select'].includes(activeTag)) {
-        if (e.key === "Escape") {
-          document.activeElement.blur();
-        }
-        return;
-      }
-
-      // / to focus search
-      if (e.key === "/") {
-        e.preventDefault();
-        dom.searchInput.focus();
-        return;
-      }
-
-      // ? to toggle shortcuts dialog
-      if (e.key === "?") {
-        e.preventDefault();
-        if (dom.shortcutsDialog.open) dom.shortcutsDialog.close();
-        else dom.shortcutsDialog.showModal();
-        return;
-      }
-
-      // R to refresh
-      if (e.key === "r" || e.key === "R") {
-        dom.btnRefresh.click();
-        return;
-      }
-
-      // Esc to close detail panel
-      if (e.key === "Escape") {
-        if (dom.shortcutsDialog.open) {
-          dom.shortcutsDialog.close();
-        } else if (!dom.detailPanel.classList.contains("closed")) {
-          dom.btnCloseDetail.click();
-        }
-        return;
-      }
-
-      // A to acknowledge selected incident
-      if (e.key === "a" || e.key === "A") {
-        if (state.selectedId) {
-          e.preventDefault();
-          acknowledgeIncident(state.selectedId);
-        }
-        return;
-      }
-
-      // Arrow navigation across rows
-      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-        e.preventDefault();
-        navigateIncidentRows(e.key === "ArrowDown" ? 1 : -1);
-      }
-    });
+    // 9. Keyboard Navigation & Hotkeys
+    document.addEventListener("keydown", handleKeyboardNavigation);
   }
 
   /**
-   * Keyboard Arrow navigation across incident rows
+   * Keyboard Shortcuts & Table Navigation
    */
-  function navigateIncidentRows(delta) {
-    const filtered = getFilteredIncidents();
-    if (filtered.length === 0) return;
+  function handleKeyboardNavigation(e) {
+    // Avoid capturing shortcuts when user is typing in search or select
+    const activeTagName = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
+    const isTyping = activeTagName === "input" || activeTagName === "select" || activeTagName === "textarea";
 
-    const currentIndex = filtered.findIndex(i => i.id === state.selectedId);
-    let nextIndex = currentIndex + delta;
+    // Shortcut: '/' to focus search
+    if (e.key === "/" && !isTyping) {
+      e.preventDefault();
+      const searchInput = document.getElementById("input-search");
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.select();
+      }
+      return;
+    }
 
-    if (nextIndex < 0) nextIndex = 0;
-    if (nextIndex >= filtered.length) nextIndex = filtered.length - 1;
+    // Shortcut: 'Escape' to clear search / blur
+    if (e.key === "Escape") {
+      const searchInput = document.getElementById("input-search");
+      if (searchInput && document.activeElement === searchInput) {
+        searchInput.value = "";
+        state.filters.search = "";
+        searchInput.blur();
+        renderIncidentsTable();
+      }
+      return;
+    }
 
-    const nextId = filtered[nextIndex].id;
-    selectIncident(nextId);
+    // Shortcut: 'A' to Acknowledge selected incident
+    if ((e.key === "a" || e.key === "A") && !isTyping) {
+      if (state.selectedIncidentId) {
+        e.preventDefault();
+        acknowledgeIncident(state.selectedIncidentId);
+      }
+      return;
+    }
 
-    // Focus corresponding DOM row
-    const targetRow = dom.tableBody.querySelector(`tr[data-id="${nextId}"]`);
-    if (targetRow) {
-      targetRow.focus();
-      targetRow.scrollIntoView({ block: "nearest" });
+    // Up / Down Arrow navigation through visible table rows
+    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !isTyping) {
+      const visibleIncidents = getFilteredIncidents();
+      if (visibleIncidents.length === 0) return;
+
+      e.preventDefault();
+      const currentIndex = visibleIncidents.findIndex(i => i.id === state.selectedIncidentId);
+      let nextIndex = 0;
+
+      if (e.key === "ArrowDown") {
+        nextIndex = currentIndex < visibleIncidents.length - 1 ? currentIndex + 1 : 0;
+      } else {
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : visibleIncidents.length - 1;
+      }
+
+      const nextIncident = visibleIncidents[nextIndex];
+      if (nextIncident) {
+        selectIncident(nextIncident.id);
+
+        // Bring row into view if scrolled
+        const row = document.querySelector(`.incident-row[data-id="${nextIncident.id}"]`);
+        if (row) {
+          row.scrollIntoView({ block: "nearest" });
+          row.focus();
+        }
+      }
     }
   }
 
   /**
-   * Asynchronous loader attempting fetch, falling back to local seed data
+   * Escape HTML utility
    */
-  async function loadData() {
-    try {
-      const response = await fetch("./DATA.json");
-      if (response.ok) {
-        const jsonData = await response.json();
-        if (jsonData.metrics) state.metrics = jsonData.metrics;
-        if (jsonData.throughput) state.throughput = jsonData.throughput;
-        if (jsonData.incidents) {
-          // Merge with detailed timeline data from SEED_DATA
-          state.incidents = jsonData.incidents.map(inc => {
-            const seedMatch = SEED_DATA.incidents.find(s => s.id === inc.id);
-            return {
-              ...seedMatch,
-              ...inc,
-              timeline: seedMatch ? seedMatch.timeline : [
-                { time: "19:26:00 UTC", event: `Incident ${inc.id} detected`, author: "System Monitor" }
-              ]
-            };
-          });
-        }
-      }
-    } catch (err) {
-      // Fetch may fail in file:// protocol sandbox; SEED_DATA is ready
-      console.log("Using embedded seed data fallback");
-    }
+  function escapeHtml(str) {
+    if (typeof str !== "string") return String(str || "");
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
-  /**
-   * Initialization
-   */
-  async function init() {
-    await loadData();
-    renderMetrics();
-    renderThroughputChart();
-    renderIncidentTable();
-    renderDetailPanel();
-    bindEvents();
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // Window resize observer for SVG chart redraw
-    window.addEventListener("resize", () => {
-      renderThroughputChart();
-    });
-  }
-
-  // Boot on DOM ready
+  // Start on DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }
+
 })();

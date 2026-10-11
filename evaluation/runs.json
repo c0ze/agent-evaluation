@@ -118,5 +118,25 @@
   "cost": "$1.74 API-equivalent (subscription; nothing charged)",
   "usage": "444 input + 997k cache-write + 17.67M cache-read input, 844k output tokens; 225 turns",
   "notes": "One claude -p per task, four at a time, in a fresh repository outside the home directory: no CLAUDE.md, memory, plugins, hooks or MCP; Bash sandboxed with no network. A 30-second first launch was stopped over headless permission prompts and relaunched clean. Task 11 took 24 of the 34 minutes."
+ },
+ "gemini-3.1-pro": {
+  "label": "Gemini 3.1 Pro",
+  "model": "gemini-3.1-pro-high",
+  "where": "Antigravity CLI (agy 1.3.3, headless) on cachyos, Google account, 2026-10-11",
+  "effort": "high (High variant + --effort high)",
+  "duration": "~27 min (17 min first pass + 10 min task 11 re-run)",
+  "cost": null,
+  "usage": "1.56M input + 7.45M cache-read input, 530k output (317k thinking) tokens; 196 tool calls (graded tasks; the cut-off task 11 attempt not counted)",
+  "notes": "One agy -p per task, four at a time, both Gemini models at once, each task with its own empty HOME (only the agy sign-in token and a settings file) in a fresh repository outside the home directory: no rules, memories, knowledge items, conversation history, user skills or MCP; terminal commands in agy's sandbox with no network, URL tools denied. Task 11's first attempt was ended by agy (an out-of-workspace read it can't prompt for in headless mode is auto-denied and ends the session) before RESPONSE.md was written; it was reset to the template and re-run alone with the identical command."
+ },
+ "gemini-3.8-flash": {
+  "label": "Gemini 3.8 Flash",
+  "model": "gemini-3.8-flash-high",
+  "where": "Antigravity CLI (agy 1.3.3, headless) on cachyos, Google account, 2026-10-11",
+  "effort": "high (High variant + --effort high)",
+  "duration": "~22 min",
+  "cost": null,
+  "usage": "2.35M input + 16.07M cache-read input, 512k output (289k thinking) tokens; 314 tool calls",
+  "notes": "One agy -p per task, four at a time, both Gemini models at once, each task with its own empty HOME (only the agy sign-in token and a settings file) in a fresh repository outside the home directory: no rules, memories, knowledge items, conversation history, user skills or MCP; terminal commands in agy's sandbox with no network, URL tools denied. Task 11 took 15 of the 22 minutes."
  }
 }
