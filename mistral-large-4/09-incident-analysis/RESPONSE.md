@@ -1,0 +1,10 @@
+# Response summary
+
+## Confidence level
+**High** that the `tenant_retry_policy` feature flag (release `2026.09.23.1`) caused the incident, via a zero-delay / empty-policy retry loop that saturated the database connection pool and stalled worker processing. The evidence is consistent across three independent signals: (1) the zero-delay retry loop with `policy=""` appears in logs immediately before onset and recurs on a freshly restarted worker; (2) disabling the flag restored the exponential default (`delay_ms=1000`) on the same worker and recovery began within two minutes; (3) the dose-response pattern — 100% flag exposure in eu-west (incident) vs 2% in the US (no alerts). The rollback of the API alone at 09:24 did not fix processing, which rules out the API deploy as the primary cause.
+
+Confidence is **not** absolute: the causal code path has not been inspected, so the exact mechanism producing `policy=""` and `delay_ms=0` (empty tenant config vs. code fallback bug) is inference, and the worker CPU drop to 18% (blocked-on-pool vs. spinning) is unexplained. Treat the root-cause statement as "most likely" until the code diff and worker metrics confirm it.
+
+## Next two pieces of data I would request
+1. **The release diff for `2026.09.23.1`** — specifically the retry-policy code path: how the tenant-specific policy is loaded, what happens when it is empty/missing/unparseable (does it fall back to the `exponential` default or produce `delay_ms=0`?), and the worker config showing `config_retry_default` vs. the flag-controlled path. This would confirm or refute the root cause and distinguish "bad config" from "code bug."
+2. **Worker-level metrics for 09:00-10:30 UTC** — CPU breakdown (user vs. iowait vs. steal), DB pool wait time, connection acquire latency, and retry counts with delay histograms per worker, plus the DB-side view (connection count over time, top queries by frequency during the window). This would explain the CPU drop to 18%, confirm pool saturation as the proximate stall mechanism, and quantify the retry storm's load on the database.

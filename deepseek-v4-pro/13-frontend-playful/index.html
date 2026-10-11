@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Moss · gentle plant care</title>
+  <meta name="description" content="Moss is a gentle household plant-care companion." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Moss home">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <path class="stem" d="M20 35 C20 28 19 21 16 15" />
+          <path class="leaf-a" d="M16 15 C9 11 5 11 3 16 C5 21 11 23 16 15 Z" />
+          <path class="leaf-b" d="M17 20 C23 15 27 13 31 14 C31 20 27 24 17 20 Z" />
+        </svg>
+        <span class="brand-word">Moss</span>
+      </a>
+      <p class="today" id="today">—</p>
+    </header>
+
+    <main class="layout">
+      <section class="queue" aria-labelledby="queue-title">
+        <div class="section-head">
+          <h2 id="queue-title">Today&rsquo;s care</h2>
+          <span class="count" id="queue-count" aria-live="polite">4 to go</span>
+        </div>
+
+        <ul class="plant-list" id="plant-list"></ul>
+
+        <div class="all-done" id="all-done" hidden>
+          <svg class="all-done-art" viewBox="0 0 120 96" aria-hidden="true" focusable="false">
+            <path class="pot" d="M34 72 h52 v12 a4 4 0 0 1 -4 4 h-44 a4 4 0 0 1 -4 -4 Z" />
+            <path class="sprout" d="M60 74 C60 62 58 50 50 38" />
+            <path class="leaf-l" d="M50 38 C40 30 34 30 31 38 C35 46 43 48 50 38 Z" />
+            <path class="leaf-r" d="M52 44 C62 36 68 34 72 38 C70 46 62 50 52 44 Z" />
+            <path class="leaf-l2" d="M60 54 C56 46 50 42 46 44 C50 52 56 56 60 54 Z" />
+            <circle class="spark s1" cx="82" cy="34" r="3" />
+            <circle class="spark s2" cx="34" cy="22" r="2.5" />
+            <circle class="spark s3" cx="88" cy="56" r="2" />
+          </svg>
+          <h3 id="all-done-title">Every leaf is looked after</h3>
+          <p class="all-done-sub" id="all-done-sub"></p>
+          <ul class="done-list" id="done-list"></ul>
+          <a class="btn text" href="#rhythm">See this week&rsquo;s rhythm</a>
+        </div>
+      </section>
+
+      <aside class="side">
+        <section class="rhythm" id="rhythm" aria-labelledby="rhythm-title">
+          <div class="section-head">
+            <h2 id="rhythm-title">Weekly rhythm</h2>
+          </div>
+          <p class="rhythm-hint">How busy the week is around here.</p>
+          <div class="rhythm-chart" id="rhythm-chart" role="img" aria-label="Weekly care rhythm chart"></div>
+        </section>
+
+        <section class="gentle" aria-labelledby="gentle-title">
+          <h2 id="gentle-title" class="visually-hidden">A gentle reminder</h2>
+          <p class="gentle-text">&ldquo;Plants are just slow, quiet optimism.&rdquo;</p>
+          <p class="gentle-attr">— Moss, whenever asked</p>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span class="toast-msg" id="toast-msg"></span>
+    <button class="toast-undo" id="toast-undo" type="button">Undo</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

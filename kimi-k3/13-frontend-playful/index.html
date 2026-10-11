@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moss — a gentle plant-care companion</title>
+<meta name="description" content="Moss: today's care queue for your household plants.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="brand-blob" viewBox="0 0 48 48" width="44" height="44" aria-hidden="true">
+      <path class="blob-body" d="M24 4c9 0 18 5 19 14 1 8-3 13-2 19 1 5-4 8-9 7-4-1-6 1-10 1S13 43 9 39C5 35 4 28 5 21 6 11 15 4 24 4z"/>
+      <circle class="blob-eye" cx="18" cy="22" r="2.4"/>
+      <circle class="blob-eye" cx="30" cy="22" r="2.4"/>
+      <path class="blob-mouth" d="M19 29c2 2.4 8 2.4 10 0" fill="none" stroke-linecap="round"/>
+      <path class="blob-sprout" d="M24 6c0-3 2-4 4-4 0 3-2 4-4 4z" fill="none"/>
+    </svg>
+    <div>
+      <h1>Moss</h1>
+      <p class="tagline">a gentle plant-care companion</p>
+    </div>
+  </div>
+  <p class="today" id="today-label"></p>
+</header>
+
+<main class="layout">
+
+  <section class="queue-col" aria-labelledby="queue-heading">
+    <div class="queue-head">
+      <h2 id="queue-heading">Today&rsquo;s care queue</h2>
+      <p class="queue-count" id="queue-count" role="status"></p>
+    </div>
+    <ol class="queue" id="queue"></ol>
+    <div class="all-done" id="all-done" hidden>
+      <svg viewBox="0 0 120 120" width="140" height="140" aria-hidden="true">
+        <path class="done-hill" d="M10 96c14-10 86-10 100 0v14H10z"/>
+        <path class="done-blob" d="M60 30c14 0 24 9 24 21 0 13-10 22-24 22S36 64 36 51c0-12 10-21 24-21z"/>
+        <circle class="done-eye" cx="52" cy="50" r="3"/>
+        <circle class="done-eye" cx="68" cy="50" r="3"/>
+        <path class="done-smile" d="M50 59c4 5 16 5 20 0" fill="none" stroke-linecap="round"/>
+        <path class="done-leaf" d="M60 30c0-9 6-13 13-13 0 8-5 13-13 13z"/>
+        <path class="done-sprig" d="M34 84c-4-8-1-14 5-17M86 84c4-8 1-14-5-17" fill="none" stroke-linecap="round"/>
+      </svg>
+      <h2>Everything is tended to.</h2>
+      <p>Frida, Orbit, Dot and Drama are all content for now.<br>
+      Put the watering can down — Moss will nudge you when anything needs you.</p>
+      <button type="button" class="btn btn-ghost" id="reset-day">Start a fresh day</button>
+    </div>
+  </section>
+
+  <aside class="side-col">
+    <section class="panel week-panel" aria-labelledby="week-heading">
+      <h2 id="week-heading">Weekly rhythm</h2>
+      <div class="week-chart" id="week-chart" role="img"></div>
+      <p class="week-note" id="week-note"></p>
+    </section>
+
+    <section class="panel mood-panel" aria-labelledby="mood-heading">
+      <h2 id="mood-heading">Windowsill whisper</h2>
+      <p class="mood-text" id="mood-text"></p>
+    </section>
+  </aside>
+
+</main>
+
+<div class="toast" id="toast" hidden>
+  <p id="toast-msg"></p>
+  <button type="button" class="btn btn-undo" id="toast-undo">Undo</button>
+</div>
+
+<footer class="foot">
+  <p>Moss remembers so you can daydream. Grown locally — no clouds involved.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
