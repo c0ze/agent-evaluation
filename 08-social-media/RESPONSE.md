@@ -1,0 +1,3 @@
+# RESPONSE.md — Voice Rationale
+
+The voice stays precise, warm, and mildly nerdy by leading with what the product actually does (local indexing, source-linked summaries) instead of marketing adjectives. Constraints are stated plainly: no Linux promise, no institutional licensing yet, no OCR. Replies address the specific concern — chatbot confusion, data privacy, stuck indexing — with a concrete next step or technical fact, not deflection. On the outage comment, I acknowledge the problem, offer a safe retry, and ask only for OS and folder size to diagnose, avoiding any request for account credentials. No engagement bait, no inflated claims, no canned gratitude. The nerdy detail (Ctrl-F fatigue, selectable text vs. scanned images) signals credibility without grandiosity.

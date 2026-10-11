@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Moss — a gentle household plant-care companion">
+  <title>Moss</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <header class="header">
+    <div class="header__brand">
+      <svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6B8E5E"/>
+            <stop offset="100%" stop-color="#4A6D3D"/>
+          </linearGradient>
+        </defs>
+        <path d="M24 4 C14 4 6 12 6 22 c0 6 4 11 9 14 5-3 9-8 9-14 C33 12 25 4 24 4 Z" fill="url(#leafGradient)"/>
+        <path d="M24 10 C20 10 18 14 18 18 c0 2 1 4 3 5 2-1 4-3 4-5 C25 14 23 10 24 10 Z" fill="#8AB476" opacity="0.6"/>
+        <path d="M24 22 L24 38" stroke="#3D5A2E" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="24" cy="40" r="3" fill="#8AB476"/>
+      </svg>
+      <h1>Moss</h1>
+    </div>
+    <p class="header__tagline">Your quiet plant companion</p>
+  </header>
+
+  <main id="main" class="main">
+    <section class="care-queue" aria-labelledby="care-queue-heading">
+      <h2 id="care-queue-heading" class="visually-hidden">Today's care queue</h2>
+
+      <div class="care-queue__header">
+        <h3 class="care-queue__title">Today</h3>
+        <time class="care-queue__date" datetime="2025-09-22">Monday, September 22</time>
+      </div>
+
+      <ul class="plant-list" id="plantList" role="list" aria-label="Plants needing care">
+      </ul>
+
+      <div class="all-done" id="allDone" hidden>
+        <svg class="all-done__icon" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="20" fill="none" stroke="#6B8E5E" stroke-width="3"/>
+          <path d="M16 24 L22 30 L32 18" fill="none" stroke="#6B8E5E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="all-done__text">All caught up. Your plants are happy.</p>
+        <button class="btn btn--ghost" id="viewAllBtn" type="button">View all plants</button>
+      </div>
+    </section>
+
+    <section class="weekly-rhythm" aria-labelledby="rhythm-heading">
+      <h2 id="rhythm-heading" class="weekly-rhythm__title">Weekly rhythm</h2>
+      <div class="weekly-rhythm__chart" id="weeklyChart" role="img" aria-label="Bar chart showing care tasks per day this week: Monday 1, Tuesday 3, Wednesday 2, Thursday 4, Friday 2, Saturday 1, Sunday 3">
+        <div class="weekly-rhythm__bars" id="weeklyBars"></div>
+        <div class="weekly-rhythm__labels" id="weeklyLabels"></div>
+      </div>
+      <p class="weekly-rhythm__hint">Taller bars = busier days. Tap a day to filter.</p>
+    </section>
+  </main>
+
+  <aside class="detail-panel" id="detailPanel" role="dialog" aria-modal="true" aria-labelledby="detailTitle" hidden>
+    <div class="detail-panel__backdrop" id="detailBackdrop" tabindex="-1" aria-hidden="true"></div>
+    <div class="detail-panel__content">
+      <header class="detail-panel__header">
+        <button class="btn btn--icon detail-panel__close" id="detailClose" type="button" aria-label="Close plant details">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 L6 18 M6 6 L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <h2 class="detail-panel__title" id="detailTitle"></h2>
+      </header>
+
+      <div class="detail-panel__body">
+        <div class="plant-illustration" id="plantIllustration" aria-hidden="true"></div>
+
+        <dl class="plant-meta" id="plantMeta">
+          <div class="plant-meta__item">
+            <dt>Species</dt>
+            <dd id="detailSpecies"></dd>
+          </div>
+          <div class="plant-meta__item">
+            <dt>Location</dt>
+            <dd id="detailLocation"></dd>
+          </div>
+          <div class="plant-meta__item">
+            <dt>Light</dt>
+            <dd id="detailLight"></dd>
+          </div>
+        </dl>
+
+        <section class="care-actions" aria-labelledby="careActionsHeading">
+          <h3 id="careActionsHeading" class="visually-hidden">Care actions</h3>
+          <div class="care-actions__current" id="currentAction">
+            <span class="care-actions__label">Today's task</span>
+            <strong class="care-actions__task" id="detailTask"></strong>
+            <span class="care-actions__due" id="detailDue"></span>
+          </div>
+          <div class="care-actions__buttons" id="actionButtons">
+            <button class="btn btn--primary" id="wateredBtn" type="button" data-action="watered">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2 C6.5 2 2 6.5 2 12 s4.5 10 10 10 10-4.5 10-10 S17.5 2 12 2 Z M12 6 v8 l5 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+              <span>Watered</span>
+            </button>
+            <button class="btn btn--secondary" id="snoozeBtn" type="button" data-action="snooze">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 6 v6 l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Snooze</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="history" aria-labelledby="historyHeading">
+          <h3 id="historyHeading">Observation history</h3>
+          <ul class="history__list" id="historyList" role="list"></ul>
+        </section>
+      </div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span class="toast__message" id="toastMessage"></span>
+    <button class="toast__undo" id="toastUndo" type="button">Undo</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
