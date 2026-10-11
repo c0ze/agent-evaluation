@@ -1,4 +1,5 @@
-from distutils.version import LooseVersion
+"""Small slug and version helpers."""
+
 import re
 
 
@@ -8,6 +9,12 @@ def slugify(value: str) -> str:
 
 
 def normalize_version(value: str) -> str:
-    """Normalize ordinary dotted versions, preserving pre-release suffixes."""
-    return str(LooseVersion(value))
+    """Normalize ordinary dotted versions, preserving pre-release suffixes.
 
+    This previously delegated to ``distutils.version.LooseVersion``, which was
+    removed from the standard library in Python 3.12. ``LooseVersion.__str__``
+    returned the input string verbatim, so ordinary versions such as ``"1.2.0"``
+    and ``"2.0rc1"`` round-trip unchanged; this implementation preserves that
+    observable behavior without any dependency on ``distutils``.
+    """
+    return value
