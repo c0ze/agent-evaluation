@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relay — Operations Control Room</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-dark">
+  <div class="app-shell">
+
+    <!-- Navigation Rail -->
+    <nav class="nav-rail" aria-label="Primary Navigation">
+      <div class="nav-brand">
+        <div class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">RELAY</span>
+          <span class="brand-sub">OPS CONTROL</span>
+        </div>
+      </div>
+
+      <div class="nav-menu" role="tablist" aria-orientation="vertical">
+        <button class="nav-item active" role="tab" aria-selected="true" data-view="overview" id="nav-tab-overview">
+          <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          <span class="nav-label">Overview</span>
+        </button>
+
+        <button class="nav-item" role="tab" aria-selected="false" data-view="incidents" id="nav-tab-incidents">
+          <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span class="nav-label">Incidents</span>
+          <span class="nav-badge" id="rail-incident-badge">4</span>
+        </button>
+
+        <button class="nav-item" role="tab" aria-selected="false" data-view="services" id="nav-tab-services">
+          <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+          </svg>
+          <span class="nav-label">Services</span>
+        </button>
+
+        <button class="nav-item" role="tab" aria-selected="false" data-view="telemetry" id="nav-tab-telemetry">
+          <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3v18h18"></path>
+            <path d="m19 9-5 5-4-4-3 3"></path>
+          </svg>
+          <span class="nav-label">Telemetry</span>
+        </button>
+
+        <button class="nav-item" role="tab" aria-selected="false" data-view="audit" id="nav-tab-audit">
+          <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span class="nav-label">Audit Log</span>
+        </button>
+      </div>
+
+      <div class="nav-footer">
+        <div class="node-status">
+          <span class="status-dot green" aria-hidden="true"></span>
+          <div class="node-meta">
+            <span class="node-id">US-EAST-CORE</span>
+            <span class="node-env">PROD-PRIMARY</span>
+          </div>
+        </div>
+        <div class="keyboard-hints">
+          <span class="hint-title">HOTKEYS</span>
+          <div class="hint-list">
+            <span class="hint-item"><kbd>/</kbd> Filter</span>
+            <span class="hint-item"><kbd>A</kbd> Ack</span>
+            <span class="hint-item"><kbd>&uarr;&darr;</kbd> Select</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Workspace -->
+    <div class="workspace">
+
+      <!-- Top Status Bar -->
+      <header class="top-status-bar" role="banner">
+        <div class="status-section left">
+          <div class="operational-health-pill status-degraded" id="top-health-pill">
+            <span class="health-beacon" aria-hidden="true"></span>
+            <span class="health-label">SYSTEM DEGRADED</span>
+            <span class="health-detail" id="top-health-detail">1 CRITICAL &bull; 1 HIGH</span>
+          </div>
+          <div class="status-tag">
+            <span class="tag-label">SLO RISK:</span>
+            <span class="tag-val text-critical">payments-api</span>
+          </div>
+        </div>
+
+        <div class="status-section center">
+          <div class="time-block" aria-label="System Time Display">
+            <div class="time-segment">
+              <span class="time-zone">UTC</span>
+              <span class="time-digits" id="clock-utc">--:--:--</span>
+            </div>
+            <span class="time-separator" aria-hidden="true">|</span>
+            <div class="time-segment">
+              <span class="time-zone">LOCAL</span>
+              <span class="time-digits" id="clock-local">--:--:--</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-section right">
+          <div class="metric-pill">
+            <span class="pill-k">UPTIME (30D)</span>
+            <span class="pill-v font-mono">99.982%</span>
+          </div>
+          <div class="metric-pill stream-indicator" id="stream-pulse">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span class="pill-k">STREAM</span>
+            <span class="pill-v font-mono">5s POLL</span>
+          </div>
+          <button class="icon-action-btn" id="btn-manual-sync" title="Sync Telemetry Feed" aria-label="Sync Telemetry Feed">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>SYNC</span>
+          </button>
+          <div class="operator-badge">
+            <span class="op-avatar" aria-hidden="true">OP</span>
+            <span class="op-name">M. Chen <span class="op-role">(On-Call)</span></span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Operational Dashboard -->
+      <main class="control-dashboard" id="main-content" role="main">
+
+        <!-- 1. Four Summary Metrics with Trend Context -->
+        <section class="section-metrics" aria-label="Summary Operations Metrics">
+          <div class="metrics-grid" id="metrics-grid">
+            <!-- Rendered by app.js from DATA.json metrics -->
+          </div>
+        </section>
+
+        <!-- 2. 24-Hour Throughput Visualization -->
+        <section class="section-throughput" aria-labelledby="heading-throughput">
+          <div class="card-header">
+            <div class="header-title-wrap">
+              <svg class="header-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              <h2 id="heading-throughput" class="section-title">24-HOUR EVENT THROUGHPUT</h2>
+              <span class="badge-subtle">AGGREGATED HOURLY WINDOW</span>
+            </div>
+
+            <div class="header-stats-wrap">
+              <div class="stat-callout">
+                <span class="callout-lbl">PEAK</span>
+                <span class="callout-val font-mono">88.0k eps</span>
+              </div>
+              <div class="stat-callout">
+                <span class="callout-lbl">MEAN</span>
+                <span class="callout-val font-mono">58.3k eps</span>
+              </div>
+              <div class="stat-callout">
+                <span class="callout-lbl">CURRENT</span>
+                <span class="callout-val font-mono">41.0k eps</span>
+              </div>
+              <div class="chart-view-toggles" role="group" aria-label="Chart rendering mode">
+                <button class="mode-btn active" id="btn-chart-mode-area" aria-pressed="true">Area</button>
+                <button class="mode-btn" id="btn-chart-mode-bars" aria-pressed="false">Bars</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-panel">
+            <div class="chart-container" id="throughput-chart-container">
+              <!-- Rendered via inline SVG in app.js -->
+            </div>
+            <div class="chart-status-bar" id="throughput-readout" aria-live="polite">
+              <span class="readout-default">Hover or navigate data points across 24h timeline to inspect telemetry buckets</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Operations Deck (Incidents Table & Detail Panel) -->
+        <div class="ops-deck-layout">
+          
+          <!-- Incidents Queue Column -->
+          <section class="deck-incidents" aria-labelledby="heading-incidents">
+            <div class="card-header incident-toolbar-header">
+              <div class="header-title-wrap">
+                <h2 id="heading-incidents" class="section-title">ACTIVE INCIDENT QUEUE</h2>
+                <span class="count-pill font-mono" id="incident-header-count">4 Active</span>
+              </div>
+
+              <!-- Quick Search Filter -->
+              <div class="search-field">
+                <svg class="search-ico" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="search" id="input-search" class="search-input" placeholder="Search incidents (ID, service, owner, title)..." aria-label="Filter incidents">
+                <span class="search-shortcut" aria-hidden="true"><kbd>/</kbd></span>
+              </div>
+            </div>
+
+            <!-- Filter Controls Bar -->
+            <div class="filters-bar" role="toolbar" aria-label="Incident Filter Toolbar">
+              <div class="filter-cluster">
+                <span class="cluster-label">SEVERITY:</span>
+                <div class="chip-group" id="severity-chip-group" role="radiogroup" aria-label="Filter by severity">
+                  <button class="filter-chip active" data-severity="all" role="radio" aria-checked="true">All (4)</button>
+                  <button class="filter-chip chip-crit" data-severity="critical" role="radio" aria-checked="false">Critical (1)</button>
+                  <button class="filter-chip chip-high" data-severity="high" role="radio" aria-checked="false">High (1)</button>
+                  <button class="filter-chip chip-med" data-severity="medium" role="radio" aria-checked="false">Med (1)</button>
+                  <button class="filter-chip chip-low" data-severity="low" role="radio" aria-checked="false">Low (1)</button>
+                </div>
+              </div>
+
+              <div class="filter-dropdowns">
+                <div class="select-wrap">
+                  <label for="select-status" class="select-label">STATUS</label>
+                  <select id="select-status" class="filter-select">
+                    <option value="all">All Statuses</option>
+                    <option value="open">Open</option>
+                    <option value="investigating">Investigating</option>
+                    <option value="monitoring">Monitoring</option>
+                    <option value="acknowledged">Acknowledged</option>
+                  </select>
+                </div>
+
+                <div class="select-wrap">
+                  <label for="select-service" class="select-label">SERVICE</label>
+                  <select id="select-service" class="filter-select">
+                    <option value="all">All Services</option>
+                    <option value="payments-api">payments-api</option>
+                    <option value="event-router">event-router</option>
+                    <option value="search-index">search-index</option>
+                    <option value="webhooks">webhooks</option>
+                  </select>
+                </div>
+
+                <button class="btn-clear-filters" id="btn-reset-filters" style="display: none;" title="Reset all filters">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                  <span>Reset</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Container (Responsive Horizontal Scroll contained here) -->
+            <div class="table-scroll-wrap" role="region" aria-label="Incidents Data Grid" tabindex="0">
+              <table class="data-table" id="table-incidents">
+                <thead>
+                  <tr>
+                    <th scope="col" class="col-sev" data-col="severity" aria-sort="none">
+                      <button class="th-btn" type="button">SEV <span class="sort-marker" aria-hidden="true">&varr;</span></button>
+                    </th>
+                    <th scope="col" class="col-id" data-col="id" aria-sort="none">
+                      <button class="th-btn" type="button">ID <span class="sort-marker" aria-hidden="true">&varr;</span></button>
+                    </th>
+                    <th scope="col" class="col-title" data-col="title" aria-sort="none">
+                      <button class="th-btn" type="button">TITLE <span class="sort-marker" aria-hidden="true">&varr;</span></button>
+                    </th>
+                    <th scope="col" class="col-service" data-col="service" aria-sort="none">
+                      <button class="th-btn" type="button">SERVICE <span class="sort-marker" aria-hidden="true">&varr;</span></button>
+                    </th>
+                    <th scope="col" class="col-age" data-col="age" aria-sort="none">
+                      <button class="th-btn" type="button">AGE <span class="sort-marker" aria-hidden="true">&varr;</span></button>
+                    </th>
+                    <th scope="col" class="col-owner" data-col="owner" aria-sort="none">
+                      <button class="th-btn" type="button">OWNER <span class="sort-marker" aria-hidden="true">&varr;</span></button>
+                    </th>
+                    <th scope="col" class="col-status" data-col="status" aria-sort="none">
+                      <button class="th-btn" type="button">STATUS <span class="sort-marker" aria-hidden="true">&varr;</span></button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="incidents-tbody">
+                  <!-- Dynamically rendered incident rows -->
+                </tbody>
+              </table>
+
+              <!-- Filter Empty State -->
+              <div class="empty-state-box" id="table-empty-box" style="display: none;">
+                <div class="empty-icon-wrap" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                  </svg>
+                </div>
+                <h3 class="empty-headline">NO INCIDENTS MATCH FILTER CRITERIA</h3>
+                <p class="empty-subtext">No open or active records match the current severity, service, or search filters.</p>
+                <button class="btn-primary-ghost" id="btn-empty-reset" type="button">Reset All Filters</button>
+              </div>
+            </div>
+
+            <!-- Table Footer -->
+            <div class="table-footer-bar">
+              <span class="footer-count font-mono" id="table-footer-status">Showing 4 of 4 incidents</span>
+              <span class="footer-hint">Keyboard: <kbd>&uarr;</kbd> <kbd>&darr;</kbd> to navigate, <kbd>A</kbd> to acknowledge selected incident</span>
+            </div>
+          </section>
+
+          <!-- Selected Incident Detail Panel -->
+          <aside class="deck-detail" id="deck-detail-aside" aria-labelledby="detail-panel-heading">
+            <div class="card-header detail-header">
+              <div class="header-title-wrap">
+                <h2 id="detail-panel-heading" class="section-title">INCIDENT INSPECTOR</h2>
+                <span class="badge-subtle" id="inspector-status-badge">ACTIVE SELECTION</span>
+              </div>
+              <div class="inspector-controls">
+                <span class="shortcut-tip"><kbd>A</kbd> to Acknowledge</span>
+              </div>
+            </div>
+
+            <div class="detail-body" id="detail-body-container">
+              <!-- Rendered by app.js when an incident is selected -->
+            </div>
+          </aside>
+
+        </div>
+
+      </main>
+
+      <!-- System Notification Toast Container -->
+      <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
