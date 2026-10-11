@@ -25,6 +25,10 @@ for each one is as Arda identified it.
 | Haiku 5.5 (`claude-haiku-5-5`) | xhigh | Claude Code CLI on cachyos (Max subscription) | 14:32:46 (2026-10-11) | 15:06:49 | 34 min 03 s | n/a | n/a | $1.74 API-equivalent; nothing charged | 13 / 13 | local repository, merged under `runs/haiku-5.5` |
 | Gemini 3.1 Pro (`gemini-3.1-pro-high`) | high | Antigravity CLI on cachyos (Google account) | 19:30:45 (2026-10-11) | 20:30:09 (task 11 re-run) | 27 min 23 s (17:07 first pass + 10:16 task 11 re-run) | n/a | n/a | not reported; see tokens | 13 / 13 | local repository, merged under `runs/gemini-3.1-pro` |
 | Gemini 3.8 Flash (`gemini-3.8-flash-high`) | high | Antigravity CLI on cachyos (Google account) | 19:30:45 (2026-10-11) | 19:53:12 | 22 min 27 s | n/a | n/a | not reported; see tokens | 13 / 13 | local repository, merged under `runs/gemini-3.8-flash` |
+| Kimi K3 (`moonshotai/kimi-k3`) | high | opencode on cachyos (OpenRouter) | 22:12:01 (2026-10-11) | 22:25:33 | 13 min 32 s | n/a | n/a | **$3.47** | 13 / 13 | local repository, merged under `runs/kimi-k3` |
+| DeepSeek V4 Pro (`deepseek/deepseek-v4-pro-0813`) | high | opencode on cachyos (OpenRouter) | 22:41:15 | 22:53:30 | 12 min 15 s | n/a | n/a | **$0.43** | 13 / 13 | local repository, merged under `runs/deepseek-v4-pro` |
+| GLM-5.3 (`z-ai/glm-5.3`) | high | opencode on cachyos (OpenRouter) | 22:41:15 | 23:10:28 | 29 min 13 s | n/a | n/a | **$1.49** | 13 / 13 | local repository, merged under `runs/glm-5.3` |
+| Mistral Large 4 (`mistralai/mistral-large-4-0`) | high | opencode on cachyos (OpenRouter) | 22:41:15 | 23:19:13 (re-runs) | 23 min 54 s (16:16 first pass + 7:38 re-runs) | n/a | n/a | **$0.79** | 11 / 13 (12 and 13 produced nothing) | local repository, merged under `runs/mistral-large-4` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -277,3 +281,49 @@ work outside its task directories. No task read another task's directory or any 
 **Objective-check note:** both models' task-04 suites import the third-party `packaging` module. It isn't
 installed on cachyos, so their own task-04 results were taken in a scratch venv with `packaging` added.
 As a control, muse and MiniMax M3 give the same results there as they did on the Mac.
+
+## OpenRouter runs: Kimi K3, DeepSeek V4 Pro, GLM-5.3, Mistral Large 4 (opencode on cachyos, 2026-10-11)
+
+These four ran through opencode 1.18.30 (headless `opencode run`) on cachyos, using the user's OpenRouter
+credit. Each task got one session with the same instruction as the other runs, four at a time per model,
+on reasoning variant **high**. Kimi K3 ran alone first; the other three then ran at the same time. Scripts,
+timing, per-task event logs, tokens and cost are in `run-logs/openrouter-orchestration/`.
+
+- **Blank slate:** each model got a fresh repository from the same template commit, with no history and
+  outside the home directory. Each task ran with its own empty `HOME` and XDG directories containing only
+  an opencode config, with `--pure` and `OPENCODE_DISABLE_CLAUDE_CODE=1`. So no `AGENTS.md`/`CLAUDE.md`,
+  skills, plugins, MCP servers or session history were present.
+- **No OS sandbox:** unlike the Claude and agy runs, opencode has none. Permission rules stood in for it:
+  web fetch and search denied, paths outside the repository denied (a denied call returns an error and the
+  session continues), and `curl`, `wget`, `pip`/`npm install`, `npx`, `git clone` and `ssh` denied. The
+  transcripts were audited afterwards: no session used the network or installed anything, none read
+  another task's directory, and scratch files went only to opencode's own `/tmp/opencode`. Unlike under
+  agy's sandbox, headless Firefox worked, and Kimi and GLM screenshotted their own pages.
+- **Budget guard:** a task would not start if the credit left was below a margin. It never triggered.
+- **Mistral Large 4** isn't in opencode's model catalog, so the run config registered it with reasoning on
+  and a `high` variant sending reasoning effort high. A smoke test confirmed it reasons and calls tools.
+  opencode's default small model (used for session titles) was pointed at the model under test for these
+  three runs. For Kimi it was left at its default, a separate small model; that cost a few cents and
+  touched no task output.
+
+| Model | Wall-clock | Input | Cache-read input | Output | Reasoning | Tool calls | Cost |
+|---|---|---|---|---|---|---|---|
+| Kimi K3 | 13 min 32 s | 337,490 | 3,206,424 | 99,658 | 44,123 | 215 | $3.47 |
+| DeepSeek V4 Pro | 12 min 15 s | 250,938 | 1,505,467 | 72,180 | 44,828 | 137 | $0.43 |
+| GLM-5.3 | 29 min 13 s | 230,495 | 3,982,176 | 88,151 | 178,169 | 202 | $1.49 |
+| Mistral Large 4 | 23 min 54 s (incl. re-runs) | 543,871 | 906,840 | 76,035 | 94,593 | 142 | $0.79 |
+
+Cost is opencode's per-step total, from OpenRouter's reported cost; it covers the graded sessions. The
+account's credit went from $18.68 to $11.01 across all four runs ($7.67). The difference covers Kimi's
+title-model calls, Mistral's two cut-off first attempts and the orchestrator's smoke tests.
+
+**Mistral Large 4, tasks 12 and 13:** in both first attempts the last response spent 27–28k tokens
+reasoning plus 4–5k writing, and hit opencode's fixed 32,000-token cap per response (finish reason
+`length`). opencode then ended the session before any file was written. As with the other harness-ended
+attempts, both were re-run once, from untouched template copies, with the identical command. Both re-runs
+hit the same cap the same way, so the results stand: the two task directories hold only the original inputs.
+Task 13's first re-run attempt failed to start (opencode errored creating its local database, before any
+model call) and was retried automatically. The cut-off attempts are kept as `*.attempt1.*` in the run logs.
+
+**Objective-check note:** Kimi's and Mistral's task-04 suites import `packaging`, so their own task-04
+results were taken in the scratch venv with it, as for the Gemini models.

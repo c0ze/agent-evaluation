@@ -138,5 +138,45 @@
   "cost": null,
   "usage": "2.35M input + 16.07M cache-read input, 512k output (289k thinking) tokens; 314 tool calls",
   "notes": "One agy -p per task, four at a time, both Gemini models at once, each task with its own empty HOME (only the agy sign-in token and a settings file) in a fresh repository outside the home directory: no rules, memories, knowledge items, conversation history, user skills or MCP; terminal commands in agy's sandbox with no network, URL tools denied. Task 11 took 15 of the 22 minutes."
+ },
+ "kimi-k3": {
+  "label": "Kimi K3",
+  "model": "moonshotai/kimi-k3 (OpenRouter)",
+  "where": "opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11",
+  "effort": "high (opencode variant)",
+  "duration": "~14 min",
+  "cost": "$3.47 (OpenRouter)",
+  "usage": "337k input + 3.21M cache-read input, 100k output + 44k reasoning tokens; 215 tool calls",
+  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands (curl, wget, pip/npm install, npx, git clone, ssh) were denied by opencode permission rules, and the transcripts were audited (no network use). Session titles went to opencode's default small model (a few cents); later runs used the model under test."
+ },
+ "deepseek-v4-pro": {
+  "label": "DeepSeek V4 Pro",
+  "model": "deepseek/deepseek-v4-pro-0813 (OpenRouter)",
+  "where": "opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11",
+  "effort": "high (opencode variant)",
+  "duration": "~12 min",
+  "cost": "$0.43 (OpenRouter)",
+  "usage": "251k input + 1.51M cache-read input, 72k output + 45k reasoning tokens; 137 tool calls",
+  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands (curl, wget, pip/npm install, npx, git clone, ssh) were denied by opencode permission rules, and the transcripts were audited (no network use)."
+ },
+ "glm-5.3": {
+  "label": "GLM-5.3",
+  "model": "z-ai/glm-5.3 (OpenRouter)",
+  "where": "opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11",
+  "effort": "high (opencode variant)",
+  "duration": "~29 min",
+  "cost": "$1.49 (OpenRouter)",
+  "usage": "230k input + 3.98M cache-read input, 88k output + 178k reasoning tokens; 202 tool calls",
+  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands (curl, wget, pip/npm install, npx, git clone, ssh) were denied by opencode permission rules, and the transcripts were audited (no network use)."
+ },
+ "mistral-large-4": {
+  "label": "Mistral Large 4",
+  "model": "mistralai/mistral-large-4-0 (OpenRouter)",
+  "where": "opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11",
+  "effort": "high (reasoning effort, registered in the opencode config)",
+  "duration": "~24 min (16 min first pass + 8 min re-runs of 12 and 13)",
+  "cost": "$0.79 for the graded sessions (OpenRouter)",
+  "usage": "544k input + 0.91M cache-read input, 76k output + 95k reasoning tokens; 142 tool calls",
+  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands (curl, wget, pip/npm install, npx, git clone, ssh) were denied by opencode permission rules, and the transcripts were audited (no network use). Tasks 12 and 13 produced nothing: each response ran into opencode's 32,000-token per-response cap during reasoning and opencode ended the session; re-run once each with the identical command, with the same result."
  }
 }

@@ -1,8 +1,8 @@
-# Agent evaluation: 14 models, 13 tasks
+# Agent evaluation: 18 models, 13 tasks
 
 **Results site: https://c0ze.github.io/agent-evaluation/**
 
-Fourteen coding agents (model plus harness) each got the same thirteen self-contained
+Eighteen coding agents (model plus harness) each got the same thirteen self-contained
 tasks. The tasks cover feature building, bug fixing, infrastructure, project
 maintenance, technical writing, product planning, creative writing, social media,
 incident analysis, general operations and three frontend builds in different visual
@@ -11,23 +11,27 @@ styles. Each output was graded blind against one rubric. The runs took place fro
 
 | Model | Harness | Effort | Avg / task |
 |---|---|---|---|
-| Sonnet 5.5 | Claude Code (cloud) | extra | 9.38 |
-| Fable 5.1 | Claude Code (cloud) | extra | 9.25 |
-| Opus 5.5 | Claude Code (cloud) | high | 9.19 |
-| Grok 4.7 (12 tasks) | Grok CLI | xhigh | 8.67 |
-| GPT-6 Astra | Codex CLI | xhigh | 8.60 |
-| Haiku 5.5 | Claude Code CLI (headless) | xhigh | 8.50 |
-| GPT-6.1 Sol | Codex CLI | xhigh | 8.48 |
-| muse | tincan | max | 7.42 |
-| GPT-6 Luna | Codex CLI | max | 7.38 |
-| mimo | tincan | default | 7.19 |
-| MiniMax M3.1 Flash | mcode | xhigh | 7.13 |
+| Sonnet 5.5 | Claude Code (cloud) | extra | 9.42 |
+| Fable 5.1 | Claude Code (cloud) | extra | 9.37 |
+| Opus 5.5 | Claude Code (cloud) | high | 9.27 |
+| Grok 4.7 (12 tasks) | Grok CLI | xhigh | 8.83 |
+| Haiku 5.5 | Claude Code CLI (headless) | xhigh | 8.69 |
+| GPT-6 Astra | Codex CLI | xhigh | 8.69 |
+| GPT-6.1 Sol | Codex CLI | xhigh | 8.62 |
+| GLM-5.3 | opencode (OpenRouter) | high | 7.67 |
+| MiniMax M3.1 Flash | mcode | xhigh | 7.60 |
+| muse | tincan | max | 7.50 |
+| mimo | tincan | default | 7.42 |
+| Kimi K3 | opencode (OpenRouter) | high | 7.27 |
+| GPT-6 Luna | Codex CLI | max | 7.27 |
+| MiniMax M3 | mcode | default | 6.15 |
+| DeepSeek V4 Pro | opencode (OpenRouter) | high | 6.08 |
+| Gemini 3.8 Flash | Antigravity CLI (headless) | high | 6.06 |
 | Gemini 3.1 Pro | Antigravity CLI (headless) | high | 5.98 |
-| Gemini 3.8 Flash | Antigravity CLI (headless) | high | 5.94 |
-| MiniMax M3 | mcode | default | 5.90 |
+| Mistral Large 4 | opencode (OpenRouter) | high | 5.37 |
 
-These scores come from the fourteen-way blind pass of 2026-10-11, after Gemini 3.1 Pro
-and Gemini 3.8 Flash were added. The full write-up, covering what was observed, what was inferred, per-work-type
+These scores come from the eighteen-way blind pass of 2026-10-11, after Kimi K3,
+DeepSeek V4 Pro, GLM-5.3 and Mistral Large 4 were added through OpenRouter. The full write-up, covering what was observed, what was inferred, per-work-type
 recommendations and caveats, is in [`evaluation/REPORT.md`](evaluation/REPORT.md). Time, cost and token
 usage per run are in [`evaluation/RUN_METRICS.md`](evaluation/RUN_METRICS.md).
 
@@ -45,7 +49,7 @@ usage per run are in [`evaluation/RUN_METRICS.md`](evaluation/RUN_METRICS.md).
   scored blind against [`evaluation/RUBRIC.md`](evaluation/RUBRIC.md): each task got
   random letters, and names, paths and model IDs were stripped (see
   [`evaluation/tools/blind.py`](evaluation/tools/blind.py)). The blind pass was
-  re-run each time a model was added (4-way through 14-way), and every pass is kept
+  re-run each time a model was added (4-way through 18-way), and every pass is kept
   in `evaluation/scores-*.json`.
 
 ## Layout
@@ -71,7 +75,7 @@ unfolded, follow the merge's second parent:
 git log "$(git log --format=%H -1 -- runs/<model>)^2"
 ```
 
-Haiku 5.5, Gemini 3.1 Pro and Gemini 3.8 Flash ran locally rather than from GitHub repositories:
+Haiku 5.5, the Gemini models and the four OpenRouter models ran locally rather than from GitHub repositories:
 each run repository (fresh from the templates, outside the home directory) is merged into
 `runs/<model>/` the same way.
 
