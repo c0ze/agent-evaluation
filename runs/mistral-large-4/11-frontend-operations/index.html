@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relay — Operations Control Room</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+
+  <nav class="rail" aria-label="Primary">
+    <div class="rail__brand" aria-hidden="true">R</div>
+    <button class="rail__btn is-active" type="button" aria-current="page" title="Overview">
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+      <span class="rail__label">Overview</span>
+    </button>
+    <button class="rail__btn" type="button" title="Incidents">
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1 15 14H1Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 6v4M8 12v.01" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span class="rail__label">Incidents</span>
+    </button>
+    <button class="rail__btn" type="button" title="Services">
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="3" r="2"/><circle cx="3" cy="13" r="2"/><circle cx="13" cy="13" r="2"/><path d="M8 5v3M8 8 4 11.5M8 8l4 3.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+      <span class="rail__label">Services</span>
+    </button>
+    <button class="rail__btn" type="button" title="Deploys">
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 2v8M5 7l3 3 3-3M2 13h12" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span class="rail__label">Deploys</span>
+    </button>
+    <button class="rail__btn" type="button" title="Settings">
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="2.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.2"/></svg>
+      <span class="rail__label">Settings</span>
+    </button>
+    <div class="rail__spacer"></div>
+    <div class="rail__status">
+      <span class="dot dot--ok" aria-hidden="true"></span>
+      <span class="rail__label">All systems nominal</span>
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <header class="topbar">
+      <div class="topbar__title">
+        <h1>Operations</h1>
+        <span class="topbar__env">prod / us-east-1</span>
+      </div>
+      <div class="topbar__meta">
+        <span class="topbar__clock" id="clock" aria-live="off">--:--:-- UTC</span>
+        <span class="pill pill--ok"><span class="dot dot--ok" aria-hidden="true"></span>Live</span>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <section class="metrics" aria-label="Summary metrics">
+        <article class="metric">
+          <span class="metric__label">Events / min</span>
+          <span class="metric__value">18,420</span>
+          <span class="metric__delta delta--good">▲ +8.2%</span>
+        </article>
+        <article class="metric">
+          <span class="metric__label">P95 latency</span>
+          <span class="metric__value">184 <span class="metric__unit">ms</span></span>
+          <span class="metric__delta delta--good">▼ −12 ms</span>
+        </article>
+        <article class="metric">
+          <span class="metric__label">Error rate</span>
+          <span class="metric__value">0.37%</span>
+          <span class="metric__delta delta--bad">▲ +0.08 pp</span>
+        </article>
+        <article class="metric">
+          <span class="metric__label">Queue depth</span>
+          <span class="metric__value">2,841</span>
+          <span class="metric__delta delta--good">▼ −19%</span>
+        </article>
+      </section>
+
+      <section class="panel chart-panel" aria-label="Throughput, last 24 hours">
+        <div class="panel__head">
+          <h2>Throughput — last 24 h</h2>
+          <span class="panel__hint">events / 5 min · peak 88</span>
+        </div>
+        <div class="chart" id="chart" role="img" aria-label="Bar chart of throughput over 24 hours, peaking at 88 in hour 19"></div>
+        <div class="chart__axis" aria-hidden="true">
+          <span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>23:55</span>
+        </div>
+      </section>
+
+      <div class="split">
+        <section class="panel incidents" aria-label="Incidents">
+          <div class="panel__head">
+            <h2>Incidents</h2>
+            <span class="count" id="incident-count">4</span>
+          </div>
+          <div class="filters" role="group" aria-label="Filter incidents">
+            <label class="filter">
+              <span>Severity</span>
+              <select id="filter-severity">
+                <option value="all">All severities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </label>
+            <label class="filter">
+              <span>Status</span>
+              <select id="filter-status">
+                <option value="all">All statuses</option>
+                <option value="open">Open</option>
+                <option value="investigating">Investigating</option>
+                <option value="monitoring">Monitoring</option>
+                <option value="acknowledged">Acknowledged</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </label>
+            <label class="filter filter--search">
+              <span>Search</span>
+              <input type="search" id="filter-search" placeholder="ID, service, owner…">
+            </label>
+          </div>
+          <div class="table-wrap">
+            <table class="table" id="incident-table">
+              <thead>
+                <tr>
+                  <th scope="col">Severity</th>
+                  <th scope="col">Incident</th>
+                  <th scope="col">Service</th>
+                  <th scope="col" class="num">Age</th>
+                  <th scope="col">Owner</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="incident-tbody"></tbody>
+            </table>
+            <div class="empty" id="empty-state" hidden>
+              <p>No incidents match the current filters.</p>
+              <button type="button" class="btn-ghost" id="clear-filters">Clear filters</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel detail" id="detail" aria-label="Incident detail" tabindex="-1">
+          <div class="panel__head">
+            <h2>Detail</h2>
+            <span class="sev sev--critical" id="detail-sev">critical</span>
+          </div>
+          <div class="detail__empty" id="detail-empty">
+            <p>Select an incident row to view details.</p>
+          </div>
+          <div class="detail__body" id="detail-body" hidden>
+            <p class="detail__id" id="detail-id">INC-0000</p>
+            <h3 class="detail__title" id="detail-title"></h3>
+            <dl class="detail__meta">
+              <div><dt>Service</dt><dd id="detail-service"></dd></div>
+              <div><dt>Age</dt><dd id="detail-age"></dd></div>
+              <div><dt>Owner</dt><dd id="detail-owner"></dd></div>
+              <div><dt>Status</dt><dd id="detail-status"></dd></div>
+            </dl>
+            <p class="detail__desc" id="detail-desc"></p>
+            <div class="detail__actions">
+              <button type="button" class="btn-primary" id="ack-btn">Acknowledge</button>
+              <button type="button" class="btn-ghost" id="resolve-btn">Mark resolved</button>
+            </div>
+            <p class="detail__note" id="ack-note" hidden></p>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
