@@ -1,5 +1,6 @@
-from distutils.version import LooseVersion
 import re
+
+from packaging.version import InvalidVersion, Version
 
 
 def slugify(value: str) -> str:
@@ -8,6 +9,12 @@ def slugify(value: str) -> str:
 
 
 def normalize_version(value: str) -> str:
-    """Normalize ordinary dotted versions, preserving pre-release suffixes."""
-    return str(LooseVersion(value))
+    """Normalize ordinary dotted versions, preserving pre-release suffixes.
 
+    Non-PEP 440 strings are returned unchanged, matching the previous
+    distutils LooseVersion behavior of echoing the input back.
+    """
+    try:
+        return str(Version(value))
+    except InvalidVersion:
+        return value
