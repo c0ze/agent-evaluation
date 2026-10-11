@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="paper" data-view="editorial">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Margin — Issue 14: Low Water (Autumn 2026)</title>
+  <meta name="description" content="Margin is an independent quarterly journal about overlooked places. Issue 14: Low Water, featuring Imani Vale, Tomás Iriarte, Meera Das, and Hana Mori.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Accessible Skip Navigation -->
+  <a href="#main-content" class="skip-link">Skip to editorial contents</a>
+
+  <!-- Reading Mode & System Controls Bar (Floating / Accessible) -->
+  <aside class="utility-bar" aria-label="Editorial reading tools">
+    <div class="utility-inner">
+      <div class="utility-group utility-meta" aria-hidden="true">
+        <span class="utility-pill"><span class="status-dot"></span> Issue 14 &middot; Autumn 2026</span>
+        <span class="utility-edition">Printed in Tokyo &amp; London</span>
+      </div>
+
+      <nav class="utility-controls" aria-label="Reading preferences">
+        <!-- Reading View Mode Toggle -->
+        <div class="control-unit">
+          <span class="control-label" id="view-mode-label">View:</span>
+          <div class="btn-segmented" role="group" aria-labelledby="view-mode-label">
+            <button type="button" class="btn-segment active" id="btn-view-editorial" aria-pressed="true" data-mode="editorial" title="Full editorial magazine layout">
+              <span class="btn-icon" aria-hidden="true">⊞</span>
+              <span>Editorial</span>
+            </button>
+            <button type="button" class="btn-segment" id="btn-view-focus" aria-pressed="false" data-mode="focus" title="Distraction-free longform reading view">
+              <span class="btn-icon" aria-hidden="true">≡</span>
+              <span>Reading Mode</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Color Tone / Paper Palette Toggle -->
+        <div class="control-unit">
+          <span class="control-label" id="theme-label">Paper:</span>
+          <div class="btn-segmented" role="group" aria-labelledby="theme-label">
+            <button type="button" class="btn-segment active" data-theme-val="paper" aria-pressed="true" title="Warm newsprint paper tone">
+              <span>Warm</span>
+            </button>
+            <button type="button" class="btn-segment" data-theme-val="night" aria-pressed="false" title="Carbon night reading tone">
+              <span>Night</span>
+            </button>
+            <button type="button" class="btn-segment" data-theme-val="contrast" aria-pressed="false" title="High-contrast lithograph tone">
+              <span>Litho</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Type Scale Controls -->
+        <div class="control-unit">
+          <span class="control-label" id="type-scale-label">Type:</span>
+          <div class="btn-segmented" role="group" aria-labelledby="type-scale-label">
+            <button type="button" class="btn-segment" id="btn-font-smaller" aria-label="Decrease font size" title="Smaller type">
+              <span aria-hidden="true">A−</span>
+            </button>
+            <button type="button" class="btn-segment" id="btn-font-reset" aria-label="Reset font size to default" title="Default type size">
+              <span id="font-scale-indicator">100%</span>
+            </button>
+            <button type="button" class="btn-segment" id="btn-font-larger" aria-label="Increase font size" title="Larger type">
+              <span aria-hidden="true">A+</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Reading Progress Bar (Active in Longform Reading Mode) -->
+  <div class="reading-progress-track" aria-hidden="true">
+    <div class="reading-progress-bar" id="reading-progress-bar"></div>
+  </div>
+
+  <div class="page-frame">
+    <!-- Folio / Header -->
+    <header class="masthead-container" role="banner">
+      <div class="editorial-folio">
+        <div class="folio-left">
+          <span class="journal-descriptor">Quarterly Journal of Overlooked Places</span>
+          <span class="folio-separator" aria-hidden="true">/</span>
+          <span class="folio-vol">Vol. IV &middot; No. 2</span>
+        </div>
+        <div class="folio-center">
+          <span class="folio-location">ISSN 2754-8902 &middot; Tokyo &bull; London</span>
+        </div>
+        <div class="folio-right">
+          <time datetime="2026-09">Autumn 2026</time>
+          <span class="folio-separator" aria-hidden="true">/</span>
+          <span class="folio-tag">Issue 14: Low Water</span>
+        </div>
+      </div>
+
+      <!-- Main Nameplate / Header Graphic -->
+      <div class="nameplate-wrapper">
+        <div class="nameplate-grid">
+          <div class="nameplate-brand">
+            <h1 class="journal-title">MARGIN</h1>
+            <p class="journal-tagline">Terrain discarded by master plans, quiet geographies, and the lives lived in municipal seams.</p>
+          </div>
+
+          <div class="nameplate-issue-stamp" aria-label="Issue 14 Specifications">
+            <div class="stamp-border">
+              <div class="stamp-header">Current Release</div>
+              <div class="stamp-body">
+                <span class="stamp-number">No. 14</span>
+                <span class="stamp-theme">Low Water</span>
+                <span class="stamp-season">Autumn 2026</span>
+              </div>
+              <div class="stamp-footer">
+                <span>144 Pages</span>
+                <span>Munken 90 gsm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary Quick Navigation Anchor Bar -->
+      <nav class="editorial-nav" aria-label="Editorial table of contents">
+        <ul class="nav-links">
+          <li><a href="#cover-story"><span class="nav-num">01</span> Cover Story</a></li>
+          <li><a href="#supporting-stories"><span class="nav-num">02</span> Issue Index</a></li>
+          <li><a href="#transect-motif"><span class="nav-num">03</span> Basin Transect</a></li>
+          <li><a href="#subscription"><span class="nav-num">04</span> Subscription</a></li>
+          <li><a href="#archive"><span class="nav-num">05</span> Archive Strip</a></li>
+          <li><a href="#dispatch"><span class="nav-num">06</span> The Dispatch</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="main-content" class="editorial-main">
+
+      <!-- ===================================================================
+           HERO & COVER ESSAY FEATURE SECTION (Asymmetric Composition)
+           =================================================================== -->
+      <section class="section-lead" aria-labelledby="cover-title">
+        <div class="lead-grid">
+
+          <!-- Left Column: Primary Cover Essay Introduction -->
+          <article class="cover-feature" id="cover-story">
+            <div class="kicker-wrapper">
+              <span class="editorial-kicker">Lead Field Essay &middot; Issue 14 Cover</span>
+              <span class="reading-estimate" aria-label="Reading time: 18 minutes">18 min read</span>
+            </div>
+
+            <h2 id="cover-title" class="cover-headline">The River Keeps Its Receipts</h2>
+
+            <div class="byline-block">
+              <p class="author-name">By <strong>Imani Vale</strong></p>
+              <p class="author-bio">Field essayist and geographer examining the post-industrial alluvial beds of the lower Tone basin.</p>
+            </div>
+
+            <!-- Author Summary from COPY.md -->
+            <div class="curator-summary">
+              <div class="summary-label">Editorial Statement</div>
+              <p class="summary-text">
+                Along a drought-exposed riverbed, shop ledgers, bottle caps, and vanished street plans surface together. A field essay about civic memory and what infrastructure tries to forget.
+              </p>
+            </div>
+
+            <div class="essay-sample-excerpt">
+              <p class="lead-paragraph">
+                <span class="drop-cap" aria-hidden="true">W</span>hen the river drops four meters in twenty-eight days, municipal authorities do not dispatch hydrologists first. They dispatch archivists, property surveyors, and bailiffs. Drought is commonly described as an absence of water, but in the lower reach it behaves as an insolent disclosure: an unmaking of the smooth brown surface that kept seventy years of municipal indiscretions submerged.
+              </p>
+              <p>
+                By mid-August, the waterline had retreated past the 1938 riprap embankments, exposing five kilometers of silt-caked basalt cobblestones. Between them lay the intact brass ledgers of merchant houses liquidated during the post-war land redistributions, iron shipping stamps, and telephone insulators dating from the great municipal consolidation.
+              </p>
+              <blockquote class="editorial-pullquote">
+                <p>“The silt does not preserve history out of reverence; it preserves it through suffocation. What surfaces in low water is not nostalgia, but an audit.”</p>
+                <cite>&mdash; Imani Vale, <span class="quote-source">The River Keeps Its Receipts</span>, p. 19</cite>
+              </blockquote>
+              <p>
+                Standing on Transect 14 on an afternoon when the heat shimmer turns the gravel bed into a false lake, one realizes that civic planning has always relied on the river to keep its secrets. When the flow slackens, every receipt is stamped in mud.
+              </p>
+            </div>
+
+            <div class="article-actions">
+              <button type="button" class="btn-editorial-primary" id="btn-open-reader">
+                <span class="btn-icon" aria-hidden="true">📖</span>
+                <span>Read Full Essay in Reading Mode</span>
+              </button>
+              <a href="#subscription" class="btn-editorial-ghost">
+                <span>Order Print Issue (¥2,400)</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Right Column: Editorial Marginalia, Metadata & Physical Details -->
+          <aside class="cover-marginalia" aria-label="Issue 14 contextual notes">
+            <div class="marginalia-card issue-dossier">
+              <div class="card-title-bar">
+                <span class="bracket-tag">[ FIELD DOSSIER ]</span>
+                <span class="card-ref">REF-2026-14-IV</span>
+              </div>
+              <h3 class="card-heading">Issue 14: “Low Water”</h3>
+              <p class="dossier-intro">Published every solstice and equinox. Margin 14 explores the physical consequences of unaccustomed drawdown across four international river systems and urban perimeters.</p>
+              
+              <dl class="specs-list">
+                <div class="spec-row">
+                  <dt>Format</dt>
+                  <dd>210 &times; 280 mm &middot; 144 pages</dd>
+                </div>
+                <div class="spec-row">
+                  <dt>Paper</dt>
+                  <dd>80 gsm Munken Print White / 300 gsm Greyboard Cover</dd>
+                </div>
+                <div class="spec-row">
+                  <dt>Binding</dt>
+                  <dd>Smyth-sewn cold glue with open spine</dd>
+                </div>
+                <div class="spec-row">
+                  <dt>Plates</dt>
+                  <dd>24 duotone plates &middot; 4 gatefold surveys</dd>
+                </div>
+                <div class="spec-row">
+                  <dt>Print Run</dt>
+                  <dd>3,500 numbered copies worldwide</dd>
+                </div>
+              </dl>
+            </div>
+
+            <!-- Field Coordinates Box -->
+            <div class="marginalia-card coordinate-card">
+              <div class="card-title-bar">
+                <span class="bracket-tag">[ TRANSECT SURVEY ]</span>
+                <span class="card-ref">LAT 35°41'N &middot; LON 139°45'E</span>
+              </div>
+              <div class="survey-metrics">
+                <div class="metric-item">
+                  <span class="metric-val">−3.82 m</span>
+                  <span class="metric-desc">Drawdown below summer mean</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-val">1923–1974</span>
+                  <span class="metric-desc">Substratum strata exposed</span>
+                </div>
+              </div>
+              <p class="survey-note">
+                Surveyed on foot between 04:00 and 07:30 before thermal updrafts distort laser rangefinders. All artifacts cataloged in situ.
+              </p>
+            </div>
+          </aside>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           STRONG DISPLAY MOTIF: INLINE SVG RIVERBED TRANSECT & RELIC DIAGRAM
+           =================================================================== -->
+      <section class="section-motif" id="transect-motif" aria-labelledby="motif-heading">
+        <div class="section-header-rule">
+          <div class="rule-label">
+            <span class="motif-glyph" aria-hidden="true">⊕</span>
+            <span class="rule-text">Display Motif &middot; Field Section</span>
+          </div>
+          <span class="rule-ref">PLATE XIV-A &middot; TRANSECT 14 DATUM</span>
+        </div>
+
+        <div class="motif-wrapper">
+          <div class="motif-meta-header">
+            <h2 id="motif-heading" class="motif-title">Bathymetric Transect &amp; Exposed Sediment Strata</h2>
+            <p class="motif-caption">
+              Measured cross-section of the dry channel bed at Lower Reach 14. High-water marks from the 1984 flood are juxtaposed with the current Autumn 2026 datum, annotating relic ledgers, bridge footings, and silt compaction layers.
+            </p>
+          </div>
+
+          <!-- Master Inline SVG Display Motif -->
+          <div class="svg-container">
+            <svg class="editorial-diagram" viewBox="0 0 1000 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="svg-transect-title svg-transect-desc">
+              <title id="svg-transect-title">Transect 14: Bathymetric Section and Exposed Sediment Strata</title>
+              <desc id="svg-transect-desc">
+                An architectural and geologic cross-section diagram showing elevation contours from +4.0 meters down to -4.5 meters. Layers include Alluvial Silt, 1923 Rubble, Compact Clay, and Basalt Bedrock. Annotation lines point to exposed shop ledgers, an abandoned 1891 bridge pier footing, and receding waterline datums.
+              </desc>
+
+              <defs>
+                <!-- Pattern: Alluvial Fine Silt (Diagonal Dashed Hatch) -->
+                <pattern id="silt-pattern" width="16" height="16" patternUnits="userSpaceOnUse">
+                  <path d="M0,16 L16,0 M-4,4 L4,-4 M12,20 L20,12" stroke="currentColor" stroke-width="0.75" stroke-opacity="0.25" />
+                </pattern>
+
+                <!-- Pattern: Gravel and Cobble Layer (Dotted Grid) -->
+                <pattern id="gravel-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <circle cx="5" cy="5" r="1.5" fill="currentColor" fill-opacity="0.35" />
+                  <circle cx="15" cy="15" r="1" fill="currentColor" fill-opacity="0.25" />
+                  <circle cx="15" cy="5" r="0.75" fill="currentColor" fill-opacity="0.2" />
+                  <circle cx="5" cy="15" r="1.25" fill="currentColor" fill-opacity="0.3" />
+                </pattern>
+
+                <!-- Pattern: Bedrock Strata (Horizontal Striae) -->
+                <pattern id="bedrock-pattern" width="30" height="12" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="3" x2="30" y2="3" stroke="currentColor" stroke-width="0.8" stroke-opacity="0.3" stroke-dasharray="4, 3, 10, 2" />
+                  <line x1="0" y1="9" x2="30" y2="9" stroke="currentColor" stroke-width="0.8" stroke-opacity="0.2" stroke-dasharray="8, 4, 3, 5" />
+                </pattern>
+              </defs>
+
+              <!-- Chart Boundary and Registration Marks -->
+              <rect x="40" y="30" width="920" height="390" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.35" />
+              
+              <!-- Corner Crosshairs / Registration marks -->
+              <g stroke="currentColor" stroke-width="1" stroke-opacity="0.6">
+                <path d="M30,30 L50,30 M40,20 L40,40" />
+                <path d="M950,30 L970,30 M960,20 L960,40" />
+                <path d="M30,420 L50,420 M40,410 L40,430" />
+                <path d="M950,420 L970,420 M960,410 L960,430" />
+              </g>
+
+              <!-- Grid Elevation Guides -->
+              <!-- +4.00m Guide -->
+              <g class="diagram-elevation-guide" stroke="currentColor" stroke-opacity="0.2">
+                <line x1="40" y1="70" x2="960" y2="70" stroke-dasharray="2, 4" stroke-width="0.75" />
+                <text x="50" y="65" font-family="monospace" font-size="10" fill="currentColor" stroke="none">+4.00 m (Historic Flood Crest 1984)</text>
+              </g>
+
+              <!-- +2.00m Guide -->
+              <g class="diagram-elevation-guide" stroke="currentColor" stroke-opacity="0.2">
+                <line x1="40" y1="130" x2="960" y2="130" stroke-dasharray="2, 4" stroke-width="0.75" />
+                <text x="50" y="125" font-family="monospace" font-size="10" fill="currentColor" stroke="none">+2.00 m (Standard Summer Mean Stage)</text>
+              </g>
+
+              <!-- 0.00m Datum Guide -->
+              <g class="diagram-elevation-guide" stroke="currentColor" stroke-opacity="0.35">
+                <line x1="40" y1="190" x2="960" y2="190" stroke-width="1" stroke-dasharray="6, 4" />
+                <text x="50" y="185" font-family="monospace" font-size="10" font-weight="bold" fill="currentColor" stroke="none">&plusmn;0.00 m Hydrographic Gauge Zero</text>
+              </g>
+
+              <!-- -2.00m Guide -->
+              <g class="diagram-elevation-guide" stroke="currentColor" stroke-opacity="0.2">
+                <line x1="40" y1="260" x2="960" y2="260" stroke-dasharray="2, 4" stroke-width="0.75" />
+                <text x="50" y="255" font-family="monospace" font-size="10" fill="currentColor" stroke="none">−2.00 m Low Flow Channel Threshold</text>
+              </g>
+
+              <!-- Strata Layers Geometry -->
+              <!-- Layer 3: Deep Basalt Bedrock -->
+              <path d="M40,340 Q 220,330 420,350 T 780,335 L 960,345 L 960,420 L 40,420 Z" fill="url(#bedrock-pattern)" />
+              <path d="M40,340 Q 220,330 420,350 T 780,335 L 960,345" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.5" fill="none" />
+
+              <!-- Layer 2: Consolidated Clay and Cobble -->
+              <path d="M40,260 Q 250,270 480,250 T 820,275 L 960,265 L 960,345 L 40,340 Z" fill="url(#gravel-pattern)" />
+              <path d="M40,260 Q 250,270 480,250 T 820,275 L 960,265" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.5" fill="none" />
+
+              <!-- Layer 1: Alluvial Silt and Exposed Shore -->
+              <path d="M40,200 C 180,200 240,225 380,230 C 520,235 620,210 740,215 C 840,220 890,205 960,210 L 960,265 L 40,260 Z" fill="url(#silt-pattern)" />
+              <path d="M40,200 C 180,200 240,225 380,230 C 520,235 620,210 740,215 C 840,220 890,205 960,210" stroke="currentColor" stroke-width="2" fill="none" />
+
+              <!-- Active Autumn 2026 Receded Water Body -->
+              <path d="M480,233 C 540,234 600,222 660,220 C 660,235 550,238 480,235 Z" fill="currentColor" fill-opacity="0.18" />
+              <line x1="475" y1="226" x2="665" y2="226" stroke="var(--accent-color, #8C3B24)" stroke-width="2.5" />
+              <polygon points="570,221 575,226 570,231" fill="var(--accent-color, #8C3B24)" />
+
+              <!-- Historic High Water Level (Dashed Blue-Grey / Accent) -->
+              <line x1="40" y1="80" x2="960" y2="80" stroke="currentColor" stroke-width="1.2" stroke-dasharray="10, 4" stroke-opacity="0.45" />
+
+              <!-- Visual Artifacts in the Riverbed -->
+              <!-- Artifact 1: Old Granite Bridge Footing (1891) -->
+              <g class="diagram-artifact-group" transform="translate(240, 185)">
+                <rect x="-15" y="0" width="30" height="55" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="1.2" />
+                <line x1="-15" y1="18" x2="15" y2="18" stroke="currentColor" stroke-width="0.8" />
+                <line x1="-15" y1="36" x2="15" y2="36" stroke="currentColor" stroke-width="0.8" />
+                <!-- Callout Target -->
+                <circle cx="0" cy="0" r="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+                <line x1="0" y1="-4" x2="0" y2="-35" stroke="currentColor" stroke-width="1" />
+                <polyline points="0,-35 40,-35" stroke="currentColor" stroke-width="1" fill="none" />
+                <text x="45" y="-32" font-family="monospace" font-size="9" fill="currentColor">RELIC A: Granite Pier Base (1891)</text>
+              </g>
+
+              <!-- Artifact 2: Merchant Ledgers & Safe Deposit (1923) [Cover Story Motif] -->
+              <g class="diagram-artifact-group" transform="translate(420, 218)">
+                <!-- Safe Outline & Ledger Shapes -->
+                <rect x="-12" y="0" width="24" height="20" fill="currentColor" fill-opacity="0.3" stroke="currentColor" stroke-width="1.2" />
+                <line x1="-8" y1="4" x2="8" y2="4" stroke="currentColor" stroke-width="0.8" />
+                <line x1="-8" y1="8" x2="8" y2="8" stroke="currentColor" stroke-width="0.8" />
+                <circle cx="6" cy="14" r="2" fill="none" stroke="currentColor" stroke-width="1" />
+                <!-- Callout Indicator -->
+                <circle cx="0" cy="-2" r="5" fill="var(--accent-color, #8C3B24)" fill-opacity="0.3" stroke="var(--accent-color, #8C3B24)" stroke-width="1.5" />
+                <circle cx="0" cy="-2" r="1.5" fill="var(--accent-color, #8C3B24)" />
+                <line x1="0" y1="-8" x2="0" y2="-65" stroke="var(--accent-color, #8C3B24)" stroke-width="1.2" />
+                <polyline points="0,-65 -80,-65" stroke="var(--accent-color, #8C3B24)" stroke-width="1.2" fill="none" />
+                <text x="-85" y="-69" text-anchor="end" font-family="monospace" font-size="9" font-weight="bold" fill="var(--accent-color, #8C3B24)">RECEIPT NO. 14: Merchant Ledgers (1923)</text>
+                <text x="-85" y="-57" text-anchor="end" font-family="monospace" font-size="8" fill="currentColor" fill-opacity="0.8">Submerged 103 yrs &middot; Revealed at −2.4m</text>
+              </g>
+
+              <!-- Artifact 3: Waterline Datum Marker -->
+              <g class="diagram-artifact-group" transform="translate(680, 218)">
+                <circle cx="0" cy="0" r="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+                <line x1="0" y1="-4" x2="0" y2="-45" stroke="currentColor" stroke-width="1" />
+                <polyline points="0,-45 40,-45" stroke="currentColor" stroke-width="1" fill="none" />
+                <text x="45" y="-42" font-family="monospace" font-size="9" fill="currentColor">RECOVERY DATUM: Autumn 2026 Waterline</text>
+                <text x="45" y="-30" font-family="monospace" font-size="8" fill="currentColor" fill-opacity="0.8">Discharge: 1.4 m³/sec (Historic Low)</text>
+              </g>
+
+              <!-- Strata Callout Legend Labels on Right -->
+              <g font-family="monospace" font-size="8.5" fill="currentColor" fill-opacity="0.8" transform="translate(850, 230)">
+                <text x="0" y="10">▼ STRATUM I: Alluvial Silt</text>
+                <text x="0" y="60">▼ STRATUM II: Rubble &amp; Gravel</text>
+                <text x="0" y="125">▼ STRATUM III: Basalt Substratum</text>
+              </g>
+
+              <!-- Survey Scale Bar at Bottom Left -->
+              <g transform="translate(60, 395)" font-family="monospace" font-size="8" fill="currentColor">
+                <line x1="0" y1="0" x2="160" y2="0" stroke="currentColor" stroke-width="2" />
+                <line x1="0" y1="-4" x2="0" y2="4" stroke="currentColor" stroke-width="1" />
+                <line x1="40" y1="-2" x2="40" y2="2" stroke="currentColor" stroke-width="1" />
+                <line x1="80" y1="-4" x2="80" y2="4" stroke="currentColor" stroke-width="1" />
+                <line x1="120" y1="-2" x2="120" y2="2" stroke="currentColor" stroke-width="1" />
+                <line x1="160" y1="-4" x2="160" y2="4" stroke="currentColor" stroke-width="1" />
+                <text x="0" y="14">0 m</text>
+                <text x="75" y="14">20 m</text>
+                <text x="150" y="14">40 m</text>
+                <text x="180" y="14" fill-opacity="0.7">Horizontal Scale 1:250</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Technical Notes Below Motif -->
+          <div class="motif-footer-grid">
+            <div class="footer-col">
+              <span class="col-term">Survey Method</span>
+              <p class="col-desc">Topcon GTS-235 Total Station with non-invasive ground-penetrating radar (350 MHz frequency), field verified along 1,200m transect.</p>
+            </div>
+            <div class="footer-col">
+              <span class="col-term">Cartographic Credit</span>
+              <p class="col-desc">Drawn by K. Seta &amp; Imani Vale for Margin Issue 14. Geodetic coordinates referenced to Tokyo Datum 2000.</p>
+            </div>
+            <div class="footer-col">
+              <span class="col-term">Archival Repository</span>
+              <p class="col-desc">Physical ledgers deposited in the Prefectural Hydraulic Archive; waterlogged bindings undergoing freeze-dry stabilization.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SUPPORTING STORIES SECTION (Table of Contents / Editorial Grid)
+           =================================================================== -->
+      <section class="section-features" id="supporting-stories" aria-labelledby="features-heading">
+        <div class="section-header-rule">
+          <div class="rule-label">
+            <span class="motif-glyph" aria-hidden="true">■</span>
+            <span class="rule-text">Table of Contents &middot; Supporting Dispatches</span>
+          </div>
+          <span class="rule-ref">ISSUE 14 &middot; PAGES 32–79</span>
+        </div>
+
+        <div class="features-intro-banner">
+          <h2 id="features-heading" class="features-title">Stories From the Edge of the Ledger</h2>
+          <p class="features-deck">
+            Three extended dispatches investigating unmapped nocturnal transit, guerrilla arboretums inside stalled finance towers, and the silent geometry of decommissioned public baths.
+          </p>
+        </div>
+
+        <!-- The 3 Supporting Stories Grid -->
+        <div class="features-triptych">
+
+          <!-- Feature 1: Night Bus Atlas -->
+          <article class="feature-card" id="story-night-bus">
+            <div class="card-meta">
+              <span class="card-section-tag">Cartography &middot; Dispatch</span>
+              <span class="card-pagination">pp. 32–47</span>
+            </div>
+
+            <!-- Spot Illustration: Radial Night Transit Route Diagram -->
+            <div class="card-figure" aria-hidden="true">
+              <svg class="spot-svg" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                <rect width="320" height="180" fill="currentColor" fill-opacity="0.04" />
+                <circle cx="160" cy="90" r="70" fill="none" stroke="currentColor" stroke-opacity="0.2" stroke-dasharray="2, 4" />
+                <circle cx="160" cy="90" r="45" fill="none" stroke="currentColor" stroke-opacity="0.3" />
+                <circle cx="160" cy="90" r="20" fill="none" stroke="currentColor" stroke-opacity="0.4" />
+                <!-- Orbital routes -->
+                <path d="M40,150 Q160,20 280,110" fill="none" stroke="currentColor" stroke-width="1.5" />
+                <path d="M50,40 Q130,160 270,70" fill="none" stroke="var(--accent-color, #8C3B24)" stroke-width="1.8" />
+                <!-- Stops & Time Stamps -->
+                <circle cx="160" cy="90" r="3" fill="currentColor" />
+                <circle cx="118" cy="118" r="2.5" fill="var(--accent-color, #8C3B24)" />
+                <circle cx="210" cy="80" r="2.5" fill="currentColor" />
+                <circle cx="85" cy="65" r="2.5" fill="var(--accent-color, #8C3B24)" />
+                <text x="165" y="93" font-family="monospace" font-size="8" fill="currentColor">CENTRAL 03:15</text>
+                <text x="90" y="132" font-family="monospace" font-size="7.5" fill="var(--accent-color, #8C3B24)">ROUTE N-04 (HOSPITAL RING)</text>
+              </svg>
+            </div>
+
+            <div class="card-content">
+              <h3 class="feature-headline">Night Bus Atlas</h3>
+              <p class="feature-author">By <strong>Tomás Iriarte</strong></p>
+              
+              <!-- Exact Summary from COPY.md -->
+              <p class="feature-summary">
+                The unofficial geography drawn by cleaners, nurses, bakers, and drivers while a city's daytime map is asleep.
+              </p>
+
+              <div class="feature-expanded-note">
+                <p>
+                  Tracing forty-four municipal night service routes that operate between 01:15 and 04:45. While transit maps published by city hall celebrate radial spokes radiating from financial centers, the nocturnal network is an intricate tangle of lateral ring-roads connecting hospital shifts, industrial laundries, and all-night baking co-ops.
+                </p>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-detail">14 Route Maps &middot; 6 Night Dispatch Logs</span>
+                <button type="button" class="btn-card-preview" data-preview="night-bus" aria-label="Read excerpt of Night Bus Atlas">
+                  Read Excerpt &rarr;
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Feature 2: Concrete Orchards -->
+          <article class="feature-card" id="story-concrete-orchards">
+            <div class="card-meta">
+              <span class="card-section-tag">Urban Ecology &middot; Reportage</span>
+              <span class="card-pagination">pp. 48–63</span>
+            </div>
+
+            <!-- Spot Illustration: Reinforced Concrete Slabs and Root Structures -->
+            <div class="card-figure" aria-hidden="true">
+              <svg class="spot-svg" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                <rect width="320" height="180" fill="currentColor" fill-opacity="0.04" />
+                <!-- Concrete floor slabs -->
+                <rect x="30" y="40" width="260" height="8" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="0.8" />
+                <rect x="30" y="95" width="260" height="8" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="0.8" />
+                <rect x="30" y="150" width="260" height="8" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="0.8" />
+                <!-- Vertical columns -->
+                <line x1="80" y1="48" x2="80" y2="95" stroke="currentColor" stroke-width="2" />
+                <line x1="240" y1="48" x2="240" y2="95" stroke="currentColor" stroke-width="2" />
+                <line x1="160" y1="103" x2="160" y2="150" stroke="currentColor" stroke-width="2" />
+                <!-- Trees / Foliage on unfinished slabs -->
+                <path d="M120,95 Q140,75 145,60 Q150,45 160,50 Q170,55 175,70 Q180,85 190,95 Z" fill="currentColor" fill-opacity="0.15" stroke="var(--accent-color, #8C3B24)" stroke-width="1.2" />
+                <!-- Irrigation drop line -->
+                <line x1="130" y1="48" x2="130" y2="95" stroke="currentColor" stroke-dasharray="2, 3" stroke-width="0.75" />
+                <circle cx="160" cy="72" r="3" fill="var(--accent-color, #8C3B24)" />
+                <circle cx="140" cy="80" r="2.5" fill="var(--accent-color, #8C3B24)" />
+                <text x="40" y="32" font-family="monospace" font-size="7.5" fill="currentColor">LEVEL 12 &middot; UNFINISHED CORE</text>
+                <text x="195" y="85" font-family="monospace" font-size="7.5" fill="var(--accent-color, #8C3B24)">CITRUS AURANTIUM</text>
+              </svg>
+            </div>
+
+            <div class="card-content">
+              <h3 class="feature-headline">Concrete Orchards</h3>
+              <p class="feature-author">By <strong>Meera Das</strong></p>
+              
+              <!-- Exact Summary from COPY.md -->
+              <p class="feature-summary">
+                Residents tend fruit trees in the unfinished floors of a financial district, negotiating shade, ownership, and the patience of roots.
+              </p>
+
+              <div class="feature-expanded-note">
+                <p>
+                  Inside a 38-story skyscraper suspended halfway through construction when the developer entered liquidation in 2021. Four hundred Meyer lemon trees, dwarf figs, and bitter orange varieties now thrive in plywood planters set on bare concrete floorplates open to the wind.
+                </p>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-detail">18 Architectural Sections &middot; Field Interviews</span>
+                <button type="button" class="btn-card-preview" data-preview="concrete-orchards" aria-label="Read excerpt of Concrete Orchards">
+                  Read Excerpt &rarr;
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Feature 3: A Language for Empty Pools -->
+          <article class="feature-card" id="story-empty-pools">
+            <div class="card-meta">
+              <span class="card-section-tag">Visual Essay &middot; Folio</span>
+              <span class="card-pagination">pp. 64–79</span>
+            </div>
+
+            <!-- Spot Illustration: Isometric Pool Tile Grid and Drain -->
+            <div class="card-figure" aria-hidden="true">
+              <svg class="spot-svg" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                <rect width="320" height="180" fill="currentColor" fill-opacity="0.04" />
+                <!-- Isometric pool basin planes -->
+                <polygon points="50,40 270,40 220,130 30,110" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.6" />
+                <!-- Isometric tile grid lines -->
+                <line x1="90" y1="40" x2="65" y2="114" stroke="currentColor" stroke-width="0.6" stroke-opacity="0.3" />
+                <line x1="130" y1="40" x2="105" y2="118" stroke="currentColor" stroke-width="0.6" stroke-opacity="0.3" />
+                <line x1="170" y1="40" x2="145" y2="122" stroke="currentColor" stroke-width="0.6" stroke-opacity="0.3" />
+                <line x1="210" y1="40" x2="185" y2="126" stroke="currentColor" stroke-width="0.6" stroke-opacity="0.3" />
+                <line x1="40" y1="75" x2="245" y2="85" stroke="currentColor" stroke-width="0.6" stroke-opacity="0.3" />
+                <!-- Drain in deep end -->
+                <ellipse cx="120" cy="115" rx="14" ry="7" fill="currentColor" fill-opacity="0.25" stroke="var(--accent-color, #8C3B24)" stroke-width="1.2" />
+                <!-- Depth marker -->
+                <text x="210" y="32" font-family="monospace" font-size="7.5" fill="currentColor">DEPTH 2.40 M</text>
+                <text x="145" y="125" font-family="monospace" font-size="7.5" fill="var(--accent-color, #8C3B24)">DRAIN SLUMP &minus;4.5%</text>
+              </svg>
+            </div>
+
+            <div class="card-content">
+              <h3 class="feature-headline">A Language for Empty Pools</h3>
+              <p class="feature-author">By <strong>Hana Mori</strong></p>
+              
+              <!-- Exact Summary from COPY.md -->
+              <p class="feature-summary">
+                Photographs and short notes from public baths retired after the last swimmer, where tile patterns keep directing bodies that no longer arrive.
+              </p>
+
+              <div class="feature-expanded-note">
+                <p>
+                  A photographic inventory of eight municipal bathhouses and Olympic training basins built between 1958 and 1972 across Kanagawa and Shizuoka. Without chlorinated water, the acoustic chamber reflects footsteps like a stone cathedral, while cobalt ceramic tiles still command swimmers to touch and turn.
+                </p>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-detail">32 Duotone Plates &middot; Epigraphs</span>
+                <button type="button" class="btn-card-preview" data-preview="empty-pools" aria-label="Read excerpt of A Language for Empty Pools">
+                  Read Excerpt &rarr;
+                </button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           INTERACTIVE EXCERPT MODAL / INLINE DRAWER (Accessible)
+           =================================================================== -->
+      <section class="excerpt-drawer" id="excerpt-drawer" hidden aria-hidden="true" aria-labelledby="drawer-title">
+        <div class="drawer-header">
+          <div class="drawer-kicker">Field Notes &middot; Extended Preview</div>
+          <button type="button" class="btn-close-drawer" id="btn-close-drawer" aria-label="Close excerpt panel">&times; Close</button>
+        </div>
+        <div class="drawer-body" id="drawer-body">
+          <h3 id="drawer-title" class="drawer-headline">Preview</h3>
+          <div id="drawer-content" class="drawer-copy"></div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SUBSCRIPTION OFFER (Clean, Print-Editorial Focused)
+           =================================================================== -->
+      <section class="section-subscription" id="subscription" aria-labelledby="sub-title">
+        <div class="section-header-rule">
+          <div class="rule-label">
+            <span class="motif-glyph" aria-hidden="true">✦</span>
+            <span class="rule-text">Print &amp; Digital Circulation</span>
+          </div>
+          <span class="rule-ref">FOUR EDITIONS ANNUALLY</span>
+        </div>
+
+        <div class="sub-wrapper">
+          <div class="sub-editorial-pane">
+            <span class="sub-kicker">Independent Publishing Model</span>
+            <h2 id="sub-title" class="sub-headline">Sustain Field Cartography Without Advertisers</h2>
+            <p class="sub-lead">
+              Margin accepts no corporate underwriting, sponsored travel, or algorithmic distribution. We are funded exclusively by readers who value physical print objects and uncompromised geographic inquiry.
+            </p>
+
+            <ul class="sub-promises-list">
+              <li>
+                <strong>Global Dispatch via Air Mail:</strong> Packaged in reinforced, unbleached kraft cardboard without plastic tape.
+              </li>
+              <li>
+                <strong>Instant Digital Archive Access:</strong> Immediate high-resolution, DRM-free PDFs and reflowable EPUBs of every issue from No. 01 to No. 14.
+              </li>
+              <li>
+                <strong>Field Supplements:</strong> Each print issue includes a loose, folded 1:5,000 scale survey map or foldout architectural plate.
+              </li>
+              <li>
+                <strong>Ethical Renewal:</strong> Advance reminder seven days before renewal. Cancel anytime with a single click.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Subscription Order Card -->
+          <div class="sub-order-card" role="region" aria-label="Subscription Pricing Details">
+            <div class="sub-card-badge">STANDARD SUBSCRIPTION</div>
+            
+            <div class="pricing-block">
+              <div class="price-currency">
+                <span class="currency-symbol">¥</span>
+                <span class="price-figure">2,400</span>
+              </div>
+              <div class="price-frequency">per quarterly issue</div>
+              <div class="price-cancel-note">Print + Digital &middot; Cancel anytime</div>
+            </div>
+
+            <div class="order-specs">
+              <div class="order-spec-line">
+                <span class="spec-name">First Delivery</span>
+                <span class="spec-value">Issue 14 (Autumn 2026)</span>
+              </div>
+              <div class="order-spec-line">
+                <span class="spec-name">Shipping</span>
+                <span class="spec-value">Included (Worldwide)</span>
+              </div>
+              <div class="order-spec-line">
+                <span class="spec-name">Digital Delivery</span>
+                <span class="spec-value">Immediate Download</span>
+              </div>
+              <div class="order-spec-line">
+                <span class="spec-name">Commitment</span>
+                <span class="spec-value">Zero lock-in &middot; Cancel anytime</span>
+              </div>
+            </div>
+
+            <!-- Interactive Checkout Action (Simulated, Fully Client-Side) -->
+            <div class="sub-cta-group">
+              <button type="button" class="btn-sub-action" id="btn-subscribe">
+                <span>Begin Subscription &middot; ¥2,400 / Issue</span>
+              </button>
+              <button type="button" class="btn-single-issue" id="btn-single-issue">
+                <span>Or purchase Issue 14 only (¥2,800)</span>
+              </button>
+            </div>
+
+            <!-- Interactive Subscription Notice / Status Modal Trigger -->
+            <div class="sub-confirmation-status" id="sub-status" role="status" aria-live="polite"></div>
+
+            <div class="card-guarantee">
+              <span class="guarantee-icon" aria-hidden="true">✓</span>
+              <span>Secure checkout. Ships within 48 hours of printing.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           COMPACT ARCHIVE STRIP (Issues 11–13)
+           =================================================================== -->
+      <section class="section-archive" id="archive" aria-labelledby="archive-title">
+        <div class="section-header-rule">
+          <div class="rule-label">
+            <span class="motif-glyph" aria-hidden="true">☲</span>
+            <span class="rule-text">The Back Catalog</span>
+          </div>
+          <span class="rule-ref">ISSUES 11 &ndash; 13 ARCHIVE STRIP</span>
+        </div>
+
+        <div class="archive-header-row">
+          <div>
+            <h2 id="archive-title" class="archive-heading">Previous Volumes in the Collection</h2>
+            <p class="archive-deck">
+              Subscribers receive full access to our back catalog in both DRM-free digital facsimile and limited warehouse print stock.
+            </p>
+          </div>
+          <div class="archive-all-link">
+            <span class="archive-count">Complete Index: 14 Issues Available</span>
+          </div>
+        </div>
+
+        <!-- Compact Archive Strip -->
+        <div class="archive-strip" role="list">
+
+          <!-- Issue 13 -->
+          <div class="archive-item" role="listitem">
+            <div class="archive-spine">
+              <span class="spine-num">ISSUE 13</span>
+              <span class="spine-date">Summer 2026</span>
+            </div>
+            <div class="archive-body">
+              <h3 class="archive-issue-title">After the Last Train</h3>
+              <p class="archive-synopsis">
+                Railroad sidings, quiet terminals, marshaling yards, and the nocturnal labor keeping mechanical rolling stock alive in outer prefectures.
+              </p>
+              <div class="archive-meta">
+                <span>136 pages &middot; 42 color plates</span>
+                <span class="badge-status in-stock">Warehouse Stock: 64 copies</span>
+              </div>
+            </div>
+            <div class="archive-action">
+              <button type="button" class="btn-archive-inspect" data-issue="13" aria-label="View index for Issue 13: After the Last Train">
+                View Index &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Issue 12 -->
+          <div class="archive-item" role="listitem">
+            <div class="archive-spine">
+              <span class="spine-num">ISSUE 12</span>
+              <span class="spine-date">Spring 2026</span>
+            </div>
+            <div class="archive-body">
+              <h3 class="archive-issue-title">Borrowed Ground</h3>
+              <p class="archive-synopsis">
+                Allotment gardens along electrical pylon easements, informal boundary stones, and temporary land tenure in rapidly expanding satellite towns.
+              </p>
+              <div class="archive-meta">
+                <span>140 pages &middot; Foldout garden surveys</span>
+                <span class="badge-status low-stock">Warehouse Stock: 18 copies</span>
+              </div>
+            </div>
+            <div class="archive-action">
+              <button type="button" class="btn-archive-inspect" data-issue="12" aria-label="View index for Issue 12: Borrowed Ground">
+                View Index &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Issue 11 -->
+          <div class="archive-item" role="listitem">
+            <div class="archive-spine">
+              <span class="spine-num">ISSUE 11</span>
+              <span class="spine-date">Winter 2025</span>
+            </div>
+            <div class="archive-body">
+              <h3 class="archive-issue-title">The Weather Indoors</h3>
+              <p class="archive-synopsis">
+                Microclimates inside decommissioned cooling towers, subterranean steam vaults, and sealed brutalist atriums that cultivate their own rain.
+              </p>
+              <div class="archive-meta">
+                <span>128 pages &middot; Thermal camera folios</span>
+                <span class="badge-status digital-only">Digital Edition Facsimile</span>
+              </div>
+            </div>
+            <div class="archive-action">
+              <button type="button" class="btn-archive-inspect" data-issue="11" aria-label="View index for Issue 11: The Weather Indoors">
+                View Index &rarr;
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           THE DISPATCH (Email Field with Functional Inline Validation)
+           =================================================================== -->
+      <section class="section-dispatch" id="dispatch" aria-labelledby="dispatch-title">
+        <div class="dispatch-frame">
+          <div class="dispatch-grid">
+
+            <div class="dispatch-info">
+              <div class="dispatch-kicker">Fortnightly Field Correspondence</div>
+              <h2 id="dispatch-title" class="dispatch-heading">The Margin Dispatch</h2>
+              <p class="dispatch-text">
+                Every other Friday morning, we circulate an unedited field memo containing field photographs, coordinates of surveyed sites, and updates on subsequent print runs.
+              </p>
+              <p class="dispatch-privacy">
+                Zero tracking pixels, no advertising sponsors, no syndication. One-click unsubscribe at the bottom of every dispatch.
+              </p>
+            </div>
+
+            <div class="dispatch-form-pane">
+              <form id="dispatch-form" class="dispatch-form" novalidate aria-label="Subscribe to The Margin Dispatch">
+                <div class="form-group">
+                  <label for="dispatch-email" class="form-label">
+                    <span>Reader Email Address</span>
+                    <span class="label-req" aria-hidden="true">*</span>
+                  </label>
+                  
+                  <div class="input-with-button">
+                    <input 
+                      type="email" 
+                      id="dispatch-email" 
+                      name="email" 
+                      class="dispatch-input" 
+                      placeholder="reader@overlookedplaces.org" 
+                      autocomplete="email"
+                      spellcheck="false"
+                      aria-required="true"
+                      aria-describedby="email-validation-msg"
+                    >
+                    <button type="submit" class="btn-dispatch-submit" id="dispatch-submit-btn">
+                      <span>Join Dispatch</span>
+                    </button>
+                  </div>
+
+                  <!-- Real-time / Inline Feedback Message Container -->
+                  <div id="email-validation-msg" class="validation-message" role="status" aria-live="polite"></div>
+                </div>
+              </form>
+
+              <!-- Success Card (Shown upon successful inline submission) -->
+              <div id="dispatch-success-card" class="dispatch-success" hidden role="region" aria-live="polite">
+                <div class="success-icon" aria-hidden="true">✓</div>
+                <div class="success-text">
+                  <h3 class="success-title">Registered to the Field Dispatch</h3>
+                  <p class="success-desc">
+                    Your address (<strong id="confirmed-email-display"></strong>) has been inscribed in our reader registry. The Issue 14 field dispatch will arrive in your inbox this Friday.
+                  </p>
+                  <button type="button" class="btn-text-action" id="btn-reset-dispatch">
+                    &larr; Subscribe another address
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           LONGFORM FOCUS READING MODE CONTAINER (Distraction-Free)
+           =================================================================== -->
+      <section id="focus-reading-view" class="focus-reading-container" hidden aria-hidden="true" aria-labelledby="focus-title">
+        <div class="focus-article-wrapper">
+          <header class="focus-article-header">
+            <div class="focus-meta">
+              <span>MARGIN &middot; ISSUE 14 COVER ESSAY &middot; AUTUMN 2026</span>
+              <button type="button" class="btn-exit-focus" id="btn-exit-focus" aria-label="Exit Reading Mode and return to editorial magazine view">
+                &times; Exit Reading Mode
+              </button>
+            </div>
+            <h2 id="focus-title" class="focus-headline">The River Keeps Its Receipts</h2>
+            <p class="focus-byline">By <strong>Imani Vale</strong> &middot; Photography by K. Seta</p>
+            <div class="focus-summary-box">
+              Along a drought-exposed riverbed, shop ledgers, bottle caps, and vanished street plans surface together. A field essay about civic memory and what infrastructure tries to forget.
+            </div>
+          </header>
+
+          <div class="focus-body-text">
+            <p class="focus-lead">
+              When the river drops four meters in twenty-eight days, municipal authorities do not dispatch hydrologists first. They dispatch archivists, property surveyors, and bailiffs. Drought is commonly described as an absence of water, but in the lower reach it behaves as an insolent disclosure: an unmaking of the smooth brown surface that kept seventy years of municipal indiscretions submerged.
+            </p>
+
+            <p>
+              By mid-August, the waterline had retreated past the 1938 riprap embankments, exposing five kilometers of silt-caked basalt cobblestones. Between them lay the intact brass ledgers of merchant houses liquidated during the post-war land redistributions, iron shipping stamps, and telephone insulators dating from the great municipal consolidation.
+            </p>
+
+            <h3>I. The Geometry of Drawdown</h3>
+            <p>
+              Rivers in industrial lowlands are rarely permitted to possess natural banks. Their contours are straightened with sheet pilings, framed in tetrahedral tetrapods, and forced into uniform conduits designed to flush stormwater past warehouse parks at eleven kilometers per hour. For three generations, the residents of the valley have known the waterway only as an elevated canal—a grey embankment viewed through highway guardrails.
+            </p>
+            <p>
+              Yet when the upstream reservoirs dropped to nine percent of capacity, the engineered river ceased to flow. The water shrank to a sluggish gutter four meters wide, meandering through the center of the vast gravel floor. On either side, fifteen hundred hectares of riverbed reappeared for the first time since the construction of the Great Weirs in 1952.
+            </p>
+
+            <blockquote>
+              “The silt does not preserve history out of reverence; it preserves it through suffocation. What surfaces in low water is not nostalgia, but an audit.”
+            </blockquote>
+
+            <h3>II. Relics in the Alluvial Silt</h3>
+            <p>
+              On Transect 14, three kilometers seaward of the junction, our survey team discovered the intact granite footing of the 1891 timber bridge. Local histories recorded that the structure had been dismantled during the wartime metal requisitions, but the timber footings remained anchored deep in the blue mudstone. Lodged behind the third pylon was an intact cashbox from a textile merchant whose shop was demolished to make way for the highway interchange in 1968.
+            </p>
+            <p>
+              Inside, preserved in anaerobic clay, were paper receipts for dyed indigo bolts, tax assessment chits from the municipal board, and eighteen keys to doors that have not existed for half a century.
+            </p>
+
+            <h3>III. What Infrastructure Tries to Forget</h3>
+            <p>
+              Modern infrastructure is predicated on continuity. It promises that the tap will deliver pressure, the storm drain will swallow the deluge, and the river will carry off whatever we drop over its parapets. But low water breaks that covenant. It reveals that the river is not a conveyor belt to an oblivious ocean, but a ledger that records every transaction in sediment, layer upon layer, until the drought calls the balance due.
+            </p>
+
+            <div class="focus-article-footer">
+              <p class="focus-colophon">
+                <em>Imani Vale is a contributing editor to Margin. Her book “The Dry Basin: Field Notes on Water Politics” will be published in Spring 2027 by Margin Editions.</em>
+              </p>
+              <div class="focus-cta-return">
+                <button type="button" class="btn-editorial-primary" id="btn-return-overview">
+                  Return to Issue 14 Editorial Overview
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Colophon & Editorial Footer -->
+    <footer class="editorial-colophon" role="contentinfo">
+      <div class="colophon-inner">
+        <div class="colophon-grid">
+
+          <div class="colophon-column brand-col">
+            <span class="colophon-logo">MARGIN</span>
+            <p class="colophon-mission">
+              A quarterly journal committed to spatial documentation, field reportage, and geographic inquiries overlooked by mainstream cartography.
+            </p>
+            <p class="colophon-copyright">
+              &copy; 2026 Margin Publishing Co. All rights reserved. ISSN 2754-8902.
+            </p>
+          </div>
+
+          <div class="colophon-column">
+            <h4 class="colophon-header">Editorial Offices</h4>
+            <address class="colophon-address">
+              <strong>Tokyo Studio</strong><br>
+              4-12-3 Yanaka, Taito-ku<br>
+              Tokyo 110-0001, Japan
+            </address>
+            <address class="colophon-address" style="margin-top: 1rem;">
+              <strong>London Bureau</strong><br>
+              18 Clerkenwell Close<br>
+              London EC1R 0SN, UK
+            </address>
+          </div>
+
+          <div class="colophon-column">
+            <h4 class="colophon-header">Colophon &amp; Specs</h4>
+            <ul class="colophon-links">
+              <li>Typeset in System Old Style Serifs &amp; Monospaced Folios</li>
+              <li>Hand-assembled vector diagrams</li>
+              <li>Printed on Munken Print White 80 gsm</li>
+              <li>Zero tracking cookies or external scripts</li>
+              <li><a href="#main-content">Back to Top of Page &uarr;</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
