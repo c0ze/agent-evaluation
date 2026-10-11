@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relay — Operations Console</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <nav class="rail" aria-label="Primary">
+      <a class="rail-logo" href="#" aria-label="Relay home">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M4 4h9v3H7v3h5v3H7v3h6v3H4V4z" fill="currentColor"/>
+        </svg>
+        <span class="rail-name">Relay</span>
+      </a>
+      <ul class="rail-links">
+        <li><a href="#" class="rail-link is-active" aria-current="page">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="1.5" y="1.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="8.5" y="1.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="1.5" y="8.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="8.5" y="8.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          </svg><span>Overview</span></a></li>
+        <li><a href="#" class="rail-link">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 1.5L14 4v4c0 3.6-2.4 5.9-6 6.5C4.4 13.9 2 11.6 2 8V4l6-2.5z" stroke="currentColor" stroke-width="1.5"/>
+          </svg><span>Incidents</span></a></li>
+        <li><a href="#" class="rail-link">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2 13.5h12M4 13.5V7m4 6.5V4m4 9.5V8.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg><span>Services</span></a></li>
+        <li><a href="#" class="rail-link">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 4.5V8l2.5 1.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg><span>Timeline</span></a></li>
+        <li><a href="#" class="rail-link">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="5.5" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2.5 14c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4" stroke="currentColor" stroke-width="1.5"/>
+          </svg><span>Team</span></a></li>
+      </ul>
+      <div class="rail-foot">
+        <div class="rail-user" aria-label="Signed in as J. Okafor">
+          <span class="rail-avatar" aria-hidden="true">JO</span>
+          <span class="rail-username">J. Okafor</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="shell">
+      <header class="topbar">
+        <div class="topbar-id">
+          <p class="topbar-crumb">Region <strong>eu-west-1</strong> · Cluster <strong>prod-2</strong></p>
+          <h1 class="topbar-title">Overview</h1>
+        </div>
+        <div class="topbar-live" role="status" aria-live="polite">
+          <span class="pip pip-ok" aria-hidden="true"></span>
+          <span class="topbar-live-text">All systems nominal</span>
+          <span class="topbar-time" id="clock">--:--:--</span>
+        </div>
+      </header>
+
+      <main class="main" id="main" tabindex="-1">
+        <section class="metrics" aria-labelledby="metrics-heading">
+          <h2 class="vh" id="metrics-heading">Summary metrics</h2>
+          <ul class="metric-grid" id="metric-grid"></ul>
+        </section>
+
+        <section class="panel chart-panel" aria-labelledby="chart-heading">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title" id="chart-heading">Throughput — last 24 hours</h2>
+              <p class="panel-sub">Events per minute, 1-hour buckets · peak <strong id="chart-peak">—</strong></p>
+            </div>
+            <div class="legend" aria-hidden="true">
+              <span class="legend-item"><span class="legend-swatch legend-throughput"></span>Throughput</span>
+              <span class="legend-item"><span class="legend-swatch legend-slo"></span>SLO floor</span>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="throughput-chart" role="img" aria-label="Bar chart of events per minute over the last 24 hours, rising from a 3 a.m. low of 20 thousand to an evening peak of 88 thousand."></canvas>
+          </div>
+        </section>
+
+        <section class="panel incidents-panel" aria-labelledby="incidents-heading">
+          <div class="panel-head">
+            <h2 class="panel-title" id="incidents-heading">Incidents</h2>
+            <div class="filters" role="group" aria-label="Filter incidents">
+              <label class="vh" for="severity-filter">Filter by severity</label>
+              <select class="select" id="severity-filter">
+                <option value="all">All severities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+              <label class="vh" for="status-filter">Filter by status</label>
+              <select class="select" id="status-filter">
+                <option value="all">All statuses</option>
+                <option value="open">Open</option>
+                <option value="investigating">Investigating</option>
+                <option value="monitoring">Monitoring</option>
+                <option value="acknowledged">Acknowledged</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="incident-table">
+              <caption class="vh">Incident list with severity, service, age, owner, and status</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Severity</th>
+                  <th scope="col">Incident</th>
+                  <th scope="col">Service</th>
+                  <th scope="col" class="num">Age</th>
+                  <th scope="col">Owner</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="incident-rows"></tbody>
+            </table>
+            <div class="empty-state" id="empty-state" hidden>
+              <p class="empty-title">No incidents match these filters</p>
+              <p class="empty-sub">Try widening severity or status.</p>
+              <button class="btn btn-ghost" type="button" id="clear-filters">Clear filters</button>
+            </div>
+          </div>
+          <p class="table-count" id="table-count" aria-live="polite"></p>
+        </section>
+      </main>
+
+      <aside class="detail" id="detail-panel" aria-labelledby="detail-heading">
+        <div class="detail-inner">
+          <div class="detail-head">
+            <p class="detail-label">Incident detail</p>
+            <h2 class="detail-title" id="detail-heading">—</h2>
+            <p class="detail-id" id="detail-id">—</p>
+          </div>
+          <dl class="detail-list" id="detail-list"></dl>
+          <div class="detail-actions">
+            <button class="btn btn-accent" type="button" id="ack-button">Acknowledge</button>
+          </div>
+          <p class="detail-hint" id="detail-note" role="status"></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
