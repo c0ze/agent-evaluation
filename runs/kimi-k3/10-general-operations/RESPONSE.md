@@ -1,0 +1,13 @@
+# Response — reasoning behind my top three priorities
+
+## 1. Board numbers (hard deadline: Thursday 12:00)
+This is the week's most fragile hard deadline. It is immovable, it is for the board, and — critically — it depends on inputs I do not control: Lina's corrections, which in turn depend on a vendor export whose status is only known Monday 15:00. That combination (hard deadline + external dependency + a required two-hour uninterrupted block) means the priority is not just doing the work but building an early-warning system around it: the Monday 15:00 check-in with Lina, a protected Tuesday 11:00–13:00 block, and a pre-identified fallback (Thursday 10:00–12:00) with an explicit instruction to warn Finance the moment the fallback path triggers. Missing this deadline is not recoverable within the week, so it outranks everything else.
+
+## 2. Security patch (hard deadline: Friday 16:00)
+This has the longest dependency chain of the week — my 60–90 minute review → a half-day of QA → a 30-minute change window — and a hidden constraint: QA is unavailable Thursday, which quietly removes a day from what looks like a comfortable five-day runway. Starting my review Monday keeps two viable paths open (QA Tuesday + change window Wednesday; or, as a last resort, QA Friday morning + window before 16:00). Slipping the review by even one day collapses that slack and forces the tight Friday path as the *only* option. Security work also carries risk beyond the deadline itself, so it gets scheduled early and finished Wednesday.
+
+## 3. Renewal-affecting support escalation (response needed Monday)
+This is the smallest item (~45 minutes) but the only one with a Monday commitment, and it touches renewals — direct revenue risk. The cost of doing it is trivial; the cost of missing it is disproportionate and immediate. Clearing it first thing Monday (10:30–11:15, right after the recurring meeting) also protects the rest of the week's focus blocks from interruption. The other two escalations have Wednesday SLAs and are safely scheduled Tuesday afternoon with Wednesday morning as overflow.
+
+## Why the CEO's strategy outline is not in the top three
+"Early this week" is a stated preference, not a hard deadline, and the Tuesday 16:00 leadership review is an opportunity with a graceful fallback (send later in the week). It still receives a protected three-hour focus block on Monday afternoon and a realistic shot at the Tuesday 14:00 send — but if anything above slips, the outline is the item that yields, because it is the only major task whose deadline can move without breaking a commitment to an external party.
