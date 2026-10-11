@@ -1,0 +1,1 @@
+The arc moves from dread to recognition: Ilse hears the future message as a warning about the flood and braces against the water, then hears it again and understands that the danger was ten years of staying, not the tide. The origin of the file is never settled, so the turn happens in how Ilse hears her own voice, and it resolves in the call she has spent years not making.
