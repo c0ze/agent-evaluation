@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Relay operations control room: summary metrics, 24-hour throughput and incident triage.">
+  <title>Relay · Operations</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <nav class="rail" aria-label="Sections">
+      <ul class="rail__list">
+        <li>
+          <a class="rail__link" href="#overview">
+            <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+            <span>Overview</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__link" href="#throughput">
+            <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17l5-5 4 3 4-7 5 3M3 21h18"/></svg>
+            <span>Throughput</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__link" href="#incidents">
+            <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4 2.5 20h19L12 4zM12 10v4M12 17h.01"/></svg>
+            <span>Incidents</span>
+            <span class="rail__count" id="rail-count">0</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="content">
+      <header class="topbar">
+        <div class="brand">
+          <h1 class="brand__name">Relay</h1>
+          <span class="brand__sub">Operations control room</span>
+        </div>
+        <p id="overall" class="sev sev--ok"></p>
+        <ul id="counts" class="counts" aria-label="Open incidents by severity"></ul>
+        <time id="clock" class="clock" title="Local time"></time>
+      </header>
+
+      <main id="main" class="workspace">
+        <div class="primary">
+
+          <section id="overview" class="block" aria-labelledby="summary-title">
+            <div class="block__head">
+              <h2 id="summary-title">Summary</h2>
+              <p class="block__meta">Change compared with the previous period</p>
+            </div>
+            <ul id="metrics" class="metrics"></ul>
+          </section>
+
+          <section id="throughput" class="block" aria-labelledby="throughput-title">
+            <div class="block__head">
+              <h2 id="throughput-title">Throughput · last 24 hours</h2>
+              <p class="block__meta">One bar per hour, oldest on the left</p>
+            </div>
+            <figure class="chart" aria-labelledby="throughput-title">
+              <dl id="chart-stats" class="chart__stats"></dl>
+              <div id="chart-plot" class="chart-plot"></div>
+              <div id="chart-axis" class="chart-axis" aria-hidden="true"></div>
+            </figure>
+          </section>
+
+          <section id="incidents" class="block" aria-labelledby="incidents-title">
+            <div class="block__head">
+              <h2 id="incidents-title">Incidents</h2>
+              <p id="result-count" class="block__meta" tabindex="-1" aria-live="polite"></p>
+            </div>
+
+            <div class="filters" role="search" aria-label="Filter incidents">
+              <div class="field field--search">
+                <label for="f-text">Search</label>
+                <input id="f-text" type="search" placeholder="ID, title, service, owner" autocomplete="off" spellcheck="false">
+              </div>
+              <div class="field">
+                <label for="f-severity">Severity</label>
+                <select id="f-severity"></select>
+              </div>
+              <div class="field">
+                <label for="f-service">Service</label>
+                <select id="f-service"></select>
+              </div>
+              <div class="field">
+                <label for="f-status">Status</label>
+                <select id="f-status"></select>
+              </div>
+              <div class="field">
+                <label for="f-owner">Owner</label>
+                <select id="f-owner">
+                  <option value="all">Any owner</option>
+                  <option value="assigned">Assigned</option>
+                  <option value="unassigned">Unassigned</option>
+                </select>
+              </div>
+              <button type="button" id="f-reset" class="btn btn--ghost" hidden>Clear filters</button>
+            </div>
+
+            <table id="incident-table" class="incident-table" role="table">
+              <caption class="sr-only">Incidents. Select an ID or a row to open its details.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Severity</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Service</th>
+                  <th scope="col" class="num">Age</th>
+                  <th scope="col">Owner</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="incident-rows"></tbody>
+            </table>
+
+            <div id="empty" class="empty" hidden>
+              <p>No incidents match these filters.</p>
+              <button type="button" id="empty-reset" class="btn">Clear filters</button>
+            </div>
+          </section>
+
+        </div>
+
+        <aside id="detail" class="detail" aria-labelledby="detail-title">
+          <p class="detail__eyebrow">
+            <span id="detail-id" class="mono"></span>
+            <span id="detail-sev" class="sev"></span>
+          </p>
+          <h2 id="detail-title">No incident selected</h2>
+          <dl id="detail-fields" class="kv"></dl>
+
+          <section class="ack" aria-labelledby="ack-title">
+            <h3 id="ack-title">Acknowledgement</h3>
+            <p id="ack-state" class="ack__state"></p>
+            <button type="button" id="ack-btn" class="btn btn--primary" aria-disabled="true">Acknowledge incident</button>
+          </section>
+        </aside>
+      </main>
+
+      <div id="announcer" class="sr-only" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

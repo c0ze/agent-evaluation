@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Moss · Today's care</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#queue-title">Skip to today's care</a>
+
+  <main class="layout">
+    <header class="hero">
+      <div class="brand">
+        <svg class="brand__mark" viewBox="0 0 48 48" focusable="false" aria-hidden="true">
+          <path d="M9 31C4 20 10 8 23 8c10 0 16 7 15 16-1 10-9 17-19 16-5-.5-9-3-10-9z" fill="#5d7d3f"/>
+          <path d="M17 33c3-7 7-11 14-15" stroke="#f6efe0" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle cx="37" cy="11" r="4.5" fill="#e3a72f"/>
+        </svg>
+        <h1 class="brand__name">Moss</h1>
+      </div>
+      <p class="tagline">Little errands for the leafy ones.</p>
+      <p class="lede" id="lede">Getting the plants organised.</p>
+      <div class="progress-row">
+        <span class="progress-row__label" id="progress-label">Tended today</span>
+        <progress id="progress" class="progress" max="4" value="0" aria-labelledby="progress-label">0 of 4</progress>
+        <span class="progress-row__count" id="progress-count" aria-hidden="true">0/4</span>
+      </div>
+    </header>
+
+    <section class="queue" id="queue" aria-labelledby="queue-title">
+      <h2 class="queue__title" id="queue-title" tabindex="-1">Today's care</h2>
+      <div id="queue-body"></div>
+    </section>
+
+    <aside class="rail" aria-label="Windowsill and this week">
+      <div class="sill" id="sill" aria-hidden="true"></div>
+      <section class="rhythm" aria-labelledby="rhythm-title">
+        <h2 class="section-title" id="rhythm-title">Seven-day rhythm</h2>
+        <p class="rhythm__note" id="rhythm-note"></p>
+        <div id="rhythm"></div>
+      </section>
+    </aside>
+  </main>
+
+  <div class="toast" id="toast" hidden>
+    <p class="toast__text" id="toast-text"></p>
+    <button type="button" class="btn btn--undo" id="undo">Undo</button>
+  </div>
+  <p class="sr-only" id="announce" role="status"></p>
+
+  <script src="app.js"></script>
+</body>
+</html>
