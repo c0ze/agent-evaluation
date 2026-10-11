@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0d0f12" />
+  <meta name="description" content="Relay — operations control room for live system health, throughput, and incident response." />
+  <title>Relay · Operations Control Room</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app">
+    <nav class="rail" aria-label="Primary">
+      <div class="rail__brand" aria-hidden="true">
+        <svg class="mark" viewBox="0 0 24 24" width="22" height="22" role="img" aria-hidden="true" focusable="false">
+          <path d="M4 15 L9 9 L13 13 L20 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="20" cy="5" r="2.2" fill="currentColor"/>
+        </svg>
+      </div>
+      <ul class="rail__list">
+        <li>
+          <a class="rail__link is-active" href="#overview" aria-current="page" data-nav="overview">
+            <svg class="rail__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>
+            <span class="rail__label">Overview</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__link" href="#throughput" data-nav="throughput">
+            <svg class="rail__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M3 12h3l2.5-7 4 14L15 12h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="rail__label">Throughput</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__link" href="#incidents" data-nav="incidents">
+            <svg class="rail__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 3.5 21.5 20H2.5L12 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></svg>
+            <span class="rail__label">Incidents</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__link" href="#services" data-nav="services">
+            <svg class="rail__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 3 21 7.5 12 12 3 7.5 12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3 12.5 12 17l9-4.5M3 17 12 21.5 21 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            <span class="rail__label">Services</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail__link" href="#alerts" data-nav="alerts">
+            <svg class="rail__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="rail__label">Alerts</span>
+          </a>
+        </li>
+      </ul>
+      <div class="rail__foot">
+        <a class="rail__link" href="#settings" data-nav="settings">
+          <svg class="rail__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="rail__label">Settings</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="shell">
+      <header class="statusbar">
+        <div class="statusbar__id">
+          <span class="wordmark">Relay</span>
+          <span class="env">prod · us-east-1</span>
+        </div>
+        <div class="statusbar__state">
+          <span class="pulse pulse--crit" id="global-status-dot" aria-hidden="true"></span>
+          <span class="status-text" id="global-status-text">Loading…</span>
+        </div>
+        <div class="statusbar__meta">
+          <span class="conn"><span class="dot dot--live" aria-hidden="true"></span>Live</span>
+          <time class="clock" id="clock" datetime="">--:--:--</time>
+          <span class="clock__zone">UTC</span>
+        </div>
+      </header>
+
+      <main class="main" id="main">
+        <section class="block" id="overview" aria-labelledby="overview-h">
+          <div class="block__head">
+            <h1 class="block__title" id="overview-h">System overview</h1>
+            <p class="block__sub">Rolling 5-minute window · compared to previous hour</p>
+          </div>
+          <div class="metrics" id="metrics"></div>
+        </section>
+
+        <section class="block" id="throughput" aria-labelledby="throughput-h">
+          <div class="block__head block__head--row">
+            <div>
+              <h2 class="block__title" id="throughput-h">Throughput</h2>
+              <p class="block__sub">Events per minute (thousands) · last 24 hours</p>
+            </div>
+            <div class="chart-legend">
+              <span class="chart-legend__item"><span class="swatch swatch--line" aria-hidden="true"></span>events/min</span>
+              <span class="chart-stat">peak <strong id="chart-peak">—</strong></span>
+              <span class="chart-stat">avg <strong id="chart-avg">—</strong></span>
+            </div>
+          </div>
+          <div class="panel chart-panel">
+            <div class="chart" id="chart">
+              <div class="chart__tip" id="chart-tip" role="status" aria-live="off" hidden></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="incidents" aria-labelledby="incidents-h">
+          <div class="block__head">
+            <h2 class="block__title" id="incidents-h">Incidents</h2>
+            <p class="block__sub">Active and recent events across services</p>
+          </div>
+
+          <div class="work">
+            <div class="panel table-panel">
+              <div class="toolbar">
+                <div class="search">
+                  <svg class="search__icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  <input id="q" class="search__input" type="search" placeholder="Filter by id, service, owner, title…" autocomplete="off" aria-describedby="result-count" />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="f-sev">Severity</label>
+                  <select id="f-sev" class="select">
+                    <option value="all">All</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field__label" for="f-status">Status</label>
+                  <select id="f-status" class="select">
+                    <option value="all">All</option>
+                    <option value="open">Open</option>
+                    <option value="investigating">Investigating</option>
+                    <option value="monitoring">Monitoring</option>
+                    <option value="acknowledged">Acknowledged</option>
+                  </select>
+                </div>
+                <button id="clear" class="btn btn--ghost" type="button" hidden>Clear filters</button>
+              </div>
+
+              <div class="table-meta">
+                <span id="result-count" class="result-count" aria-live="polite">—</span>
+              </div>
+
+              <div class="table-wrap">
+                <table class="itable">
+                  <caption class="sr-only">Incidents with severity, service, age, owner, and status. Activate a row to view details.</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col" class="col-sev" aria-sort="descending"><button class="th-sort" data-sort="severity" type="button">Severity<span class="th-arrow" aria-hidden="true"></span></button></th>
+                      <th scope="col" class="col-inc">Incident</th>
+                      <th scope="col" class="col-svc">Service</th>
+                      <th scope="col" class="col-age" aria-sort="none"><button class="th-sort" data-sort="age" type="button">Age<span class="th-arrow" aria-hidden="true"></span></button></th>
+                      <th scope="col" class="col-own">Owner</th>
+                      <th scope="col" class="col-status">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rows"></tbody>
+                </table>
+                <div class="empty" id="empty" hidden>
+                  <svg class="empty__icon" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                  <p class="empty__title" id="empty-title">No incidents match these filters</p>
+                  <p class="empty__sub" id="empty-sub">Try broadening your search or clearing filters.</p>
+                  <button class="btn btn--ghost" type="button" id="empty-clear" hidden>Clear filters</button>
+                </div>
+              </div>
+            </div>
+
+            <aside class="panel detail" id="detail" aria-labelledby="detail-h">
+              <div class="detail__inner" id="detail-inner"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="block sr-only" id="services" aria-labelledby="services-h"><h2 id="services-h">Services</h2></section>
+        <section class="block sr-only" id="alerts" aria-labelledby="alerts-h"><h2 id="alerts-h">Alerts</h2></section>
+        <section class="block sr-only" id="settings" aria-labelledby="settings-h"><h2 id="settings-h">Settings</h2></section>
+      </main>
+
+      <footer class="footbar">
+        <span>Relay · operations control room</span>
+        <span class="footbar__sep" aria-hidden="true">·</span>
+        <span>Data seeded from local <code>DATA.json</code></span>
+      </footer>
+    </div>
+  </div>
+
+  <div class="sr-only" id="live" aria-live="polite" aria-atomic="true"></div>
+
+  <script id="relay-data" type="application/json">
+{
+  "metrics": [
+    {"label":"Events / min","value":"18,420","change":"+8.2%","direction":"up"},
+    {"label":"P95 latency","value":"184 ms","change":"−12 ms","direction":"down"},
+    {"label":"Error rate","value":"0.37%","change":"+0.08 pp","direction":"up"},
+    {"label":"Queue depth","value":"2,841","change":"−19%","direction":"down"}
+  ],
+  "throughput": [31,28,24,22,20,23,34,48,62,71,76,73,68,72,80,84,79,75,82,88,77,63,52,41],
+  "incidents": [
+    {"id":"INC-2841","severity":"critical","service":"payments-api","age":"12m","owner":"M. Chen","status":"investigating","title":"Card authorization timeouts"},
+    {"id":"INC-2839","severity":"high","service":"event-router","age":"31m","owner":"Unassigned","status":"open","title":"EU retry queue growth"},
+    {"id":"INC-2837","severity":"medium","service":"search-index","age":"1h 08m","owner":"A. Silva","status":"monitoring","title":"Index freshness outside SLO"},
+    {"id":"INC-2832","severity":"low","service":"webhooks","age":"3h 42m","owner":"R. Patel","status":"open","title":"Elevated partner delivery lag"}
+  ]
+}
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

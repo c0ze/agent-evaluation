@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Margin — Issue 14: Low Water</title>
+  <meta name="description" content="Margin is an independent quarterly journal about overlooked places. Issue 14, “Low Water,” Autumn 2026. Cover story: “The River Keeps Its Receipts” by Imani Vale.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f2ecdf'/%3E%3Cpath d='M6 25h20M8 25v-6M14 25v-11M20 25v-6M26 25v-13' stroke='%23211d16' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    /* Applied before first paint so a saved reading-mode choice never flashes. */
+    try {
+      if (localStorage.getItem("margin:reading-mode") === "on") {
+        document.documentElement.classList.add("reading");
+      }
+    } catch (e) { /* storage unavailable */ }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="masthead" id="top">
+    <div class="wrap folio-bar">
+      <a class="wordmark" href="#top" aria-label="Margin — back to top">Margin</a>
+      <p class="folio-tagline">An independent quarterly journal about overlooked places</p>
+      <p class="folio-issue">No.&nbsp;14 — Autumn 2026</p>
+      <button id="reading-toggle" class="btn-toggle" type="button" aria-pressed="false">
+        <span class="dot" aria-hidden="true"></span>
+        Reading&nbsp;mode · <span id="reading-state">off</span>
+      </button>
+    </div>
+    <div class="gauge-rule" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+
+    <!-- ═══ Cover ═══════════════════════════════════════════════════ -->
+    <section class="cover wrap" aria-labelledby="cover-title">
+      <div class="cover-grid">
+        <div class="cover-type">
+          <p class="kicker reveal">Issue 14 · Autumn 2026</p>
+          <h1 class="display reveal" id="cover-title" style="--i:1">
+            <span class="d-line">Low</span>
+            <em class="d-line">Water</em>
+          </h1>
+          <p class="standfirst reveal" style="--i:2">
+            Rivers remember what we pave over. Issue 14 follows the water down —
+            across a drought-exposed riverbed, along a sleeping city’s night
+            routes, into the unfinished floors of a financial district, and over
+            the tiles of drained public baths — reading what places leave behind
+            when everyone has gone.
+          </p>
+
+          <div class="cover-story reveal" style="--i:3">
+            <p class="label">Cover story · Field essay</p>
+            <h2 class="cover-story-title">
+              <a href="#story-river">The River Keeps Its Receipts</a>
+            </h2>
+            <p class="byline">by <span class="author">Imani Vale</span></p>
+            <p class="dek">
+              Along a drought-exposed riverbed, shop ledgers, bottle caps, and
+              vanished street plans surface together. A field essay about civic
+              memory and what infrastructure tries to forget.
+            </p>
+            <a class="jump" href="#story-river">See the contents entry&nbsp;↓</a>
+          </div>
+        </div>
+
+        <figure class="cover-art reveal" style="--i:2">
+          <div class="frame">
+            <svg class="cover-svg" viewBox="0 0 640 820" xmlns="http://www.w3.org/2000/svg"
+                 role="img" aria-labelledby="cover-art-title cover-art-desc">
+              <title id="cover-art-title">A river gauge staff standing in a drained riverbed</title>
+              <desc id="cover-art-desc">Illustration for Issue 14, “Low Water.” A rust-coloured sun
+                hangs above layered sediment banks. The river has fallen to the 0.4-metre mark on a
+                numbered gauge staff, exposing a shop ledger, a bottle cap, and a torn fragment of a
+                street plan. A dashed line higher up shows where the water usually reaches.</desc>
+
+              <defs>
+                <pattern id="minor-ticks" x="0" y="125" width="21" height="21" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="0" x2="14" y2="0" class="art-stroke-ink" stroke-width="1" opacity=".4"/>
+                </pattern>
+              </defs>
+
+              <!-- low sun -->
+              <circle class="art-highlight" cx="150" cy="150" r="62" opacity=".78"/>
+              <circle class="art-stroke-highlight" cx="150" cy="150" r="76" opacity=".35" stroke-width="1.5" stroke-dasharray="2 7"/>
+              <!-- birds -->
+              <path class="art-stroke-ink" d="M302 118 q 9 -8 18 0 q 9 -8 18 0" opacity=".45" stroke-width="2"/>
+              <path class="art-stroke-ink" d="M352 96 q 7 -6 14 0 q 7 -6 14 0" opacity=".35" stroke-width="2"/>
+              <!-- usual high-water mark -->
+              <line class="art-stroke-highlight" x1="24" y1="235" x2="616" y2="235" stroke-width="1.5" stroke-dasharray="7 6" opacity=".5"/>
+              <text class="mark-label" x="26" y="226">USUAL HIGH WATER · 2.5 M</text>
+              <!-- distant ridge -->
+              <path class="art-ink" d="M0 310 Q 150 276 310 300 Q 480 326 640 292 L 640 340 L 0 340 Z" opacity=".07"/>
+              <!-- sediment banks -->
+              <path class="art-ink" d="M0 402 Q 200 372 380 400 Q 520 422 640 394 L 640 820 L 0 820 Z" opacity=".07"/>
+              <path class="art-ink" d="M0 482 Q 180 458 340 488 Q 500 516 640 482 L 640 820 L 0 820 Z" opacity=".09"/>
+              <path class="art-ink" d="M0 582 Q 220 554 420 588 Q 540 606 640 584 L 640 820 L 0 820 Z" opacity=".12"/>
+              <!-- low water -->
+              <path class="art-accent" d="M0 671 Q 120 663 240 671 T 480 671 T 640 667 L 640 820 L 0 820 Z" opacity=".22"/>
+              <path class="art-stroke-accent" d="M60 706 q 34 -6 68 0 t 68 0" opacity=".5" stroke-width="2"/>
+              <path class="art-stroke-accent" d="M330 736 q 34 -6 68 0 t 68 0" opacity=".4" stroke-width="2"/>
+              <path class="art-stroke-accent" d="M140 772 q 34 -6 68 0 t 68 0" opacity=".3" stroke-width="2"/>
+              <!-- exposed shop ledger -->
+              <g transform="translate(105 548) rotate(-5)">
+                <rect class="art-ink" x="6" y="8" width="132" height="86" opacity=".1"/>
+                <rect class="art-surface" x="0" y="0" width="132" height="86"/>
+                <rect class="art-stroke-ink" x="0" y="0" width="132" height="86" opacity=".55" stroke-width="1.5"/>
+                <line class="art-stroke-ink" x1="26" y1="0" x2="26" y2="86" opacity=".4" stroke-width="1"/>
+                <g class="art-stroke-ink" opacity=".28" stroke-width="1">
+                  <line x1="36" y1="20" x2="118" y2="20"/>
+                  <line x1="36" y1="32" x2="118" y2="32"/>
+                  <line x1="36" y1="44" x2="118" y2="44"/>
+                  <line x1="36" y1="56" x2="118" y2="56"/>
+                  <line x1="36" y1="68" x2="118" y2="68"/>
+                </g>
+              </g>
+              <!-- torn street-plan fragment -->
+              <g transform="translate(350 505) rotate(7)">
+                <rect class="art-surface" x="0" y="0" width="94" height="94" opacity=".95"/>
+                <rect class="art-stroke-ink" x="0" y="0" width="94" height="94" opacity=".55" stroke-width="1.5"/>
+                <g class="art-stroke-ink" opacity=".3" stroke-width="1">
+                  <line x1="24" y1="0" x2="24" y2="94"/>
+                  <line x1="52" y1="0" x2="52" y2="94"/>
+                  <line x1="0" y1="30" x2="94" y2="30"/>
+                  <line x1="0" y1="62" x2="94" y2="62"/>
+                </g>
+                <line class="art-stroke-highlight" x1="0" y1="88" x2="88" y2="0" opacity=".5" stroke-width="2.5"/>
+                <path class="art-bg" d="M94 58 L 94 94 L 58 94 Z"/>
+              </g>
+              <!-- bottle cap -->
+              <g transform="translate(318 630)">
+                <circle class="art-highlight" r="17" opacity=".88"/>
+                <circle class="art-stroke-bg" r="17" stroke-width="3" stroke-dasharray="3 4.5" opacity=".8"/>
+                <circle class="art-stroke-bg" r="9" opacity=".55" stroke-width="1.5"/>
+              </g>
+              <!-- gauge staff -->
+              <g>
+                <text class="gauge-cap" x="527" y="80" text-anchor="middle">GAUGE No. 14</text>
+                <rect class="art-ink" x="520" y="92" width="15" height="688" opacity=".88"/>
+                <rect class="art-ink" x="512" y="780" width="31" height="10" opacity=".88"/>
+                <rect x="506" y="125" width="14" height="630" fill="url(#minor-ticks)"/>
+                <g class="art-stroke-ink" opacity=".75" stroke-width="1.5">
+                  <line x1="492" y1="125" x2="520" y2="125"/>
+                  <line x1="492" y1="230" x2="520" y2="230"/>
+                  <line x1="492" y1="335" x2="520" y2="335"/>
+                  <line x1="492" y1="440" x2="520" y2="440"/>
+                  <line x1="492" y1="545" x2="520" y2="545"/>
+                  <line x1="492" y1="650" x2="520" y2="650"/>
+                  <line x1="492" y1="755" x2="520" y2="755"/>
+                </g>
+                <g class="gauge-label" text-anchor="end">
+                  <text x="482" y="130">3.0</text>
+                  <text x="482" y="235">2.5</text>
+                  <text x="482" y="340">2.0</text>
+                  <text x="482" y="445">1.5</text>
+                  <text x="482" y="550">1.0</text>
+                  <text x="482" y="655">0.5</text>
+                  <text x="482" y="760">0.0</text>
+                </g>
+                <!-- current reading -->
+                <path class="art-highlight" d="M520 662 L 520 680 L 496 671 Z"/>
+                <text class="reading-label" x="488" y="694" text-anchor="end">0.4 m</text>
+              </g>
+              <!-- misregistered double frame -->
+              <rect class="art-stroke-rule-strong" x="6" y="6" width="628" height="808" stroke-width="1.5"/>
+              <rect class="art-stroke-rule" x="13" y="17" width="621" height="797" stroke-width="1" opacity=".8"/>
+            </svg>
+          </div>
+          <figcaption>
+            Gauge staff no.&nbsp;14 reads 0.4&nbsp;m — the bed gives back a ledger,
+            a bottle cap, and half a street plan.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ═══ Contents ════════════════════════════════════════════════ -->
+    <section class="features section wrap" id="contents" aria-labelledby="contents-title">
+      <div class="section-head reveal">
+        <p class="kicker">№ 02 · Contents</p>
+        <h2 id="contents-title">In this issue</h2>
+      </div>
+
+      <ol class="story-list">
+        <li class="story reveal" id="story-river">
+          <p class="story-marker" aria-hidden="true">01</p>
+          <div class="story-body">
+            <h3>The River Keeps Its Receipts</h3>
+            <p class="byline">by Imani Vale</p>
+            <p class="story-dek">
+              Along a drought-exposed riverbed, shop ledgers, bottle caps, and
+              vanished street plans surface together. A field essay about civic
+              memory and what infrastructure tries to forget.
+            </p>
+          </div>
+          <p class="story-kind">Field essay</p>
+        </li>
+
+        <li class="story reveal" id="story-nightbus" style="--i:1">
+          <p class="story-marker" aria-hidden="true">02</p>
+          <div class="story-body">
+            <h3>Night Bus Atlas</h3>
+            <p class="byline">by Tomás Iriarte</p>
+            <p class="story-dek">
+              The unofficial geography drawn by cleaners, nurses, bakers, and
+              drivers while a city’s daytime map is asleep.
+            </p>
+          </div>
+          <p class="story-kind">Essay</p>
+        </li>
+
+        <li class="story reveal" id="story-orchards" style="--i:2">
+          <p class="story-marker" aria-hidden="true">03</p>
+          <div class="story-body">
+            <h3>Concrete Orchards</h3>
+            <p class="byline">by Meera Das</p>
+            <p class="story-dek">
+              Residents tend fruit trees in the unfinished floors of a financial
+              district, negotiating shade, ownership, and the patience of roots.
+            </p>
+          </div>
+          <p class="story-kind">Reportage</p>
+        </li>
+
+        <li class="story reveal" id="story-pools" style="--i:3">
+          <p class="story-marker" aria-hidden="true">04</p>
+          <div class="story-body">
+            <h3>A Language for Empty Pools</h3>
+            <p class="byline">by Hana Mori</p>
+            <p class="story-dek">
+              Photographs and short notes from public baths retired after the
+              last swimmer, where tile patterns keep directing bodies that no
+              longer arrive.
+            </p>
+          </div>
+          <p class="story-kind">Photo essay</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ═══ Pull quote ══════════════════════════════════════════════ -->
+    <aside class="pull wrap reveal" aria-label="Pull quote from this issue">
+      <div class="ticks" aria-hidden="true"></div>
+      <blockquote>
+        <p>
+          “The unofficial geography drawn by cleaners, nurses, bakers, and
+          drivers while a city’s daytime map is asleep.”
+        </p>
+        <cite>Tomás Iriarte — “Night Bus Atlas,” Issue 14</cite>
+      </blockquote>
+      <div class="ticks" aria-hidden="true"></div>
+    </aside>
+
+    <!-- ═══ Archive ═════════════════════════════════════════════════ -->
+    <section class="archive section wrap" id="archive" aria-labelledby="archive-title">
+      <div class="section-head reveal">
+        <p class="kicker">№ 03 · Back issues</p>
+        <h2 id="archive-title">From the archive</h2>
+        <p class="section-note">Recent issues remain in print while stocks last.</p>
+      </div>
+
+      <ul class="archive-strip reveal" tabindex="0" aria-label="Archive strip, Issues 11 to 13 — horizontally scrollable on small screens">
+        <li class="archive-card">
+          <p class="archive-no" aria-hidden="true">13</p>
+          <div class="ticks archive-ticks" aria-hidden="true"></div>
+          <h3>After the Last Train</h3>
+          <p class="archive-meta">Issue 13 · Summer 2026</p>
+        </li>
+        <li class="archive-card">
+          <p class="archive-no" aria-hidden="true">12</p>
+          <div class="ticks archive-ticks" aria-hidden="true"></div>
+          <h3>Borrowed Ground</h3>
+          <p class="archive-meta">Issue 12 · Spring 2026</p>
+        </li>
+        <li class="archive-card">
+          <p class="archive-no" aria-hidden="true">11</p>
+          <div class="ticks archive-ticks" aria-hidden="true"></div>
+          <h3>The Weather Indoors</h3>
+          <p class="archive-meta">Issue 11 · Winter 2025</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ Subscribe ═══════════════════════════════════════════════ -->
+    <section class="subscribe section wrap" id="subscribe" aria-labelledby="subscribe-title">
+      <div class="subscribe-grid">
+        <div class="offer reveal">
+          <p class="kicker">№ 04 · Subscribe</p>
+          <h2 id="subscribe-title">Four issues a year. Paper and pixels.</h2>
+          <p class="offer-copy">
+            Margin is independent — no advertisers, no sponsors, no algorithm.
+            Just a quarterly dispatch about the places the map forgot.
+          </p>
+          <p class="price">
+            <span class="price-amount">¥2,400</span>
+            <span class="price-unit">/ per issue</span>
+          </p>
+          <ul class="offer-list">
+            <li>Print + digital, every issue</li>
+            <li>¥2,400 per issue — nothing else to pay</li>
+            <li>Cancel anytime</li>
+          </ul>
+        </div>
+
+        <div class="form-card frame reveal" style="--i:1">
+          <form id="subscribe-form" novalidate>
+            <h3>Start a subscription</h3>
+            <p class="form-intro">
+              Leave your email and Issue 14 — <em>Low Water</em> — will reach you
+              when it ships.
+            </p>
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" inputmode="email"
+                   autocomplete="email" spellcheck="false" placeholder="you@example.com"
+                   aria-describedby="email-hint email-error" required>
+            <p class="hint" id="email-hint">One letter per issue. Nothing else, ever.</p>
+            <p class="error" id="email-error" role="alert" hidden></p>
+            <button type="submit" class="btn btn-solid">Subscribe</button>
+            <p class="form-status" id="form-status" role="status"></p>
+          </form>
+          <noscript>
+            <p class="noscript-note">
+              This demonstration form’s validation needs JavaScript; the rest of
+              the page works without it.
+            </p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="colophon">
+    <div class="gauge-rule" aria-hidden="true"></div>
+    <div class="wrap colophon-grid">
+      <p class="footer-mark" aria-hidden="true">Margin</p>
+      <p>
+        An independent quarterly journal about overlooked places.<br>
+        Issue 14 — <em>Low Water</em> · Autumn 2026.
+      </p>
+      <p class="colophon-tech">
+        Set in system serif &amp; monospace. Art drawn in SVG.<br>
+        No trackers, no network calls, nothing leaves your browser.
+      </p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

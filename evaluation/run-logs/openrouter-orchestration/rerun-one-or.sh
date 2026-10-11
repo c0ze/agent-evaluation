@@ -54,3 +54,6 @@ PY
 }
 # Re-run one task alone with the identical command (usage: rerun-one-or.sh TAG MODEL REPO [EXTRA_MODEL_JSON] -- TASK).
 run_task "$6"
+# opencode installs its plugin SDK with npm into every fresh HOME (~160 MB); drop it once the task is done so
+# a batch can't fill /tmp (which is what interrupted the first pass of the Qwen/Step-5/HY4 batch).
+rm -rf "$O/$TAG/homes/$6/.npm" "$O/$TAG/homes/$6/.config/opencode/node_modules" "$O/$TAG/homes/$6/.cache"

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relay — Operations Control Room</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="rail" role="navigation" aria-label="Main navigation">
+    <div class="rail-brand">
+      <svg class="rail-logo" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect x="4" y="4" width="24" height="24" rx="4" fill="currentColor" opacity="0.15"/>
+        <path d="M8 16 L14 10 L14 14 L24 14 L24 18 L14 18 L14 22 Z" fill="currentColor"/>
+      </svg>
+      <span class="rail-title">Relay</span>
+    </div>
+    <ul class="rail-items" role="list">
+      <li><button class="rail-item active" data-view="dashboard" aria-current="page"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="3" y="15" width="7" height="6" rx="1"/><rect x="14" y="11" width="7" height="10" rx="1"/></svg><span>Dashboard</span></button></li>
+      <li><button class="rail-item" data-view="incidents"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg><span>Incidents</span></button></li>
+      <li><button class="rail-item" data-view="services"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Services</span></button></li>
+      <li><button class="rail-item" data-view="settings"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Settings</span></button></li>
+    </ul>
+    <div class="rail-footer">
+      <button class="rail-item" aria-label="Toggle theme"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Theme</span></button>
+    </div>
+  </nav>
+
+  <header class="topbar" role="banner">
+    <div class="topbar-left">
+      <button class="topbar-hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="rail"><svg aria-hidden="true" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <h1 class="topbar-title">Operations Dashboard</h1>
+    </div>
+    <div class="topbar-center">
+      <div class="status-indicator" aria-live="polite" aria-atomic="true">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="status-text">All systems operational</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-time" aria-live="off">14:32:18 UTC</div>
+      <button class="topbar-user" aria-label="User menu"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg><span>Operator</span></button>
+    </div>
+  </header>
+
+  <main class="main" role="main">
+    <section class="metrics" aria-label="Summary metrics">
+      <div class="metric" data-metric="events">
+        <div class="metric-label">Events / min</div>
+        <div class="metric-value">18,420</div>
+        <div class="metric-trend trend-up" aria-label="Up 8.2% from previous period">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <span>+8.2%</span>
+        </div>
+      </div>
+      <div class="metric" data-metric="latency">
+        <div class="metric-label">P95 latency</div>
+        <div class="metric-value">184 ms</div>
+        <div class="metric-trend trend-down" aria-label="Down 12 ms from previous period">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <span>−12 ms</span>
+        </div>
+      </div>
+      <div class="metric" data-metric="error-rate">
+        <div class="metric-label">Error rate</div>
+        <div class="metric-value">0.37%</div>
+        <div class="metric-trend trend-up" aria-label="Up 0.08 percentage points from previous period">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <span>+0.08 pp</span>
+        </div>
+      </div>
+      <div class="metric" data-metric="queue">
+        <div class="metric-label">Queue depth</div>
+        <div class="metric-value">2,841</div>
+        <div class="metric-trend trend-down" aria-label="Down 19% from previous period">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <span>−19%</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="throughput" aria-label="24-hour throughput">
+      <div class="panel-header">
+        <h2>Throughput (24h)</h2>
+        <div class="panel-controls">
+          <select id="throughput-scale" aria-label="Y-axis scale">
+            <option value="linear">Linear</option>
+            <option value="log">Logarithmic</option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-wrapper" role="img" aria-label="Line chart showing events per hour over 24 hours, ranging from 20 to 88 events per minute">
+        <canvas id="throughput-chart" width="800" height="200" aria-hidden="true"></canvas>
+        <div class="chart-y-axis" aria-hidden="true"></div>
+        <div class="chart-x-axis" aria-hidden="true"></div>
+      </div>
+      <div class="chart-legend" aria-hidden="true">
+        <span class="legend-item"><span class="legend-color" style="--color: var(--accent)"></span>Events/min</span>
+      </div>
+    </section>
+
+    <div class="lower-section">
+      <section class="incidents-panel" aria-label="Incidents">
+        <div class="panel-header">
+          <h2>Active Incidents</h2>
+          <div class="panel-controls">
+            <div class="filter-group">
+              <label for="severity-filter" class="visually-hidden">Filter by severity</label>
+              <select id="severity-filter" aria-label="Filter by severity">
+                <option value="">All severities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="status-filter" class="visually-hidden">Filter by status</label>
+              <select id="status-filter" aria-label="Filter by status">
+                <option value="">All statuses</option>
+                <option value="open">Open</option>
+                <option value="investigating">Investigating</option>
+                <option value="monitoring">Monitoring</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="service-filter" class="visually-hidden">Filter by service</label>
+              <select id="service-filter" aria-label="Filter by service">
+                <option value="">All services</option>
+              </select>
+            </div>
+            <button id="clear-filters" class="btn btn-ghost" aria-label="Clear all filters">Clear</button>
+          </div>
+        </div>
+        <div class="table-wrapper" role="region" aria-label="Incident table" tabindex="0">
+          <table id="incidents-table" class="incidents-table">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Severity</th>
+                <th scope="col">Service</th>
+                <th scope="col">Age</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Status</th>
+                <th scope="col">Title</th>
+              </tr>
+            </thead>
+            <tbody id="incidents-body">
+            </tbody>
+          </table>
+          <div id="empty-state" class="empty-state" hidden>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
+            <p>No incidents match current filters</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="detail-panel" aria-label="Incident details" role="complementary">
+        <div class="panel-header">
+          <h2>Incident Detail</h2>
+        </div>
+        <div id="detail-content" class="detail-content">
+          <div class="detail-empty">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 9h6M9 13h6M9 17h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <p>Select an incident from the table to view details</p>
+          </div>
+        </div>
+        <div id="detail-loaded" class="detail-loaded" hidden>
+          <div class="detail-header">
+            <div class="detail-id-severity">
+              <span id="detail-id" class="detail-id"></span>
+              <span id="detail-severity" class="severity-badge"></span>
+            </div>
+            <div class="detail-status-row">
+              <span id="detail-status" class="status-badge"></span>
+              <span id="detail-age" class="detail-age"></span>
+            </div>
+          </div>
+          <h3 id="detail-title" class="detail-title"></h3>
+          <dl class="detail-meta">
+            <div class="meta-row">
+              <dt>Service</dt>
+              <dd id="detail-service"></dd>
+            </div>
+            <div class="meta-row">
+              <dt>Owner</dt>
+              <dd id="detail-owner"></dd>
+            </div>
+            <div class="meta-row">
+              <dt>Created</dt>
+              <dd id="detail-created"></dd>
+            </div>
+            <div class="meta-row">
+              <dt>Last update</dt>
+              <dd id="detail-updated"></dd>
+            </div>
+          </dl>
+          <div class="detail-description">
+            <h4>Description</h4>
+            <p id="detail-description-text"></p>
+          </div>
+          <div class="detail-timeline" aria-label="Activity timeline">
+            <h4>Timeline</h4>
+            <ul id="detail-timeline" class="timeline"></ul>
+          </div>
+          <div class="detail-actions">
+            <button id="acknowledge-btn" class="btn btn-primary" aria-label="Acknowledge incident">Acknowledge</button>
+            <button id="resolve-btn" class="btn btn-ghost" aria-label="Resolve incident">Resolve</button>
+            <button id="escalate-btn" class="btn btn-ghost" aria-label="Escalate incident">Escalate</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
