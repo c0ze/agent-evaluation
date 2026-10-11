@@ -1,4 +1,3 @@
-from distutils.version import LooseVersion
 import re
 
 
@@ -9,5 +8,4 @@ def slugify(value: str) -> str:
 
 def normalize_version(value: str) -> str:
     """Normalize ordinary dotted versions, preserving pre-release suffixes."""
-    return str(LooseVersion(value))
-
+    return value

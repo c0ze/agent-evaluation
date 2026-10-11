@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relay — Operations</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="app">
+    <aside class="rail" aria-label="Primary navigation">
+      <div class="rail-brand" aria-hidden="true">R</div>
+      <nav class="rail-nav">
+        <a href="#metrics" class="rail-item is-active" aria-current="page" title="Overview">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+        </a>
+        <a href="#incidents" class="rail-item" title="Incidents">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 14H4l8-14z"/></svg>
+        </a>
+        <a href="#throughput" class="rail-item" title="Throughput">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 17l4-5 3 3 5-7"/></svg>
+        </a>
+        <a href="#team" class="rail-item" title="Team">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5"/></svg>
+        </a>
+      </nav>
+      <div class="rail-foot">
+        <a href="#settings" class="rail-item" title="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.3 4.3l2.1 2.1M17.6 17.6l2.1 2.1M19.7 4.3l-2.1 2.1M6.4 17.6l-2.1 2.1"/></svg>
+        </a>
+      </div>
+    </aside>
+
+    <header class="topbar" aria-label="Status bar">
+      <div class="topbar-left">
+        <span class="brand-name">Relay</span>
+        <span class="crumb">/</span>
+        <span class="crumb-current">Operations</span>
+      </div>
+      <div class="topbar-center">
+        <span class="env-pill">prod</span>
+        <span class="sync"><span class="status-dot" aria-hidden="true"></span> Live</span>
+        <time id="clock" class="clock" datetime="2026-10-11T22:41:00Z">22:41 UTC</time>
+      </div>
+      <div class="topbar-right">
+        <span class="region">us-east-1</span>
+        <span class="avatar" aria-hidden="true">OP</span>
+      </div>
+    </header>
+
+    <main id="main" class="content">
+      <section id="metrics" class="section" aria-labelledby="metrics-h">
+        <h2 id="metrics-h" class="section-h">Summary</h2>
+        <div class="metric-grid" role="list">
+          <article class="metric" role="listitem" tabindex="0">
+            <span class="metric-label" id="m0-label">Events / min</span>
+            <span class="metric-value" data-metric="0">—</span>
+            <span class="trend trend-up">—</span>
+          </article>
+          <article class="metric" role="listitem" tabindex="0">
+            <span class="metric-label" id="m1-label">P95 latency</span>
+            <span class="metric-value" data-metric="1">—</span>
+            <span class="trend trend-down">—</span>
+          </article>
+          <article class="metric" role="listitem" tabindex="0">
+            <span class="metric-label" id="m2-label">Error rate</span>
+            <span class="metric-value" data-metric="2">—</span>
+            <span class="trend trend-up">—</span>
+          </article>
+          <article class="metric" role="listitem" tabindex="0">
+            <span class="metric-label" id="m3-label">Queue depth</span>
+            <span class="metric-value" data-metric="3">—</span>
+            <span class="trend trend-down">—</span>
+          </article>
+        </div>
+      </section>
+
+      <section id="throughput" class="section" aria-labelledby="throughput-h">
+        <h2 id="throughput-h" class="section-h">24-hour throughput</h2>
+        <div class="panel">
+          <svg id="spark" class="chart" viewBox="0 0 720 220" role="img" aria-label="Requests per minute over the last 24 hours"></svg>
+        </div>
+      </section>
+
+      <section id="incidents" class="section" aria-labelledby="incidents-h">
+        <div class="section-header">
+          <h2 id="incidents-h" class="section-h">Incidents</h2>
+          <div class="filter-bar" role="group" aria-label="Filter incidents">
+            <label class="filter-label" for="sev-filter">Severity</label>
+            <select id="sev-filter">
+              <option value="all">All</option>
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <label class="filter-label" for="status-filter">Status</label>
+            <select id="status-filter">
+              <option value="all">All</option>
+              <option value="investigating">Investigating</option>
+              <option value="open">Open</option>
+              <option value="monitoring">Monitoring</option>
+              <option value="acknowledged">Acknowledged</option>
+            </select>
+            <label class="filter-label" for="search-filter">Search</label>
+            <input id="search-filter" type="search" placeholder="Service, owner, id…">
+          </div>
+        </div>
+
+        <div class="incident-layout">
+          <div class="table-wrap">
+            <table class="incident-table">
+              <thead>
+                <tr>
+                  <th scope="col">Severity</th>
+                  <th scope="col">Service</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Age</th>
+                  <th scope="col">Owner</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="incident-body"></tbody>
+            </table>
+            <p id="empty-state" class="empty-state" hidden>No incidents match the current filters.</p>
+          </div>
+
+          <aside class="detail" id="detail" aria-live="polite">
+            <h3 class="detail-h">Incident detail</h3>
+            <div id="detail-body">
+              <p class="detail-placeholder">Select an incident to view details.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="team" class="section" aria-labelledby="team-h">
+        <h2 id="team-h" class="section-h">On-call</h2>
+        <div class="panel" id="team-panel">
+          <p class="placeholder">On-call roster loads here.</p>
+        </div>
+      </section>
+
+      <section id="settings" class="section visually-hidden" aria-labelledby="settings-h">
+        <h2 id="settings-h">Settings</h2>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
