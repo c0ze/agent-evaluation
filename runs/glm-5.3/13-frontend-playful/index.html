@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Moss — gentle plant care</title>
+<link rel="stylesheet" href="styles.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+
+<a class="skip-link" href="#queue-list">Skip to today’s care queue</a>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-art" id="hero-moss" aria-hidden="true"></div>
+    <h1 class="wordmark">moss<svg class="wordmark-leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22V10" stroke="#5c7a45" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M12 12C12 6 6 3 2.5 3 3 9 7 13 12 12Z" fill="#7fae5e"/><path d="M12 15c0-5 5-8 8.5-8-.5 6-4.5 9-8.5 8Z" fill="#93bd6d"/></svg></h1>
+    <p class="tagline">A gentle household plant companion. Small care, no guilt, occasional gossip.</p>
+    <p class="hero-kicker" id="today-line">Today</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true"><path d="M0 32C120 58 240 6 360 22 480 38 540 58 660 44 780 30 860 8 980 26 1100 44 1180 58 1300 40 1360 32 1400 24 1440 30L1440 64 0 64Z" fill="#f6efdd"/></svg>
+</header>
+
+<main class="wrap layout">
+  <section class="queue-col" aria-labelledby="queue-title">
+    <div class="queue-head">
+      <h2 id="queue-title" tabindex="-1">today’s care queue</h2>
+      <p class="queue-sub">Overdue friends first — that’s the whole trick.</p>
+      <p class="queue-summary" id="queue-summary"></p>
+    </div>
+
+    <ol class="queue" id="queue-list"></ol>
+
+    <section class="all-done" id="all-done" aria-labelledby="all-done-title" hidden>
+      <div class="confetti" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="all-done-art" id="all-done-art" aria-hidden="true"></div>
+      <h2 id="all-done-title" tabindex="-1">all tended</h2>
+      <p class="all-done-sub">Every leaf got its thing. The windowsill is basically a spa.</p>
+      <ul class="done-log" id="done-log"></ul>
+      <button type="button" class="btn btn-ghost" id="replay">Replay today</button>
+    </section>
+  </section>
+
+  <aside class="side" aria-label="This week at a glance">
+    <section class="side-card glance-card">
+      <h2>at a glance</h2>
+      <dl class="glance">
+        <div class="glance-item"><dt>need you</dt><dd id="g-active">4</dd></div>
+        <div class="glance-item"><dt>overdue</dt><dd id="g-overdue">1</dd></div>
+        <div class="glance-item"><dt>tended</dt><dd id="g-done">0</dd></div>
+      </dl>
+    </section>
+
+    <section class="side-card rhythm-card" aria-labelledby="rhythm-title">
+      <h2 id="rhythm-title">weekly rhythm</h2>
+      <figure class="rhythm" id="rhythm"></figure>
+    </section>
+
+    <section class="side-card mood-card">
+      <h2>moss says</h2>
+      <div class="mood-row">
+        <div class="mood-art" id="mood-moss" aria-hidden="true"></div>
+        <p id="mood-msg"></p>
+      </div>
+    </section>
+  </aside>
+</main>
+
+<footer class="wrap footer">Moss keeps no secrets — everything lives on this page.</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>
