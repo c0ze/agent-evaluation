@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark light" />
+<meta name="description" content="Relay — operations control room: throughput, incident queue and response actions." />
+<title>Relay — Operations Control Room</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-overview" viewBox="0 0 16 16"><path d="M2 2h5v5H2V2zm7 0h5v3H9V2zM2 9h5v5H2V9zm7-2h5v7H9V7z"/></symbol>
+  <symbol id="i-incidents" viewBox="0 0 16 16"><path d="M8 1.8l6.2 10.7H1.8L8 1.8z"/><path d="M8 6v3.4" class="stroke"/><path d="M8 11.2h.01" class="stroke"/></symbol>
+  <symbol id="i-streams" viewBox="0 0 16 16"><path d="M1.5 11.5l3.5-4 3 2.5 3-5.5 3.5 3" class="stroke" fill="none"/></symbol>
+  <symbol id="i-services" viewBox="0 0 16 16"><rect x="2" y="2.5" width="12" height="4.5"/><rect x="2" y="9" width="12" height="4.5"/></symbol>
+  <symbol id="i-runbooks" viewBox="0 0 16 16"><path d="M3.5 2.5h7l2.5 2.5v8.5h-9.5z" class="stroke" fill="none"/><path d="M5.5 8h5M5.5 10.5h5" class="stroke" fill="none"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2" class="stroke" fill="none"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" class="stroke" fill="none"/></symbol>
+  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.2" class="stroke" fill="none"/><path d="M10.2 10.2L14 14" class="stroke" fill="none"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" class="stroke" fill="none"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" class="stroke" fill="none"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 16 16"><path d="M9.5 1.8A6.2 6.2 0 104.2 14.2 5.4 5.4 0 019.5 1.8z" class="stroke" fill="none"/></symbol>
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.4l3.2 3.2L13 4.8" class="stroke" fill="none"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 16 16"><path d="M4 6.5a4 4 0 018 0c0 3 1.2 4 1.2 4H2.8s1.2-1 1.2-4z" class="stroke" fill="none"/><path d="M6.6 12.8a1.5 1.5 0 002.8 0" class="stroke" fill="none"/></symbol>
+</svg>
+
+<div class="app">
+  <nav class="rail" aria-label="Primary">
+    <div class="rail__brand">
+      <span class="brand-mark" aria-hidden="true">R</span>
+      <span class="rail__brandtext">
+        <strong>Relay</strong>
+        <span class="rail__env">prod-eu</span>
+      </span>
+    </div>
+
+    <ul class="rail__nav" id="railNav">
+      <li><button type="button" class="rail__item is-active" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-overview"/></svg><span>Overview</span></button></li>
+      <li><button type="button" class="rail__item"><svg class="icon" aria-hidden="true"><use href="#i-incidents"/></svg><span>Incidents</span><span class="rail__badge" id="railBadge">0</span></button></li>
+      <li><button type="button" class="rail__item"><svg class="icon" aria-hidden="true"><use href="#i-streams"/></svg><span>Streams</span></button></li>
+      <li><button type="button" class="rail__item"><svg class="icon" aria-hidden="true"><use href="#i-services"/></svg><span>Services</span></button></li>
+      <li><button type="button" class="rail__item"><svg class="icon" aria-hidden="true"><use href="#i-runbooks"/></svg><span>Runbooks</span></button></li>
+      <li><button type="button" class="rail__item"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg><span>Settings</span></button></li>
+    </ul>
+
+    <div class="rail__foot">
+      <span class="avatar" aria-hidden="true">AN</span>
+      <span class="rail__user">
+        <strong>A. Novak</strong>
+        <span>Primary on-call</span>
+      </span>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <header class="topbar">
+      <div class="topbar__lead">
+        <div class="topbar__titles">
+          <p class="crumbs"><span>EU-West</span><span aria-hidden="true">/</span><span>Relay platform</span></p>
+          <h1>Operations control room</h1>
+        </div>
+      </div>
+
+      <div class="topbar__meta">
+        <p class="health" id="healthPill">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="health__label">Checking…</span>
+        </p>
+        <p class="clock"><span class="clock__time" id="clockTime">--:--:--</span><span class="clock__zone">UTC</span></p>
+        <button type="button" class="iconbtn" id="themeBtn" aria-pressed="true" title="Switch to light theme">
+          <span class="sr-only">Toggle colour theme</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg>
+        </button>
+        <button type="button" class="iconbtn" id="notifyBtn">
+          <span class="sr-only">Notifications</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="content" id="main" tabindex="-1">
+      <section class="metrics" id="metrics" aria-label="Summary metrics"></section>
+
+      <section class="panel chart" aria-labelledby="chartTitle">
+        <header class="panel__head">
+          <div>
+            <h2 class="panel__title" id="chartTitle">Throughput — last 24 hours</h2>
+            <p class="panel__sub">Ingest events per minute, thousands. Hourly buckets, UTC.</p>
+          </div>
+          <dl class="chart__stats">
+            <div><dt>Peak</dt><dd id="chartPeak">—</dd></div>
+            <div><dt>Mean</dt><dd id="chartMean">—</dd></div>
+            <div><dt>Total</dt><dd id="chartTotal">—</dd></div>
+          </dl>
+        </header>
+        <div class="chart__wrap" id="chartWrap">
+          <div class="chart__tip" id="chartTip" role="status" aria-live="off" hidden></div>
+        </div>
+        <footer class="chart__foot">
+          <p class="legend"><span class="legend__swatch" aria-hidden="true"></span>Ingest rate</p>
+          <p class="chart__hint">Hover or focus a bar for the hourly reading.</p>
+        </footer>
+      </section>
+
+      <div class="workarea">
+        <section class="panel table-panel" aria-labelledby="incidentTitle">
+          <header class="panel__head panel__head--tight">
+            <div>
+              <h2 class="panel__title" id="incidentTitle">Incident queue</h2>
+              <p class="panel__sub" id="resultCount" role="status" aria-live="polite">Loading…</p>
+            </div>
+          </header>
+
+          <div class="toolbar">
+            <div class="field field--search">
+              <svg class="icon field__icon" aria-hidden="true"><use href="#i-search"/></svg>
+              <input type="search" id="searchInput" placeholder="Filter by id, title, service, owner" aria-label="Search incidents" autocomplete="off" />
+            </div>
+            <div class="chips" role="group" aria-label="Filter by severity" id="severityChips"></div>
+            <div class="field">
+              <label class="sr-only" for="statusFilter">Filter by status</label>
+              <select id="statusFilter">
+                <option value="all">All statuses</option>
+                <option value="open">Open</option>
+                <option value="investigating">Investigating</option>
+                <option value="acknowledged">Acknowledged</option>
+                <option value="monitoring">Monitoring</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="sr-only" for="serviceFilter">Filter by service</label>
+              <select id="serviceFilter"></select>
+            </div>
+            <label class="check">
+              <input type="checkbox" id="unassignedOnly" />
+              <span>Unassigned only</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" id="hideResolved" checked />
+              <span>Hide resolved</span>
+            </label>
+            <button type="button" class="btn btn--ghost" id="clearFilters" hidden>Clear filters</button>
+          </div>
+
+          <div class="table-scroll">
+            <table class="grid" id="incidentTable" role="grid" aria-labelledby="incidentTitle" aria-describedby="gridHelp">
+              <caption class="sr-only" id="gridHelp">Incident queue. Use the arrow keys to move between rows and Enter to open an incident in the detail panel.</caption>
+              <thead>
+                <tr>
+                  <th scope="col" role="columnheader" class="col-sev" aria-sort="none"><button type="button" class="sortbtn" data-sort="severity">Sev<span class="sortmark" aria-hidden="true"></span></button></th>
+                  <th scope="col" role="columnheader" class="col-id" aria-sort="none"><button type="button" class="sortbtn" data-sort="id">Incident<span class="sortmark" aria-hidden="true"></span></button></th>
+                  <th scope="col" role="columnheader" class="col-service" aria-sort="none"><button type="button" class="sortbtn" data-sort="service">Service<span class="sortmark" aria-hidden="true"></span></button></th>
+                  <th scope="col" class="col-age num" aria-sort="none"><button type="button" class="sortbtn" data-sort="age">Age<span class="sortmark" aria-hidden="true"></span></button></th>
+                  <th scope="col" class="col-owner" aria-sort="none"><button type="button" class="sortbtn" data-sort="owner">Owner<span class="sortmark" aria-hidden="true"></span></button></th>
+                  <th scope="col" class="col-status" aria-sort="none"><button type="button" class="sortbtn" data-sort="status">Status<span class="sortmark" aria-hidden="true"></span></button></th>
+                </tr>
+              </thead>
+              <tbody id="incidentBody"></tbody>
+            </table>
+          </div>
+
+          <div class="empty" id="emptyState" hidden>
+            <p class="empty__title">No incidents match these filters</p>
+            <p class="empty__body" id="emptyDesc">Try widening the severity range or clearing the search text.</p>
+            <button type="button" class="btn btn--ghost" id="emptyClear">Clear all filters</button>
+          </div>
+
+          <div class="allclear" id="allClear" hidden>
+            <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
+            <p>No open incidents in this window. The queue is clear.</p>
+          </div>
+        </section>
+
+        <aside class="panel detail" id="detailPanel" tabindex="-1" aria-labelledby="detailHeading" aria-live="polite">
+          <h2 class="sr-only" id="detailHeading">Incident detail</h2>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" role="region" aria-live="polite" aria-label="Notifications"></div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
