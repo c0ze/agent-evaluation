@@ -28,7 +28,11 @@ for each one is as Arda identified it.
 | Kimi K3 (`moonshotai/kimi-k3`) | high | opencode on cachyos (OpenRouter) | 22:12:01 (2026-10-11) | 22:25:33 | 13 min 32 s | n/a | n/a | **$3.47** | 13 / 13 | local repository, merged under `runs/kimi-k3` |
 | DeepSeek V4 Pro (`deepseek/deepseek-v4-pro-0813`) | high | opencode on cachyos (OpenRouter) | 22:41:15 | 22:53:30 | 12 min 15 s | n/a | n/a | **$0.43** | 13 / 13 | local repository, merged under `runs/deepseek-v4-pro` |
 | GLM-5.3 (`z-ai/glm-5.3`) | high | opencode on cachyos (OpenRouter) | 22:41:15 | 23:10:28 | 29 min 13 s | n/a | n/a | **$1.49** | 13 / 13 | local repository, merged under `runs/glm-5.3` |
-| Mistral Large 4 (`mistralai/mistral-large-4-0`) | high | opencode on cachyos (OpenRouter) | 22:41:15 | 23:19:13 (re-runs) | 23 min 54 s (16:16 first pass + 7:38 re-runs) | n/a | n/a | **$0.79** | 11 / 13 (12 and 13 produced nothing) | local repository, merged under `runs/mistral-large-4` |
+| Mistral Large 4 (`mistralai/mistral-large-4-0`) | high | opencode on cachyos (OpenRouter) | 22:41:15 | 23:19:13 (re-runs) | 23 min 54 s (16:16 first pass + 7:38 re-runs) | n/a | n/a | **$1.23** | 13 / 13 (12 and 13 at reduced effort, see below) | local repository, merged under `runs/mistral-large-4` |
+| Qwen 3.8 Max (`qwen/qwen3.8-max-0902`) | high (13 at medium) | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 08:48:04 | ~158 session-minutes (interrupted batch) | n/a | n/a | **$5.44** | 13 / 13 | local repository, merged under `runs/qwen3.8-max` |
+| Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`) | high | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 00:10:58 | 7 min 34 s | n/a | n/a | **$0.76** | 13 / 13 | local repository, merged under `runs/nemotron-3-ultra` |
+| Step-5 preview (`stepfun/step-5-preview`) | high | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 07:41 (task 12 re-run) | ~69 session-minutes (interrupted batch) | n/a | n/a | **$2.21** | 13 / 13 | local repository, merged under `runs/step-5-preview` |
+| HY4 preview (`tencent/hy4-preview`) | high | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 08:00:46 | ~113 session-minutes (interrupted batch) | n/a | n/a | **$1.57** | 13 / 13 | local repository, merged under `runs/hy4-preview` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -321,9 +325,53 @@ title-model calls, Mistral's two cut-off first attempts and the orchestrator's s
 reasoning plus 4–5k writing, and hit opencode's fixed 32,000-token cap per response (finish reason
 `length`). opencode then ended the session before any file was written. As with the other harness-ended
 attempts, both were re-run once, from untouched template copies, with the identical command. Both re-runs
-hit the same cap the same way, so the results stand: the two task directories hold only the original inputs.
+hit the same cap the same way. Later, at the user's request, the two tasks were re-run at reduced reasoning effort:
+task 12 at medium (completed), and task 13 at medium (capped again) then low (completed). The graded submissions are
+those reduced-effort runs, and the graders were told so in a process note.
 Task 13's first re-run attempt failed to start (opencode errored creating its local database, before any
 model call) and was retried automatically. The cut-off attempts are kept as `*.attempt1.*` in the run logs.
 
 **Objective-check note:** Kimi's and Mistral's task-04 suites import `packaging`, so their own task-04
 results were taken in the scratch venv with it, as for the Gemini models.
+
+## OpenRouter batch 3: Qwen 3.8 Max, Nemotron 3 Ultra, Step-5 preview, HY4 preview (2026-10-12)
+
+Same harness and protocol as the earlier OpenRouter runs: opencode, one fresh session and empty HOME per task,
+reasoning variant **high**, and permission rules plus a transcript audit instead of an OS sandbox. Step-5
+preview isn't in opencode's catalog, so it was registered in the run config, like Mistral Large 4. Nemotron
+used OpenRouter's paid endpoint, not the rate-limited `:free` one. All four started together at 00:03:24 JST.
+
+The batch didn't run cleanly. These interruptions had nothing to do with the models:
+
+1. **/tmp filled up (00:15).** opencode installs its plugin SDK with npm into every fresh HOME (about 160 MB
+   each). With 16 sessions at once plus the earlier runs' leftover HOMEs, the 16 GB tmpfs ran out. Sessions
+   running or starting then failed with opencode database and write errors. Nemotron had already finished.
+   The batch was stopped, space freed, and the 21 affected tasks were reset to the template and re-run with
+   the identical command, four at a time. Their logs are kept as `*.diskfull.*`. The re-run script now deletes
+   each HOME's npm cache once its task ends.
+2. **Credit ran out (about 00:53).** Qwen 3.8 Max's frontend tasks were far more expensive than estimated (up
+   to $1.68 each, running 20–44 min). The budget guard (no new task below $3 of credit) held HY4's eight
+   remaining tasks. Two running sessions, Qwen 13 and Step-5 12, were cut off by OpenRouter's credit check
+   (HTTP 402). After the user topped up $10, those two were reset and re-run (`*.credit402.*`) and HY4's
+   eight ran.
+3. **Qwen 3.8 Max, task 13** then hit opencode's 32,000-token per-response cap: all 32k tokens went to
+   reasoning, with no output. It hit it again on its one identical re-run. At the user's request it was
+   re-run at reasoning effort medium, which completed. The graders were told so in a process note.
+
+| Model | Session time (sum) | Input | Cache-read input | Output | Reasoning | Tool calls | Cost (graded sessions) |
+|---|---|---|---|---|---|---|---|
+| Qwen 3.8 Max | 158 min | 618,102 | 7,893,504 | 160,172 | 212,311 | 315 | $5.44 |
+| Nemotron 3 Ultra | 27 min (7 min 34 s wall) | 525,229 | 1,655,040 | 93,155 | 11,402 | 154 | $0.76 |
+| Step-5 preview | 69 min | 939,358 | 8,890,368 | 161,247 | 145,456 | 322 | $2.21 |
+| HY4 preview | 113 min | 634,518 | 9,179,968 | 174,790 | 137,373 | 312 | $1.57 |
+
+Session time is the sum of each task's session lengths, because the interruptions make wall-clock time
+meaningless here. The account spent $14.75 on the whole batch, from $10.92 plus the $10 top-up down to $6.17.
+That includes the sessions lost to the full disk and the credit cutoff, Mistral's reduced-effort re-runs
+and smoke tests.
+
+**Process notes:**
+- Nemotron 3 Ultra tried `pip install ruff` and `pip install -e .` in task 04. The permission rules blocked
+  both, and the graders saw a process note.
+- The other models' denied calls were attempts to create, read or clean up scratch files (screenshots, test
+  copies, a Firefox profile) outside the repository. None tried to use the network.

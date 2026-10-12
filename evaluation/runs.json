@@ -173,10 +173,50 @@
   "label": "Mistral Large 4",
   "model": "mistralai/mistral-large-4-0 (OpenRouter)",
   "where": "opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11",
+  "effort": "high (reasoning effort, registered in the opencode config); task 12 at medium, task 13 at low",
+  "duration": "~24 min plus reduced-effort re-runs of 12 and 13",
+  "cost": "$1.23 for the graded sessions (OpenRouter)",
+  "usage": "1.13M input + 1.47M cache-read input, 98k output + 74k reasoning tokens; 183 tool calls",
+  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. Tasks 12 and 13 produced nothing at high, twice each (one response's reasoning hit opencode's 32k per-response cap). At the user's request they were re-run at reduced effort: 12 at medium, and 13 at low after medium also hit the cap. Graders were told."
+ },
+ "qwen3.8-max": {
+  "label": "Qwen 3.8 Max",
+  "model": "qwen/qwen3.8-max-0902 (OpenRouter)",
+  "where": "opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12",
+  "effort": "high (opencode variant); task 13 at medium",
+  "duration": "~158 session-minutes (interrupted batch; frontend tasks up to 30 min)",
+  "cost": "$5.44 (OpenRouter)",
+  "usage": "618k input + 7.89M cache-read input, 160k output + 212k reasoning tokens; 315 tool calls",
+  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. The batch was interrupted when /tmp filled up (opencode's per-HOME npm caches) and again when OpenRouter credit ran out; affected tasks were re-run from the template with the identical command. Task 13 produced nothing twice at high (one response's reasoning hit opencode's 32k per-response cap) and was re-run at medium at the user's request; graders were told."
+ },
+ "nemotron-3-ultra": {
+  "label": "Nemotron 3 Ultra",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b (OpenRouter, paid endpoint)",
+  "where": "opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12",
+  "effort": "high (opencode variant)",
+  "duration": "~8 min",
+  "cost": "$0.76 (OpenRouter)",
+  "usage": "525k input + 1.66M cache-read input, 93k output + 11k reasoning tokens; 154 tool calls",
+  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. Finished before the batch was interrupted. In task 04 it tried 'pip install' twice; both were blocked (graders were told)."
+ },
+ "step-5-preview": {
+  "label": "Step-5 preview",
+  "model": "stepfun/step-5-preview (OpenRouter)",
+  "where": "opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12",
   "effort": "high (reasoning effort, registered in the opencode config)",
-  "duration": "~24 min (16 min first pass + 8 min re-runs of 12 and 13)",
-  "cost": "$0.79 for the graded sessions (OpenRouter)",
-  "usage": "544k input + 0.91M cache-read input, 76k output + 95k reasoning tokens; 142 tool calls",
-  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands (curl, wget, pip/npm install, npx, git clone, ssh) were denied by opencode permission rules, and the transcripts were audited (no network use). Tasks 12 and 13 produced nothing: each response ran into opencode's 32,000-token per-response cap during reasoning and opencode ended the session; re-run once each with the identical command, with the same result."
+  "duration": "~69 session-minutes (interrupted batch)",
+  "cost": "$2.21 (OpenRouter)",
+  "usage": "939k input + 8.89M cache-read input, 161k output + 145k reasoning tokens; 322 tool calls",
+  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. The batch was interrupted when /tmp filled up (opencode's per-HOME npm caches) and again when OpenRouter credit ran out; affected tasks were re-run from the template with the identical command."
+ },
+ "hy4-preview": {
+  "label": "HY4 preview",
+  "model": "tencent/hy4-preview (OpenRouter)",
+  "where": "opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12",
+  "effort": "high (opencode variant)",
+  "duration": "~113 session-minutes (interrupted batch)",
+  "cost": "$1.57 (OpenRouter)",
+  "usage": "635k input + 9.18M cache-read input, 175k output + 137k reasoning tokens; 312 tool calls",
+  "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. The batch was interrupted when /tmp filled up (opencode's per-HOME npm caches) and again when OpenRouter credit ran out; affected tasks were re-run from the template with the identical command. Eight tasks waited for a credit top-up (held by the budget guard)."
  }
 }
