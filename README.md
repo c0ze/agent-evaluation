@@ -1,8 +1,8 @@
-# Agent evaluation: 22 models, 13 tasks
+# Agent evaluation: 22 models (23 entries), 13 tasks
 
 **Results site: https://c0ze.github.io/agent-evaluation/**
 
-Twenty-two coding agents (model plus harness) each got the same thirteen self-contained
+Twenty-two models as twenty-three coding agents (model plus harness; HY4 preview ran in two harnesses) each got the same thirteen self-contained
 tasks. The tasks cover feature building, bug fixing, infrastructure, project
 maintenance, technical writing, product planning, creative writing, social media,
 incident analysis, general operations and three frontend builds in different visual
@@ -11,34 +11,36 @@ styles. Each output was graded blind against one rubric. The runs took place fro
 
 | Model | Harness | Effort | Avg / task |
 |---|---|---|---|
-| Opus 5.5 | Claude Code (cloud) | high | 9.38 |
-| Sonnet 5.5 | Claude Code (cloud) | extra | 9.37 |
-| Fable 5.1 | Claude Code (cloud) | extra | 9.33 |
-| Grok 4.7 (12 tasks) | Grok CLI | xhigh | 8.92 |
-| Haiku 5.5 | Claude Code CLI (headless) | xhigh | 8.69 |
-| GPT-6.1 Sol | Codex CLI | xhigh | 8.69 |
-| GPT-6 Astra | Codex CLI | xhigh | 8.69 |
-| Qwen 3.8 Max | opencode (OpenRouter) | high* | 8.35 |
-| HY4 preview | opencode (OpenRouter) | high | 8.27 |
-| Step-5 preview | opencode (OpenRouter) | high | 7.96 |
-| GLM-5.3 | opencode (OpenRouter) | high | 7.81 |
-| muse | tincan | max | 7.79 |
-| MiniMax M3.1 Flash | mcode | xhigh | 7.73 |
-| mimo | tincan | default | 7.58 |
-| GPT-6 Luna | Codex CLI | max | 7.58 |
-| Kimi K3 | opencode (OpenRouter) | high | 7.37 |
-| DeepSeek V4 Pro | opencode (OpenRouter) | high | 6.58 |
-| Mistral Large 4 | opencode (OpenRouter) | high* | 6.42 |
-| Gemini 3.8 Flash | Antigravity CLI (headless) | high | 6.37 |
-| MiniMax M3 | mcode | default | 6.31 |
-| Gemini 3.1 Pro | Antigravity CLI (headless) | high | 6.31 |
-| Nemotron 3 Ultra | opencode (OpenRouter) | high | 5.06 |
+| Sonnet 5.5 | Claude Code (cloud) | extra | 9.44 |
+| Fable 5.1 | Claude Code (cloud) | extra | 9.31 |
+| Opus 5.5 | Claude Code (cloud) | high | 9.23 |
+| Haiku 5.5 | Claude Code CLI (headless) | xhigh | 8.77 |
+| GPT-6 Astra | Codex CLI | xhigh | 8.71 |
+| Grok 4.7 (12 tasks) | Grok CLI | xhigh | 8.67 |
+| GPT-6.1 Sol | Codex CLI | xhigh | 8.65 |
+| Qwen 3.8 Max | opencode (OpenRouter) | high* | 8.19 |
+| HY4 preview | CodeBuddy (Tencent) | high | 8.04 |
+| HY4 preview | opencode (OpenRouter) | high | 7.85 |
+| MiniMax M3.1 Flash | mcode | xhigh | 7.65 |
+| Step-5 preview | opencode (OpenRouter) | high | 7.62 |
+| GLM-5.3 | opencode (OpenRouter) | high | 7.60 |
+| muse | tincan | max | 7.56 |
+| GPT-6 Luna | Codex CLI | max | 7.35 |
+| mimo | tincan | default | 7.33 |
+| Kimi K3 | opencode (OpenRouter) | high | 7.33 |
+| Mistral Large 4 | opencode (OpenRouter) | high* | 6.40 |
+| DeepSeek V4 Pro | opencode (OpenRouter) | high | 6.21 |
+| Gemini 3.8 Flash | Antigravity CLI (headless) | high | 6.13 |
+| MiniMax M3 | mcode | default | 6.08 |
+| Gemini 3.1 Pro | Antigravity CLI (headless) | high | 5.88 |
+| Nemotron 3 Ultra | opencode (OpenRouter) | high | 4.87 |
 
 \* Qwen 3.8 Max's task 13 and Mistral Large 4's tasks 12–13 ran at reduced reasoning effort after their high-effort
-attempts hit opencode's per-response output cap without writing anything.
+attempts hit opencode's per-response output cap without writing anything. Averages move by up to about ±0.4 between
+grading passes, so only tier-level differences are reliable (see the report).
 
-These scores come from the twenty-two-way blind pass of 2026-10-12, after Qwen 3.8 Max,
-Nemotron 3 Ultra, Step-5 preview and HY4 preview were added through OpenRouter. The full write-up, covering what was observed, what was inferred, per-work-type
+These scores come from the twenty-three-way blind pass of 2026-10-12, after HY4 preview was
+also run through Tencent's own CodeBuddy CLI. The full write-up, covering what was observed, what was inferred, per-work-type
 recommendations and caveats, is in [`evaluation/REPORT.md`](evaluation/REPORT.md). Time, cost and token
 usage per run are in [`evaluation/RUN_METRICS.md`](evaluation/RUN_METRICS.md).
 
@@ -56,7 +58,7 @@ usage per run are in [`evaluation/RUN_METRICS.md`](evaluation/RUN_METRICS.md).
   scored blind against [`evaluation/RUBRIC.md`](evaluation/RUBRIC.md): each task got
   random letters, and names, paths and model IDs were stripped (see
   [`evaluation/tools/blind.py`](evaluation/tools/blind.py)). The blind pass was
-  re-run each time a model was added (4-way through 22-way), and every pass is kept
+  re-run each time a model was added (4-way through 23-way), and every pass is kept
   in `evaluation/scores-*.json`.
 
 ## Layout
@@ -82,7 +84,7 @@ unfolded, follow the merge's second parent:
 git log "$(git log --format=%H -1 -- runs/<model>)^2"
 ```
 
-Haiku 5.5, the Gemini models and the four OpenRouter models ran locally rather than from GitHub repositories:
+Haiku 5.5, the Gemini models, the OpenRouter models and HY4 via CodeBuddy ran locally rather than from GitHub repositories:
 each run repository (fresh from the templates, outside the home directory) is merged into
 `runs/<model>/` the same way.
 

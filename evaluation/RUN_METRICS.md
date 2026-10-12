@@ -33,6 +33,7 @@ for each one is as Arda identified it.
 | Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`) | high | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 00:10:58 | 7 min 34 s | n/a | n/a | **$0.76** | 13 / 13 | local repository, merged under `runs/nemotron-3-ultra` |
 | Step-5 preview (`stepfun/step-5-preview`) | high | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 07:41 (task 12 re-run) | ~69 session-minutes (interrupted batch) | n/a | n/a | **$2.21** | 13 / 13 | local repository, merged under `runs/step-5-preview` |
 | HY4 preview (`tencent/hy4-preview`) | high | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 08:00:46 | ~113 session-minutes (interrupted batch) | n/a | n/a | **$1.57** | 13 / 13 | local repository, merged under `runs/hy4-preview` |
+| HY4 preview via CodeBuddy (`hy4-preview`) | high | Tencent CodeBuddy Code on cachyos (user's plan) | 16:58:34 (2026-10-12) | 21:43:36 (re-runs after the rate-limit reset) | ~23 min + 12 min re-runs | n/a | n/a | $0 reported (plan usage) | 13 / 13 | local repository, merged under `runs/hy4-preview-codebuddy` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -375,3 +376,30 @@ and smoke tests.
   both, and the graders saw a process note.
 - The other models' denied calls were attempts to create, read or clean up scratch files (screenshots, test
   copies, a Firefox profile) outside the repository. None tried to use the network.
+
+## HY4 preview through Tencent CodeBuddy Code (2026-10-12)
+
+HY4 preview also ran in its vendor's own CLI, CodeBuddy Code 2.164.0, headless (`codebuddy -p`), on the user's
+CodeBuddy account. This is for comparison with the OpenRouter/opencode run of the same model, so it's
+listed as a separate entry. One session per task with the same instruction, four at a time, effort `high`.
+Scripts, timing, event logs and tokens are in `run-logs/codebuddy-orchestration/`.
+
+- **Isolation:** a fresh repository outside the home directory. CodeBuddy's sign-in only works with the
+  user's real HOME (a clean HOME, even with the auth folders linked, failed with "Authentication
+  required"). So HOME stayed real and the rest was turned off: user settings (plugins, hooks), MCP servers,
+  session persistence and auto-memory. A smoke test reported no instruction files, memories, plugins or
+  MCP tools, only one built-in skill. CodeBuddy created a per-session tool-output cache under
+  `~/.codebuddy/projects/` but no memory files.
+- **No sandbox:** CodeBuddy ignores Claude Code's sandbox settings (network and outside writes stayed
+  open in testing), and its own `--sandbox container` needs Docker, which isn't available here.
+  Permission rules denied `curl`, `wget`, `pip`/`npm install`, `npx`, `uv pip`/`uv add`, `git clone`, `ssh`
+  and the web tools; tested, they also catch these inside compound commands. The transcript audit found
+  no network attempts. Tasks 05, 11 and 13 wrote scratch test files under `/tmp`.
+- **Rate limit:** at 17:21:31 the two still-running sessions, tasks 11 and 13, were stopped by the plan's
+  limit ("429 usage exceeds frequency limit … reset at 2026-10-12 20:29:30 UTC+8"). Both were reset to the
+  template and re-run with the identical command after the reset. The cut-off attempts are kept as
+  `*.quota429.*`.
+
+| Tasks | Session time (sum) | Input (incl. cache reads) | Cache reads | Output | Turns | Cost |
+|---|---|---|---|---|---|---|
+| 13 / 13 | 66 min | 10,089,458 | 9,410,432 | 231,461 | 724 | $0 reported |

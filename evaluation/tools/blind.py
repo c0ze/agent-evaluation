@@ -11,7 +11,7 @@ fe = json.loads((ROOT / "evaluation/frontend-checks.json").read_text())
 notes_file = ROOT / "evaluation/blind-notes.json"
 NOTES = json.loads(notes_file.read_text()) if notes_file.exists() else {}
 PATH_RE = re.compile(r"/(home/user|home/arda|Users/arda/projects(/agent-eval-runs)?|tmp/claude-[0-9]+/[^/\s]+/[^/\s]+/scratchpad)/agent-eval[a-z0-9.\-]*(-2026-09-23)?(/(" + "|".join(map(re.escape, MODELS)) + r"))?")
-ID_RE = re.compile(r"(?i)\b(gpt-[0-9][0-9a-z.\-]*|grok[ -]?[0-9][0-9a-z.\-]*(?:-build)?|claude-[a-z0-9.\-]+|(?:claude )?(?:sonnet|opus|fable|haiku) [0-9.]+|muse[- ]spark[0-9a-z.\-]*|muse code|meta muse spark|xiaomi/mimo[0-9a-z.\-]*|mimo-v[0-9a-z.\-]*|(?:minimax/)?minimax[- ]?m[0-9][0-9a-z.\-]*|minimax code|mcode|gemini[- ]?[0-9][0-9a-z.\-]*(?: (?:pro|flash))?(?: \(high\))?|antigravity(?:[- ]cli)?|agy|(?:moonshotai/)?kimi[- ]?k?[0-9][0-9a-z.\-]*|moonshot(?:ai)?|(?:deepseek/)?deepseek[- ]?v[0-9][0-9a-z.\-]*|deepseek|(?:z-ai/)?glm[- ]?[0-9][0-9a-z.\-]*|z\.ai|(?:mistralai/)?mistral(?:[- ](?:large|medium|small))?(?:[- ]?[0-9][0-9a-z.\-]*)?|opencode|openrouter|(?:qwen/)?qwen[- ]?[0-9][0-9a-z.\-]*(?:[- ]max)?|qwen|(?:nvidia/)?nemotron(?:[- ][0-9][0-9a-z.\-]*)?(?:[- ]ultra)?|nvidia|stepfun(?:/step-5-preview)?|step[- ]?5(?:[- ]preview)?|(?:tencent/)?hy4(?:-preview)?|hunyuan|tencent)\b")
+ID_RE = re.compile(r"(?i)\b(gpt-[0-9][0-9a-z.\-]*|grok[ -]?[0-9][0-9a-z.\-]*(?:-build)?|claude-[a-z0-9.\-]+|(?:claude )?(?:sonnet|opus|fable|haiku) [0-9.]+|muse[- ]spark[0-9a-z.\-]*|muse code|meta muse spark|xiaomi/mimo[0-9a-z.\-]*|mimo-v[0-9a-z.\-]*|(?:minimax/)?minimax[- ]?m[0-9][0-9a-z.\-]*|minimax code|mcode|gemini[- ]?[0-9][0-9a-z.\-]*(?: (?:pro|flash))?(?: \(high\))?|antigravity(?:[- ]cli)?|agy|(?:moonshotai/)?kimi[- ]?k?[0-9][0-9a-z.\-]*|moonshot(?:ai)?|(?:deepseek/)?deepseek[- ]?v[0-9][0-9a-z.\-]*|deepseek|(?:z-ai/)?glm[- ]?[0-9][0-9a-z.\-]*|z\.ai|(?:mistralai/)?mistral(?:[- ](?:large|medium|small))?(?:[- ]?[0-9][0-9a-z.\-]*)?|opencode|openrouter|(?:qwen/)?qwen[- ]?[0-9][0-9a-z.\-]*(?:[- ]max)?|qwen|(?:nvidia/)?nemotron(?:[- ][0-9][0-9a-z.\-]*)?(?:[- ]ultra)?|nvidia|stepfun(?:/step-5-preview)?|step[- ]?5(?:[- ]preview)?|(?:tencent/)?hy4(?:-preview)?|hunyuan|tencent|codebuddy(?:[- ]code)?|cbc)\b")
 HIDDEN_FAILS = {}
 def hidden_failures(m):
     import subprocess
@@ -19,7 +19,7 @@ def hidden_failures(m):
     out = {}
     for name, cls in re.findall(r"^(?:FAIL|ERROR): (\S+) \(__main__\.(\w+)\.", r.stderr, flags=re.M): out.setdefault(cls, []).append(name)
     return out
-rng = random.Random(SEED); key = {}; letters_all = "ABCDEFGHIJKLMNOPQRSTUV"
+rng = random.Random(SEED); key = {}; letters_all = "ABCDEFGHIJKLMNOPQRSTUVW"
 for task in sorted(p.name for p in (ROOT / "_templates").iterdir()):
     order = [m for m in MODELS if (ROOT / m / task).is_dir()]; rng.shuffle(order); letters = dict(zip(order, letters_all)); key[task] = {l: m for m, l in letters.items()}
     out = OUT / task; out.mkdir(parents=True)

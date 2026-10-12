@@ -218,5 +218,15 @@
   "cost": "$1.57 (OpenRouter)",
   "usage": "635k input + 9.18M cache-read input, 175k output + 137k reasoning tokens; 312 tool calls",
   "notes": "One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. The batch was interrupted when /tmp filled up (opencode's per-HOME npm caches) and again when OpenRouter credit ran out; affected tasks were re-run from the template with the identical command. Eight tasks waited for a credit top-up (held by the budget guard)."
+ },
+ "hy4-preview-codebuddy": {
+  "label": "HY4 preview (CodeBuddy)",
+  "model": "hy4-preview (Tencent CodeBuddy)",
+  "where": "Tencent CodeBuddy Code 2.164.0 (headless) on cachyos, user's CodeBuddy account, 2026-10-12",
+  "effort": "high",
+  "duration": "~23 min first pass + 12 min re-run of tasks 11 and 13",
+  "cost": "$0 reported (CodeBuddy plan usage)",
+  "usage": "10.09M input (of which 9.41M cache reads), 231k output tokens; 724 turns",
+  "notes": "Same model as 'HY4 preview' (OpenRouter/opencode), run in its vendor's own CLI for comparison. One codebuddy -p per task, four at a time, in a fresh repository outside the home directory; the sign-in is tied to the real HOME, so user settings, MCP, session persistence and auto-memory were turned off instead. Permission rules denied network commands and web tools (CodeBuddy ignores sandbox settings), and the transcripts were audited. Tasks 11 and 13 were cut off by the plan's rate limit (429) and re-run from the template after it reset."
  }
 }
