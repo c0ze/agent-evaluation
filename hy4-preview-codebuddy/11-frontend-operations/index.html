@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay — Operations control room</title>
+<meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="app">
+
+  <nav class="rail" aria-label="Primary">
+    <div class="rail__brand">
+      <span class="rail__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M4 12h4l2-5 3 10 2-5h5"/>
+        </svg>
+      </span>
+      <span class="rail__wordmark">Relay</span>
+    </div>
+
+    <ul class="rail__nav">
+      <li>
+        <a class="rail__link is-active" href="#main" aria-current="page">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
+          <span class="rail__label">Overview</span>
+        </a>
+      </li>
+      <li>
+        <a class="rail__link" href="#incidents">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5"/><circle cx="12" cy="16.5" r="1"/><path d="M10.3 4.3 2.7 17.6A2 2 0 0 0 4.4 20.6h15.2a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z"/></svg>
+          <span class="rail__label">Incidents</span>
+          <span class="rail__count" id="rail-open-count" aria-hidden="true">4</span>
+        </a>
+      </li>
+      <li>
+        <a class="rail__link" href="#throughput">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"/><path d="M9.5 20V4"/><path d="M15 20v-8"/><path d="M20.5 20V7"/></svg>
+          <span class="rail__label">Throughput</span>
+        </a>
+      </li>
+      <li>
+        <a class="rail__link" href="#incidents">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8.5h8"/><path d="M8 12.5h8"/><path d="M8 16.5h5"/></svg>
+          <span class="rail__label">Runbooks</span>
+        </a>
+      </li>
+      <li>
+        <a class="rail__link" href="#incidents">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>
+          <span class="rail__label">On-call</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="rail__foot">
+      <p class="rail__foot-title">On-call now</p>
+      <p class="rail__foot-name">A. Novak</p>
+      <p class="rail__foot-meta">Primary · until 18:00 UTC</p>
+    </div>
+  </nav>
+
+  <header class="topbar">
+    <div class="topbar__id">
+      <p class="topbar__crumb">Operations / Control room</p>
+      <h1 class="topbar__title">Control room</h1>
+    </div>
+
+    <div class="topbar__status">
+      <span class="status-pill" id="system-pill">
+        <span class="status-pill__dot" aria-hidden="true"></span>
+        <span class="status-pill__text" id="system-pill-text">Evaluating</span>
+      </span>
+      <span class="topbar__clock" id="clock">--:-- UTC</span>
+    </div>
+
+    <div class="topbar__actions">
+      <div class="field field--search">
+        <label class="sr-only" for="search">Search incidents</label>
+        <svg class="field__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <input id="search" type="search" placeholder="Search incidents" autocomplete="off" spellcheck="false">
+        <kbd class="kbd" aria-hidden="true">/</kbd>
+      </div>
+
+      <label class="sr-only" for="range">Time range</label>
+      <select id="range" class="select select--compact">
+        <option>Last 24 h</option>
+        <option>Last 6 h</option>
+        <option>Last 7 d</option>
+      </select>
+
+      <span class="avatar" title="A. Novak — primary on-call" aria-hidden="true">AN</span>
+    </div>
+  </header>
+
+  <main id="main" class="main">
+
+    <section class="metrics" aria-labelledby="metrics-heading">
+      <h2 class="sr-only" id="metrics-heading">Summary metrics</h2>
+      <div class="metrics__grid" id="metrics"></div>
+    </section>
+
+    <section class="panel" id="throughput" aria-labelledby="thr-heading">
+      <header class="panel__head">
+        <div>
+          <h2 class="panel__title" id="thr-heading">Throughput · 24 hours</h2>
+          <p class="panel__sub">Events per minute, bucketed hourly · us-east-1</p>
+        </div>
+        <div class="panel__head-meta" id="chart-legend"></div>
+      </header>
+      <div class="chart" id="chart-wrap">
+        <div class="chart__canvas" id="chart"></div>
+        <div class="chart__tip" id="chart-tip" role="presentation" hidden></div>
+      </div>
+    </section>
+
+    <section class="incidents" id="incidents" aria-labelledby="inc-heading">
+      <div class="panel panel--table">
+        <header class="panel__head panel__head--stack">
+          <div>
+            <h2 class="panel__title" id="inc-heading">Incidents</h2>
+            <p class="panel__sub">
+              <span id="result-count" aria-live="polite">4 open</span>
+              <span class="panel__sub-sep" aria-hidden="true">·</span>
+              <span class="hint">↑↓ move · Enter open · A acknowledge</span>
+            </p>
+          </div>
+
+          <div class="filters" role="group" aria-label="Filter incidents">
+            <label class="sr-only" for="f-severity">Severity</label>
+            <select id="f-severity" class="select">
+              <option value="all">All severities</option>
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+
+            <label class="sr-only" for="f-service">Service</label>
+            <select id="f-service" class="select"><option value="all">All services</option></select>
+
+            <label class="sr-only" for="f-status">Status</label>
+            <select id="f-status" class="select">
+              <option value="all">All statuses</option>
+              <option value="open">Open</option>
+              <option value="investigating">Investigating</option>
+              <option value="monitoring">Monitoring</option>
+              <option value="acknowledged">Acknowledged</option>
+            </select>
+
+            <button id="f-unassigned" class="chip" type="button" aria-pressed="false">Unassigned only</button>
+            <button id="f-clear" class="btn btn--ghost" type="button">Clear</button>
+          </div>
+        </header>
+
+        <div class="table-wrap">
+          <table class="table" id="incident-table" role="grid" aria-labelledby="inc-heading" aria-describedby="result-count">
+            <thead>
+              <tr>
+                <th scope="col" class="col-sev">
+                  <button class="th-sort" type="button" data-sort="severity">Severity</button>
+                </th>
+                <th scope="col" class="col-id">ID</th>
+                <th scope="col">Incident</th>
+                <th scope="col" class="col-age num">
+                  <button class="th-sort" type="button" data-sort="age">Age</button>
+                </th>
+                <th scope="col" class="col-owner">Owner</th>
+                <th scope="col" class="col-status">Status</th>
+                <th scope="col" class="col-act"><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="incident-body"></tbody>
+          </table>
+          <div class="empty" id="table-empty" hidden>
+            <p class="empty__title">No incidents match these filters</p>
+            <p class="empty__body">Widen the severity or status filter, or clear the search term.</p>
+            <button class="btn" type="button" data-clear-filters>Clear all filters</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel panel--detail" id="detail" tabindex="-1" aria-labelledby="detail-heading">
+        <h2 class="sr-only" id="detail-heading">Incident detail</h2>
+        <div id="detail-body"></div>
+      </aside>
+    </section>
+  </main>
+</div>
+
+<div class="toast-region" id="toast-region" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
