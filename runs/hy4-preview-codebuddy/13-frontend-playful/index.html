@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#faf4e8">
+<title>Moss · today's care</title>
+<meta name="description" content="Moss — a gentle household plant-care companion. Today's care queue, plant notes, and a weekly rhythm.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skiplink" href="#queueGroups">Skip to today's care</a>
+
+<div class="app">
+
+  <header class="masthead">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" role="presentation" focusable="false">
+          <path class="mark-blob" d="M32 3c17 0 29 11 29 26 0 18-13 32-29 32S3 47 3 29C3 14 15 3 32 3Z"/>
+          <path class="mark-leaf" d="M32 47c-11-2-17-10-16-21 11 0 18 6 19 15 1-9 8-15 19-15 1 11-5 19-16 21-3 4-3 4-6 0Z"/>
+          <path class="mark-vein" d="M32 47V27"/>
+        </svg>
+      </span>
+      <span class="brand__text">
+        <span class="brand__name">Moss</span>
+        <span class="brand__tag">a gentle household companion</span>
+      </span>
+    </div>
+
+    <p class="chip chip--date" id="dateChip">Today</p>
+    <p class="chip chip--count" id="countChip">Loading…</p>
+  </header>
+
+  <main class="layout">
+
+    <section class="queue-col" aria-labelledby="queueTitle">
+      <div class="queue-head">
+        <h2 class="queue-head__title" id="queueTitle">Today's care</h2>
+        <p class="queue-head__note" id="queueNote">Four plants, one small round.</p>
+      </div>
+
+      <div id="queueGroups" class="queue-groups" tabindex="-1"></div>
+
+      <section class="alldone" id="alldone" hidden aria-labelledby="alldoneTitle">
+        <div class="alldone__art" aria-hidden="true">
+          <svg viewBox="0 0 220 150" role="presentation" focusable="false">
+            <path class="ad-sun" d="M46 42a18 18 0 1 0 0 .1Z"/>
+            <g class="ad-rays">
+              <path d="M46 12v10"/><path d="M46 62V72"/><path d="M16 42h10"/><path d="M66 42h10"/>
+              <path d="M25 21l7 7"/><path d="M60 56l7 7"/><path d="M67 21l-7 7"/><path d="M32 56l-7 7"/>
+            </g>
+            <path class="ad-pot" d="M112 96h58l-7 40a7 7 0 0 1-7 6h-30a7 7 0 0 1-7-6Z"/>
+            <rect class="ad-rim" x="106" y="88" width="70" height="13" rx="6"/>
+            <path class="ad-stem" d="M141 90c0-16 2-26 6-34"/>
+            <path class="ad-leaf ad-leaf--l" d="M147 62c-14 0-22 6-22 15 0 8 9 13 21 12-3-9-3-18 1-27Z"/>
+            <path class="ad-leaf ad-leaf--r" d="M147 74c14-2 23 3 24 12 1 8-8 14-20 14 2-9 2-17-4-26Z"/>
+            <circle class="ad-spark" cx="92" cy="120" r="3"/>
+            <circle class="ad-spark" cx="178" cy="112" r="4"/>
+            <circle class="ad-spark" cx="196" cy="132" r="2.5"/>
+          </svg>
+        </div>
+        <h2 class="alldone__title" id="alldoneTitle">Everything's tended.</h2>
+        <p class="alldone__copy">The shelf is quiet. Moss will nudge you again when someone is thirsty — probably Dot, eventually, in about a month.</p>
+        <div class="alldone__actions">
+          <button class="act act--ghost" type="button" id="alldoneUndo" hidden>Undo last</button>
+          <button class="act act--ghost" type="button" id="alldonePeek">Peek at tomorrow</button>
+        </div>
+      </section>
+    </section>
+
+    <aside class="detail" id="detail" tabindex="-1" aria-labelledby="detailTitle">
+      <button class="detail__close" type="button" id="detailClose">
+        <span aria-hidden="true">×</span><span class="sr-only">Close plant detail</span>
+      </button>
+      <div class="detail__body" id="detailBody"></div>
+    </aside>
+
+    <section class="rhythm-col" aria-labelledby="rhythmTitle">
+      <div class="rhythm-card">
+        <h2 class="rhythm__title" id="rhythmTitle">Weekly rhythm</h2>
+        <p class="rhythm__sub" id="rhythmSub">How the week tends to feel.</p>
+        <div class="rhythm" id="rhythm"></div>
+        <div class="tally" id="tally"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <p>Moss keeps notes, never nags. Care times are guesses from your own history.</p>
+  </footer>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<p class="sr-only" role="status" aria-live="polite" id="live"></p>
+
+<script src="app.js"></script>
+</body>
+</html>
