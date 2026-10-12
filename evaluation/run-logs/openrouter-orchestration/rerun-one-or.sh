@@ -7,7 +7,7 @@
 # OpenRouter credit left would drop below $MARGIN.
 OC=/home/arda/.local/share/mise/installs/opencode/1.18.30/opencode
 O=$(cd "$(dirname "$0")" && pwd)
-TAG=${1:?tag} MODEL=openrouter/${2:?model} REPO=${3:?repo} EXTRA=${4:-} VARIANT=high MARGIN=${MARGIN:-3}
+TAG=${1:?tag} MODEL=openrouter/${2:?model} REPO=${3:?repo} EXTRA=${4:-} VARIANT=${VARIANT:-high} MARGIN=${MARGIN:-3}
 : "${OPENROUTER_API_KEY:?}"
 mkdir -p $O/$TAG/replies $O/$TAG/homes
 
