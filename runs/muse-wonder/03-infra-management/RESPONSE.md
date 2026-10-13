@@ -1,0 +1,19 @@
+# Response — highest-risk original problems and verification
+
+## Highest-risk problems in the original files
+
+1. **Live credentials committed in `compose.yaml`, and databases exposed to the host.** `POSTGRES_PASSWORD=password` / `DATABASE_URL: postgres://admin:password@db:5432/app` were hardcoded, while Postgres (5432), Redis (6379), and the API (5000) were all published. Anyone with repo access had the DB password, and anyone with network access could try it directly, bypassing nginx entirely. *Fix:* all secrets moved to `.env` (from `.env.example`, `:?` fail-fast guards), `db`/`cache`/`api` lost their host `ports:` (only nginx publishes `80:80`), and db/cache sit on an `internal: true` backend network.
+2. **Development server running as root in production shape.** The `Dockerfile` used `flask run` with `FLASK_ENV=development`, ran as root, and did `COPY . .` (which would bake a local `.env` into the image). *Fix:* pinned `python:3.13.7-slim-bookworm`, non-root `app` user (uid 10001), gunicorn as the production server, `ENVIRONMENT=production`, and a `.dockerignore` that excludes `.env*`.
+3. **Non-reproducible, unpinned dependencies and images.** `pip install flask psycopg2 redis` ignored the already-correct `requirements.txt`, and every image used `:latest`. Builds were not repeatable and could change silently. *Fix:* `pip install -r requirements.txt` (layer-cached), pinned images (`nginx:1.27.5-alpine`, `postgres:17.5-alpine`, `redis:7.4.2-alpine`).
+4. **No health gating, persistence, or failure behaviour.** `depends_on` only waited for container start, Postgres had no volume (data lost on `down -v`/recreate was indistinguishable from normal operation, and in practice data vanished with the container lifecycle), and there were no healthchecks, restart policies, log rotation, or resource limits. *Fix:* `pg_isready` / `redis-cli ping` / `/health` healthchecks with `condition: service_healthy`, named volumes `postgres_data`/`redis_data`, `restart: unless-stopped`, json-file log rotation (10m×3), and per-service CPU/memory limits — documented in `RUNBOOK.md` as single-host controls, not orchestration.
+5. **nginx proxied with defaults unfit for an API.** No forwarded headers (the app could not see the real client IP/scheme), no timeouts, no body-size limit, no keepalive, and `server_tokens` left on. *Fix:* `X-Real-IP`/`X-Forwarded-For`/`X-Forwarded-Proto`/`Host`, 5s connect / 30s send-read timeouts, `client_max_body_size 1m`, upstream keepalive, gzip for JSON, and basic response hardening headers.
+
+## Deliberate scope limits
+
+No Kubernetes, extra services, or TLS termination were added (per the task). Redis keeps AOF persistence as a cache; Postgres is the only system of record. The gunicorn target `app:app` and the `/health` route are assumptions about the (not supplied) application code — see `RUNBOOK.md` Prerequisites.
+
+## Verification performed (containers were not started, per the task)
+
+- `docker compose --env-file <temp .env with dummy secrets> config` — rendered successfully; confirmed no literal passwords in the rendered output, single published port (`80`), health-based `depends_on`, named volumes, and the internal backend network. Dummy env file was created outside the deliverables and deleted.
+- `docker compose config --quiet` with `POSTGRES_PASSWORD` unset — confirmed Compose fails fast with the `:?` guard message instead of starting with an empty password.
+- Static checks: `grep` confirmed no `latest` tags, no `ports:` on `db`/`cache`/`api`, no literal `password` in `compose.yaml`/`Dockerfile`; `Dockerfile` inspected for non-root `USER`, `requirements.txt` install, and gunicorn `CMD`; `nginx.conf` inspected for proxy headers/timeouts. (Local `nginx -t` and a full image build were not run — no nginx binary is installed here and the task forbids starting containers; validate further with `docker compose up` per `RUNBOOK.md`.)
