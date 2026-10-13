@@ -34,6 +34,7 @@ for each one is as Arda identified it.
 | Step-5 preview (`stepfun/step-5-preview`) | high | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 07:41 (task 12 re-run) | ~69 session-minutes (interrupted batch) | n/a | n/a | **$2.21** | 13 / 13 | local repository, merged under `runs/step-5-preview` |
 | HY4 preview (`tencent/hy4-preview`) | high | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 08:00:46 | ~113 session-minutes (interrupted batch) | n/a | n/a | **$1.57** | 13 / 13 | local repository, merged under `runs/hy4-preview` |
 | HY4 preview via CodeBuddy (`hy4-preview`) | high | Tencent CodeBuddy Code on cachyos (user's plan) | 16:58:34 (2026-10-12) | 21:43:36 (re-runs after the rate-limit reset) | ~23 min + 12 min re-runs | n/a | n/a | $0 reported (plan usage) | 13 / 13 | local repository, merged under `runs/hy4-preview-codebuddy` |
+| muse-wonder (`muse-wonder-1.0`) | xhigh | Muse Code 1.4.6 on the Mac (user's Muse subscription) | 07:11:57 (2026-10-13) | 09:54:08 (tasks 10–13 after the quota reset) | 4 min 45 s + 7 min 15 s | n/a | n/a | subscription quota; see below | 13 / 13 | local repository, merged under `runs/muse-wonder` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -403,3 +404,47 @@ Scripts, timing, event logs and tokens are in `run-logs/codebuddy-orchestration/
 | Tasks | Session time (sum) | Input (incl. cache reads) | Cache reads | Output | Turns | Cost |
 |---|---|---|---|---|---|---|
 | 13 / 13 | 66 min | 10,089,458 | 9,410,432 | 231,461 | 724 | $0 reported |
+
+## muse-wonder (Muse Code on the Mac, 2026-10-13)
+
+Meta's `muse-wonder-1.0`, released 2026-10-12, in Muse Code 1.4.6-R6000.1 on xhigh (its tiers are minimal, low, medium, high,
+xhigh and max). Same protocol as the other runs: one fresh `muse exec` per task with the same instruction, on a private
+repository holding only the thirteen tasks. Command: `muse exec --model muse-wonder-1.0 --reasoning-effort xhigh --workspace <repo>
+--trust-workspace --no-foreign-personal-context --max-model-steps 200 --disable-approval --disable-sandbox <instruction>`, with a
+2-hour limit per task. Scripts, timing, replies, quota readings and usage are in `run-logs/muse-wonder-orchestration/`.
+
+- **Blank slate.** muse ran with a clean HOME: its own config and session store, so no user skills, rules or earlier Muse sessions
+  (only Muse's built-in skills loaded). It also ran inside a macOS Seatbelt profile (`sandbox.sb`) that denied reads of everything
+  under the user's home directory except the run repository, the muse binary, Node and what the keychain lookup needs. The profile
+  denied writes outside the repository and the clean HOME, and allowed outbound network only to HTTPS (the Meta API), DNS and
+  localhost. Seatbelt sandboxes can't nest, so this outer profile replaced Muse's own shell sandbox (`--disable-sandbox`). The API
+  key went in on stdin, not in the agent's environment. All of this was checked from inside a muse-wonder session before the run.
+  The earlier muse run loaded the user's skills and used Muse's own sandbox.
+- **Quota interruption and reset.** Tasks 01–09 ran four at a time and finished in 4 min 45 s. At 07:16:51 the subscription's
+  5-hour window ran out (`429 Subscription quota exhausted`) just as tasks 10–13 started. They had written at most one partial file
+  each, which is kept in `evaluation/interrupted/muse-wonder-*`, and the four tasks were reset to the template. Muse then announced a fix for quota draining
+  too fast and reset all quotas (both windows read 0% at 09:46). Tasks 10–13 were re-run from the template with the identical command,
+  one at a time at Arda's request, each started only with at least 55% of the 5-hour window left (09:46:53–09:54:08, 7 min 15 s).
+
+| Tasks | Time | Model steps | Input tokens | of which cached | Output tokens | Reasoning tokens |
+|---|---|---|---|---|---|---|
+| 13 / 13 (graded runs) | 4 min 45 s + 7 min 15 s | 222 | 6,662,777 | 5,813,188 | 154,050 | 49,531 |
+| Stopped attempts of 10–13 | | 29 | 740,632 | 608,712 | 16,183 | 6,668 |
+
+Tokens come from muse's session logs: every `model_completed` event, counted once, including Muse's reminder helpers, which run as
+separate sessions in this version (`usage.py`).
+
+**Quota.** Muse reports a 5-hour and a weekly window as percentages (`muse-quota`, read from the usage event Muse sends with each
+response).
+
+| Period | 5-hour window | Weekly window |
+|---|---|---|
+| Before the fix: tasks 01–09 and the stopped starts of 10–13 (07:11:57–07:16:51) | 26% -> exhausted (53% at 07:13:59, 84% at 07:16:01) | 8% -> 33% |
+| After the fix: task 10 | 0% -> 5% | 0% -> 1% |
+| task 11 | 5% -> 16% | 1% -> 5% |
+| task 12 | 16% -> 26% | 5% -> 8% |
+| task 13 | 26% -> 34% | 8% -> 11% |
+
+The readings before the fix are inflated by whatever Muse fixed, so only the after-fix figures describe the model's cost: about a
+tenth of a 5-hour window and 3% of the week for a frontend task. The 26% and 8% already used at the start of the first pass came
+from earlier use that morning, including the tincan preset tests and the sandbox probes.

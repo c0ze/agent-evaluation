@@ -1,0 +1,6 @@
+#!/bin/bash
+# muse-run DIR ARGS...: muse exec as the blank slate (sandboxed, clean HOME), key piped from the keychain on stdin.
+O=/Users/arda/projects/agent-eval-runs/muse-wonder-run-orch; cd "$1" || exit 2; shift
+/usr/bin/security find-generic-password -s ai.meta.dev.credentials -a meta -w ~/Library/Keychains/login.keychain-db \
+  | /usr/bin/python3 -I -c 'import json,sys; print(json.load(sys.stdin)["api_key"])' \
+  | $O/sandboxed /Users/arda/.local/bin/muse-bin-1.4.6-R6000.1 exec --api-key-stdin "$@"

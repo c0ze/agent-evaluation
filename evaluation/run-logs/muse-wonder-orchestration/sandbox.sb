@@ -1,0 +1,21 @@
+(version 1)
+(allow default)
+; Blank slate: nothing under the user's home is readable except the run repo, muse's clean HOME,
+; the muse binary, node, and what the keychain lookup needs.
+(deny file-read-data (subpath "/Users/arda"))
+(deny file-read-data (subpath "/private/tmp/claude-501"))
+(allow file-read-data
+  (subpath "/Users/arda/projects/agent-eval-runs/agent-eval-muse-wonder")
+  (subpath "/Users/arda/projects/agent-eval-runs/muse-wonder-run-orch/home")
+  (literal "/Users/arda/.local/bin/muse-bin-1.4.6-R6000.1")
+  (subpath "/Users/arda/.local/share/mise/installs/node/24.14.0")
+  (subpath "/Users/arda/Library/Keychains")
+  (subpath "/Users/arda/Library/Preferences"))
+; Writes only in the run repo and the clean HOME.
+(deny file-write* (subpath "/Users/arda"))
+(allow file-write* (subpath "/Users/arda/projects/agent-eval-runs/agent-eval-muse-wonder") (subpath "/Users/arda/projects/agent-eval-runs/muse-wonder-run-orch/home"))
+; Network: HTTPS (the Meta API), DNS and localhost only.
+(deny network-outbound)
+(allow network-outbound (remote tcp "*:443"))
+(allow network-outbound (remote ip "localhost:*"))
+(allow network-outbound (literal "/private/var/run/mDNSResponder"))

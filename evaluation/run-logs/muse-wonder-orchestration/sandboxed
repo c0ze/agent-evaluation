@@ -1,0 +1,8 @@
+#!/bin/bash
+# Run a command as muse's blank slate: scrubbed environment, clean HOME, Seatbelt profile sandbox.sb.
+O=/Users/arda/projects/agent-eval-runs/muse-wonder-run-orch
+exec /usr/bin/env -i HOME=$O/home USER=arda LOGNAME=arda LANG=en_US.UTF-8 TERM=dumb SHELL=/bin/bash \
+  XDG_CONFIG_HOME=$O/home/.config XDG_DATA_HOME=$O/home/.local/share XDG_CACHE_HOME=$O/home/.cache \
+  XDG_STATE_HOME=$O/home/.local/state TMPDIR=$O/home/tmp/ \
+  PATH=/Users/arda/.local/share/mise/installs/node/24.14.0/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin \
+  /usr/bin/sandbox-exec -f $O/sandbox.sb "$@"

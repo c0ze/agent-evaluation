@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moss — today's plant care</title>
+<meta name="description" content="Moss is a gentle household plant-care companion. See who needs water first, snooze what can wait, and keep a calm weekly rhythm.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#queue-heading">Skip to today's care queue</a>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 48 48" width="40" height="40" aria-hidden="true" focusable="false">
+      <path d="M24 42c0-8 0-14 1-20" fill="none" stroke="#33512e" stroke-width="3" stroke-linecap="round"/>
+      <path d="M25 22c-7 1-12-3-13-10 7-1 12 3 13 10Z" fill="#5c7a3e"/>
+      <path d="M25 18c1-7 6-11 12-11 0 7-4 12-12 11Z" fill="#7da05c"/>
+      <path d="M8 42h32" stroke="#c75b2b" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <p class="brand-name">Moss</p>
+      <p class="brand-sub">a gentle plant-care companion</p>
+    </div>
+  </div>
+  <p class="today-chip"><span aria-hidden="true">●</span> Tuesday · Sep 23</p>
+</header>
+
+<div class="layout">
+  <main class="main-col">
+    <section class="hello" aria-labelledby="hello-heading">
+      <h1 id="hello-heading">Good morning.<br>Frida needs you first.</h1>
+      <p class="hello-copy">Four plants, one calm pass around the house. Start with whoever is overdue — the rest can wait their turn.</p>
+      <div class="progress-wrap">
+        <p class="progress-label" id="progress-label" aria-live="polite">0 of 4 cared for today</p>
+        <div class="progress-track" role="progressbar" aria-label="Plants cared for today" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" id="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="queue-heading" class="queue-section">
+      <div class="section-head">
+        <h2 id="queue-heading" tabindex="-1">Today's care queue</h2>
+        <p class="section-note">Most urgent at the top</p>
+      </div>
+
+      <ul class="queue" id="queue-list"></ul>
+
+      <div class="all-done" id="all-done" hidden>
+        <svg viewBox="0 0 120 90" width="110" height="82" aria-hidden="true" focusable="false" class="all-done-art">
+          <circle cx="60" cy="38" r="20" fill="#e9b44c"/>
+          <g stroke="#e9b44c" stroke-width="4" stroke-linecap="round">
+            <path d="M60 6v8M28 16l6 6M92 16l-6 6M16 38h9M95 38h9"/>
+          </g>
+          <path d="M60 78c0-10 1-16 2-22" fill="none" stroke="#33512e" stroke-width="4" stroke-linecap="round"/>
+          <path d="M62 56c-9 1-15-4-16-13 9-1 15 4 16 13Z" fill="#5c7a3e"/>
+          <path d="M62 50c1-9 7-14 15-14 0 9-5 15-15 14Z" fill="#7da05c"/>
+          <path d="M28 82h64" stroke="#c75b2b" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <h3>All caught up — nicely done</h3>
+        <p id="all-done-copy">Every plant on today's list has been tended. Drama the calathea is next, with a mist due tomorrow.</p>
+        <div class="all-done-actions">
+          <button type="button" class="btn btn-ghost" id="review-snoozed-btn" hidden>Review snoozed plants</button>
+          <button type="button" class="btn btn-primary" id="reset-btn">Bring everyone back</button>
+        </div>
+      </div>
+
+      <div class="snoozed-wrap" id="snoozed-wrap" hidden>
+        <h3 class="snoozed-heading">Snoozed until tomorrow</h3>
+        <ul class="snoozed-list" id="snoozed-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <aside class="side-col">
+    <section class="detail-card" aria-labelledby="detail-heading" id="detail-panel">
+      <p class="detail-eyebrow" id="detail-eyebrow">Plant detail</p>
+      <div id="detail-content"><!-- filled by app.js --></div>
+    </section>
+
+    <section class="week-card" aria-labelledby="week-heading">
+      <div class="section-head section-head--tight">
+        <h2 id="week-heading">This week's rhythm</h2>
+        <p class="section-note">Care visits per day</p>
+      </div>
+      <div class="week-chart" id="week-chart" role="img" aria-label="Bar chart of care visits this week: Monday 1, Tuesday 3, Wednesday 2, Thursday 4, Friday 2, Saturday 1, Sunday 3. Today is Tuesday."></div>
+      <ol class="sr-only">
+        <li>Monday: 1 care visit</li><li>Tuesday: 3 care visits (today)</li><li>Wednesday: 2 care visits</li>
+        <li>Thursday: 4 care visits</li><li>Friday: 2 care visits</li><li>Saturday: 1 care visit</li><li>Sunday: 3 care visits</li>
+      </ol>
+      <p class="week-note">Thursday is your busiest watering day. Today is comfortably light — three small jobs.</p>
+    </section>
+
+    <section class="note-card" aria-labelledby="note-heading">
+      <h2 id="note-heading">A Moss note</h2>
+      <p>Overdue does not mean in trouble. Frida the fern would like a drink soon, but a few hours will not change anything. Go at kitchen-kettle pace.</p>
+    </section>
+  </aside>
+</div>
+
+<footer class="footer">
+  <p>Moss keeps care calm: whoever is overdue goes first, everything else waits its turn.</p>
+</footer>
+
+<div class="toast-region" aria-live="polite" aria-atomic="true">
+  <div class="toast" id="toast" hidden>
+    <p class="toast-msg" id="toast-msg"></p>
+    <button type="button" class="btn btn-undo" id="toast-undo">Undo</button>
+    <button type="button" class="toast-close" id="toast-close" aria-label="Dismiss notification">×</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

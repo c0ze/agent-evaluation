@@ -228,5 +228,15 @@
   "cost": "$0 reported (CodeBuddy plan usage)",
   "usage": "10.09M input (of which 9.41M cache reads), 231k output tokens; 724 turns",
   "notes": "Same model as 'HY4 preview' (OpenRouter/opencode), run in its vendor's own CLI for comparison. One codebuddy -p per task, four at a time, in a fresh repository outside the home directory; the sign-in is tied to the real HOME, so user settings, MCP, session persistence and auto-memory were turned off instead. Permission rules denied network commands and web tools (CodeBuddy ignores sandbox settings), and the transcripts were audited. Tasks 11 and 13 were cut off by the plan's rate limit (429) and re-run from the template after it reset."
+ },
+ "muse-wonder": {
+  "label": "muse-wonder",
+  "model": "muse-wonder-1.0",
+  "where": "Muse Code 1.4.6 (headless muse exec) on the Mac, user's Muse subscription, 2026-10-13",
+  "effort": "xhigh",
+  "duration": "~12 min (4 min 45 s for tasks 01-09, four at a time; 7 min 15 s for tasks 10-13, one at a time)",
+  "cost": null,
+  "usage": "6.66M input (5.81M cached), 154k output, 49.5k reasoning tokens; 222 model steps. After Muse's quota fix, tasks 10-13 used 34% of a 5-hour window and 11% of the weekly quota",
+  "notes": "One muse exec per task with a clean HOME (no user skills, rules or earlier sessions) inside an outer macOS sandbox that blocked reads of the rest of the home directory and all network except HTTPS. The subscription's 5-hour window ran out as tasks 10-13 started; Muse then fixed a too-fast quota drain and reset all quotas, and tasks 10-13 were re-run from the template one at a time."
  }
 }
