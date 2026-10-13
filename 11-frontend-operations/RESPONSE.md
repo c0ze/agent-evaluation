@@ -1,0 +1,21 @@
+# Relay — design response
+
+## Visual hierarchy
+
+The page is ordered by operational urgency, top to bottom and left to right. The dark navigation rail (208 px, icon + label) anchors the product and stays fixed while content scrolls; it carries the live open-incident count so severity is visible from anywhere. The white top status bar is the next layer: page title, a black "Production" pill, an overall Degraded indicator (amber dot + "1 critical incident"), a live UTC clock in monospace, and Refresh. Operators read system health before any number.
+
+Below that, four summary metrics sit in a single row at equal weight — Events/min, P95 latency, Error rate, Queue depth — each with a large tabular value, a colour-coded change chip (green only when the direction is good for that metric: latency and error-rate chips turn red when they rise), and a one-line context ("vs prior hour · SLO 250 ms"). The 24-hour throughput chart follows, then the work area: the incident table (wider, left) and the detail panel (narrower, right, sticky on desktop). Density is deliberately compact — 13–14 px body type, 8–10 px cell padding, 6 px radii, 1 px neutral borders — so an expert can scan a full shift on one screen without scrolling far. The palette is a restrained warm-neutral grey/green with a single purposeful accent (teal `#0f766e`) reserved for the brand mark, the chart line, the selected row, focus rings, and the primary action; severity owns its own hues (critical red, high amber, medium yellow-brown, low grey) and never borrows the accent.
+
+## Interaction behaviour
+
+All content is seeded from `DATA.json` (embedded in `app.js`; no network requests, fonts, or frameworks). Metrics and the chart are rendered from that data: the chart is an inline SVG built from the 24 throughput values, with gridlines at 0/25/50/75/100k, a dashed average line (56.6k), and a labelled peak (88k at 19:00).
+
+The incident table is filterable three ways at once — free-text search (ID, title, service, owner), severity, and status — and the count line updates ("2 of 4 incidents"). Selecting a row (click, Enter/Space, or ↑/↓ arrow keys, which also move focus) highlights it with an accent inset bar and loads the incident into the detail panel: impact, what happened, started time, and a timeline. **Acknowledge** is a real state change, not a visual toggle: it flips the incident's status to Acknowledged everywhere (table pill, detail pill, rail badge count), assigns unassigned incidents to "You (Operator)", appends a timestamped timeline entry, disables the button to "✓ Acknowledged", and announces the change via a toast and an `aria-live` region. "Assign to me" and Refresh follow the same pattern. When filters match nothing, the table is replaced by an empty state that explains why and offers a one-click Reset filters (also available as Clear beside the filters).
+
+## Accessibility choices
+
+Landmarks and headings give a clear outline (`nav`, banner header, `main`, labelled `section`/`aside`), plus a skip link to main content. The chart is an SVG with `<title>`/`<desc>` summarising the shape in words, and its key numbers (average, current, peak) are repeated as real text beside it, so the data never depends on sight alone. Table rows are focusable with visible `focus-visible` outlines (2 px accent ring everywhere, including inputs, selects, and buttons), arrow-key navigation, and `aria-selected` state. Severity is never colour-only — every pill carries a text label — and status pills do the same. Numbers use tabular figures so columns stay aligned. Filter controls have explicit `<label>`s, the acknowledge confirmation uses `role="status"`, and the toast uses `aria-live="polite"`.
+
+## Responsive behaviour
+
+At ≤960 px metrics drop to two columns and the detail panel stacks below the table; at ≤640 px (including 390 px) the rail becomes a horizontal top bar (labels collapse to icons, the active item keeps its label), the table hides the Service and Owner columns rather than scrolling the page, filters stack full-width, and the chart shortens. The page shell clips horizontal overflow and the table itself is the only element that can scroll internally, so the page never scrolls sideways at 390 px. Motion is disabled under `prefers-reduced-motion`.

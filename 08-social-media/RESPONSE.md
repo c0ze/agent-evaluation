@@ -1,0 +1,3 @@
+# Voice choices
+
+I kept the voice precise, warm, and mildly nerdy: concrete verbs, the source-link as the hero detail, and no superlatives, customer counts, or performance claims. LinkedIn gets fuller explanation for professional readers; Bluesky is compressed and bluntly honest about Linux and local processing; Instagram is warmer and more visual, with three hashtags. Each reply answers the actual question — distinguishing mapping from chat, admitting no lab plan or validated Japanese support exists, and refusing to promise Linux. For the stuck-indexing reply, I acknowledged the frustration, gave a small-folder restart test, and asked only for OS and file count by DM, never account details or documents.
