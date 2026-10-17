@@ -82,12 +82,12 @@
  "grok-4.7": {
   "label": "Grok 4.7",
   "model": "grok-4.7 (served as grok-4.7-build)",
-  "where": "Grok CLI on the Mac, grok.com account",
+  "where": "Grok CLI on the Mac, grok.com account; task 13 re-run on cachyos (Grok CLI 1.0.60), 2026-10-16",
   "effort": "xhigh",
-  "duration": "~80 min for 12 tasks",
-  "cost": "$6.74 for 12 tasks (+$1.43 on the interrupted task 13)",
-  "usage": "2.00M input + 25.6M cache-read, 1.11M output (891k reasoning) tokens; 321 model turns",
-  "notes": "One grok -p per task, four at a time, with a clean HOME so no personal instructions or skills loaded; memory off, MCP denied, web tools off, workspace sandbox. Task 13 stopped when the Grok Build balance ran out and awaits a re-run; totals cover 12 tasks."
+  "duration": "~80 min for tasks 01-12 (four at a time) + 52 min for the task 13 re-run",
+  "cost": "$12.01 ($6.74 for tasks 01-12 + $5.27 for the task 13 re-run; the interrupted first attempt cost $1.43)",
+  "usage": "2.09M input + 27.5M cache-read, 1.02M output (806k reasoning) tokens; 330 model turns (graded runs; the interrupted attempt not counted)",
+  "notes": "One grok -p per task, four at a time, with a clean HOME so no personal instructions or skills loaded; memory off, MCP denied, web tools off, workspace sandbox. Task 13 stopped when the Grok Build balance ran out; it was re-run later from a fresh template repository with the same flags on cachyos."
  },
  "mcode-m3.1-flash": {
   "label": "MiniMax M3.1 Flash",
@@ -238,5 +238,15 @@
   "cost": null,
   "usage": "6.66M input (5.81M cached), 154k output, 49.5k reasoning tokens; 222 model steps. After Muse's quota fix, tasks 10-13 used 34% of a 5-hour window and 11% of the weekly quota",
   "notes": "One muse exec per task with a clean HOME (no user skills, rules or earlier sessions) inside an outer macOS sandbox that blocked reads of the rest of the home directory and all network except HTTPS. The subscription's 5-hour window ran out as tasks 10-13 started; Muse then fixed a too-fast quota drain and reset all quotas, and tasks 10-13 were re-run from the template one at a time."
+ },
+ "gemini-argon": {
+  "label": "Gemini 4 Argon",
+  "model": "Gemini 4 Argon, Thinking level High (self-reported ID: gemini-3.1-pro-preview)",
+  "where": "Gemini web chat (gemini.google.com, Google AI Pro account) in the Claude desktop app's browser, 2026-10-16/17",
+  "effort": "High (Thinking level)",
+  "duration": "~61 min of reply time, spread over ~20 h to fit the plan's 5-hour usage windows",
+  "cost": null,
+  "usage": "Not reported by the chat. 17% of the plan's weekly limit; about 18-34% of a 5-hour window per task",
+  "notes": "No API access, so each task ran in a new temporary chat: the task's files were pasted into one message and the model returned whole files, copied into the repository verbatim and checked against the page with SHA-256. The model had no tools: it could not run code, tests or a browser. Tasks 07, 12 and 13 were re-run with the identical prompt after attempts lost to the orchestrator (07) or to chat resets (12, 13)."
  }
 }

@@ -18,7 +18,7 @@ for each one is as Arda identified it.
 | muse (muse-spark-1.3) | max | local (tincan on the Mac) | 02:12:21 | 02:32:49 | 20 min 28 s | n/a | n/a | not measurable; see tokens | 13 / 13 | `muse-run` in `c0ze/agent-eval-muse` |
 | GPT-6 Luna (`gpt-6-luna`) | max | Codex CLI, gand-business | 03:06:18 | 03:40:28 | 34 min 10 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-luna` |
 | GPT-6.1 Sol (`gpt-6.1-sol`) | xhigh | Codex CLI, gand-business | 04:06:46 | 04:54:38 | 47 min 52 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6.1-sol` |
-| Grok 4.7 (`grok-4.7`) | xhigh | Grok CLI, grok.com | 04:22:45 | 05:43:00 (12 tasks) | 80 min 15 s for 12 tasks | n/a | n/a | **$6.74** for 12 tasks | 12 / 13 (13 interrupted) | `run` in `c0ze/agent-eval-grok-4.7` |
+| Grok 4.7 (`grok-4.7`) | xhigh | Grok CLI, grok.com | 04:22:45 | 05:43:00 (12 tasks); task 13 re-run 18:52:31–19:44:57 (2026-10-16) | 80 min 15 s for 12 tasks + 52 min 26 s task 13 re-run | n/a | n/a | **$12.01** ($6.74 + $5.27) | 13 / 13 (13 re-run on cachyos) | `run` in `c0ze/agent-eval-grok-4.7`; task 13 from a fresh local repository |
 | GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business then gmail-personal | 03:06:18 (01-09), 05:19:41 (10-13) | 05:39:03 | 34 min 54 s (15:32 + 19:22) | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-astra` |
 | MiniMax M3.1 Flash (`MiniMax-M3.1-Flash-Preview`) | xhigh | mcode on the Mac (managed MiniMax login) | 18:20:45 (2026-10-04) | 19:05:06 | 42 min 16 s (28:38 first pass + 13:38 task 11 re-run) | n/a | n/a | not measurable; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3.1-flash` |
 | MiniMax M3 (`MiniMax-M3`) | default (not selectable) | mcode on the Mac (managed MiniMax login) | 19:39:03 (2026-10-04) | 19:47:52 | 8 min 49 s | n/a | n/a | 2% of the 5-hour window; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3` |
@@ -35,6 +35,7 @@ for each one is as Arda identified it.
 | HY4 preview (`tencent/hy4-preview`) | high | opencode on cachyos (OpenRouter) | 00:03:24 (2026-10-12) | 08:00:46 | ~113 session-minutes (interrupted batch) | n/a | n/a | **$1.57** | 13 / 13 | local repository, merged under `runs/hy4-preview` |
 | HY4 preview via CodeBuddy (`hy4-preview`) | high | Tencent CodeBuddy Code on cachyos (user's plan) | 16:58:34 (2026-10-12) | 21:43:36 (re-runs after the rate-limit reset) | ~23 min + 12 min re-runs | n/a | n/a | $0 reported (plan usage) | 13 / 13 | local repository, merged under `runs/hy4-preview-codebuddy` |
 | muse-wonder (`muse-wonder-1.0`) | xhigh | Muse Code 1.4.6 on the Mac (user's Muse subscription) | 07:11:57 (2026-10-13) | 09:54:08 (tasks 10–13 after the quota reset) | 4 min 45 s + 7 min 15 s | n/a | n/a | subscription quota; see below | 13 / 13 | local repository, merged under `runs/muse-wonder` |
+| Gemini 4 Argon (Thinking: High) | High | Gemini web chat (Google AI Pro), in the Claude desktop app's browser | 17:38 (2026-10-16) | 13:17 (2026-10-17) | ~61 min of reply time over ~20 h (paused for the 5-hour usage windows) | n/a | n/a | 17% of the weekly limit; see below | 13 / 13 | local repository, merged under `runs/gemini-argon` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -146,7 +147,14 @@ GROK_HOME stayed ~/.grok for login. Only Grok's 22 bundled skills loaded. Sandbo
 
 Task 13 stopped after an hour with "402 Payment Required: Grok Build usage balance exhausted",
 before writing RESPONSE.md. Its partial output is kept in grok-orchestration; the task was reset to the
-template and will be re-run after a top-up (resume-13.sh). Until then Grok's scores cover 12 tasks.
+template (resume-13.sh).
+
+Task 13 was re-run on 2026-10-16 on cachyos (resume-13-cachyos.sh) with the same flags: a fresh repository from
+the task templates, clean HOME, GROK_MEMORY=0, MCP denied, web tools off, `workspace` sandbox (Linux landlock;
+it does not restrict the network, and the transcript showed no network use). Grok CLI was 1.0.60. It finished in
+52 min 26 s: 44 turns, 495,112 input + 5,251,328 cache-read, 167,553 output (129,511 reasoning) tokens, **$5.27**,
+stop reason end_turn, served as grok-4.7-build. It wrote only in its task directory; scratch files (a DOM test,
+headless Firefox profiles and screenshots) went to /tmp.
 
 ## MiniMax M3.1 Flash (mcode on the Mac, 2026-10-04)
 
@@ -448,3 +456,26 @@ response).
 The readings before the fix are inflated by whatever Muse fixed, so only the after-fix figures describe the model's cost: about a
 tenth of a 5-hour window and 3% of the week for a frontend task. The 26% and 8% already used at the start of the first pass came
 from earlier use that morning, including the tincan preset tests and the sandbox probes.
+
+## Gemini 4 Argon (Gemini web chat, 2026-10-16/17)
+
+No API access was available, so Argon ran in the Gemini web chat (gemini.google.com, Google AI Pro account) in the
+Claude desktop app's built-in browser, mode "4 Argon" with Thinking level "High". One new temporary chat per task,
+one task at a time, easiest first. Each task's files were pasted inline into a single message with an instruction to
+return every created or changed file whole; the files were copied from the page into the repository and checked
+against it with SHA-256. The model had no tools. Prompts, verbatim replies and the usage-meter log are in
+`run-logs/gemini-chat-orchestration/`; the run log is `run-logs/gemini-argon-RUN_LOG.md`.
+
+The chat reports no tokens or cost. Usage came from gemini.google.com/usage:
+
+| Window | Tasks | 5-hour meter after | Weekly meter after |
+|---|---|---|---|
+| 16 Oct, to 21:12 | probe, 08, 07 (×2), 09 | 73% | 7% |
+| 16 Oct, to 02:12 | 05, 10 | 67% | 11% |
+| 17 Oct, to 07:12 | 06, 02, 01 | 73% | 14% |
+| 17 Oct, to 12:12 | 04, 03 | 61% | 17% |
+| 17 Oct, to 17:12 | 12 (×3), 11, 13 (×2) | 0% (meter did not move) | 17% |
+
+A task took about 18–34% of a 5-hour window, roughly in proportion to its answer length. Lost attempts: 07's first
+reply (the orchestrator navigated the tab away before saving it), 12's first two (a chat reset with HTTP 429 errors,
+then a tab reload) and 13's first (a chat reset mid-reply). The failed attempts showed no usage.
