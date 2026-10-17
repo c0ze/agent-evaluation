@@ -1,0 +1,450 @@
+## 01-feature-building
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/01-feature-building/TASK.md
+$ ls -la; echo ---; cat jobqueue.py 2>/dev/null; echo ===; cat test_jobqueue.py 2>/dev/null
+read_skill 
+write_todos 
+$ python3 -m unittest -v 2>&1 | head -n 80
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/01-feature-building/jobqueue.py
+write_todos 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/01-feature-building/test_jobqueue.py
+$ python3 -m unittest -v 2>&1; echo EXIT:$?
+$ python3 - <<'PY'
+  import random
+  from jobqueue import Job, plan_jobs
+  rng=random.Random(42)
+  for trial in range(300):
+      n=rng.randrange(0,15)
+      ids=[f"j{i}" for i in range(n)]
+      # DAG: deps only on earlier ids, then shuffle input order
+      spec={}
+      for i,name in enumerate(ids):
+          deps=tuple(rng.sample(ids[:i], rng.randrange(0,i+1))) if i else ()
+          spec[name]=(deps, rng.choice([-2,0,1,1,5]))
+      order=ids[:]; rng.shuffle(order)
+      jobs=[Job(name, priority=spec[name][1], depends_on=spec[name][0]) for name in order]
+      got=plan_jobs(jobs)
+      # independent naive reference
+      done=[]; rem=list(jobs)
+      while rem:
+          ready=[j for j in rem if all(d in done for d in j.depends_on)]
+          assert ready
+          ready.sort(key=lambda j:-j.priority)  # stable: retains input order among ties
+          nxt=ready[0]; done.append(nxt.id); rem.remove(nxt)
+      assert got==done, (trial, got, done)
+      pos={x:i for i,x in enumerate(got)}
+      for j in jobs:
+          assert all(pos[d]<pos[j.id] for d in j.depends_on)
+  print("randomized DAG check: 300 trials ok")
+  PY
+  python3 -m py_compile jobqueue.py test_jobqueue.py && echo "py_compile: ok"
+write_todos 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/01-feature-building/RESPONSE.md
+$ rm -rf __pycache__ && python3 -m unittest 2>&1 | tail -n 5; rm -rf __pycache__; ls -la
+write_todos 
+## 02-bug-fixing
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/02-bug-fixing/TASK.md
+$ ls -R; echo "---"; ls -la
+read_skill 
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/02-bug-fixing/ttl_cache.py
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/02-bug-fixing/test_ttl_cache.py
+$ python3 -m unittest -v 2>&1; echo EXIT:$?
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/02-bug-fixing/ttl_cache.py
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/02-bug-fixing/test_ttl_cache.py
+$ python3 -m unittest -v 2>&1; echo EXIT:$?
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/02-bug-fixing/RESPONSE.md
+$ ls -la; python3 -m py_compile ttl_cache.py test_ttl_cache.py && echo COMPILE_OK
+## 03-infra-management
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/TASK.md
+$ ls -la /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/Dockerfile
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/compose.yaml
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/nginx.conf
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/.env.example
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/requirements.txt
+$ command -v docker hadolint nginx python3 yamllint shellcheck 2>&1; docker compose version 2>&1 | head -2; python3 -c "import yaml; print('pyyaml ok')" 2>&1
+write_todos 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/Dockerfile
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/compose.yaml
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/nginx.conf
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/.env.example
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/.dockerignore
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/.gitignore
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/RUNBOOK.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management/RESPONSE.md
+write_todos 
+$ cd /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management && python3 -c "import yaml; d=yaml.safe_load(open('compose.yaml')); print('yaml ok, services:', list(d['services'])); print('networks:', list(d['networks'])); print('volumes:', list(d['volumes']))"
+$ cd /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management && POSTGRES_PASSWORD=throwaway-hex-for-config-check REDIS_PASSWORD=throwaway-hex-for-config-check docker compose config > /tmp/compose-rendered.txt 2>/tmp/compose-config-err.txt; echo "exit=$?"; head -c 500 /tmp/compose-config-err.txt; echo "---published ports---"; grep -A3 "ports:" /tmp/compose-rendered.txt; echo "---published lines---"; grep -n "published" /tmp/compose-rendered.txt; echo "---conditions---"; grep -n "condition" /tmp/compose-rendered.txt; ls -la .env 2>&1 | head -1
+$ cd /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management && docker compose config > /dev/null 2>/tmp/compose-nopw.txt; echo "exit=$?"; cat /tmp/compose-nopw.txt | head -5; echo "---healthcheck count---"; grep -c "healthcheck:" /tmp/compose-rendered.txt; echo "---grep regression markers in deliverables---"; grep -nE "latest|FLASK_ENV|flask run|\"5432:|\"6379:|\"5000:" Dockerfile compose.yaml nginx.conf .env.example || echo "none found"; echo "---USER/gunicorn/port agreement---"; grep -n "USER" Dockerfile; grep -n "gunicorn" Dockerfile | head -2; grep -n "5000" Dockerfile compose.yaml nginx.conf | grep -v "^compose.yaml:.*#" | head -12; echo "---rendered db/cache ports check---"; grep -B2 -A8 "^  db:" /tmp/compose-rendered.txt | head -20
+$ cd /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/03-infra-management && grep -E "DATABASE_URL|REDIS_URL" /tmp/compose-rendered.txt; grep -A4 "^networks:" /tmp/compose-rendered.txt; grep -A3 "backend:" /tmp/compose-rendered.txt | tail -4; python3 -c "
+  s=open('nginx.conf').read()
+  print('nginx braces balanced:', s.count('{')==s.count('}'), s.count('{'))
+  import re
+  print('proxy headers:', re.findall(r'proxy_set_header (\S+)', s))
+  print('timeouts:', re.findall(r'(proxy_\w+_timeout \S+);', s))
+  "; ls -la; rm -f /tmp/compose-rendered.txt /tmp/compose-config-err.txt /tmp/compose-nopw.txt
+write_todos 
+## 04-project-maintenance
+read_file 04-project-maintenance/TASK.md
+$ ls -la; echo "---"; find . -type f | sort; echo "---"; cat RELEASE_NOTES.txt 2>/dev/null; echo "==="; ls -laR
+read_file 04-project-maintenance/slugkit.py
+read_file 04-project-maintenance/pyproject.toml
+read_file 04-project-maintenance/ci.yml
+read_file 04-project-maintenance/test_slugkit.py
+read_skill 
+$ python3 --version; python3 -c "import sys; print(sys.version)"; python3 -c "import packaging; print(packaging.__version__)" 2>&1; python3 -c "from packaging.version import Version; print([str(Version(v)) for v in ['1.2.0','2.0rc1','1.0','1.02','v1.2','2.0RC1','1.2.3.4','0.4.0','1.0a1','1.0b2','1.0.dev1','1.0+local']])" 2>&1; python3 -W always -c "from distutils.version import LooseVersion; print([str(LooseVersion(v)) for v in ['1.2.0','2.0rc1','1.0','1.02','v1.2','2.0RC1','1.2.3.4','0.4.0','1.0a1','1.0b2','1.0.dev1','1.0+local']])" 2>&1; pip list 2>&1 | head -n 50; which ruff; ruff --version 2>&1; python3 -m ruff --version 2>&1
+$ python3 -m pip list 2>&1 | head -n 80; echo "---"; python3 -m unittest -v 2>&1; echo exit:$?
+$ ls /usr/bin/python* /usr/local/bin/python* 2>&1; ls ~/.local/share/mise/installs/ 2>&1 | head -n 50; command -v python3.10 python3.11 python3.12 python3.13 python3.14 uv 2>&1; python3 -c "from packaging.version import Version, InvalidVersion; help(Version.__init__)" 2>&1 | head -n 60
+write_todos 
+write_file 04-project-maintenance/slugkit.py
+write_file 04-project-maintenance/pyproject.toml
+edit_file 04-project-maintenance/pyproject.toml
+write_file 04-project-maintenance/ci.yml
+write_todos 
+$ python3 - << 'PY'
+  from packaging.version import Version, InvalidVersion
+  for v in ["1.0","0.4.0","1.2.3.4","1.0a1","1.0b2","1.0.dev1","1.0.post1","v1.2","1.02","2.0RC1"," 1.2.0 ","1.2-1"]:
+      try: print(repr(v), "->", repr(str(Version(v))))
+      except Exception as e: print(repr(v), type(e).__name__, e)
+  for v in ["", "not-a-version", "1..2", "hello"]:
+      try: print(repr(v), "->", repr(str(Version(v))))
+      except Exception as e: print(repr(v), type(e).__name__, e)
+  # slugify checks via importing new module
+  from slugkit import slugify
+  for s in ["Hello... World!!!", "a--b__c", "  Hello,  World! ", "---"]:
+      print(repr(s), repr(slugify(s)))
+  PY
+write_file 04-project-maintenance/test_slugkit.py
+write_todos 
+write_file 04-project-maintenance/CHANGELOG.md
+write_file 04-project-maintenance/MAINTENANCE.md
+write_todos 
+$ python3 -m unittest discover -v 2>&1; echo "unittest_exit:$?"
+  python3 -m py_compile slugkit.py test_slugkit.py && echo "py_compile:OK"
+  python3 -W error::DeprecationWarning -c "import slugkit; print(slugkit.normalize_version('2.0rc1')); print(slugkit.slugify('Hello... World!!!'))" 2>&1; echo "import_exit:$?"
+$ python3 - << 'PY'
+  import tomllib, pathlib, sys
+  data = tomllib.loads(pathlib.Path("pyproject.toml").read_text())
+  p = data["project"]
+  print("name:", p["name"]); print("version:", p["version"]); print("requires-python:", p["requires-python"])
+  print("dependencies:", p["dependencies"]); print("classifiers:", p["classifiers"])
+  print("ruff:", data["tool"]["ruff"]); print("setuptools:", data["tool"]["setuptools"])
+  assert p["version"] == "0.4.0"
+  assert p["requires-python"] == ">=3.10"
+  assert data["tool"]["ruff"]["target-version"] == "py310"
+  print("toml_assertions: OK")
+  try:
+      import yaml
+      ci = yaml.safe_load(pathlib.Path("ci.yml").read_text())
+      print("yaml_top_keys:", list(ci.keys()))
+      # YAML 1.1: 'on' parses as True
+      for job, cfg in ci["jobs"].items():
+          print(job, "steps:", [s.get("uses", s.get("run")) for s in cfg["steps"]])
+          if "strategy" in cfg: print(job, "matrix:", cfg["strategy"]["matrix"])
+      print("permissions:", ci.get("permissions"))
+  except ImportError as e:
+      print("yaml_unavailable:", e)
+  PY
+  echo "--- grep checks ---"
+  grep -rn "distutils" . --include="*.py" --include="*.toml" --include="*.yml" 2>&1 || echo "no distutils in code/config: OK"
+  grep -rn "3\.9\|py39" pyproject.toml ci.yml 2>&1 || echo "no 3.9/py39 in metadata/CI: OK"
+  grep -n "actions/checkout\|actions/setup-python" ci.yml
+  echo "--- tools ---"
+  command -v ruff || echo "ruff: not installed"
+  python3 -m ruff --version 2>&1 || true
+  python3 -c "import build" 2>&1 && echo "build available" || echo "build module: not available"
+  python3 -c "import setuptools; print('setuptools', setuptools.__version__)" 2>&1
+$ python3 - << 'PY'
+  import ast, pathlib
+  for f in ["slugkit.py","test_slugkit.py"]:
+      src = pathlib.Path(f).read_text()
+      ast.parse(src)
+      long_lines = [(i+1,len(l)) for i,l in enumerate(src.splitlines()) if len(l)>100]
+      print(f, "ast:OK", "lines>100:", long_lines or "none", "tabs:", "\t" in src)
+  # fresh import without distutils available on this interpreter proves removal
+  import sys
+  print("python:", sys.version.split()[0], "| distutils importable check:")
+  try:
+      import distutils
+      print(" distutils present")
+  except ModuleNotFoundError:
+      print(" distutils absent on this interpreter; slugkit imports anyway")
+  import slugkit
+  print("slugkit import: OK")
+  PY
+  ls -la
+  rm -rf __pycache__ && echo "cleaned __pycache__ from py_compile/unittest"
+$ for f in slugkit.py pyproject.toml ci.yml test_slugkit.py CHANGELOG.md MAINTENANCE.md; do echo "===== $f ====="; cat "$f"; echo; done
+$ for f in slugkit.py pyproject.toml ci.yml test_slugkit.py CHANGELOG.md MAINTENANCE.md; do echo "===== $f ====="; cat "$f"; echo; done
+edit_file 04-project-maintenance/pyproject.toml
+$ python3 --version
+  python3 -m unittest discover -v 2>&1; echo "unittest_exit:$?"
+  python3 -m py_compile slugkit.py test_slugkit.py && echo "py_compile: OK"
+  python3 -c "import tomllib,pathlib; d=tomllib.loads(pathlib.Path('pyproject.toml').read_text()); assert d['project']['version']=='0.4.0'; assert d['project']['requires-python']=='>=3.10'; print('tomllib parse + assertions: OK')"
+  python3 -c "import yaml,pathlib; c=yaml.safe_load(pathlib.Path('ci.yml').read_text()); assert c['permissions']=={'contents':'read'}; assert c['jobs']['test']['strategy']['matrix']['python']==['3.10','3.11','3.12','3.13']; print('yaml parse + assertions: OK')"
+  rm -rf __pycache__; ls -1
+write_file 04-project-maintenance/RESPONSE.md
+$ ls -1; echo "---"; python3 -m unittest discover 2>&1; echo "exit:$?"; rm -rf __pycache__; ls -1
+write_todos 
+## 05-technical-writing
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/TASK.md
+$ ls -la /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/SOURCE_NOTES.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/WEBHOOKS.md
+$ wc -w WEBHOOKS.md; python3 -c "
+  import re
+  t=open('WEBHOOKS.md').read()
+  # prose excluding code fences
+  prose=re.sub(r'\`\`\`.*?\`\`\`','',t,flags=re.S)
+  print('total wc -w style:', len(t.split()))
+  print('excluding code fences:', len(prose.split()))
+  "
+  
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/WEBHOOKS.md
+$ wc -w WEBHOOKS.md; python3 -c "
+  import re
+  t=open('WEBHOOKS.md').read()
+  prose=re.sub(r'\`\`\`.*?\`\`\`','',t,flags=re.S)
+  print('total:', len(t.split()), ' excl code:', len(prose.split()))
+  "
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/WEBHOOKS.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/WEBHOOKS.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/WEBHOOKS.md
+$ wc -w WEBHOOKS.md && python3 -c "
+  import re, subprocess, hashlib, hmac
+  t=open('WEBHOOKS.md').read()
+  code=re.search(r'\`\`\`python(.*?)\`\`\`', t, re.S).group(1)
+  open('/tmp/wh_code.py','w').write(code)
+  ns={}
+  exec(open('/tmp/wh_code.py').read(), ns)
+  ts='1700000000'; body=b'{\"a\": 1}'; secret='s3cret'
+  sig='v1='+hmac.new(secret.encode(), ts.encode()+b'.'+body, hashlib.sha256).hexdigest()
+  print('valid:', ns['is_valid'](ts,sig,body,[secret]))
+  print('tampered body rejected:', not ns['is_valid'](ts,sig,b'{\"a\":2}',[secret]))
+  print('wrong secret rejected:', not ns['is_valid'](ts,sig,body,['nope']))
+  print('rotation second secret ok:', ns['is_valid'](ts,sig,body,['old',secret]))
+  print('bad prefix rejected:', not ns['is_valid'](ts,'v0=abc',body,[secret]))
+  "
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/WEBHOOKS.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/RESPONSE.md
+$ ls -la; echo "--- WORD COUNTS ---"; wc -w WEBHOOKS.md RESPONSE.md SOURCE_NOTES.md TASK.md; echo "--- CHECKS ---"; grep -c "Guarantee" WEBHOOKS.md; grep -c "Recommendation" WEBHOOKS.md; grep -ci "pending confirmation" WEBHOOKS.md; grep -E "512 KiB|Orbit-Hooks/2|10 seconds|X-Orbit-Event|X-Orbit-Type|X-Orbit-Timestamp|X-Orbit-Signature|compare_digest|24 hours|7 days|408" WEBHOOKS.md | head -30; python3 -c "
+  import re
+  t=open('WEBHOOKS.md').read()
+  heads=re.findall(r'^#{1,2} .*', t, re.M)
+  print('\n'.join(heads))
+  print('tables rows:', t.count(chr(10)+'|'))
+  "
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/05-technical-writing/WEBHOOKS.md
+## 06-product-planning
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning/TASK.md
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning/BRIEF.md
+$ ls -la /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning
+write_todos 
+read_skill 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning/PLAN.md
+write_todos 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning/RESPONSE.md
+write_todos 
+$ ls -la && echo "---HEADINGS PLAN---" && grep -n "^#\|^##\|^###" PLAN.md && echo "---HEADINGS RESPONSE---" && grep -n "^#" RESPONSE.md && echo "---DATE/STAFF SCAN (should be empty except 24 hours)---" && grep -niE "[0-9]{4}-[0-9]{2}|january|february|march|april|may|june|july|august|september|october|november|december|sprint|[0-9]+ (week|month|day)s? (of|to|for)|[0-9]+ engineers|team of|FTE|person-" PLAN.md RESPONSE.md || true; echo "---WORDCOUNTS---" && wc -w PLAN.md RESPONSE.md
+$ ls -la && echo "---HEADINGS PLAN---" && grep -n "^#" PLAN.md && echo "---HEADINGS RESPONSE---" && grep -n "^#" RESPONSE.md && echo "---DATE/STAFF SCAN---" && (grep -niE "[0-9]{4}-[0-9]{2}|january|february|march|april|june|july|august|september|october|november|december|sprint|[0-9]+ engineers|team of [0-9]|FTE" PLAN.md RESPONSE.md || echo "none found") && echo "---WORDCOUNTS---" && wc -w -l PLAN.md RESPONSE.md && echo "---REQUIRED TOPICS---" && for t in "user flow" "scope" "local data model" "sync protocol" "conflict" "attachment" "security" "migration" "backfill" "observability" "rollout" "rollback" "testing" "milestone" "acceptance criteria" "assumption" "recommendation" "dependencies\|depends on"; do printf "%s: " "$t"; grep -ci "$t" PLAN.md; done
+$ grep -n "§1[0-9]\|§[0-9]" PLAN.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning/PLAN.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning/PLAN.md
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning/PLAN.md
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning/PLAN.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/06-product-planning/PLAN.md
+write_todos 
+## 07-creative-writing
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/TASK.md
+$ ls -la
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/STORY.md
+$ wc -w STORY.md && wc -c STORY.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/STORY.md
+$ wc -w STORY.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/STORY.md
+$ wc -w STORY.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/STORY.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/STORY.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/STORY.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/STORY.md
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/STORY.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/RESPONSE.md
+$ wc -w STORY.md RESPONSE.md; ls -la; python3 -c "
+  import re
+  s=open('STORY.md').read()
+  r=open('RESPONSE.md').read()
+  print('story words wc-style:', len(s.split()))
+  print('story words alphanumeric:', len(re.findall(r\"[A-Za-z0-9'’\\-]+\", s)))
+  print('response sentences:', len(re.findall(r'[.!?]+(?=\\s|\$)', r.strip())))
+  print('salt mentions:', s.lower().count('salt'))
+  print('title line:', s.splitlines()[0])
+  for banned in ['dream','simulation','villain']:
+      print(banned, banned in s.lower())
+  "
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/STORY.md
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/07-creative-writing/RESPONSE.md
+## 08-social-media
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/08-social-media/TASK.md
+$ ls -la
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/08-social-media/BRAND.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/08-social-media/SOCIAL.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/08-social-media/RESPONSE.md
+$ python3 - <<'PY'
+  import pathlib, re
+  p=pathlib.Path("SOCIAL.md").read_text()
+  def section(name, nxt):
+      return p.split(f"## {name}")[1].split(f"## {nxt}")[0].strip() if nxt else p.split(f"## {name}")[1].strip()
+  li=section("LinkedIn post","Bluesky post")
+  bs=section("Bluesky post","Instagram caption")
+  ig=section("Instagram caption","Replies")
+  def words(t): return len(t.split())
+  print("LinkedIn words",words(li)); print(li)
+  print("\nBluesky chars",len(bs), "words",words(bs)); print(bs)
+  print("\nInstagram words incl hashtags",words(ig), "excl hashtag line", words(ig.replace("#Research #LiteratureReview #Academia #DesktopApp","")), "hashtags", ig.count("#")); print(ig)
+  r=pathlib.Path("RESPONSE.md").read_text()
+  print("\nRESPONSE total words incl title/code",words(r))
+  # replies
+  print("\nReply sections Bluesky char counts:")
+  for m in re.finditer(r"\*\*Reply:\*\* (.+?)(?=\n\n\*\*Comment|\n\n###|\Z)",p,re.S):
+      txt=" ".join(m.group(1).split())
+      print(len(txt), words(txt), txt[:70])
+  print("\nComments present:",p.count("**Comment:**"),"Replies:",p.count("**Reply:**"))
+  for c in ["Is this just another chatbot wrapping my documents?","Can a university buy seats for a lab?","no linux, no deal","Does local mean you train on my papers anyway?","I paid and the app has been stuck indexing for two hours.","Would this work for a literature review in Japanese?"]:
+      print(c, c in p)
+  # banned-ish check
+  for phrase in ["thanks for your feedback","game-changer","revolutionary","10x","SOC","certified"]:
+      print(phrase, phrase.lower() in p.lower())
+  PY
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/08-social-media/SOCIAL.md
+$ python3 -c "
+  import pathlib
+  p=pathlib.Path('SOCIAL.md').read_text()
+  li=p.split('## LinkedIn post')[1].split('## Bluesky post')[0].strip()
+  bs=p.split('## Bluesky post')[1].split('## Instagram caption')[0].strip()
+  ig=p.split('## Instagram caption')[1].split('## Replies')[0].strip()
+  print('LinkedIn words:',len(li.split()))
+  print('Bluesky chars:',len(bs))
+  print('Instagram words incl hashtags:',len(ig.split()),'| excl hashtags:',len(ig.replace('#Research #LiteratureReview #Academia #DesktopApp','').split()),'| hashtags:',ig.count('#'))
+  print('RESPONSE total words:',len(pathlib.Path('RESPONSE.md').read_text().split()))
+  print('Replies:',p.count('**Reply:**'))
+  "
+  ls -la
+## 09-incident-analysis
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/09-incident-analysis/TASK.md
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/09-incident-analysis/TIMELINE.md
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/09-incident-analysis/LOGS.txt
+$ ls -la
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/09-incident-analysis/INCIDENT.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/09-incident-analysis/ACTIONS.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/09-incident-analysis/CUSTOMER_UPDATE.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/09-incident-analysis/RESPONSE.md
+$ ls -la; echo "--- word count CUSTOMER_UPDATE (all, and body without heading):"; wc -w CUSTOMER_UPDATE.md; tail -n +2 CUSTOMER_UPDATE.md | wc -w
+## 10-general-operations
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/10-general-operations/TASK.md
+$ ls -la /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/10-general-operations/
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/10-general-operations/INBOX.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/10-general-operations/WEEK_PLAN.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/10-general-operations/DECISIONS.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/10-general-operations/DRAFT_REPLY.md
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/10-general-operations/RESPONSE.md
+read_skill 
+$ ls -lh /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/10-general-operations/ && wc -l /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/10-general-operations/*.md
+## 11-frontend-operations
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/11-frontend-operations/TASK.md
+$ ls -la /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/11-frontend-operations/ && cat /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/11-frontend-operations/DATA.json 2>/dev/null || echo "NO DATA.json"
+read_skill 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/11-frontend-operations/index.html
+read_skill 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/11-frontend-operations/styles.css
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/11-frontend-operations/app.js
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/11-frontend-operations/RESPONSE.md
+$ cd /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/11-frontend-operations && ls -la && node --check app.js && echo "JS_SYNTAX_OK" ; grep -nE "https?:|//cdn|url\(|@import|fetch\(" index.html styles.css app.js || echo "NO_EXTERNAL_REFS" ; python3 -c "
+  import json,re
+  d=json.load(open('DATA.json')); js=open('app.js').read()
+  missing=[x for x in [m['value'] for m in d['metrics']]+[i['id'] for i in d['incidents']]+[i['title'] for i in d['incidents']] if x not in js]
+  print('THROUGHPUT_MATCH', str(d['throughput']).replace(' ','') in js.replace(' ',''))
+  print('MISSING_SEED', missing)
+  html=open('index.html').read()
+  for t in ['styles.css','app.js','id=\"incidentTable\"','id=\"emptyState\"','aria-live','skip-link']: print(t, t in html)
+  "
+$ cd /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/11-frontend-operations && python3 -c "
+  import re
+  html=open('index.html').read(); js=open('app.js').read()
+  ids=set(re.findall(r'\"#([A-Za-z0-9_-]+)\"',js))
+  # dynamic ackBtn created in JS itself
+  html_ids=set(re.findall(r'id=\"([^\"]+)\"',html))
+  print('JS_REFS_MISSING_IN_HTML', sorted(ids-html_ids-{'ackBtn'}))
+  print('ACK_BTN_CREATED_IN_JS', 'id=\"ackBtn\"' in js)
+  css=open('styles.css').read()
+  for t in ['390','760px','focus-visible','tabular-nums','overflow-x:auto','prefers-reduced-motion']: print(t, t in css or t in html)
+  "
+  command -v chromium || command -v chromium-browser || command -v google-chrome || echo NO_BROWSER_AVAILABLE
+## 12-frontend-editorial
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/12-frontend-editorial/TASK.md
+$ ls -la; echo ---; cat COPY.md 2>/dev/null; echo ---; ls -la . 2>/dev/null
+read_skill 
+write_todos 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/12-frontend-editorial/index.html
+read_skill 
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/12-frontend-editorial/index.html
+write_todos 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/12-frontend-editorial/styles.css
+edit_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/12-frontend-editorial/styles.css
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/12-frontend-editorial/app.js
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/12-frontend-editorial/RESPONSE.md
+write_todos 
+$ python3 - <<'PY'
+  import re, pathlib
+  d=pathlib.Path('.')
+  html=(d/'index.html').read_text(); css=(d/'styles.css').read_text(); js=(d/'app.js').read_text()
+  checks={
+   "files": all((d/f).exists() for f in ["index.html","styles.css","app.js","RESPONSE.md"]),
+   "no_remote": not re.search(r'https?://|//cdn|@import|url\(\s*["\']?http', html+css+js),
+   "no_framework_src": "react" not in (html+js).lower(),
+   "issue": all(s in html for s in ["Low Water","Issue 14","Autumn 2026","The River Keeps Its Receipts","Imani Vale","Night Bus Atlas","Concrete Orchards","A Language for Empty Pools","Tomás Iriarte","Meera Das","Hana Mori"]),
+   "copy_summaries": all(s in html for s in ["shop ledgers, bottle caps","cleaners, nurses, bakers","fruit trees in the unfinished floors","public baths retired after the last swimmer"]),
+   "archive": all(s in html for s in ["Issue 13","After the Last Train","Issue 12","Borrowed Ground","Issue 11","The Weather Indoors"]),
+   "offer": all(s in html for s in ["¥2,400","Print + digital","Cancel anytime"]),
+   "reading_toggle": 'id="reading-toggle"' in html and 'aria-pressed' in html and 'data-reading' in js+css,
+   "email_validation": all(s in html+js for s in ['id="email"','aria-live','aria-invalid','preventDefault',"novalidate"]),
+   "accessibility": all(s in html for s in ['skip-link','role="img"','aria-hidden="true"','<main','<nav']),
+   "mobile_css": "max-width:760px" in css and "max-width:420px" in css,
+   "reduced_motion": "prefers-reduced-motion" in css,
+   "balanced_html": html.count("<section")==html.count("</section>") and html.count("<article")==html.count("</article>"),
+  }
+  for k,v in checks.items(): print(f"{'PASS' if v else 'FAIL'} {k}")
+  print("ALLPASS" if all(checks.values()) else "SOMEFAIL")
+  PY
+  node --check app.js 2>&1 && echo "JS_SYNTAX_OK" || echo "node unavailable or JS fail"
+  ls -l
+write_file /tmp/margin_test.js
+$ node /tmp/margin_test.js ./app.js
+write_todos 
+## 13-frontend-playful
+read_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/13-frontend-playful/TASK.md
+$ ls -la; echo "---"; cat PLANTS.json 2>/dev/null; echo "---cat done"
+read_skill 
+read_skill 
+write_todos 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/13-frontend-playful/index.html
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/13-frontend-playful/styles.css
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/13-frontend-playful/app.js
+write_todos 
+write_file /tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full/13-frontend-playful/RESPONSE.md
+$ node --check app.js && echo "JS SYNTAX OK"; ls -la; echo "---external refs (expect none except w3?)---"; grep -rnE "https?://|@import|url\(" index.html styles.css app.js || echo "none found"; echo "---required content---"; for s in Frida Orbit Dot Drama Watered Snooze Undo "Weekly rhythm" "all-done" "prefers-reduced-motion" "aria-expanded" "focus-visible" "Boston fern" "Golden pothos" "Bunny ears" "Calathea" "overdue"; do printf "%s: " "$s"; grep -rqi "$s" index.html styles.css app.js && echo OK || echo MISSING; done
+$ command -v chromium || command -v chromium-browser || command -v google-chrome || echo "no chromium"; python3 -c "
+  from html.parser import HTMLParser
+  HTMLParser().feed(open('index.html').read()); print('HTML parse OK')
+  import re
+  css=open('styles.css').read(); print('CSS braces balanced:', css.count('{')==css.count('}'))
+  js=open('app.js').read()
+  for w in ['Sep 19','Sep 20','Sep 08','Sep 21','2 days overdue','WEEK = [1, 3, 2, 4, 2, 1, 3]']:
+      assert w in js, w
+  print('history/week data OK')
+  "
+write_file /tmp/moss-smoke.js
+$ node /tmp/moss-smoke.js
+write_todos 
+
+# flags
+12-frontend-editorial OUTSIDE? write_file /tmp/margin_test.js
+13-frontend-playful OUTSIDE? write_file /tmp/moss-smoke.js

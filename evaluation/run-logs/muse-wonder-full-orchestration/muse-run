@@ -1,0 +1,7 @@
+#!/bin/bash
+# muse-run HOME_DIR ARGS...: muse exec as the blank slate (sandboxed, clean HOME); the API key is read here, outside the
+# sandbox, and piped on stdin, so it is never in the agent's environment or visible files.
+H=$1; shift
+O=/tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/muse-full-orch
+/usr/bin/python3 -I -c 'import json; print(json.load(open("/home/arda/.config/muse/auth.json"))["providers"]["meta"]["api_key"])' \
+  | $O/sandboxed $H $O/bin/muse-bin-1.4.10-R6427.1 exec --api-key-stdin "$@"

@@ -1,0 +1,17 @@
+#!/bin/bash
+# sandboxed HOME_DIR CMD...: run a command as muse's blank slate (Linux stand-in for the Mac run's Seatbelt profile): scrubbed environment,
+# a clean HOME per task (so no task sees another's sessions), bubblewrap with /home, /tmp, /run/user, /mnt, /srv and /var/tmp replaced by empty tmpfs, so nothing of
+# the user's (home, other runs in the scratchpad, mounts) is visible. Visible read-only: the system, the pinned muse
+# binary, Node. Writable: the run repository and the clean HOME. Network is shared (the Meta API needs HTTPS).
+O=/tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/muse-full-orch
+R=/tmp/claude-1000/-home-arda-projects-agent-evaluation/8413ce30-b544-4ae4-afd6-5f8333042ec1/scratchpad/agent-eval-muse-wonder-full
+H=$1; shift; mkdir -p $H/tmp
+NODE=/home/arda/.local/share/mise/installs/node/26.8.2
+exec /usr/bin/env -i HOME=$H USER=arda LOGNAME=arda LANG=en_US.UTF-8 TERM=dumb SHELL=/bin/bash \
+  XDG_CONFIG_HOME=$H/.config XDG_DATA_HOME=$H/.local/share XDG_CACHE_HOME=$H/.cache \
+  XDG_STATE_HOME=$H/.local/state TMPDIR=$H/tmp \
+  PATH=$NODE/bin:/usr/local/bin:/usr/bin:/bin \
+  /usr/sbin/bwrap --ro-bind / / --dev /dev --proc /proc \
+    --tmpfs /home --tmpfs /tmp --tmpfs /run/user --tmpfs /mnt --tmpfs /srv --tmpfs /var/tmp \
+    --ro-bind $NODE $NODE --ro-bind $O/bin $O/bin --bind $H $H --bind $R $R \
+    --unshare-pid --unshare-ipc --unshare-uts --die-with-parent --new-session --chdir $R "$@"
