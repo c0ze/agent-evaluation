@@ -1,0 +1,1610 @@
+/* ==========================================================================
+   MOSS — Tactile Household Plant-Care Companion
+   Visual Direction: Warm stoneware, pressed linen, moss velvet, offset ink
+   ========================================================================== */
+
+:root {
+  /* Surfaces */
+  --bg-linen: #f5efe2;
+  --bg-parchment: #fbf8f1;
+  --bg-oat: #ede4d1;
+  --bg-clay-tint: #fae5dc;
+  --bg-moss-tint: #e4efe2;
+  --bg-sun-tint: #fbf0d4;
+  --bg-mist-tint: #e2eef0;
+
+  /* Ink & Borders */
+  --ink-soil: #231f1b;
+  --ink-bark: #4e453c;
+  --ink-muted: #6e6357;
+  --border-ink: #231f1b;
+
+  /* Botanical Accents */
+  --terracotta: #d45d3a;
+  --terracotta-deep: #b34222;
+  --moss-green: #376143;
+  --moss-bright: #558259;
+  --lichen-lime: #c9d97e;
+  --ochre-sun: #e5a336;
+  --mist-blue: #6aa1ad;
+  --plum-snooze: #6d597a;
+
+  /* Typography (100% local system stacks with character) */
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --font-sans: "Avenir Next", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Cascadia Mono", "Courier New", monospace;
+
+  /* Tactile Elevation & Shape Language */
+  --shadow-hard: 4px 4px 0px var(--ink-soil);
+  --shadow-hard-sm: 2px 2px 0px var(--ink-soil);
+  --shadow-hard-lg: 6px 6px 0px var(--ink-soil);
+  --radius-pebble: 24px 28px 22px 26px;
+  --radius-card: 22px;
+  --radius-pill: 999px;
+
+  /* Transitions */
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 160ms var(--ease-spring);
+  --transition-med: 280ms var(--ease-spring);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  font-size: 16px;
+  background-color: var(--bg-linen);
+  color: var(--ink-soil);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  background-color: var(--bg-linen);
+  /* Subtle warm organic dot matrix + warm ambient sun glow */
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(229, 163, 54, 0.14) 0%, transparent 40%),
+    radial-gradient(circle at 88% 18%, rgba(85, 130, 89, 0.12) 0%, transparent 42%),
+    radial-gradient(rgba(35, 31, 27, 0.08) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 22px 22px;
+  padding-bottom: 5.5rem;
+}
+
+.sr-only-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   ACCESSIBILITY: Focus Ring & Skip Link
+   ========================================================================== */
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 1000;
+  background: var(--ink-soil);
+  color: var(--lichen-lime);
+  padding: 0.65rem 1.1rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink-soil);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--lichen-lime) !important;
+}
+
+/* ==========================================================================
+   APP SHELL & MASTHEAD
+   ========================================================================== */
+
+.app-shell {
+  max-width: 1260px;
+  margin: 0 auto;
+  padding: 1rem 1rem 2rem;
+}
+
+.masthead {
+  background: var(--bg-parchment);
+  border: 2.5px solid var(--border-ink);
+  border-radius: 26px 22px 28px 20px;
+  box-shadow: var(--shadow-hard);
+  padding: 1rem 1.15rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  position: relative;
+}
+
+.masthead-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.moss-mascot-wrap {
+  width: 64px;
+  height: 58px;
+  flex-shrink: 0;
+  background: var(--bg-sun-tint);
+  border: 2px solid var(--border-ink);
+  border-radius: 22px 26px 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-hard-sm);
+  transition: transform var(--transition-med);
+}
+
+.moss-mascot {
+  width: 56px;
+  height: 50px;
+  overflow: visible;
+  animation: gentle-bob 4.5s ease-in-out infinite;
+}
+
+@keyframes gentle-bob {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2.5px) rotate(1.5deg);
+  }
+}
+
+.brand-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.brand-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.55rem;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.05;
+  color: var(--ink-soil);
+}
+
+.date-stamp {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  background: var(--bg-oat);
+  color: var(--ink-bark);
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-ink);
+}
+
+.companion-whisper {
+  margin: 0.25rem 0 0;
+  font-size: 0.92rem;
+  color: var(--ink-bark);
+  font-weight: 500;
+}
+
+.masthead-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1.5px dashed rgba(35, 31, 27, 0.2);
+}
+
+.status-pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.status-pill {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.24rem 0.65rem;
+  border-radius: var(--radius-pill);
+  border: 1.8px solid var(--border-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.status-pill--urgent {
+  background: var(--terracotta);
+  color: #fffaf5;
+}
+
+.status-pill--today {
+  background: var(--ochre-sun);
+  color: var(--ink-soil);
+}
+
+.status-pill--done {
+  background: var(--lichen-lime);
+  color: var(--ink-soil);
+}
+
+.utility-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.btn-utility {
+  appearance: none;
+  background: var(--bg-linen);
+  color: var(--ink-soil);
+  border: 1.8px solid var(--border-ink);
+  border-radius: var(--radius-pill);
+  padding: 0.3rem 0.72rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  box-shadow: 1.5px 1.5px 0px var(--ink-soil);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.btn-utility:hover {
+  background: var(--bg-oat);
+  transform: translate(-1px, -1px);
+}
+
+.btn-utility:active {
+  transform: translate(1px, 1px);
+}
+
+.btn-utility[aria-pressed="true"] {
+  background: var(--lichen-lime);
+}
+
+.utility-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--moss-green);
+  border: 1px solid var(--ink-soil);
+}
+
+/* ==========================================================================
+   WORKBENCH LAYOUT (Mobile-first -> Desktop 2-column studio)
+   ========================================================================== */
+
+.workbench {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.queue-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.almanac-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ==========================================================================
+   QUEUE TOOLBAR & FILTER TABS
+   ========================================================================== */
+
+.queue-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.filter-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  background: var(--bg-oat);
+  padding: 0.3rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-ink);
+}
+
+.filter-tab {
+  appearance: none;
+  border: 1.5px solid transparent;
+  background: transparent;
+  color: var(--ink-bark);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.34rem 0.78rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.filter-tab:hover {
+  color: var(--ink-soil);
+}
+
+.filter-tab.is-active {
+  background: var(--bg-parchment);
+  color: var(--ink-soil);
+  border-color: var(--border-ink);
+  box-shadow: 1.5px 1.5px 0px var(--ink-soil);
+}
+
+.tab-count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  background: rgba(35, 31, 27, 0.1);
+  padding: 0.05rem 0.4rem;
+  border-radius: var(--radius-pill);
+}
+
+.btn-sweep {
+  appearance: none;
+  background: var(--moss-green);
+  color: #fbf8f1;
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-pill);
+  padding: 0.44rem 0.95rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-hard-sm);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.btn-sweep:hover {
+  background: var(--moss-bright);
+  transform: translate(-1px, -1px);
+}
+
+.btn-sweep:active {
+  transform: translate(1px, 1px);
+}
+
+/* ==========================================================================
+   QUEUE SECTIONS & HEADERS
+   ========================================================================== */
+
+.queue-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.2rem;
+}
+
+.section-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.priority-beacon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--terracotta);
+  border: 2px solid var(--ink-soil);
+  box-shadow: 0 0 0 3px rgba(212, 93, 58, 0.25);
+}
+
+.today-marker {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  transform: rotate(45deg);
+  background: var(--ochre-sun);
+  border: 2px solid var(--ink-soil);
+}
+
+.resting-marker {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--mist-blue);
+  border: 2px solid var(--ink-soil);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--ink-soil);
+}
+
+.section-caption {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   PLANT CARDS — Distinct Silhouette Language (Not a wall of identical cards!)
+   ========================================================================== */
+
+.plant-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.plant-bench-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.plant-resting-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Base Specimen Ticket */
+.plant-card {
+  position: relative;
+  background: var(--bg-parchment);
+  border: 2.5px solid var(--border-ink);
+  box-shadow: var(--shadow-hard);
+  padding: 1.1rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-med);
+}
+
+.plant-card.is-selected {
+  box-shadow: 6px 6px 0px var(--moss-green);
+}
+
+/* 1. OVERDUE SPOTLIGHT SILHOUETTE (Frida): Warm Terracotta Ticket with Arched Top-Left Alcove */
+.plant-card--overdue {
+  background: linear-gradient(145deg, #fff6f1 0%, #faebe3 100%);
+  background-color: #fdf2ec;
+  border-radius: 34px 18px 26px 18px;
+  border-width: 3px;
+  box-shadow: var(--shadow-hard-lg);
+  padding: 1.25rem;
+}
+
+.plant-card--overdue::before {
+  content: "PRIORITY SOAK · URGENCY 4/4";
+  position: absolute;
+  top: -13px;
+  right: 18px;
+  background: var(--terracotta);
+  color: #fffaf5;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-ink);
+  box-shadow: 2px 2px 0px var(--ink-soil);
+}
+
+/* 2. TODAY BENCH SILHOUETTES (Orbit & Dot): Distinct Asymmetric Corners & Tactile Accents */
+.plant-card--today-rotate {
+  background: #fbf8f0;
+  border-radius: 18px 32px 18px 28px;
+}
+
+.plant-card--today-soil {
+  background: #fdf9ed;
+  border-radius: 28px 18px 32px 18px;
+}
+
+/* 3. TOMORROW / RESTING SILHOUETTE (Drama): Soft Scalloped Dashed Conservatory Ticket */
+.plant-card--tomorrow {
+  background: var(--bg-mist-tint);
+  border-radius: 20px;
+  border-style: solid;
+  box-shadow: 3px 3px 0px var(--ink-soil);
+}
+
+/* 4. TENDED / SNOOZED STATE */
+.plant-card--tended {
+  background: var(--bg-moss-tint);
+  border-radius: 20px;
+  box-shadow: 2px 2px 0px var(--ink-soil);
+}
+
+.plant-card--snoozed {
+  background: #eee9f2;
+  border-radius: 20px;
+  box-shadow: 2px 2px 0px var(--ink-soil);
+}
+
+/* Card Main Layout */
+.card-top-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+/* Botanical Illustration Alcove */
+.plant-illo-alcove {
+  width: 84px;
+  height: 92px;
+  flex-shrink: 0;
+  background: var(--bg-linen);
+  border: 2px solid var(--border-ink);
+  border-radius: 42px 42px 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 -6px 0 rgba(35, 31, 27, 0.07);
+  cursor: pointer;
+}
+
+.plant-card--overdue .plant-illo-alcove {
+  width: 96px;
+  height: 104px;
+  background: #fce4d8;
+}
+
+.plant-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Subtle organic sway on illustrations */
+.sway-leaf {
+  transform-origin: bottom center;
+  animation: leaf-sway 5s ease-in-out infinite;
+}
+
+@keyframes leaf-sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+
+.card-main-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+
+.badge-due {
+  font-family: var(--font-mono);
+  font-size: 0.73rem;
+  font-weight: 800;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-ink);
+}
+
+.badge-due--overdue {
+  background: var(--terracotta);
+  color: #fff;
+}
+
+.badge-due--today {
+  background: var(--ochre-sun);
+  color: var(--ink-soil);
+}
+
+.badge-due--tomorrow {
+  background: var(--bg-parchment);
+  color: var(--ink-bark);
+}
+
+.badge-due--tended {
+  background: var(--lichen-lime);
+  color: var(--ink-soil);
+}
+
+.badge-due--snoozed {
+  background: #d8cbe2;
+  color: var(--ink-soil);
+}
+
+.badge-location {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-bark);
+  background: rgba(35, 31, 27, 0.06);
+  padding: 0.14rem 0.52rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(35, 31, 27, 0.25);
+}
+
+.plant-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.plant-name-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--ink-soil);
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.15;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--transition-fast);
+}
+
+.plant-name-btn:hover {
+  text-decoration-color: var(--terracotta);
+}
+
+.plant-species {
+  font-size: 0.86rem;
+  font-style: italic;
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+}
+
+/* Task Callout Chip */
+.task-callout {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1.5px solid var(--border-ink);
+  border-radius: 14px;
+  padding: 0.45rem 0.7rem;
+}
+
+.task-icon-pill {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.12rem 0.48rem;
+  border-radius: 8px;
+  background: var(--ink-soil);
+  color: var(--bg-parchment);
+}
+
+.task-desc {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soil);
+}
+
+/* Quick Metadata Strip inside card */
+.card-quick-meta {
+  margin-top: 0.65rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--ink-bark);
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+}
+
+/* Card Action Row */
+.card-actions-row {
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1.5px dashed rgba(35, 31, 27, 0.2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+}
+
+.primary-care-btns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-watered {
+  appearance: none;
+  background: var(--moss-green);
+  color: #fffaf5;
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-pill);
+  padding: 0.48rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: var(--shadow-hard-sm);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.plant-card--overdue .btn-watered {
+  background: var(--terracotta);
+  padding: 0.55rem 1.15rem;
+  font-size: 0.92rem;
+}
+
+.plant-card--overdue .btn-watered:hover {
+  background: var(--terracotta-deep);
+}
+
+.btn-watered:hover {
+  background: var(--moss-bright);
+  transform: translate(-1px, -1px);
+}
+
+.btn-watered:active {
+  transform: translate(1px, 1px);
+}
+
+.btn-watered.is-done {
+  background: var(--lichen-lime);
+  color: var(--ink-soil);
+}
+
+.btn-snooze {
+  appearance: none;
+  background: var(--bg-linen);
+  color: var(--ink-soil);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-pill);
+  padding: 0.46rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: var(--shadow-hard-sm);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.btn-snooze:hover {
+  background: var(--bg-oat);
+  transform: translate(-1px, -1px);
+}
+
+.btn-snooze:active {
+  transform: translate(1px, 1px);
+}
+
+.btn-snooze.is-snoozed {
+  background: #d8cbe2;
+}
+
+.btn-expand-details {
+  appearance: none;
+  background: transparent;
+  color: var(--ink-bark);
+  border: 1.5px solid var(--border-ink);
+  border-radius: var(--radius-pill);
+  padding: 0.38rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btn-expand-details:hover,
+.btn-expand-details[aria-expanded="true"] {
+  background: var(--ink-soil);
+  color: var(--bg-parchment);
+}
+
+/* ==========================================================================
+   INLINE EXPANDABLE DETAIL PANEL (Inside each card)
+   ========================================================================== */
+
+.card-detail-drawer {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 2px solid var(--border-ink);
+  background: rgba(255, 255, 255, 0.58);
+  border-radius: 16px;
+  padding: 0.95rem;
+}
+
+.detail-specs-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+@media (min-width: 520px) {
+  .detail-specs-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.spec-tile {
+  background: var(--bg-parchment);
+  border: 1.8px solid var(--border-ink);
+  border-radius: 14px;
+  padding: 0.65rem 0.75rem;
+}
+
+.spec-tile-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  display: block;
+}
+
+.spec-tile-value {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--ink-soil);
+  display: block;
+  margin-top: 0.15rem;
+}
+
+.spec-tile-note {
+  font-size: 0.78rem;
+  color: var(--ink-bark);
+  margin-top: 0.2rem;
+  display: block;
+}
+
+.history-block-title {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-bark);
+  margin: 0 0 0.45rem;
+}
+
+.history-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+}
+
+.history-entry {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--ink-soil);
+  background: var(--bg-parchment);
+  border: 1.5px solid var(--border-ink);
+  border-radius: 10px;
+  padding: 0.35rem 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.history-entry--new {
+  background: var(--lichen-lime);
+}
+
+.history-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--moss-green);
+  flex-shrink: 0;
+}
+
+/* Quick Observation Note Form */
+.observation-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.observation-input {
+  flex: 1;
+  min-width: 160px;
+  background: var(--bg-parchment);
+  border: 1.8px solid var(--border-ink);
+  border-radius: var(--radius-pill);
+  padding: 0.38rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--ink-soil);
+}
+
+.btn-log-note {
+  appearance: none;
+  background: var(--ink-soil);
+  color: var(--bg-parchment);
+  border: 1.8px solid var(--border-ink);
+  border-radius: var(--radius-pill);
+  padding: 0.38rem 0.8rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-log-note:hover {
+  background: var(--moss-green);
+}
+
+/* ==========================================================================
+   ALL-DONE CELEBRATION CARD
+   ========================================================================== */
+
+.all-done-card {
+  background: linear-gradient(135deg, #f3f7e8 0%, #fbf4df 100%);
+  background-color: #f3f7e8;
+  border: 3px solid var(--border-ink);
+  border-radius: 30px 22px 28px 24px;
+  box-shadow: var(--shadow-hard-lg);
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.all-done-illustration {
+  display: flex;
+  justify-content: center;
+}
+
+.all-done-svg {
+  width: 180px;
+  height: 120px;
+}
+
+.all-done-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--moss-green);
+}
+
+.all-done-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0.25rem 0 0.4rem;
+  line-height: 1.2;
+}
+
+.all-done-summary {
+  margin: 0 0 0.9rem;
+  color: var(--ink-bark);
+  font-size: 0.92rem;
+}
+
+.all-done-forecast-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 560px) {
+  .all-done-forecast-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.forecast-box {
+  background: var(--bg-parchment);
+  border: 2px solid var(--border-ink);
+  border-radius: 16px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.forecast-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.forecast-value {
+  font-size: 0.9rem;
+  color: var(--ink-soil);
+}
+
+.forecast-note {
+  font-size: 0.78rem;
+  color: var(--ink-bark);
+}
+
+.btn-secondary {
+  appearance: none;
+  background: var(--bg-parchment);
+  color: var(--ink-soil);
+  border: 2px solid var(--border-ink);
+  border-radius: var(--radius-pill);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.btn-secondary:hover {
+  background: var(--lichen-lime);
+}
+
+/* ==========================================================================
+   COMPACT WEEKLY RHYTHM VISUALIZATION
+   ========================================================================== */
+
+.rhythm-card {
+  background: var(--bg-parchment);
+  border: 2.5px solid var(--border-ink);
+  border-radius: 24px 20px 26px 18px;
+  box-shadow: var(--shadow-hard);
+  padding: 1.15rem;
+}
+
+.rhythm-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.eyebrow-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--moss-green);
+  display: block;
+}
+
+.rhythm-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0.1rem 0 0;
+}
+
+.rhythm-totals {
+  background: var(--bg-sun-tint);
+  border: 2px solid var(--border-ink);
+  border-radius: 14px;
+  padding: 0.25rem 0.6rem;
+  text-align: right;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.rhythm-total-num {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  display: block;
+  line-height: 1;
+}
+
+.rhythm-total-label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--ink-bark);
+}
+
+.rhythm-subtitle {
+  margin: 0.5rem 0 0.85rem;
+  font-size: 0.82rem;
+  color: var(--ink-bark);
+  min-height: 2.4em;
+}
+
+.rhythm-chart {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.45rem;
+  align-items: end;
+  height: 128px;
+  padding: 0.75rem 0.5rem 0.45rem;
+  background: var(--bg-linen);
+  border: 2px solid var(--border-ink);
+  border-radius: 18px;
+}
+
+.rhythm-day-btn {
+  appearance: none;
+  background: none;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  padding: 0.25rem 0.15rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.rhythm-day-btn:hover {
+  background: rgba(35, 31, 27, 0.06);
+  transform: translateY(-2px);
+}
+
+.rhythm-day-btn.is-active-day {
+  background: var(--bg-parchment);
+  border-color: var(--border-ink);
+  box-shadow: 1.5px 1.5px 0px var(--ink-soil);
+}
+
+.rhythm-count-pill {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--ink-soil);
+}
+
+.rhythm-stem-track {
+  width: 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.rhythm-stem-bar {
+  width: 100%;
+  border: 2px solid var(--border-ink);
+  border-radius: 9px 9px 4px 4px;
+  background: var(--moss-bright);
+  transition: height var(--transition-med), background-color var(--transition-fast);
+  position: relative;
+}
+
+.rhythm-day-btn.is-today .rhythm-stem-bar {
+  background: var(--ochre-sun);
+}
+
+.rhythm-day-btn.is-peak .rhythm-stem-bar {
+  background: var(--terracotta);
+}
+
+.rhythm-day-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--ink-bark);
+}
+
+.rhythm-day-btn.is-today .rhythm-day-label {
+  color: var(--ink-soil);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.rhythm-legend {
+  margin-top: 0.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-bark);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  border: 1.5px solid var(--border-ink);
+}
+
+.legend-swatch--today {
+  background: var(--ochre-sun);
+}
+
+.legend-swatch--peak {
+  background: var(--terracotta);
+}
+
+.legend-swatch--done {
+  background: var(--lichen-lime);
+}
+
+/* ==========================================================================
+   SPECIMEN DOSSIER (Right-hand / Dedicated Plant Detail View)
+   ========================================================================== */
+
+.dossier-card {
+  background: var(--bg-parchment);
+  border: 2.5px solid var(--border-ink);
+  border-radius: 22px 28px 20px 26px;
+  box-shadow: var(--shadow-hard);
+  padding: 1.2rem;
+}
+
+.dossier-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 2px dashed rgba(35, 31, 27, 0.2);
+}
+
+.dossier-portrait {
+  width: 88px;
+  height: 96px;
+  flex-shrink: 0;
+  background: var(--bg-sun-tint);
+  border: 2px solid var(--border-ink);
+  border-radius: 44px 44px 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.dossier-title-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.dossier-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--terracotta);
+}
+
+.dossier-name {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 800;
+  margin: 0.1rem 0;
+  line-height: 1.1;
+}
+
+.dossier-species {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  margin: 0 0 0.4rem;
+}
+
+.dossier-quirk {
+  margin: 0.75rem 0;
+  padding: 0.55rem 0.75rem;
+  background: var(--bg-linen);
+  border-left: 4px solid var(--moss-green);
+  border-radius: 0 12px 12px 0;
+  font-size: 0.83rem;
+  font-style: italic;
+  color: var(--ink-bark);
+}
+
+.dossier-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.85rem 0;
+}
+
+/* ==========================================================================
+   KEYBOARD HINT CARD
+   ========================================================================== */
+
+.keyboard-hint-card {
+  background: var(--bg-oat);
+  border: 2px solid var(--border-ink);
+  border-radius: 16px;
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.76rem;
+}
+
+.keyboard-hint-title {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--ink-bark);
+}
+
+.shortcut-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  color: var(--ink-soil);
+  font-weight: 600;
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  background: var(--bg-parchment);
+  border: 1.5px solid var(--border-ink);
+  border-radius: 5px;
+  padding: 0.08rem 0.35rem;
+  box-shadow: 1px 1px 0px var(--ink-soil);
+}
+
+/* ==========================================================================
+   FLOATING UNDO TOAST
+   ========================================================================== */
+
+.undo-toast {
+  position: fixed;
+  bottom: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  width: min(92vw, 480px);
+  background: var(--ink-soil);
+  color: var(--bg-parchment);
+  border: 2.5px solid var(--border-ink);
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(35, 31, 27, 0.28), 4px 4px 0px var(--terracotta);
+  padding: 0.75rem 0.95rem 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  overflow: hidden;
+}
+
+.undo-toast-content {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.undo-toast-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--lichen-lime);
+  color: var(--ink-soil);
+  font-weight: 900;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.undo-toast-message {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.undo-toast-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.btn-undo {
+  appearance: none;
+  background: var(--lichen-lime);
+  color: var(--ink-soil);
+  border: 1.8px solid var(--bg-parchment);
+  border-radius: var(--radius-pill);
+  padding: 0.32rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn-undo:hover {
+  background: var(--ochre-sun);
+}
+
+.btn-toast-dismiss {
+  appearance: none;
+  background: transparent;
+  color: var(--bg-oat);
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0.2rem 0.4rem;
+  cursor: pointer;
+}
+
+.undo-progress-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.undo-progress-bar {
+  height: 100%;
+  width: 100%;
+  background: var(--lichen-lime);
+  transform-origin: left center;
+  transition: transform 8s linear;
+}
+
+/* ==========================================================================
+   DESKTOP COMPOSITION (>= 920px: Asymmetric 12-Col Botanical Studio)
+   ========================================================================== */
+
+@media (min-width: 700px) {
+  .plant-bench-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 920px) {
+  .app-shell {
+    padding: 1.5rem 1.75rem 3rem;
+  }
+
+  .masthead {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.15rem 1.5rem;
+  }
+
+  .masthead-controls {
+    border-top: none;
+    padding-top: 0;
+    justify-content: flex-end;
+  }
+
+  .workbench {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(340px, 5fr);
+    gap: 1.75rem;
+    align-items: start;
+  }
+
+  .almanac-column {
+    position: sticky;
+    top: 1.25rem;
+  }
+
+  /* Make the Overdue Spotlight card an expressive horizontal studio ticket on desktop */
+  .plant-card--overdue .card-top-row {
+    gap: 1.35rem;
+  }
+
+  .plant-card--overdue .plant-illo-alcove {
+    width: 112px;
+    height: 120px;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION SUPPORT (System preference + Manual UI toggle)
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
+}

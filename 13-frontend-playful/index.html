@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moss — Household Plant-Care Companion</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Subtle SVG paper grain filter for warm tactile surface -->
+  <svg class="sr-only-svg" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="paper-grain" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.035 0" in="noise" result="coloredNoise" />
+        <feComposite operator="in" in2="SourceGraphic" />
+      </filter>
+    </defs>
+  </svg>
+
+  <a class="skip-link" href="#main-content">Skip to today’s plant care queue</a>
+
+  <div class="app-shell">
+    <!-- Top Masthead -->
+    <header class="masthead" role="banner">
+      <div class="masthead-brand">
+        <div class="moss-mascot-wrap" id="mascot-container" aria-hidden="true">
+          <!-- Tactile velvet moss pebble companion SVG -->
+          <svg class="moss-mascot" viewBox="0 0 72 64" role="presentation">
+            <path class="mascot-shadow" d="M10 54 C22 60, 52 60, 62 54 C66 50, 58 46, 36 46 C14 46, 6 50, 10 54 Z" fill="#231F1B" opacity="0.18" />
+            <path class="mascot-body" d="M12 42 C10 24, 22 12, 37 12 C53 12, 63 23, 61 41 C59 53, 48 56, 35 56 C21 56, 13 52, 12 42 Z" fill="#3E6B48" stroke="#231F1B" stroke-width="2.5" />
+            <!-- Sprout on head -->
+            <path class="mascot-sprout" d="M36 12 C36 5, 42 2, 47 4 C44 9, 39 11, 36 12 Z" fill="#C9D97E" stroke="#231F1B" stroke-width="2" />
+            <path class="mascot-sprout-left" d="M36 12 C34 6, 28 4, 24 7 C28 11, 33 12, 36 12 Z" fill="#8FB973" stroke="#231F1B" stroke-width="2" />
+            <!-- Cheeks -->
+            <ellipse cx="23" cy="39" rx="4" ry="2.5" fill="#E58F65" opacity="0.7" />
+            <ellipse cx="49" cy="39" rx="4" ry="2.5" fill="#E58F65" opacity="0.7" />
+            <!-- Eyes & Mouth (updated dynamically by mood) -->
+            <g id="mascot-face">
+              <circle cx="27" cy="34" r="2.6" fill="#231F1B" />
+              <circle cx="45" cy="34" r="2.6" fill="#231F1B" />
+              <path id="mascot-mouth" d="M32 39 Q36 43 40 39" fill="none" stroke="#231F1B" stroke-width="2.2" stroke-linecap="round" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="brand-copy">
+          <div class="brand-title-row">
+            <h1 class="brand-name">Moss</h1>
+            <span class="date-stamp" id="date-stamp">Tue, Sep 22 · Morning Rounds</span>
+          </div>
+          <p class="companion-whisper" id="companion-whisper">
+            Frida in the bathroom is 2 days overdue for a soak—let’s start there.
+          </p>
+        </div>
+      </div>
+
+      <div class="masthead-controls">
+        <div class="status-pill-group" role="status" aria-live="polite" id="queue-summary-pills">
+          <span class="status-pill status-pill--urgent" id="pill-overdue">1 overdue</span>
+          <span class="status-pill status-pill--today" id="pill-today">2 due today</span>
+          <span class="status-pill status-pill--done" id="pill-tended">0 tended</span>
+        </div>
+
+        <div class="utility-actions">
+          <button type="button" class="btn-utility" id="toggle-motion-btn" aria-pressed="false" title="Toggle reduced motion">
+            <span class="utility-dot" aria-hidden="true"></span>
+            <span id="motion-label">Calm motion</span>
+          </button>
+          <button type="button" class="btn-utility" id="reset-demo-btn" hidden>
+            Reset queue
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workbench Grid (Mobile single column -> Desktop 2-column asymmetrical studio) -->
+    <main id="main-content" class="workbench">
+      <!-- Left / Primary Column: Care Queue -->
+      <div class="queue-column">
+
+        <!-- Filter & Quick Action Bar -->
+        <nav class="queue-toolbar" aria-label="Queue filter and batch controls">
+          <div class="filter-tabs" role="tablist" aria-label="Filter plants by care status">
+            <button type="button" role="tab" class="filter-tab is-active" id="tab-all" aria-selected="true" data-filter="all">
+              All plants <span class="tab-count" id="count-all">4</span>
+            </button>
+            <button type="button" role="tab" class="filter-tab" id="tab-due" aria-selected="false" data-filter="due">
+              Needs care <span class="tab-count" id="count-due">3</span>
+            </button>
+            <button type="button" role="tab" class="filter-tab" id="tab-tended" aria-selected="false" data-filter="tended">
+              Tended / Snoozed <span class="tab-count" id="count-tended">0</span>
+            </button>
+          </div>
+
+          <button type="button" class="btn-sweep" id="water-all-due-btn" title="Mark all overdue and today plants as watered">
+            <span>Water all due today</span>
+          </button>
+        </nav>
+
+        <!-- ALL-DONE STATE (Shown when overdue + today tasks are 0, or when previewed) -->
+        <section id="all-done-banner" class="all-done-card" aria-labelledby="all-done-heading" hidden>
+          <div class="all-done-illustration" aria-hidden="true">
+            <svg viewBox="0 0 180 120" class="all-done-svg">
+              <!-- Sunbeam arch -->
+              <path d="M25 110 L25 48 A65 65 0 0 1 155 48 L155 110 Z" fill="#F4E3B2" stroke="#231F1B" stroke-width="2.5" />
+              <!-- Sun disc -->
+              <circle cx="90" cy="46" r="18" fill="#E8A838" stroke="#231F1B" stroke-width="2" />
+              <!-- Brass mister bottle -->
+              <path d="M46 76 L66 76 L70 106 L42 106 Z" fill="#D88C47" stroke="#231F1B" stroke-width="2.2" />
+              <rect x="51" y="66" width="10" height="10" fill="#231F1B" />
+              <path d="M56 66 L72 62 M51 70 L38 65" stroke="#231F1B" stroke-width="2.2" stroke-linecap="round" />
+              <!-- Content Moss Sprite napping on terracotta saucer -->
+              <ellipse cx="118" cy="104" rx="30" ry="6" fill="#C86D51" stroke="#231F1B" stroke-width="2" />
+              <path d="M95 94 C94 76, 104 66, 118 66 C132 66, 142 76, 140 94 C139 102, 129 104, 118 104 C106 104, 96 102, 95 94 Z" fill="#3E6B48" stroke="#231F1B" stroke-width="2.2" />
+              <!-- Happy closed eyes -->
+              <path d="M107 84 Q111 80 115 84" fill="none" stroke="#231F1B" stroke-width="2" stroke-linecap="round" />
+              <path d="M123 84 Q127 80 131 84" fill="none" stroke="#231F1B" stroke-width="2" stroke-linecap="round" />
+              <path d="M115 90 Q119 94 123 90" fill="none" stroke="#231F1B" stroke-width="2" stroke-linecap="round" />
+              <!-- Floating botanical sparkles -->
+              <path d="M84 22 L86 28 L92 30 L86 32 L84 38 L82 32 L76 30 L82 28 Z" fill="#527954" />
+              <circle cx="142" cy="40" r="3" fill="#D86C47" />
+            </svg>
+          </div>
+
+          <div class="all-done-body">
+            <div class="all-done-eyebrow">Greenhouse At Ease · All Caught Up</div>
+            <h2 id="all-done-heading" class="all-done-title">Every thirsty root and sun-leaning leaf is tended for today.</h2>
+            <p class="all-done-summary" id="all-done-summary-text">
+              You completed today’s rounds. Put the watering can down and enjoy the quiet.
+            </p>
+
+            <!-- Useful Next-Up Forecast & Environment Digest -->
+            <div class="all-done-forecast-grid">
+              <div class="forecast-box">
+                <span class="forecast-label">Up Next Tomorrow</span>
+                <strong class="forecast-value" id="all-done-next-up">Drama (Calathea orbifolia) · Mist in Bedroom</strong>
+                <span class="forecast-note" id="all-done-next-note">Prefers lukewarm filtered water in the morning to prevent crisp edges.</span>
+              </div>
+              <div class="forecast-box">
+                <span class="forecast-label">House Micro-Climate Note</span>
+                <strong class="forecast-value">South Window UV is peaking</strong>
+                <span class="forecast-note">Dot’s terracotta dish holds warmth well; next cactus check isn’t needed for 10+ days.</span>
+              </div>
+            </div>
+
+            <div class="all-done-actions">
+              <button type="button" class="btn-secondary" id="all-done-reset-btn">
+                Restore initial care queue
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 1: Overdue Priority Spotlight -->
+        <section class="queue-section queue-section--overdue" id="section-overdue" aria-labelledby="heading-overdue">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="priority-beacon" aria-hidden="true"></span>
+              <h2 id="heading-overdue" class="section-title">Overdue Priority</h2>
+            </div>
+            <span class="section-caption">Needs immediate attention first</span>
+          </div>
+          <div id="overdue-list" class="plant-stack" role="list"></div>
+        </section>
+
+        <!-- SECTION 2: Today's Care Bench -->
+        <section class="queue-section queue-section--today" id="section-today" aria-labelledby="heading-today">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="today-marker" aria-hidden="true"></span>
+              <h2 id="heading-today" class="section-title">Due Today</h2>
+            </div>
+            <span class="section-caption">Quick check-ins on your morning route</span>
+          </div>
+          <div id="today-list" class="plant-bench-grid" role="list"></div>
+        </section>
+
+        <!-- SECTION 3: Resting Until Tomorrow & Tended Today -->
+        <section class="queue-section queue-section--resting" id="section-resting" aria-labelledby="heading-resting">
+          <div class="section-header">
+            <div class="section-title-group">
+              <span class="resting-marker" aria-hidden="true"></span>
+              <h2 id="heading-resting" class="section-title">Tomorrow &amp; Tended Shelf</h2>
+            </div>
+            <span class="section-caption">On deck for tomorrow or already cared for today</span>
+          </div>
+          <div id="resting-list" class="plant-resting-list" role="list"></div>
+        </section>
+
+      </div>
+
+      <!-- Right / Secondary Column: Compact Weekly Rhythm + Active Specimen Dossier -->
+      <aside class="almanac-column" aria-label="Weekly care rhythm and plant detail dossier">
+
+        <!-- COMPACT WEEKLY RHYTHM VISUALIZATION -->
+        <section class="rhythm-card" aria-labelledby="rhythm-heading">
+          <div class="rhythm-header">
+            <div>
+              <span class="eyebrow-tag">Household Cadence</span>
+              <h2 id="rhythm-heading" class="rhythm-title">Weekly Care Rhythm</h2>
+            </div>
+            <div class="rhythm-totals">
+              <span class="rhythm-total-num" id="rhythm-week-total">16</span>
+              <span class="rhythm-total-label">tasks / wk</span>
+            </div>
+          </div>
+
+          <p class="rhythm-subtitle" id="rhythm-day-detail">
+            Tap any day stem to inspect your household load. Thursday is your heaviest watering day (4 plants).
+          </p>
+
+          <!-- Interactive 7-day stem visualization built from PLANTS.json "week": [1,3,2,4,2,1,3] -->
+          <div class="rhythm-chart" id="rhythm-chart" role="group" aria-label="Tasks per day of the week">
+            <!-- Populated by app.js -->
+          </div>
+
+          <div class="rhythm-legend">
+            <span class="legend-item">
+              <span class="legend-swatch legend-swatch--today" aria-hidden="true"></span>
+              Today (Tue)
+            </span>
+            <span class="legend-item">
+              <span class="legend-swatch legend-swatch--peak" aria-hidden="true"></span>
+              Peak day (Thu · 4)
+            </span>
+            <span class="legend-item">
+              <span class="legend-swatch legend-swatch--done" aria-hidden="true"></span>
+              Logged today (<span id="rhythm-logged-count">0</span>)
+            </span>
+          </div>
+        </section>
+
+        <!-- PLANT DETAIL VIEW / SPECIMEN DOSSIER -->
+        <section class="dossier-card" id="specimen-dossier" aria-labelledby="dossier-heading" aria-live="polite">
+          <!-- Populated dynamically by app.js for the selected plant -->
+        </section>
+
+        <!-- Subtle Keyboard Shortcuts Footnote -->
+        <div class="keyboard-hint-card" aria-label="Keyboard shortcuts">
+          <span class="keyboard-hint-title">Keyboard Almanac</span>
+          <div class="shortcut-chips">
+            <span><kbd>↑</kbd><kbd>↓</kbd> Select plant</span>
+            <span><kbd>W</kbd> Watered</span>
+            <span><kbd>S</kbd> Snooze</span>
+            <span><kbd>Z</kbd> Undo</span>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Floating Undo Toast Bar with countdown & instant reversal -->
+    <div
+      id="undo-toast"
+      class="undo-toast"
+      role="status"
+      aria-live="assertive"
+      aria-atomic="true"
+      hidden
+    >
+      <div class="undo-toast-content">
+        <span class="undo-toast-badge" id="undo-toast-badge" aria-hidden="true">✓</span>
+        <p class="undo-toast-message" id="undo-toast-message">Frida marked as watered.</p>
+      </div>
+      <div class="undo-toast-actions">
+        <button type="button" class="btn-undo" id="undo-action-btn">
+          Undo
+        </button>
+        <button type="button" class="btn-toast-dismiss" id="undo-dismiss-btn" aria-label="Dismiss notification">
+          ×
+        </button>
+      </div>
+      <div class="undo-progress-track" aria-hidden="true">
+        <div class="undo-progress-bar" id="undo-progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
