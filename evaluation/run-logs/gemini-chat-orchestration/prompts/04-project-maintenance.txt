@@ -1,0 +1,119 @@
+The files of your task directory are included below, each under a `File: <path>` line. Read TASK.md and complete it. You can't run commands or edit files in this chat, so deliver your work as files: for every file you create or change, output its complete final contents in one fenced code block, with the file's path on the line just before the block, like `File: RESPONSE.md`. Always output whole files, never diffs or excerpts. Work only on this task's files. Do not use the network or web search. When you finish, reply with a one-paragraph summary, whether you completed every deliverable, and your exact model ID.
+
+# Task directory: 04-project-maintenance
+
+File: TASK.md
+````md
+# Task 04 — Project maintenance: prepare a Python library release
+
+Prepare this small library for a `0.4.0` release. Work from the supplied files
+and do not use the network.
+
+Requirements:
+
+- The supported Python range is 3.10 through 3.13. Align metadata and CI.
+- Replace deprecated `distutils` usage without changing `normalize_version`'s
+  observable behavior for ordinary versions.
+- Make the test/lint workflow coherent and least-privileged; pin GitHub Actions
+  to the major versions already named in the fixture notes.
+- Create `CHANGELOG.md` from `RELEASE_NOTES.txt`, separating user-visible changes
+  from internal maintenance and avoiding invented claims.
+- Create `MAINTENANCE.md` with a short release checklist, compatibility policy,
+  and the next three prioritized maintenance items.
+- Add or improve tests where the compatibility change warrants it.
+
+Run all feasible local checks. Write `RESPONSE.md` with changed files, remaining
+risks, and exact verification results. Work only in this directory.
+
+````
+
+File: RELEASE_NOTES.txt
+````txt
+Target: 0.4.0
+
+- slugify now handles repeated punctuation consistently (already implemented).
+- remove Python 3.9 support; add validation on Python 3.13.
+- replace deprecated version parsing internals while retaining common output.
+- internal: CI actions should remain checkout v4 and setup-python v5.
+- known limitation: Unicode letters are transliterated poorly; do not claim this
+  is fixed in 0.4.0.
+
+````
+
+File: ci.yml
+````yml
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.9", "3.10"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e . ruff
+      - run: python -m unittest
+      - run: ruff check .
+
+````
+
+File: pyproject.toml
+````toml
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "slugkit"
+version = "0.3.2"
+description = "Small slug and version helpers"
+requires-python = ">=3.9"
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+
+````
+
+File: slugkit.py
+````py
+from distutils.version import LooseVersion
+import re
+
+
+def slugify(value: str) -> str:
+    value = value.strip().lower()
+    return re.sub(r"[^a-z0-9]+", "-", value).strip("-")
+
+
+def normalize_version(value: str) -> str:
+    """Normalize ordinary dotted versions, preserving pre-release suffixes."""
+    return str(LooseVersion(value))
+
+````
+
+File: test_slugkit.py
+````py
+import unittest
+
+from slugkit import normalize_version, slugify
+
+
+class SlugkitTests(unittest.TestCase):
+    def test_slugify(self):
+        self.assertEqual(slugify("  Hello, World! "), "hello-world")
+
+    def test_normalize_version(self):
+        self.assertEqual(normalize_version("1.2.0"), "1.2.0")
+        self.assertEqual(normalize_version("2.0rc1"), "2.0rc1")
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+````
+

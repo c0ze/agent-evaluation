@@ -1,0 +1,82 @@
+The files of your task directory are included below, each under a `File: <path>` line. Read TASK.md and complete it. You can't run commands or edit files in this chat, so deliver your work as files: for every file you create or change, output its complete final contents in one fenced code block, with the file's path on the line just before the block, like `File: RESPONSE.md`. Always output whole files, never diffs or excerpts. Work only on this task's files. Do not use the network or web search. When you finish, reply with a one-paragraph summary, whether you completed every deliverable, and your exact model ID.
+
+# Task directory: 01-feature-building
+
+File: TASK.md
+````md
+# Task 01 — Feature building: dependency-aware scheduler
+
+Implement `plan_jobs` in `jobqueue.py` and expand `test_jobqueue.py` with useful
+edge cases. Use only the Python standard library.
+
+Contract:
+
+- Every `Job.id` must be a non-empty string and unique.
+- Every dependency must name a supplied job. Reject invalid input with
+  `ScheduleError` and a useful message.
+- Return every job ID exactly once, always after all of its dependencies.
+- Among jobs currently ready, choose higher `priority` first. Break equal
+  priorities by original input order.
+- Detect dependency cycles and raise `ScheduleError`; include the IDs involved
+  in the diagnostic when practical.
+- Do not mutate the supplied jobs or their dependency lists.
+- Empty input returns an empty list.
+
+Run the tests. Write `RESPONSE.md` summarizing the design, edge cases covered,
+and the exact verification command/result. Keep all work inside this directory.
+
+````
+
+File: jobqueue.py
+````py
+from dataclasses import dataclass, field
+from typing import Any, Iterable
+
+
+class ScheduleError(ValueError):
+    pass
+
+
+@dataclass(frozen=True)
+class Job:
+    id: str
+    priority: int = 0
+    depends_on: tuple[str, ...] = field(default_factory=tuple)
+    payload: Any = None
+
+
+def plan_jobs(jobs: Iterable[Job]) -> list[str]:
+    """Return job IDs in a valid deterministic execution order."""
+    raise NotImplementedError
+
+````
+
+File: test_jobqueue.py
+````py
+import unittest
+
+from jobqueue import Job, ScheduleError, plan_jobs
+
+
+class PlanJobsTests(unittest.TestCase):
+    def test_dependencies_override_priority(self):
+        jobs = [
+            Job("build", priority=100, depends_on=("fetch",)),
+            Job("fetch", priority=1),
+        ]
+        self.assertEqual(plan_jobs(jobs), ["fetch", "build"])
+
+    def test_ready_jobs_use_priority_then_input_order(self):
+        jobs = [Job("a", 2), Job("b", 5), Job("c", 2)]
+        self.assertEqual(plan_jobs(jobs), ["b", "a", "c"])
+
+    def test_unknown_dependency_is_rejected(self):
+        with self.assertRaises(ScheduleError):
+            plan_jobs([Job("build", depends_on=("missing",))])
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+````
+

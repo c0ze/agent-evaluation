@@ -1,0 +1,104 @@
+The files of your task directory are included below, each under a `File: <path>` line. Read TASK.md and complete it. You can't run commands or edit files in this chat, so deliver your work as files: for every file you create or change, output its complete final contents in one fenced code block, with the file's path on the line just before the block, like `File: RESPONSE.md`. Always output whole files, never diffs or excerpts. Work only on this task's files. Do not use the network or web search. When you finish, reply with a one-paragraph summary, whether you completed every deliverable, and your exact model ID.
+
+# Task directory: 02-bug-fixing
+
+File: TASK.md
+````md
+# Task 02 — Bug fixing: TTL/LRU cache
+
+`ttl_cache.py` is a deliberately faulty implementation. Fix it without changing
+the public API and add regression tests.
+
+Required behavior:
+
+- `get(key)` returns the stored value, including falsy values such as `0`, `False`
+  and `None`; it raises `KeyError` only for missing or expired entries.
+- TTL uses the injected monotonic `clock` and expires at `age >= ttl_seconds`.
+- A successful `get` refreshes LRU recency but does not refresh TTL.
+- `put` updates an existing key's value, timestamp and recency.
+- Before enforcing capacity, expired entries are removed.
+- Capacity eviction removes the least recently used live entry.
+- `max_size < 1` and `ttl_seconds <= 0` raise `ValueError`.
+
+Run the tests. Write `RESPONSE.md` with the root causes, fixes, regression cases,
+and exact test result. Work only in this directory.
+
+````
+
+File: test_ttl_cache.py
+````py
+import unittest
+
+from ttl_cache import TTLCache
+
+
+class Clock:
+    def __init__(self):
+        self.now = 100.0
+
+    def __call__(self):
+        return self.now
+
+
+class TTLCacheTests(unittest.TestCase):
+    def setUp(self):
+        self.clock = Clock()
+
+    def test_round_trip(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put("a", "A")
+        self.assertEqual(cache.get("a"), "A")
+
+    def test_expires_at_boundary(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put("a", "A")
+        self.clock.now += 10
+        with self.assertRaises(KeyError):
+            cache.get("a")
+
+    def test_get_refreshes_lru(self):
+        cache = TTLCache(2, 10, self.clock)
+        cache.put("a", "A")
+        cache.put("b", "B")
+        cache.get("a")
+        cache.put("c", "C")
+        with self.assertRaises(KeyError):
+            cache.get("b")
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+````
+
+File: ttl_cache.py
+````py
+import time
+from collections import OrderedDict
+
+
+class TTLCache:
+    def __init__(self, max_size, ttl_seconds, clock=time.monotonic):
+        self.max_size = max_size
+        self.ttl_seconds = ttl_seconds
+        self.clock = clock
+        self._items = OrderedDict()
+
+    def put(self, key, value):
+        if len(self._items) >= self.max_size:
+            self._items.popitem(last=False)
+        self._items[key] = (value, time.time())
+
+    def get(self, key):
+        value, created = self._items[key]
+        if not value:
+            raise KeyError(key)
+        if self.clock() - created > self.ttl_seconds:
+            raise KeyError(key)
+        return value
+
+    def __len__(self):
+        return len(self._items)
+
+````
+

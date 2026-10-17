@@ -1,0 +1,108 @@
+The files of your task directory are included below, each under a `File: <path>` line. Read TASK.md and complete it. You can't run commands or edit files in this chat, so deliver your work as files: for every file you create or change, output its complete final contents in one fenced code block, with the file's path on the line just before the block, like `File: RESPONSE.md`. Always output whole files, never diffs or excerpts. Work only on this task's files. Do not use the network or web search. When you finish, reply with a one-paragraph summary, whether you completed every deliverable, and your exact model ID.
+
+# Task directory: 03-infra-management
+
+File: TASK.md
+````md
+# Task 03 — Infrastructure management: harden a small deployment
+
+Review and improve the supplied `Dockerfile`, `compose.yaml`, and `nginx.conf`
+for a small Python API behind nginx with Postgres and Redis. Do not add
+Kubernetes or unrelated services.
+
+Goals:
+
+- No embedded credentials or public database/cache ports.
+- The API runs as a non-root user with a production server and reproducible
+  dependency installation.
+- Add meaningful health checks and startup dependencies based on health.
+- Persist Postgres data, make internal service communication explicit, and add
+  sensible restart/logging/resource settings without pretending Compose is a
+  full orchestrator.
+- Proxy headers and timeouts should be appropriate for a JSON API.
+- Keep local operation straightforward through `.env.example`.
+
+Deliver corrected configuration and a concise `RUNBOOK.md` covering startup,
+health verification, backup/restore, secret handling, and rollback. Write
+`RESPONSE.md` listing the highest-risk original problems and verification you
+performed. Work only in this directory; do not actually start containers.
+
+````
+
+File: .env.example
+````example
+POSTGRES_USER=app
+POSTGRES_PASSWORD=change-me
+POSTGRES_DB=app
+
+````
+
+File: Dockerfile
+````
+FROM python:3.13
+WORKDIR /app
+COPY . .
+RUN pip install flask psycopg2 redis
+ENV FLASK_ENV=development
+EXPOSE 5000
+CMD ["flask", "run", "--host=0.0.0.0"]
+
+````
+
+File: compose.yaml
+````yaml
+services:
+  proxy:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgres://admin:password@db:5432/app
+      REDIS_URL: redis://cache:6379
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - cache
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app
+    ports:
+      - "5432:5432"
+  cache:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+````
+
+File: nginx.conf
+````conf
+events {}
+http {
+  server {
+    listen 80;
+    location / {
+      proxy_pass http://api:5000;
+    }
+  }
+}
+
+````
+
+File: requirements.txt
+````txt
+Flask==3.1.2
+gunicorn==23.0.0
+psycopg2-binary==2.9.10
+redis==6.4.0
+
+````
+

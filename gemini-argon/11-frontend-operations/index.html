@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relay — Operations Control Room</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main-workspace">Skip to operations workspace</a>
+
+  <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <div class="app-shell">
+    <!-- Primary Navigation Rail -->
+    <aside class="nav-rail" aria-label="Operations navigation">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+            <path d="M6.5 10v7.5H14" stroke-linecap="square" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">RELAY</span>
+          <span class="brand-sub">OPS-CTRL</span>
+        </div>
+      </div>
+
+      <nav class="rail-nav" aria-label="Primary views">
+        <ul class="rail-list">
+          <li>
+            <button type="button" class="rail-item is-active" data-nav="overview" aria-current="page">
+              <svg class="rail-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                <path d="M2.5 3.5h6v5h-6v-5zm9 0h6v8h-6v-8zm-9 8h6v5h-6v-5zm9 3h6v2h-6v-2z" fill="currentColor" />
+              </svg>
+              <span class="rail-label">Control</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="rail-item" data-nav="incidents" data-scroll-target="#incidents-section">
+              <svg class="rail-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                <path d="M10 2.5L1.8 16.5h16.4L10 2.5zm0 4.5v4.5m0 2.5v.5" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="square" />
+              </svg>
+              <span class="rail-label">Incidents</span>
+              <span class="rail-badge" id="nav-incident-count" aria-label="4 active incidents">4</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="rail-item" data-nav="throughput" data-scroll-target="#throughput-section">
+              <svg class="rail-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                <path d="M2 15.5l4.5-5 3.5 3 5-7 3 2.5" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="square" />
+              </svg>
+              <span class="rail-label">Throughput</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="rail-item" data-nav="metrics" data-scroll-target="#metrics-section">
+              <svg class="rail-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                <path d="M3 16.5h14M4.5 14V9m3.5 5V5m3.5 9v-3.5m3.5 3.5V7" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="square" />
+              </svg>
+              <span class="rail-label">Telemetry</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="rail-item" data-nav="inspector" data-scroll-target="#incident-detail-panel">
+              <svg class="rail-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                <rect x="3" y="3" width="14" height="14" rx="1" stroke="currentColor" stroke-width="1.6" fill="none" />
+                <path d="M11 3v14M6 7h2.5M6 10h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" />
+              </svg>
+              <span class="rail-label">Inspector</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="rail-footer">
+        <div class="operator-chip" title="On-Call Operator: J. Vance (Primary)">
+          <span class="operator-dot" aria-hidden="true"></span>
+          <span class="operator-id">OP: J. VANCE</span>
+        </div>
+        <div class="shortcut-hint" aria-label="Keyboard shortcuts: slash to search, A to acknowledge">
+          <kbd>/</kbd> Find <kbd>A</kbd> Ack
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Shell -->
+    <div class="workspace-shell">
+      <!-- Top Status Bar -->
+      <header class="top-status-bar">
+        <div class="status-bar-left">
+          <div class="system-posture" id="system-posture-pill" role="status">
+            <span class="posture-indicator is-critical" id="posture-dot" aria-hidden="true"></span>
+            <span class="posture-text" id="posture-label">DEGRADED · 1 CRITICAL UNACKED</span>
+          </div>
+
+          <div class="env-metadata" aria-label="Cluster and environment">
+            <span class="env-tag">PROD-CORE</span>
+            <span class="env-sep" aria-hidden="true">/</span>
+            <span class="env-region">us-east-1 · eu-west-1</span>
+          </div>
+        </div>
+
+        <div class="status-bar-right">
+          <div class="telemetry-counters" aria-label="Incident summary counts">
+            <span class="counter-item">
+              <span class="counter-key">OPEN/INV</span>
+              <span class="counter-val" id="topbar-open-count">3</span>
+            </span>
+            <span class="counter-item">
+              <span class="counter-key">ACKED</span>
+              <span class="counter-val" id="topbar-ack-count">0</span>
+            </span>
+            <span class="counter-item">
+              <span class="counter-key">SLO BURN</span>
+              <span class="counter-val is-warn">1.4x</span>
+            </span>
+          </div>
+
+          <div class="clock-readout" aria-label="Current UTC time">
+            <span class="clock-label">UTC</span>
+            <time id="utc-clock" datetime="2026-10-17T12:44:00Z">12:44:00</time>
+          </div>
+
+          <button type="button" class="btn btn-compact" id="reset-demo-btn" title="Restore initial seed state from DATA.json">
+            Reset State
+          </button>
+        </div>
+      </header>
+
+      <!-- Operations Workspace -->
+      <main id="main-workspace" class="workspace-main" tabindex="-1">
+        <!-- Four Summary Metrics -->
+        <section id="metrics-section" class="metrics-section" aria-labelledby="metrics-heading">
+          <div class="section-bar">
+            <h1 id="metrics-heading" class="section-title">Real-Time System Telemetry</h1>
+            <span class="section-meta">Window: 5m rolling · Baseline: 1h average</span>
+          </div>
+          <div class="metrics-grid" id="metrics-grid" role="list">
+            <!-- Populated from DATA.json via app.js -->
+          </div>
+        </section>
+
+        <!-- 24-Hour Throughput Visualization -->
+        <section id="throughput-section" class="panel throughput-panel" aria-labelledby="throughput-heading">
+          <div class="panel-header throughput-header">
+            <div class="panel-title-group">
+              <h2 id="throughput-heading" class="panel-title">24-Hour Ingest Throughput</h2>
+              <span class="panel-subtitle">Normalized load index (0–100 capacity scale) · 24h hourly buckets</span>
+            </div>
+
+            <div class="throughput-stats" id="throughput-stats" aria-label="Throughput summary statistics">
+              <div class="t-stat">
+                <span class="t-stat-label">PEAK</span>
+                <span class="t-stat-value" id="tp-peak">88 <small>(19:00)</small></span>
+              </div>
+              <div class="t-stat">
+                <span class="t-stat-label">MIN</span>
+                <span class="t-stat-value" id="tp-min">20 <small>(04:00)</small></span>
+              </div>
+              <div class="t-stat">
+                <span class="t-stat-label">MEAN</span>
+                <span class="t-stat-value" id="tp-mean">57.2</span>
+              </div>
+              <div class="t-stat is-active-readout">
+                <span class="t-stat-label" id="tp-inspect-hour">23:00 UTC</span>
+                <span class="t-stat-value" id="tp-inspect-val">41 <small>(-28% vs mean)</small></span>
+              </div>
+            </div>
+
+            <div class="throughput-controls" role="group" aria-label="Chart display options">
+              <button type="button" class="btn btn-compact is-pressed" id="toggle-threshold-btn" aria-pressed="true">
+                SLO Ceiling (80)
+              </button>
+              <button type="button" class="btn btn-compact" id="toggle-chart-mode-btn" aria-pressed="false">
+                Bar + Area
+              </button>
+            </div>
+          </div>
+
+          <div class="chart-body">
+            <div
+              id="throughput-chart-container"
+              class="chart-svg-wrapper"
+              role="region"
+              aria-label="Interactive 24-hour throughput chart. Use Tab or Left and Right arrow keys on bars to inspect hourly values."
+            >
+              <!-- Inline SVG injected by app.js -->
+            </div>
+
+            <!-- Accessible tabular fallback for screen readers -->
+            <table class="sr-only" id="throughput-sr-table">
+              <caption>24-hour hourly throughput index values</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Hour (UTC)</th>
+                  <th scope="col">Throughput Index</th>
+                  <th scope="col">Status vs Ceiling</th>
+                </tr>
+              </thead>
+              <tbody id="throughput-sr-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Incident Queue + Detail Inspector Split -->
+        <div class="ops-split-layout">
+          <!-- Filterable Incident Table Panel -->
+          <section id="incidents-section" class="panel incidents-panel" aria-labelledby="incidents-heading">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 id="incidents-heading" class="panel-title">Incident Queue</h2>
+                <span class="panel-subtitle" id="incidents-count-label">Showing 4 of 4 incidents</span>
+              </div>
+
+              <div class="queue-header-actions">
+                <button type="button" class="btn btn-compact" id="ack-all-visible-btn">
+                  Ack Visible Open
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-toolbar" role="search" aria-label="Filter incidents">
+              <div class="filter-search-wrap">
+                <label for="filter-search" class="sr-only">Search incidents by ID, title, service, or owner</label>
+                <span class="search-prefix" aria-hidden="true">/</span>
+                <input
+                  type="search"
+                  id="filter-search"
+                  class="filter-input"
+                  placeholder="Filter ID, title, service, owner..."
+                  autocomplete="off"
+                />
+              </div>
+
+              <div class="severity-filter-group" role="group" aria-label="Filter by severity">
+                <button type="button" class="sev-filter-btn is-active" data-sev="all" aria-pressed="true">
+                  All <span class="sev-count" id="count-sev-all">4</span>
+                </button>
+                <button type="button" class="sev-filter-btn" data-sev="critical" aria-pressed="false">
+                  <span class="sev-dot is-critical" aria-hidden="true"></span>Crit <span class="sev-count" id="count-sev-critical">1</span>
+                </button>
+                <button type="button" class="sev-filter-btn" data-sev="high" aria-pressed="false">
+                  <span class="sev-dot is-high" aria-hidden="true"></span>High <span class="sev-count" id="count-sev-high">1</span>
+                </button>
+                <button type="button" class="sev-filter-btn" data-sev="medium" aria-pressed="false">
+                  <span class="sev-dot is-medium" aria-hidden="true"></span>Med <span class="sev-count" id="count-sev-medium">1</span>
+                </button>
+                <button type="button" class="sev-filter-btn" data-sev="low" aria-pressed="false">
+                  <span class="sev-dot is-low" aria-hidden="true"></span>Low <span class="sev-count" id="count-sev-low">1</span>
+                </button>
+              </div>
+
+              <div class="filter-selects-row">
+                <div class="select-field">
+                  <label for="filter-status" class="select-label">Status</label>
+                  <select id="filter-status" class="filter-select">
+                    <option value="all">All statuses</option>
+                    <option value="open">Open</option>
+                    <option value="investigating">Investigating</option>
+                    <option value="acknowledged">Acknowledged</option>
+                    <option value="monitoring">Monitoring</option>
+                    <option value="resolved">Resolved</option>
+                  </select>
+                </div>
+
+                <div class="select-field">
+                  <label for="filter-service" class="select-label">Service</label>
+                  <select id="filter-service" class="filter-select">
+                    <option value="all">All services</option>
+                    <option value="payments-api">payments-api</option>
+                    <option value="event-router">event-router</option>
+                    <option value="search-index">search-index</option>
+                    <option value="webhooks">webhooks</option>
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  class="btn btn-compact filter-toggle-btn"
+                  id="filter-unack-btn"
+                  aria-pressed="false"
+                >
+                  Unacknowledged only
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-compact btn-ghost"
+                  id="clear-filters-btn"
+                  hidden
+                >
+                  Clear filters
+                </button>
+              </div>
+            </div>
+
+            <!-- Incident Table -->
+            <div class="table-wrap">
+              <table class="incident-table" aria-describedby="incidents-count-label">
+                <thead>
+                  <tr>
+                    <th scope="col" class="col-sev">Sev</th>
+                    <th scope="col" class="col-id">Incident</th>
+                    <th scope="col" class="col-service">Service</th>
+                    <th scope="col" class="col-age">Age</th>
+                    <th scope="col" class="col-owner">Owner</th>
+                    <th scope="col" class="col-status">Status</th>
+                    <th scope="col" class="col-action">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="incident-table-body">
+                  <!-- Populated by app.js -->
+                </tbody>
+              </table>
+
+              <!-- Useful Empty / Filter State -->
+              <div id="incidents-empty-state" class="empty-state" role="status" hidden>
+                <div class="empty-state-code">NO MATCHING INCIDENTS [0/4]</div>
+                <p class="empty-state-title" id="empty-state-title">No incidents match the active filter criteria.</p>
+                <p class="empty-state-desc" id="empty-state-desc">
+                  Active filters have narrowed the queue to zero results. All 4 seeded incidents remain in memory.
+                </p>
+                <div class="empty-state-actions">
+                  <button type="button" class="btn btn-accent" id="empty-reset-btn">
+                    Reset All Filters
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Selected Incident Detail Inspector -->
+          <aside
+            id="incident-detail-panel"
+            class="panel detail-panel"
+            aria-labelledby="detail-panel-heading"
+            tabindex="-1"
+          >
+            <!-- Populated dynamically by app.js -->
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
