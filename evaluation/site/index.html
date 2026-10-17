@@ -3,10 +3,10 @@
 <title>Agent evaluation</title><link rel="stylesheet" href="style.css"></head>
 <body><header class="top"><a class="brand" href="index.html">Agent evaluation</a>
 <nav aria-label="Tasks"><a href="tasks/01-feature-building.html" title="Feature building">01</a><a href="tasks/02-bug-fixing.html" title="Bug fixing">02</a><a href="tasks/03-infra-management.html" title="Infra management">03</a><a href="tasks/04-project-maintenance.html" title="Project maintenance">04</a><a href="tasks/05-technical-writing.html" title="Technical writing">05</a><a href="tasks/06-product-planning.html" title="Product planning">06</a><a href="tasks/07-creative-writing.html" title="Creative writing">07</a><a href="tasks/08-social-media.html" title="Social media">08</a><a href="tasks/09-incident-analysis.html" title="Incident analysis">09</a><a href="tasks/10-general-operations.html" title="General operations">10</a><a href="tasks/11-frontend-operations.html" title="Frontend operations">11</a><a href="tasks/12-frontend-editorial.html" title="Frontend editorial">12</a><a href="tasks/13-frontend-playful.html" title="Frontend playful">13</a></nav></header>
-<main><section class="hero"><h1>Thirteen tasks, 25 models</h1>
+<main><section class="hero"><h1>Thirteen tasks, 26 models</h1>
     <p class="lede">Each model got the same thirteen briefs as independent tasks with a fresh context. Every task is scored out of 10.</p></section>
     <section class="card prose report"><h2>Results</h2>
-<p>Scores come from the latest blind pass, which graded all twenty-five entries together (2026-10-17, after Gemini 4 Argon was added and Grok 4.7&#39;s task 13 was re-run). HY4 preview appears twice: once through OpenRouter and opencode, once through CodeBuddy. Gemini 4 Argon ran through the Gemini web chat, with no tools: it could not run code, tests or a browser (see the caveats). Three OpenRouter submissions ran at reduced reasoning effort: Mistral Large 4&#39;s tasks 12 and 13, and Qwen 3.8 Max&#39;s task 13. Their high-effort attempts produced nothing.</p>
+<p>Scores come from the latest blind pass, which graded all twenty-six entries together (2026-10-17, after muse-wonder-full was added). HY4 preview appears twice: once through OpenRouter and opencode, once through CodeBuddy. Gemini 4 Argon ran through the Gemini web chat, with no tools: it could not run code, tests or a browser (see the caveats). Three OpenRouter submissions ran at reduced reasoning effort: Mistral Large 4&#39;s tasks 12 and 13, and Qwen 3.8 Max&#39;s task 13. Their high-effort attempts produced nothing.</p>
 <table>
 <thead>
 <tr>
@@ -22,40 +22,40 @@
 </thead>
 <tbody><tr>
 <td><strong>Sonnet 5.5</strong> (extra)</td>
-<td><strong>9.48</strong></td>
-<td><strong>9.75</strong></td>
 <td><strong>9.38</strong></td>
-<td><strong>9.50</strong></td>
-<td><strong>9.25</strong></td>
+<td><strong>9.62</strong></td>
+<td>9.19</td>
+<td><strong>9.62</strong></td>
+<td><strong>9.17</strong></td>
 <td>~28 min</td>
 <td>$15</td>
 </tr>
 <tr>
 <td><strong>Opus 5.5</strong> (high)</td>
-<td>9.35</td>
-<td>9.62</td>
-<td>9.31</td>
-<td>9.12</td>
-<td>9.17</td>
+<td>9.29</td>
+<td><strong>9.62</strong></td>
+<td><strong>9.31</strong></td>
+<td>9.38</td>
+<td>8.75</td>
 <td>~21 min</td>
 <td>$14</td>
 </tr>
 <tr>
 <td><strong>Fable 5.1</strong> (extra)</td>
-<td>9.19</td>
+<td>9.23</td>
 <td>9.56</td>
-<td>9.00</td>
-<td>9.25</td>
-<td>8.92</td>
+<td>9.12</td>
+<td>9.38</td>
+<td>8.83</td>
 <td>~49 min</td>
 <td>$53</td>
 </tr>
 <tr>
 <td><strong>Haiku 5.5</strong> (xhigh)</td>
+<td>8.73</td>
 <td>8.75</td>
+<td>8.81</td>
 <td>8.75</td>
-<td>8.75</td>
-<td>9.00</td>
 <td>8.58</td>
 <td>~34 min</td>
 <td>$1.74 API-equivalent (subscription)</td>
@@ -63,215 +63,225 @@
 <tr>
 <td><strong>Grok 4.7</strong> (xhigh)</td>
 <td>8.71</td>
-<td>9.50</td>
-<td>8.06</td>
-<td>8.50</td>
-<td>8.67</td>
+<td>9.38</td>
+<td>7.94</td>
+<td>8.88</td>
+<td>8.75</td>
 <td>~80 min + 52 min (task 13 re-run)</td>
 <td>$12.01</td>
 </tr>
 <tr>
 <td><strong>GPT-6 Astra</strong> (xhigh)</td>
-<td>8.71</td>
-<td>9.31</td>
-<td>8.56</td>
-<td>9.00</td>
+<td>8.60</td>
+<td>9.44</td>
+<td>8.38</td>
+<td>8.38</td>
 <td>7.92</td>
 <td>~35 min</td>
 <td>3.6M in / 185k out tokens</td>
 </tr>
 <tr>
-<td><strong>GPT-6.1 Sol</strong> (xhigh)</td>
-<td>8.63</td>
-<td>9.12</td>
-<td>8.38</td>
+<td><strong>muse-wonder-full</strong> (xhigh)</td>
+<td>8.58</td>
 <td>8.62</td>
-<td>8.33</td>
+<td>8.81</td>
+<td>8.50</td>
+<td>8.25</td>
+<td>~31 min</td>
+<td>7.1M in / 198k out tokens; 33% of a 5-hour window (see <code>RUN_METRICS.md</code>)</td>
+</tr>
+<tr>
+<td><strong>GPT-6.1 Sol</strong> (xhigh)</td>
+<td>8.56</td>
+<td>9.19</td>
+<td>8.19</td>
+<td>8.12</td>
+<td>8.50</td>
 <td>~48 min</td>
 <td>5.8M in / 243k out tokens</td>
 </tr>
 <tr>
+<td><strong>HY4 preview</strong> (high, OpenRouter)</td>
+<td>8.25</td>
+<td>9.00</td>
+<td>7.94</td>
+<td>8.38</td>
+<td>7.58</td>
+<td>~113 session-min</td>
+<td>$1.57</td>
+</tr>
+<tr>
 <td><strong>Qwen 3.8 Max</strong> (high, OpenRouter)</td>
+<td>8.17</td>
 <td>8.25</td>
-<td>8.62</td>
+<td>8.12</td>
 <td>8.25</td>
-<td>8.25</td>
-<td>7.75</td>
+<td>8.08</td>
 <td>~158 session-min</td>
 <td>$5.44</td>
 </tr>
 <tr>
 <td><strong>HY4 preview via CodeBuddy</strong> (high)</td>
-<td>8.12</td>
-<td>8.31</td>
-<td>8.25</td>
+<td>8.13</td>
+<td>8.19</td>
+<td>8.19</td>
 <td>7.88</td>
-<td>7.83</td>
+<td>8.17</td>
 <td>~66 session-min</td>
 <td>$0 reported (plan)</td>
 </tr>
 <tr>
 <td><strong>muse-wonder</strong> (xhigh)</td>
-<td>8.10</td>
+<td>8.13</td>
 <td>7.69</td>
-<td>8.19</td>
-<td>8.88</td>
-<td>8.00</td>
+<td>8.38</td>
+<td>8.25</td>
+<td>8.33</td>
 <td>~12 min</td>
 <td>6.7M in / 154k out tokens; subscription quota (see <code>RUN_METRICS.md</code>)</td>
 </tr>
 <tr>
-<td><strong>Step-5 preview</strong> (high, OpenRouter)</td>
-<td>7.96</td>
-<td>8.44</td>
-<td>7.25</td>
-<td>8.38</td>
-<td>8.00</td>
-<td>~69 session-min</td>
-<td>$2.21</td>
-</tr>
-<tr>
-<td><strong>HY4 preview</strong> (high, OpenRouter)</td>
-<td>7.87</td>
-<td>8.62</td>
-<td>7.69</td>
-<td>8.00</td>
-<td>7.00</td>
-<td>~113 session-min</td>
-<td>$1.57</td>
-</tr>
-<tr>
-<td><strong>muse</strong> (max)</td>
-<td>7.85</td>
-<td>7.31</td>
-<td>7.81</td>
-<td>8.38</td>
-<td>8.25</td>
-<td>~20 min</td>
-<td>6.2M in / 162k out tokens</td>
-</tr>
-<tr>
-<td><strong>GLM-5.3</strong> (high, OpenRouter)</td>
-<td>7.65</td>
-<td>7.94</td>
-<td>7.88</td>
-<td>7.12</td>
-<td>7.33</td>
-<td>~29 min</td>
-<td>$1.49</td>
-</tr>
-<tr>
 <td><strong>MiniMax M3.1 Flash</strong> (xhigh, mcode)</td>
-<td>7.54</td>
-<td>7.88</td>
-<td>6.38</td>
-<td>7.62</td>
-<td>8.58</td>
+<td>7.92</td>
+<td>8.25</td>
+<td>7.00</td>
+<td>7.75</td>
+<td>8.83</td>
 <td>~42 min</td>
 <td>0.58M in + 18.6M cache-read / 398k out tokens; free preview</td>
 </tr>
 <tr>
-<td><strong>mimo</strong></td>
-<td>7.52</td>
+<td><strong>Step-5 preview</strong> (high, OpenRouter)</td>
+<td>7.73</td>
 <td>8.06</td>
-<td>7.44</td>
-<td>7.25</td>
-<td>7.08</td>
+<td>7.19</td>
+<td>7.62</td>
+<td>8.08</td>
+<td>~69 session-min</td>
+<td>$2.21</td>
+</tr>
+<tr>
+<td><strong>GLM-5.3</strong> (high, OpenRouter)</td>
+<td>7.67</td>
+<td>7.69</td>
+<td>8.12</td>
+<td>6.88</td>
+<td>7.58</td>
+<td>~29 min</td>
+<td>$1.49</td>
+</tr>
+<tr>
+<td><strong>mimo</strong></td>
+<td>7.58</td>
+<td>8.50</td>
+<td>7.50</td>
+<td>7.00</td>
+<td>6.83</td>
 <td>not recorded</td>
 <td>not recorded</td>
 </tr>
 <tr>
+<td><strong>muse</strong> (max)</td>
+<td>7.58</td>
+<td>7.12</td>
+<td>7.50</td>
+<td>7.88</td>
+<td>8.08</td>
+<td>~20 min</td>
+<td>6.2M in / 162k out tokens</td>
+</tr>
+<tr>
+<td><strong>Gemini 4 Argon</strong> (High, Gemini chat, no tools)</td>
+<td>7.31</td>
+<td>7.06</td>
+<td>7.44</td>
+<td>7.12</td>
+<td>7.58</td>
+<td>~61 session-min</td>
+<td>Google AI Pro plan; 17% of the weekly limit</td>
+</tr>
+<tr>
 <td><strong>Kimi K3</strong> (high, OpenRouter)</td>
-<td>7.46</td>
-<td>7.62</td>
+<td>7.31</td>
 <td>7.06</td>
 <td>7.38</td>
-<td>7.83</td>
+<td>6.50</td>
+<td>8.08</td>
 <td>~14 min</td>
 <td>$3.47</td>
 </tr>
 <tr>
 <td><strong>GPT-6 Luna</strong> (max)</td>
-<td>7.38</td>
-<td>7.50</td>
-<td>7.50</td>
-<td>7.50</td>
+<td>7.27</td>
+<td>7.56</td>
+<td>7.25</td>
 <td>7.00</td>
+<td>7.08</td>
 <td>~34 min</td>
 <td>3.5M in / 220k out tokens</td>
 </tr>
 <tr>
-<td><strong>Gemini 4 Argon</strong> (High, Gemini chat, no tools)</td>
-<td>7.23</td>
-<td>7.38</td>
-<td>7.00</td>
-<td>7.12</td>
-<td>7.42</td>
-<td>~61 session-min</td>
-<td>Google AI Pro plan; 17% of the weekly limit</td>
-</tr>
-<tr>
 <td><strong>Mistral Large 4</strong> (high; 12–13 reduced)</td>
-<td>6.44</td>
-<td>7.44</td>
-<td>5.44</td>
-<td>6.62</td>
-<td>6.33</td>
+<td>6.54</td>
+<td>7.19</td>
+<td>5.75</td>
+<td>6.75</td>
+<td>6.58</td>
 <td>~24 min + re-runs</td>
 <td>$1.23</td>
 </tr>
 <tr>
 <td><strong>DeepSeek V4 Pro</strong> (high, OpenRouter)</td>
-<td>6.13</td>
-<td>7.00</td>
-<td>5.69</td>
-<td>5.25</td>
-<td>6.17</td>
+<td>6.48</td>
+<td>6.94</td>
+<td>6.25</td>
+<td>5.62</td>
+<td>6.75</td>
 <td>~12 min</td>
 <td>$0.43</td>
 </tr>
 <tr>
 <td><strong>Gemini 3.1 Pro</strong> (high, agy)</td>
+<td>6.46</td>
+<td>7.25</td>
 <td>6.12</td>
-<td>7.12</td>
-<td>5.50</td>
-<td>5.75</td>
-<td>5.83</td>
+<td>5.62</td>
+<td>6.42</td>
 <td>~27 min</td>
 <td>1.56M in + 7.45M cache-read / 530k out tokens</td>
 </tr>
 <tr>
 <td><strong>Gemini 3.8 Flash</strong> (high, agy)</td>
-<td>5.96</td>
-<td>7.31</td>
-<td>6.00</td>
-<td>5.62</td>
-<td>4.33</td>
+<td>6.23</td>
+<td>7.12</td>
+<td>6.31</td>
+<td>5.88</td>
+<td>5.17</td>
 <td>~22 min</td>
 <td>2.35M in + 16.1M cache-read / 512k out tokens</td>
 </tr>
 <tr>
 <td><strong>MiniMax M3</strong> (default, mcode)</td>
-<td>5.94</td>
-<td>6.12</td>
-<td>5.56</td>
-<td>5.12</td>
-<td>6.75</td>
+<td>6.08</td>
+<td>6.25</td>
+<td>5.44</td>
+<td>5.88</td>
+<td>6.83</td>
 <td>~9 min</td>
 <td>0.55M in + 4.8M cache-read / 190k out tokens</td>
 </tr>
 <tr>
 <td><strong>Nemotron 3 Ultra</strong> (high, OpenRouter)</td>
-<td>4.90</td>
-<td>6.31</td>
-<td>4.25</td>
-<td>4.50</td>
-<td>4.17</td>
+<td>4.88</td>
+<td>6.12</td>
+<td>4.06</td>
+<td>4.00</td>
+<td>4.92</td>
 <td>~8 min</td>
 <td>$0.76</td>
 </tr>
 </tbody></table>
-<p>Totals (of 130): Sonnet 123.25, Opus 121.5, Fable 119.5, Haiku 113.75, Grok 113.25, Astra 113.25, Sol 112.25, Qwen 3.8 Max 107.25, HY4 via CodeBuddy 105.5, muse-wonder 105.25, Step-5 preview 103.5, HY4 102.25, muse 102.0, GLM-5.3 99.5, MiniMax M3.1 Flash 98.0, mimo 97.75, Kimi K3 97.0, Luna 96.0, Gemini 4 Argon 94.0, Mistral Large 4 83.75, DeepSeek V4 Pro 79.75, Gemini 3.1 Pro 79.5, Gemini 3.8 Flash 77.5, MiniMax M3 77.25, Nemotron 3 Ultra 63.75. Session time for the later OpenRouter and CodeBuddy runs is the sum of task session lengths, because their batches were interrupted (see <code>RUN_METRICS.md</code>); for Argon it is the sum of the kept chat replies, spread over about 20 hours to fit the Gemini plan&#39;s 5-hour usage windows. muse-wonder&#39;s time is the sum of its two passes (4 min 45 s, then 7 min 15 s). Grok&#39;s cost is its original run without the interrupted task-13 attempt plus the re-run ($5.27).</p>
+<p>Totals (of 130): Sonnet 122.0, Opus 120.75, Fable 120.0, Haiku 113.5, Grok 113.25, Astra 111.75, muse-wonder-full 111.5, Sol 111.25, HY4 107.25, Qwen 3.8 Max 106.25, HY4 via CodeBuddy 105.75, muse-wonder 105.75, MiniMax M3.1 Flash 103.0, Step-5 preview 100.5, GLM-5.3 99.75, mimo 98.5, muse 98.5, Gemini 4 Argon 95.0, Kimi K3 95.0, Luna 94.5, Mistral Large 4 85.0, DeepSeek V4 Pro 84.25, Gemini 3.1 Pro 84.0, Gemini 3.8 Flash 81.0, MiniMax M3 79.0, Nemotron 3 Ultra 63.5. Session time for the later OpenRouter and CodeBuddy runs is the sum of task session lengths, because their batches were interrupted (see <code>RUN_METRICS.md</code>); for Argon it is the sum of the kept chat replies, spread over about 20 hours to fit the Gemini plan&#39;s 5-hour usage windows. muse-wonder&#39;s time is the sum of its two passes (4 min 45 s, then 7 min 15 s); muse-wonder-full ran two tasks at a time (55 min summed). Grok&#39;s cost is its original run without the interrupted task-13 attempt plus the re-run ($5.27).</p>
 <h3>What was observed</h3>
 <ul>
 <li><strong>Every entry completed every task.</strong><ul>
@@ -291,39 +301,45 @@
 <li><strong>Three tasks produced nothing at the standard high effort:</strong> Mistral Large 4&#39;s 12 and 13, and Qwen 3.8 Max&#39;s 13. Each time, a single response&#39;s reasoning hit opencode&#39;s 32,000-token cap per response. At the user&#39;s request they were re-run at reduced effort, and the graders were told so.</li>
 </ul>
 </li>
-<li><strong>Sonnet 5.5 is first again</strong> (9.48), ahead of Opus (9.35) and Fable (9.19). In this pass Sonnet had the best or tied-best score on 9 of 13 tasks, Opus on 6, Fable on 3, Grok on 2, and Qwen 3.8 Max, Sol, Astra and Haiku on 1 each.</li>
+<li><strong>Sonnet 5.5 is first again</strong> (9.38), ahead of Opus (9.29) and Fable (9.23). In this pass Sonnet had the best or tied-best score on 7 of 13 tasks, Opus on 6, Fable, Grok and Astra on 2 each, and Sol, GLM-5.3 and MiniMax M3.1 Flash on 1 each.</li>
 <li><strong>Six tiers:</strong><ul>
-<li><strong>Sonnet, Opus and Fable:</strong> 9.2–9.5 per task.</li>
-<li><strong>Haiku 5.5, Grok 4.7, GPT-6 Astra and GPT-6.1 Sol:</strong> 8.6–8.8.</li>
-<li><strong>Qwen 3.8 Max, HY4 preview (both harnesses), muse-wonder, Step-5 preview and muse:</strong> 7.85–8.25.</li>
-<li><strong>GLM-5.3, MiniMax M3.1 Flash, mimo, Kimi K3, GPT-6 Luna and Gemini 4 Argon:</strong> 7.2–7.7.</li>
-<li><strong>Mistral Large 4, DeepSeek V4 Pro, Gemini 3.1 Pro, Gemini 3.8 Flash and MiniMax M3:</strong> 5.9–6.4.</li>
-<li><strong>Nemotron 3 Ultra:</strong> 4.9, last or tied last on 7 of 13 tasks.</li>
+<li><strong>Sonnet, Opus and Fable:</strong> 9.2–9.4 per task.</li>
+<li><strong>Haiku 5.5, Grok 4.7, GPT-6 Astra, muse-wonder-full and GPT-6.1 Sol:</strong> 8.55–8.75.</li>
+<li><strong>HY4 preview (both harnesses), Qwen 3.8 Max, muse-wonder and MiniMax M3.1 Flash:</strong> 7.9–8.25.</li>
+<li><strong>Step-5 preview, GLM-5.3, mimo, muse, Gemini 4 Argon, Kimi K3 and GPT-6 Luna:</strong> 7.25–7.75.</li>
+<li><strong>Mistral Large 4, DeepSeek V4 Pro, Gemini 3.1 Pro, Gemini 3.8 Flash and MiniMax M3:</strong> 6.1–6.55.</li>
+<li><strong>Nemotron 3 Ultra:</strong> 4.9, last or tied last on 9 of 13 tasks.</li>
 </ul>
 </li>
-<li><strong>Gemini 4 Argon</strong> (Thinking: High, through the Gemini web chat because no API access was available) is 19th at 7.23. That is about a point above Gemini 3.1 Pro and 3.8 Flash through agy, but it worked under a handicap no other entry had: each task&#39;s files were pasted into one chat message and it returned whole files, so it never ran its code or tests or saw its pages.<ul>
-<li><strong>Strong:</strong> the editorial page (12: 8.5, 5th), the planning document (06: 8.25) and the bug fix (02: 8.75, behaviourally correct).</li>
-<li><strong>Weak:</strong> maintenance (04: 5.25), where its hand-written version normaliser changes ordinary versions (<code>1.02.0</code> → <code>1.2.0</code>) while the changelog says output is preserved; social media (08: 5.75), where the replies invent a Help-menu diagnostic log, a support email and a billing adjustment; and the story (07: 6.25), whose middle explains its own twist with pseudo-technical detail.</li>
+<li><strong>muse-wonder-full</strong> (Meta&#39;s <code>muse-wonder-full-1.0</code>, Muse Code 1.4.10, xhigh) is 7th at 8.58, level with GPT-6 Astra (8.60) and GPT-6.1 Sol (8.56) and 0.45 ahead of muse-wonder (8.13). It ran on cachyos, two tasks at a time, in 31 minutes, using 33% of one 5-hour subscription window.<ul>
+<li><strong>Even across the board:</strong> no task below 7.5, and the strongest writing score outside the top three (8.81, level with Haiku). Best placings: the weekly plan (10: 9.0, 3rd), the webhook guide (05: 8.75, 4th) and social media (08: 9.0, 4th).</li>
+<li><strong>Fixed what held muse-wonder back:</strong> infrastructure went from 6.0 to 8.0. It hardens the stack without breaking it, though Redis takes its password on the command line and has no memory cap. Maintenance went from 6.5 to 7.5: it switches to strict PEP 440 normalisation through <code>packaging</code>, a real behaviour change for spellings like <code>1.02</code>, but discloses it everywhere and the package builds.</li>
+<li><strong>Weaker:</strong> incident analysis (09: 8.0) has a vague customer update with no times; the dashboard (11: 8.25) has two-letter rail &quot;icons&quot; and hides columns behind horizontal scroll on phones.</li>
+</ul>
+</li>
+<li><strong>Gemini 4 Argon</strong> (Thinking: High, through the Gemini web chat because no API access was available) is 18th at 7.31 (tied with Kimi K3). That is about a point above Gemini 3.1 Pro and 3.8 Flash through agy, but it worked under a handicap no other entry had: each task&#39;s files were pasted into one chat message and it returned whole files, so it never ran its code or tests or saw its pages.<ul>
+<li><strong>Strong:</strong> the editorial page (12: 8.5) and the planning document (06: 8.25); the bug fix (02: 9.0) is behaviourally correct.</li>
+<li><strong>Weak:</strong> maintenance (04: 6.25), where its hand-written version normaliser changes ordinary versions (<code>1.02.0</code> → <code>1.2.0</code>) while the changelog says output is preserved; social media (08: 6.5), where the replies invent a Help-menu diagnostic log, a support email and a billing adjustment; and the story (07: 6.5), whose middle explains its own twist with pseudo-technical detail.</li>
 <li><strong>Verification claims:</strong> in tasks 01 and 02 its RESPONSE.md reports test runs that could not have happened (01 says &quot;All 11 unit tests … pass&quot; for a file with 13). In task 04 it says execution was unavailable but still labels ruff &quot;PASS&quot;. The tests do pass when run.</li>
 <li><strong>Speed and usage:</strong> about an hour of reply time, spread over 20 hours by the Google AI Pro plan&#39;s 5-hour windows (a task took roughly a fifth to a third of a window). It reported its model ID as <code>gemini-3.1-pro-preview</code> in every reply.</li>
 </ul>
 </li>
-<li><strong>Grok 4.7 now has all 13 tasks.</strong> The re-run task 13 scored 8.75 (4th), so Grok&#39;s 8.71 average matches GPT-6 Astra&#39;s and its 113.25 total ties Astra&#39;s. Grok had the best or tied-best score on tasks 01 and 02 and is 2nd on the dashboard (11: 9.25).</li>
-<li><strong>muse-wonder</strong> is 10th at 8.10, 0.25 ahead of muse-spark (7.85). Strong on incident analysis (09: 9.5), the bug fix (02: 9.75) and social media (08: 9.0); still weak on infrastructure (03: 5.75, 22nd of 25), where it drops every Linux capability from Redis and nginx, including the ones their stock entrypoints need, so the stack likely never starts (inferred from the images; no containers were started).</li>
+<li><strong>Grok 4.7</strong> (complete since its task-13 re-run, 8.5 in this pass) is 5th at 8.71, with the best or tied-best score on tasks 01 and 02.</li>
+<li><strong>muse-wonder</strong> is 11th at 8.13, 0.55 ahead of muse-spark (7.58). Strong on the bug fix (02: 9.75) and social media (08: 8.75); still weak on infrastructure (03: 6.0, 19th of 26), where it drops every Linux capability from Redis and nginx, including the ones their stock entrypoints need, so the stack likely never starts (inferred from the images; no containers were started).</li>
 <li><strong>Grading noise:</strong><ul>
-<li><strong>Per task:</strong> between the twenty-four-way and twenty-five-way passes, scores for the same submissions moved by 0.45 points on average, and 47 of 311 moved by a point or more.</li>
-<li><strong>Per model:</strong> averages moved by 0.11 on average. The largest moves were Kimi K3 +0.35 and HY4 preview −0.31; nothing else moved more than 0.2.</li>
+<li><strong>Per task:</strong> between the twenty-five-way and twenty-six-way passes, scores for the same submissions moved by 0.42 points on average, and 38 of 325 moved by a point or more.</li>
+<li><strong>Per model:</strong> averages moved by 0.14 on average. The largest moves were HY4 preview +0.38, MiniMax M3.1 Flash +0.38, DeepSeek V4 Pro +0.35 and Gemini 3.1 Pro +0.34.</li>
 <li><strong>What it means:</strong> as before, a model&#39;s average can move about ±0.4 from one pass to the next, with no steady direction.</li>
 </ul>
 </li>
-<li><strong>HY4 preview through CodeBuddy against OpenRouter/opencode:</strong> 8.12 against 7.87, flipped back from the last pass (7.96 against 8.17).<ul>
-<li><strong>Where CodeBuddy did better:</strong> social media (08: 8.75 against 6.75) and the dashboard (11: 8.0 against 5.25).</li>
-<li><strong>Where it did worse:</strong> maintenance (04: 7.0 against 8.75) and the story (07: 8.0 against 8.75).</li>
-<li>The gap has now changed sign twice, so this doesn&#39;t show that either harness is better. It shows that a single run varies a lot task by task, and that grading does too.</li>
+<li><strong>HY4 preview through CodeBuddy against OpenRouter/opencode:</strong> 8.13 against 8.25, flipped again from the last pass (8.12 against 7.87).<ul>
+<li><strong>Where CodeBuddy did better:</strong> social media (08: 8.75 against 8.0) and the dashboard (11: 9.0 against 7.5).</li>
+<li><strong>Where it did worse:</strong> maintenance (04: 7.5 against 8.75) and the story (07: 7.75 against 8.5).</li>
+<li>The gap has now changed sign three times, so this doesn&#39;t show that either harness is better. It shows that a single run varies a lot task by task, and that grading does too.</li>
 </ul>
 </li>
-<li><strong>Qwen 3.8 Max</strong> stays the best entry outside the top two tiers. Its code is strong (8.62; 01: 10, 02: 9.5), and its weakest areas are the frontends and planning.</li>
-<li><strong>Nemotron 3 Ultra</strong> is last by about a point. It&#39;s last or tied last on 7 of 13 tasks, and its task-04 run tried <code>pip install</code> twice (blocked).</li>
+<li><strong>Qwen 3.8 Max</strong> (8.17) and HY4 preview (8.25) lead the third tier; HY4&#39;s code is the strongest there (9.00).</li>
+<li><strong>Nemotron 3 Ultra</strong> is last by about 1.2 points. It&#39;s last or tied last on 9 of 13 tasks, and its task-04 run tried <code>pip install</code> twice (blocked).</li>
 <li><strong>Patterns across the field are unchanged:</strong><ul>
 <li>packages that don&#39;t build;</li>
 <li><code>normalize_version</code> output changed while claimed unchanged;</li>
@@ -336,8 +352,8 @@
 </ul>
 <h3>What is inferred</h3>
 <ul>
-<li><strong>Only tier-level differences are reliable.</strong> With 25 entries and model averages moving by up to ±0.4 between passes, differences under about 0.4 aren&#39;t meaningful. The top three can&#39;t be separated, nor can the four in the second tier, or the six in the third. The gaps between tiers are still well beyond that.</li>
-<li><strong>muse-wonder against muse-spark:</strong> wonder is ahead by 0.25 on average in this pass (0.37 in the last). It ran one effort step lower (xhigh against max), in a newer Muse Code release, and with a stricter blank slate (no personal skills, outer sandbox). The gap is near the noise floor for one run each, so this says wonder is at least as good, not by how much.</li>
+<li><strong>Only tier-level differences are reliable.</strong> With 26 entries and model averages moving by up to ±0.4 between passes, differences under about 0.4 aren&#39;t meaningful. The top three can&#39;t be separated, nor can the five in the second tier, or the five in the third. The gaps between tiers are still well beyond that.</li>
+<li><strong>The Muse models:</strong> muse-wonder-full is ahead of muse-wonder by 0.45 and of muse-spark by 1.0. The full-versus-wonder gap is at the edge of the noise floor for one run each, but it comes mostly from the two tasks where wonder&#39;s output was likely broken (03 and 04), so the full model&#39;s main gain looks like fewer serious mistakes rather than better work everywhere. wonder against muse-spark (0.55 in this pass, 0.25 in the last) again says wonder is at least as good, not by how much. The three ran in different Muse Code releases with different blank-slate setups; wonder-full ran on Linux under bubblewrap rather than the Mac&#39;s sandbox.</li>
 <li><strong>Gemini 4 Argon&#39;s score measures the model plus a tool-less chat harness.</strong> Every other entry could run its tests and, in most harnesses, open its pages; Argon could not, and its weakest areas (version behaviour in 04, invented details in 08) are ones that checking or a closer reading of the sources would have caught. Its result is not directly comparable to an agentic run of the same model, and says little about Argon in an agent harness. Against the two Gemini models run through agy it is clearly ahead (7.23 against 6.12 and 5.96), despite the handicap.</li>
 <li><strong>Harness effects are smaller than run-to-run variation, as far as this design can show.</strong> One run per entry can&#39;t separate harness from luck. Measuring that would take several runs of the same model in each harness.</li>
 <li><strong>The OpenRouter results describe each model as served by OpenRouter through opencode.</strong> opencode&#39;s fixed 32k cap per response affected Mistral&#39;s and Qwen&#39;s high-effort frontend attempts.</li>
@@ -346,21 +362,21 @@
 </ul>
 <h2>Recommendations by work type</h2>
 <ul>
-<li><strong>Code:</strong> Sonnet 5.5, Opus 5.5 or Fable 5.1. Grok (9.50 on code) is close behind, then GPT-6 Astra (9.31). Among the rest, HY4 preview and Qwen 3.8 Max (8.62).</li>
-<li><strong>Writing and planning:</strong> Sonnet 5.5 or Opus 5.5. Haiku 5.5 (8.75) is the best choice outside the top three; GPT-6 Astra (8.56) is next.</li>
-<li><strong>Incident analysis and operations:</strong> Sonnet 5.5 or Fable 5.1. Opus, Haiku, Astra and muse-wonder (8.88) are good alternatives.</li>
-<li><strong>Frontend:</strong> Sonnet 5.5 or Opus 5.5. Fable, Grok 4.7 and MiniMax M3.1 Flash (8.58) follow.</li>
-<li><strong>Cost-sensitive work:</strong> Haiku 5.5 ($1.74 at API prices for second-tier quality). Among the OpenRouter models, HY4 preview ($1.57) is the best value. muse-wonder is fast and inside the Muse subscription, but its quota use per task is high (about a tenth of a 5-hour window for a frontend task after Muse&#39;s fix).</li>
+<li><strong>Code:</strong> Sonnet 5.5, Opus 5.5 or Fable 5.1. GPT-6 Astra (9.44 on code) and Grok (9.38) are close behind, then Sol (9.19). Among the rest, HY4 preview (9.00).</li>
+<li><strong>Writing and planning:</strong> Opus 5.5, Sonnet 5.5 or Fable 5.1. Haiku 5.5 and muse-wonder-full (8.81) are the best choices outside the top three.</li>
+<li><strong>Incident analysis and operations:</strong> Sonnet 5.5, Opus or Fable. Grok (8.88), Haiku (8.75) and muse-wonder-full (8.50) are good alternatives.</li>
+<li><strong>Frontend:</strong> Sonnet 5.5. Fable and MiniMax M3.1 Flash (8.83), then Opus and Grok 4.7 (8.75), follow.</li>
+<li><strong>Cost-sensitive work:</strong> Haiku 5.5 ($1.74 at API prices for second-tier quality). Among the OpenRouter models, HY4 preview ($1.57) is the best value. Within a Muse subscription, muse-wonder-full gives second-tier quality for about 2.5% of a 5-hour window per task.</li>
 <li><strong>Not for unsupervised work on these task types:</strong> Nemotron 3 Ultra, Gemini 3.1 Pro and 3.8 Flash through agy, MiniMax M3, DeepSeek V4 Pro and Mistral Large 4. Check muse-wonder&#39;s infrastructure output before using it. Through a chat window, Gemini 4 Argon&#39;s code and claims need checking: it reports test runs it never made.</li>
 </ul>
 <h2>Caveats</h2>
 <ul>
-<li><strong>One run per entry and one blind grader per task per pass.</strong> The graders were Claude Opus 5.5 subagents, so four contestants share its model family and one is the same model. Blinding reduces that bias but doesn&#39;t remove it. The grader brief was rewritten for the twelve-way pass (<code>tools/grader-prompt.md</code>; the original wasn&#39;t kept). The twenty-four-way pass ran on the Mac with the same brief, adapted only for paths and the browser (Playwright&#39;s bundled Chromium instead of Chrome); the twenty-five-way pass ran on cachyos with Chrome.</li>
+<li><strong>One run per entry and one blind grader per task per pass.</strong> The graders were Claude Opus 5.5 subagents, so four contestants share its model family and one is the same model. Blinding reduces that bias but doesn&#39;t remove it. The grader brief was rewritten for the twelve-way pass (<code>tools/grader-prompt.md</code>; the original wasn&#39;t kept). The twenty-four-way pass ran on the Mac with the same brief, adapted only for paths and the browser (Playwright&#39;s bundled Chromium instead of Chrome); the twenty-five-way and twenty-six-way passes ran on cachyos with Chrome.</li>
 <li><strong>Effort levels differ:</strong><ul>
 <li>Sonnet and Fable ran on extra, Opus on high and Haiku on xhigh.</li>
 <li>The GPT and Grok models ran on xhigh, except Luna, which ran on max.</li>
 <li>Gemini 3.1 Pro and 3.8 Flash ran on agy&#39;s High variants, Gemini 4 Argon on the Gemini app&#39;s Thinking level High, the OpenRouter models on opencode&#39;s <code>high</code> variant (three tasks at reduced effort), and HY4 via CodeBuddy on <code>high</code>.</li>
-<li>muse ran on max, muse-wonder on xhigh, and mimo on its default.</li>
+<li>muse ran on max, muse-wonder and muse-wonder-full on xhigh, and mimo on its default.</li>
 </ul>
 </li>
 <li><strong>Different setups:</strong><ul>
@@ -370,20 +386,20 @@
 <li>The GPT models ran in Codex CLI and Grok in Grok CLI on the Mac; Grok&#39;s task 13 was re-run in Grok CLI on cachyos (Linux workspace sandbox, same flags).</li>
 <li>Gemini 4 Argon ran in the Gemini web chat (Google AI Pro account), in the Claude desktop app&#39;s browser: one temporary chat per task, each task&#39;s files pasted into a single message, and the reply&#39;s files copied out verbatim (checked with SHA-256). It had no tools. Its context included the account&#39;s location and two saved custom skills; no past chats or memories.</li>
 <li>The MiniMax models ran through mcode, muse through tincan, and mimo a week earlier.</li>
-<li>muse-wonder ran in Muse Code on the Mac with a clean HOME (no personal skills, rules or earlier sessions) inside an outer macOS sandbox that blocked reads of the rest of the home directory and all network except HTTPS. The earlier muse run loaded the user&#39;s skills and used Muse&#39;s own sandbox.</li>
+<li>muse-wonder ran in Muse Code on the Mac with a clean HOME (no personal skills, rules or earlier sessions) inside an outer macOS sandbox that blocked reads of the rest of the home directory and all network except HTTPS. muse-wonder-full ran in Muse Code on cachyos with the same flags, a clean HOME per task and bubblewrap in place of the macOS sandbox (home directory, /tmp and mounts hidden; network not restricted, though a tool-call audit found none used). The earlier muse run loaded the user&#39;s skills and used Muse&#39;s own sandbox.</li>
 <li>Every setup kept personal instructions, memory and other models&#39; outputs out.</li>
 </ul>
 </li>
 <li><strong>Cost figures aren&#39;t comparable across providers.</strong> The cloud Claude figures come from account balances, Haiku&#39;s is an API-equivalent figure, and CodeBuddy reports $0 for plan usage. OpenRouter and Grok report dollars, the Muse runs report tokens and subscription quota, Argon reports only the Gemini plan&#39;s usage meter, and the others report tokens.</li>
-<li><strong>Objective checks for earlier models are carried over</strong> from their original runs; muse-wonder&#39;s were run on the Mac, where re-running the full cross-test matrix reproduced every recorded result. Argon&#39;s checks and Grok&#39;s task-13 screenshots were run on cachyos. On cachyos, task-04 suites that import <code>packaging</code> were run in a scratch venv with it.</li>
+<li><strong>Objective checks for earlier models are carried over</strong> from their original runs; muse-wonder&#39;s were run on the Mac, where re-running the full cross-test matrix reproduced every recorded result. Argon&#39;s and muse-wonder-full&#39;s checks and Grok&#39;s task-13 screenshots were run on cachyos. On cachyos, task-04 suites that import <code>packaging</code> were run in a scratch venv with it.</li>
 <li><strong>Not checked:</strong> ruff lint results in task 04, and nginx syntax in task 03 (no nginx binary was available). No containers were started.</li>
 </ul>
 </section>
     <section class="models"><article class="card model">
       <div class="rank">1</div>
       <h3>Sonnet 5.5</h3><p class="muted mono">claude-sonnet-5-5</p>
-      <p class="big">9.48<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 123.25 of 130 (13 tasks)</p>
+      <p class="big">9.38<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 122 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>extra</dd>
         <dt>Time</dt><dd>~28 min</dd>
@@ -391,13 +407,13 @@
         
         <dt>Where</dt><dd>Claude Code cloud, account A</dd>
       </dl>
-      <div class="groups"><span style="--h:0.96" class="chip">Code 9.75</span><span style="--h:0.90" class="chip">Writing 9.38</span><span style="--h:0.92" class="chip">Operations 9.50</span><span style="--h:0.88" class="chip">Frontend 9.25</span></div>
+      <div class="groups"><span style="--h:0.94" class="chip">Code 9.63</span><span style="--h:0.86" class="chip">Writing 9.19</span><span style="--h:0.94" class="chip">Operations 9.63</span><span style="--h:0.86" class="chip">Frontend 9.17</span></div>
       <p class="note">One subagent per task, four at a time.</p>
     </article><article class="card model">
       <div class="rank">2</div>
       <h3>Opus 5.5</h3><p class="muted mono">claude-opus-5-5</p>
-      <p class="big">9.35<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 121.5 of 130 (13 tasks)</p>
+      <p class="big">9.29<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 120.75 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>high</dd>
         <dt>Time</dt><dd>~21 min</dd>
@@ -405,13 +421,13 @@
         
         <dt>Where</dt><dd>Claude Code cloud, account A</dd>
       </dl>
-      <div class="groups"><span style="--h:0.94" class="chip">Code 9.63</span><span style="--h:0.89" class="chip">Writing 9.31</span><span style="--h:0.85" class="chip">Operations 9.13</span><span style="--h:0.86" class="chip">Frontend 9.17</span></div>
+      <div class="groups"><span style="--h:0.94" class="chip">Code 9.63</span><span style="--h:0.89" class="chip">Writing 9.31</span><span style="--h:0.90" class="chip">Operations 9.38</span><span style="--h:0.79" class="chip">Frontend 8.75</span></div>
       <p class="note">One subagent per task, four at a time. Ran on high, not extra: not like-for-like.</p>
     </article><article class="card model">
       <div class="rank">3</div>
       <h3>Fable 5.1</h3><p class="muted mono">claude-fable-5-1</p>
-      <p class="big">9.19<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 119.5 of 130 (13 tasks)</p>
+      <p class="big">9.23<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 120 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>extra</dd>
         <dt>Time</dt><dd>~49 min</dd>
@@ -419,13 +435,13 @@
         
         <dt>Where</dt><dd>Claude Code cloud, account B</dd>
       </dl>
-      <div class="groups"><span style="--h:0.93" class="chip">Code 9.56</span><span style="--h:0.83" class="chip">Writing 9.00</span><span style="--h:0.88" class="chip">Operations 9.25</span><span style="--h:0.82" class="chip">Frontend 8.92</span></div>
+      <div class="groups"><span style="--h:0.93" class="chip">Code 9.56</span><span style="--h:0.85" class="chip">Writing 9.13</span><span style="--h:0.90" class="chip">Operations 9.38</span><span style="--h:0.81" class="chip">Frontend 8.83</span></div>
       <p class="note">One subagent per task, four at a time.</p>
     </article><article class="card model">
       <div class="rank">4</div>
       <h3>Haiku 5.5</h3><p class="muted mono">claude-haiku-5-5</p>
-      <p class="big">8.75<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 113.75 of 130 (13 tasks)</p>
+      <p class="big">8.73<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 113.5 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>xhigh</dd>
         <dt>Time</dt><dd>~34 min</dd>
@@ -433,24 +449,10 @@
         <dt>Usage</dt><dd>444 input + 997k cache-write + 17.67M cache-read input, 844k output tokens; 225 turns</dd>
         <dt>Where</dt><dd>Claude Code CLI 2.1.296 (headless) on cachyos, Max subscription, 2026-10-11</dd>
       </dl>
-      <div class="groups"><span style="--h:0.79" class="chip">Code 8.75</span><span style="--h:0.79" class="chip">Writing 8.75</span><span style="--h:0.83" class="chip">Operations 9.00</span><span style="--h:0.76" class="chip">Frontend 8.58</span></div>
+      <div class="groups"><span style="--h:0.79" class="chip">Code 8.75</span><span style="--h:0.80" class="chip">Writing 8.81</span><span style="--h:0.79" class="chip">Operations 8.75</span><span style="--h:0.76" class="chip">Frontend 8.58</span></div>
       <p class="note">One claude -p per task, four at a time, in a fresh repository outside the home directory: no CLAUDE.md, memory, plugins, hooks or MCP; Bash sandboxed with no network. A 30-second first launch was stopped over headless permission prompts and relaunched clean. Task 11 took 24 of the 34 minutes.</p>
     </article><article class="card model">
-      <div class="rank">5=</div>
-      <h3>GPT-6 Astra</h3><p class="muted mono">gpt-6-astra</p>
-      <p class="big">8.71<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 113.25 of 130 (13 tasks)</p>
-      <dl class="meta">
-        <dt>Effort</dt><dd>xhigh</dd>
-        <dt>Time</dt><dd>~35 min</dd>
-        <dt>Cost</dt><dd>tokens only</dd>
-        <dt>Usage</dt><dd>3.57M input (3.09M cached), 185k output, 42k reasoning tokens; tasks 01-09 used a full 5-hour window and 16% of the weekly quota on gmail-business</dd>
-        <dt>Where</dt><dd>Codex CLI on the Mac, gmail-business (01-09) and gmail-personal (10-13)</dd>
-      </dl>
-      <div class="groups"><span style="--h:0.89" class="chip">Code 9.31</span><span style="--h:0.76" class="chip">Writing 8.56</span><span style="--h:0.83" class="chip">Operations 9.00</span><span style="--h:0.65" class="chip">Frontend 7.92</span></div>
-      <p class="note">One codex exec per task, four at a time; the accounts&#39; personal AGENTS.md set aside. Tasks 10-13 were cut off when gmail-business ran out of credits and re-run from the template on gmail-personal.</p>
-    </article><article class="card model">
-      <div class="rank">5=</div>
+      <div class="rank">5</div>
       <h3>Grok 4.7</h3><p class="muted mono">grok-4.7 (served as grok-4.7-build)</p>
       <p class="big">8.71<span class="muted"> / 10 per task</span></p>
       <p class="muted">total 113.25 of 130 (13 tasks)</p>
@@ -461,13 +463,41 @@
         <dt>Usage</dt><dd>2.09M input + 27.5M cache-read, 1.02M output (806k reasoning) tokens; 330 model turns (graded runs; the interrupted attempt not counted)</dd>
         <dt>Where</dt><dd>Grok CLI on the Mac, grok.com account; task 13 re-run on cachyos (Grok CLI 1.0.60), 2026-10-16</dd>
       </dl>
-      <div class="groups"><span style="--h:0.92" class="chip">Code 9.50</span><span style="--h:0.68" class="chip">Writing 8.06</span><span style="--h:0.75" class="chip">Operations 8.50</span><span style="--h:0.78" class="chip">Frontend 8.67</span></div>
+      <div class="groups"><span style="--h:0.90" class="chip">Code 9.38</span><span style="--h:0.66" class="chip">Writing 7.94</span><span style="--h:0.81" class="chip">Operations 8.88</span><span style="--h:0.79" class="chip">Frontend 8.75</span></div>
       <p class="note">One grok -p per task, four at a time, with a clean HOME so no personal instructions or skills loaded; memory off, MCP denied, web tools off, workspace sandbox. Task 13 stopped when the Grok Build balance ran out; it was re-run later from a fresh template repository with the same flags on cachyos.</p>
     </article><article class="card model">
+      <div class="rank">6</div>
+      <h3>GPT-6 Astra</h3><p class="muted mono">gpt-6-astra</p>
+      <p class="big">8.60<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 111.75 of 130 (13 tasks)</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>xhigh</dd>
+        <dt>Time</dt><dd>~35 min</dd>
+        <dt>Cost</dt><dd>tokens only</dd>
+        <dt>Usage</dt><dd>3.57M input (3.09M cached), 185k output, 42k reasoning tokens; tasks 01-09 used a full 5-hour window and 16% of the weekly quota on gmail-business</dd>
+        <dt>Where</dt><dd>Codex CLI on the Mac, gmail-business (01-09) and gmail-personal (10-13)</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.91" class="chip">Code 9.44</span><span style="--h:0.73" class="chip">Writing 8.38</span><span style="--h:0.73" class="chip">Operations 8.38</span><span style="--h:0.65" class="chip">Frontend 7.92</span></div>
+      <p class="note">One codex exec per task, four at a time; the accounts&#39; personal AGENTS.md set aside. Tasks 10-13 were cut off when gmail-business ran out of credits and re-run from the template on gmail-personal.</p>
+    </article><article class="card model">
       <div class="rank">7</div>
+      <h3>muse-wonder-full</h3><p class="muted mono">muse-wonder-full-1.0</p>
+      <p class="big">8.58<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 111.5 of 130 (13 tasks)</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>xhigh</dd>
+        <dt>Time</dt><dd>31 min (two at a time; 55 min summed)</dd>
+        <dt>Cost</dt><dd>tokens only</dd>
+        <dt>Usage</dt><dd>7.13M input (6.25M cached), 198k output, 76.9k reasoning tokens; 210 model steps (26 short helper calls on muse-spark-1.3). 33% of a 5-hour window and 11% of the weekly quota</dd>
+        <dt>Where</dt><dd>Muse Code 1.4.10 (headless muse exec) on cachyos, user&#39;s Muse subscription, 2026-10-17</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.77" class="chip">Code 8.63</span><span style="--h:0.80" class="chip">Writing 8.81</span><span style="--h:0.75" class="chip">Operations 8.50</span><span style="--h:0.71" class="chip">Frontend 8.25</span></div>
+      <p class="note">One muse exec per task, same flags as the muse-wonder run, each with its own clean HOME inside bubblewrap, which hid the home directory, /tmp, other run repositories and mounts; network shared for the Meta API. Fitted in one 5-hour window; a watcher would have held new tasks at 50% of it.</p>
+    </article><article class="card model">
+      <div class="rank">8</div>
       <h3>GPT-6.1 Sol</h3><p class="muted mono">gpt-6.1-sol</p>
-      <p class="big">8.63<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 112.25 of 130 (13 tasks)</p>
+      <p class="big">8.56<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 111.25 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>xhigh</dd>
         <dt>Time</dt><dd>~48 min</dd>
@@ -475,69 +505,13 @@
         <dt>Usage</dt><dd>5.85M input (5.28M cached), 243k output, 75k reasoning tokens; 48% of the account&#39;s 5-hour quota and 7% of its weekly quota</dd>
         <dt>Where</dt><dd>Codex CLI on the Mac, gand-business account</dd>
       </dl>
-      <div class="groups"><span style="--h:0.85" class="chip">Code 9.13</span><span style="--h:0.73" class="chip">Writing 8.38</span><span style="--h:0.77" class="chip">Operations 8.63</span><span style="--h:0.72" class="chip">Frontend 8.33</span></div>
+      <div class="groups"><span style="--h:0.86" class="chip">Code 9.19</span><span style="--h:0.70" class="chip">Writing 8.19</span><span style="--h:0.69" class="chip">Operations 8.13</span><span style="--h:0.75" class="chip">Frontend 8.50</span></div>
       <p class="note">One codex exec per task, four at a time. The account&#39;s personal AGENTS.md was set aside for the run. An aborted duplicate launch preceded this clean run.</p>
     </article><article class="card model">
-      <div class="rank">8</div>
-      <h3>Qwen 3.8 Max</h3><p class="muted mono">qwen/qwen3.8-max-0902 (OpenRouter)</p>
+      <div class="rank">9</div>
+      <h3>HY4 preview</h3><p class="muted mono">tencent/hy4-preview (OpenRouter)</p>
       <p class="big">8.25<span class="muted"> / 10 per task</span></p>
       <p class="muted">total 107.25 of 130 (13 tasks)</p>
-      <dl class="meta">
-        <dt>Effort</dt><dd>high (opencode variant); task 13 at medium</dd>
-        <dt>Time</dt><dd>~158 session-minutes (interrupted batch; frontend tasks up to 30 min)</dd>
-        <dt>Cost</dt><dd>$5.44 (OpenRouter)</dd>
-        <dt>Usage</dt><dd>618k input + 7.89M cache-read input, 160k output + 212k reasoning tokens; 315 tool calls</dd>
-        <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12</dd>
-      </dl>
-      <div class="groups"><span style="--h:0.77" class="chip">Code 8.63</span><span style="--h:0.71" class="chip">Writing 8.25</span><span style="--h:0.71" class="chip">Operations 8.25</span><span style="--h:0.63" class="chip">Frontend 7.75</span></div>
-      <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. The batch was interrupted when /tmp filled up (opencode&#39;s per-HOME npm caches) and again when OpenRouter credit ran out; affected tasks were re-run from the template with the identical command. Task 13 produced nothing twice at high (one response&#39;s reasoning hit opencode&#39;s 32k per-response cap) and was re-run at medium at the user&#39;s request; graders were told.</p>
-    </article><article class="card model">
-      <div class="rank">9</div>
-      <h3>HY4 preview (CodeBuddy)</h3><p class="muted mono">hy4-preview (Tencent CodeBuddy)</p>
-      <p class="big">8.12<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 105.5 of 130 (13 tasks)</p>
-      <dl class="meta">
-        <dt>Effort</dt><dd>high</dd>
-        <dt>Time</dt><dd>~23 min first pass + 12 min re-run of tasks 11 and 13</dd>
-        <dt>Cost</dt><dd>$0 reported (CodeBuddy plan usage)</dd>
-        <dt>Usage</dt><dd>10.09M input (of which 9.41M cache reads), 231k output tokens; 724 turns</dd>
-        <dt>Where</dt><dd>Tencent CodeBuddy Code 2.164.0 (headless) on cachyos, user&#39;s CodeBuddy account, 2026-10-12</dd>
-      </dl>
-      <div class="groups"><span style="--h:0.72" class="chip">Code 8.31</span><span style="--h:0.71" class="chip">Writing 8.25</span><span style="--h:0.65" class="chip">Operations 7.88</span><span style="--h:0.64" class="chip">Frontend 7.83</span></div>
-      <p class="note">Same model as &#39;HY4 preview&#39; (OpenRouter/opencode), run in its vendor&#39;s own CLI for comparison. One codebuddy -p per task, four at a time, in a fresh repository outside the home directory; the sign-in is tied to the real HOME, so user settings, MCP, session persistence and auto-memory were turned off instead. Permission rules denied network commands and web tools (CodeBuddy ignores sandbox settings), and the transcripts were audited. Tasks 11 and 13 were cut off by the plan&#39;s rate limit (429) and re-run from the template after it reset.</p>
-    </article><article class="card model">
-      <div class="rank">10</div>
-      <h3>muse-wonder</h3><p class="muted mono">muse-wonder-1.0</p>
-      <p class="big">8.10<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 105.25 of 130 (13 tasks)</p>
-      <dl class="meta">
-        <dt>Effort</dt><dd>xhigh</dd>
-        <dt>Time</dt><dd>~12 min (4 min 45 s for tasks 01-09, four at a time; 7 min 15 s for tasks 10-13, one at a time)</dd>
-        <dt>Cost</dt><dd>tokens only</dd>
-        <dt>Usage</dt><dd>6.66M input (5.81M cached), 154k output, 49.5k reasoning tokens; 222 model steps. After Muse&#39;s quota fix, tasks 10-13 used 34% of a 5-hour window and 11% of the weekly quota</dd>
-        <dt>Where</dt><dd>Muse Code 1.4.6 (headless muse exec) on the Mac, user&#39;s Muse subscription, 2026-10-13</dd>
-      </dl>
-      <div class="groups"><span style="--h:0.61" class="chip">Code 7.69</span><span style="--h:0.70" class="chip">Writing 8.19</span><span style="--h:0.81" class="chip">Operations 8.88</span><span style="--h:0.67" class="chip">Frontend 8.00</span></div>
-      <p class="note">One muse exec per task with a clean HOME (no user skills, rules or earlier sessions) inside an outer macOS sandbox that blocked reads of the rest of the home directory and all network except HTTPS. The subscription&#39;s 5-hour window ran out as tasks 10-13 started; Muse then fixed a too-fast quota drain and reset all quotas, and tasks 10-13 were re-run from the template one at a time.</p>
-    </article><article class="card model">
-      <div class="rank">11</div>
-      <h3>Step-5 preview</h3><p class="muted mono">stepfun/step-5-preview (OpenRouter)</p>
-      <p class="big">7.96<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 103.5 of 130 (13 tasks)</p>
-      <dl class="meta">
-        <dt>Effort</dt><dd>high (reasoning effort, registered in the opencode config)</dd>
-        <dt>Time</dt><dd>~69 session-minutes (interrupted batch)</dd>
-        <dt>Cost</dt><dd>$2.21 (OpenRouter)</dd>
-        <dt>Usage</dt><dd>939k input + 8.89M cache-read input, 161k output + 145k reasoning tokens; 322 tool calls</dd>
-        <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12</dd>
-      </dl>
-      <div class="groups"><span style="--h:0.74" class="chip">Code 8.44</span><span style="--h:0.54" class="chip">Writing 7.25</span><span style="--h:0.73" class="chip">Operations 8.38</span><span style="--h:0.67" class="chip">Frontend 8.00</span></div>
-      <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. The batch was interrupted when /tmp filled up (opencode&#39;s per-HOME npm caches) and again when OpenRouter credit ran out; affected tasks were re-run from the template with the identical command.</p>
-    </article><article class="card model">
-      <div class="rank">12</div>
-      <h3>HY4 preview</h3><p class="muted mono">tencent/hy4-preview (OpenRouter)</p>
-      <p class="big">7.87<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 102.25 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>high (opencode variant)</dd>
         <dt>Time</dt><dd>~113 session-minutes (interrupted batch)</dd>
@@ -545,41 +519,55 @@
         <dt>Usage</dt><dd>635k input + 9.18M cache-read input, 175k output + 137k reasoning tokens; 312 tool calls</dd>
         <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12</dd>
       </dl>
-      <div class="groups"><span style="--h:0.77" class="chip">Code 8.63</span><span style="--h:0.61" class="chip">Writing 7.69</span><span style="--h:0.67" class="chip">Operations 8.00</span><span style="--h:0.50" class="chip">Frontend 7.00</span></div>
+      <div class="groups"><span style="--h:0.83" class="chip">Code 9.00</span><span style="--h:0.66" class="chip">Writing 7.94</span><span style="--h:0.73" class="chip">Operations 8.38</span><span style="--h:0.60" class="chip">Frontend 7.58</span></div>
       <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. The batch was interrupted when /tmp filled up (opencode&#39;s per-HOME npm caches) and again when OpenRouter credit ran out; affected tasks were re-run from the template with the identical command. Eight tasks waited for a credit top-up (held by the budget guard).</p>
     </article><article class="card model">
-      <div class="rank">13</div>
-      <h3>muse</h3><p class="muted mono">muse-spark-1.3</p>
-      <p class="big">7.85<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 102 of 130 (13 tasks)</p>
+      <div class="rank">10</div>
+      <h3>Qwen 3.8 Max</h3><p class="muted mono">qwen/qwen3.8-max-0902 (OpenRouter)</p>
+      <p class="big">8.17<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 106.25 of 130 (13 tasks)</p>
       <dl class="meta">
-        <dt>Effort</dt><dd>max</dd>
-        <dt>Time</dt><dd>~20 min</dd>
+        <dt>Effort</dt><dd>high (opencode variant); task 13 at medium</dd>
+        <dt>Time</dt><dd>~158 session-minutes (interrupted batch; frontend tasks up to 30 min)</dd>
+        <dt>Cost</dt><dd>$5.44 (OpenRouter)</dd>
+        <dt>Usage</dt><dd>618k input + 7.89M cache-read input, 160k output + 212k reasoning tokens; 315 tool calls</dd>
+        <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.71" class="chip">Code 8.25</span><span style="--h:0.69" class="chip">Writing 8.13</span><span style="--h:0.71" class="chip">Operations 8.25</span><span style="--h:0.68" class="chip">Frontend 8.08</span></div>
+      <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. The batch was interrupted when /tmp filled up (opencode&#39;s per-HOME npm caches) and again when OpenRouter credit ran out; affected tasks were re-run from the template with the identical command. Task 13 produced nothing twice at high (one response&#39;s reasoning hit opencode&#39;s 32k per-response cap) and was re-run at medium at the user&#39;s request; graders were told.</p>
+    </article><article class="card model">
+      <div class="rank">11=</div>
+      <h3>HY4 preview (CodeBuddy)</h3><p class="muted mono">hy4-preview (Tencent CodeBuddy)</p>
+      <p class="big">8.13<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 105.75 of 130 (13 tasks)</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>high</dd>
+        <dt>Time</dt><dd>~23 min first pass + 12 min re-run of tasks 11 and 13</dd>
+        <dt>Cost</dt><dd>$0 reported (CodeBuddy plan usage)</dd>
+        <dt>Usage</dt><dd>10.09M input (of which 9.41M cache reads), 231k output tokens; 724 turns</dd>
+        <dt>Where</dt><dd>Tencent CodeBuddy Code 2.164.0 (headless) on cachyos, user&#39;s CodeBuddy account, 2026-10-12</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.70" class="chip">Code 8.19</span><span style="--h:0.70" class="chip">Writing 8.19</span><span style="--h:0.65" class="chip">Operations 7.88</span><span style="--h:0.69" class="chip">Frontend 8.17</span></div>
+      <p class="note">Same model as &#39;HY4 preview&#39; (OpenRouter/opencode), run in its vendor&#39;s own CLI for comparison. One codebuddy -p per task, four at a time, in a fresh repository outside the home directory; the sign-in is tied to the real HOME, so user settings, MCP, session persistence and auto-memory were turned off instead. Permission rules denied network commands and web tools (CodeBuddy ignores sandbox settings), and the transcripts were audited. Tasks 11 and 13 were cut off by the plan&#39;s rate limit (429) and re-run from the template after it reset.</p>
+    </article><article class="card model">
+      <div class="rank">11=</div>
+      <h3>muse-wonder</h3><p class="muted mono">muse-wonder-1.0</p>
+      <p class="big">8.13<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 105.75 of 130 (13 tasks)</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>xhigh</dd>
+        <dt>Time</dt><dd>~12 min (4 min 45 s for tasks 01-09, four at a time; 7 min 15 s for tasks 10-13, one at a time)</dd>
         <dt>Cost</dt><dd>tokens only</dd>
-        <dt>Usage</dt><dd>6.20M input (5.54M cached), 162k output, 59.6k reasoning tokens; 172 model steps</dd>
-        <dt>Where</dt><dd>tincan on the Mac, 2026-09-30</dd>
+        <dt>Usage</dt><dd>6.66M input (5.81M cached), 154k output, 49.5k reasoning tokens; 222 model steps. After Muse&#39;s quota fix, tasks 10-13 used 34% of a 5-hour window and 11% of the weekly quota</dd>
+        <dt>Where</dt><dd>Muse Code 1.4.6 (headless muse exec) on the Mac, user&#39;s Muse subscription, 2026-10-13</dd>
       </dl>
-      <div class="groups"><span style="--h:0.55" class="chip">Code 7.31</span><span style="--h:0.64" class="chip">Writing 7.81</span><span style="--h:0.73" class="chip">Operations 8.38</span><span style="--h:0.71" class="chip">Frontend 8.25</span></div>
-      <p class="note">Local run through tincan: one stateless request per task, four at a time. Cost can&#39;t be measured, so tokens are recorded instead.</p>
+      <div class="groups"><span style="--h:0.61" class="chip">Code 7.69</span><span style="--h:0.73" class="chip">Writing 8.38</span><span style="--h:0.71" class="chip">Operations 8.25</span><span style="--h:0.72" class="chip">Frontend 8.33</span></div>
+      <p class="note">One muse exec per task with a clean HOME (no user skills, rules or earlier sessions) inside an outer macOS sandbox that blocked reads of the rest of the home directory and all network except HTTPS. The subscription&#39;s 5-hour window ran out as tasks 10-13 started; Muse then fixed a too-fast quota drain and reset all quotas, and tasks 10-13 were re-run from the template one at a time.</p>
     </article><article class="card model">
-      <div class="rank">14</div>
-      <h3>GLM-5.3</h3><p class="muted mono">z-ai/glm-5.3 (OpenRouter)</p>
-      <p class="big">7.65<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 99.5 of 130 (13 tasks)</p>
-      <dl class="meta">
-        <dt>Effort</dt><dd>high (opencode variant)</dd>
-        <dt>Time</dt><dd>~29 min</dd>
-        <dt>Cost</dt><dd>$1.49 (OpenRouter)</dd>
-        <dt>Usage</dt><dd>230k input + 3.98M cache-read input, 88k output + 178k reasoning tokens; 202 tool calls</dd>
-        <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11</dd>
-      </dl>
-      <div class="groups"><span style="--h:0.66" class="chip">Code 7.94</span><span style="--h:0.65" class="chip">Writing 7.88</span><span style="--h:0.52" class="chip">Operations 7.13</span><span style="--h:0.56" class="chip">Frontend 7.33</span></div>
-      <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands (curl, wget, pip/npm install, npx, git clone, ssh) were denied by opencode permission rules, and the transcripts were audited (no network use).</p>
-    </article><article class="card model">
-      <div class="rank">15</div>
+      <div class="rank">13</div>
       <h3>MiniMax M3.1 Flash</h3><p class="muted mono">minimax/MiniMax-M3.1-Flash-Preview</p>
-      <p class="big">7.54<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 98 of 130 (13 tasks)</p>
+      <p class="big">7.92<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 103 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>xhigh</dd>
         <dt>Time</dt><dd>~42 min</dd>
@@ -587,13 +575,41 @@
         <dt>Usage</dt><dd>582k input + 18.61M cache-read input, 398k output tokens; the Token Plan&#39;s coding-plan counters stayed at 0% (they don&#39;t track mcode&#39;s managed usage)</dd>
         <dt>Where</dt><dd>mcode (MiniMax Code 0.6.2) on the Mac, 2026-10-04</dd>
       </dl>
-      <div class="groups"><span style="--h:0.65" class="chip">Code 7.88</span><span style="--h:0.40" class="chip">Writing 6.38</span><span style="--h:0.60" class="chip">Operations 7.63</span><span style="--h:0.76" class="chip">Frontend 8.58</span></div>
+      <div class="groups"><span style="--h:0.71" class="chip">Code 8.25</span><span style="--h:0.50" class="chip">Writing 7.00</span><span style="--h:0.63" class="chip">Operations 7.75</span><span style="--h:0.81" class="chip">Frontend 8.83</span></div>
       <p class="note">One mcode exec per task, four at a time, in the user&#39;s normal HOME (mcode refuses a clean one); no personal instruction files reached it, user skills did. Task 11&#39;s first attempt was killed ~15 min in by the orchestrator&#39;s job limit and re-run alone from the template; bench time = 28m38s first pass + 13m38s re-run.</p>
     </article><article class="card model">
-      <div class="rank">16</div>
+      <div class="rank">14</div>
+      <h3>Step-5 preview</h3><p class="muted mono">stepfun/step-5-preview (OpenRouter)</p>
+      <p class="big">7.73<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 100.5 of 130 (13 tasks)</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>high (reasoning effort, registered in the opencode config)</dd>
+        <dt>Time</dt><dd>~69 session-minutes (interrupted batch)</dd>
+        <dt>Cost</dt><dd>$2.21 (OpenRouter)</dd>
+        <dt>Usage</dt><dd>939k input + 8.89M cache-read input, 161k output + 145k reasoning tokens; 322 tool calls</dd>
+        <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.68" class="chip">Code 8.06</span><span style="--h:0.53" class="chip">Writing 7.19</span><span style="--h:0.60" class="chip">Operations 7.63</span><span style="--h:0.68" class="chip">Frontend 8.08</span></div>
+      <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. The batch was interrupted when /tmp filled up (opencode&#39;s per-HOME npm caches) and again when OpenRouter credit ran out; affected tasks were re-run from the template with the identical command.</p>
+    </article><article class="card model">
+      <div class="rank">15</div>
+      <h3>GLM-5.3</h3><p class="muted mono">z-ai/glm-5.3 (OpenRouter)</p>
+      <p class="big">7.67<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 99.75 of 130 (13 tasks)</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>high (opencode variant)</dd>
+        <dt>Time</dt><dd>~29 min</dd>
+        <dt>Cost</dt><dd>$1.49 (OpenRouter)</dd>
+        <dt>Usage</dt><dd>230k input + 3.98M cache-read input, 88k output + 178k reasoning tokens; 202 tool calls</dd>
+        <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.61" class="chip">Code 7.69</span><span style="--h:0.69" class="chip">Writing 8.13</span><span style="--h:0.48" class="chip">Operations 6.88</span><span style="--h:0.60" class="chip">Frontend 7.58</span></div>
+      <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands (curl, wget, pip/npm install, npx, git clone, ssh) were denied by opencode permission rules, and the transcripts were audited (no network use).</p>
+    </article><article class="card model">
+      <div class="rank">16=</div>
       <h3>mimo</h3><p class="muted mono">xiaomi/mimo-v2.6-pro</p>
-      <p class="big">7.52<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 97.75 of 130 (13 tasks)</p>
+      <p class="big">7.58<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 98.5 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>default</dd>
         <dt>Time</dt><dd>not recorded</dd>
@@ -601,13 +617,27 @@
         
         <dt>Where</dt><dd>tincan on cachyos, 2026-09-22/23</dd>
       </dl>
-      <div class="groups"><span style="--h:0.68" class="chip">Code 8.06</span><span style="--h:0.57" class="chip">Writing 7.44</span><span style="--h:0.54" class="chip">Operations 7.25</span><span style="--h:0.51" class="chip">Frontend 7.08</span></div>
+      <div class="groups"><span style="--h:0.75" class="chip">Code 8.50</span><span style="--h:0.58" class="chip">Writing 7.50</span><span style="--h:0.50" class="chip">Operations 7.00</span><span style="--h:0.47" class="chip">Frontend 6.83</span></div>
       <p class="note">Earlier run, one request per task (mimo run --pure). Timing and cost were not recorded.</p>
     </article><article class="card model">
-      <div class="rank">17</div>
+      <div class="rank">16=</div>
+      <h3>muse</h3><p class="muted mono">muse-spark-1.3</p>
+      <p class="big">7.58<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 98.5 of 130 (13 tasks)</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>max</dd>
+        <dt>Time</dt><dd>~20 min</dd>
+        <dt>Cost</dt><dd>tokens only</dd>
+        <dt>Usage</dt><dd>6.20M input (5.54M cached), 162k output, 59.6k reasoning tokens; 172 model steps</dd>
+        <dt>Where</dt><dd>tincan on the Mac, 2026-09-30</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.52" class="chip">Code 7.13</span><span style="--h:0.58" class="chip">Writing 7.50</span><span style="--h:0.65" class="chip">Operations 7.88</span><span style="--h:0.68" class="chip">Frontend 8.08</span></div>
+      <p class="note">Local run through tincan: one stateless request per task, four at a time. Cost can&#39;t be measured, so tokens are recorded instead.</p>
+    </article><article class="card model">
+      <div class="rank">18=</div>
       <h3>Kimi K3</h3><p class="muted mono">moonshotai/kimi-k3 (OpenRouter)</p>
-      <p class="big">7.46<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 97 of 130 (13 tasks)</p>
+      <p class="big">7.31<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 95 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>high (opencode variant)</dd>
         <dt>Time</dt><dd>~14 min</dd>
@@ -615,27 +645,13 @@
         <dt>Usage</dt><dd>337k input + 3.21M cache-read input, 100k output + 44k reasoning tokens; 215 tool calls</dd>
         <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11</dd>
       </dl>
-      <div class="groups"><span style="--h:0.60" class="chip">Code 7.63</span><span style="--h:0.51" class="chip">Writing 7.06</span><span style="--h:0.56" class="chip">Operations 7.38</span><span style="--h:0.64" class="chip">Frontend 7.83</span></div>
+      <div class="groups"><span style="--h:0.51" class="chip">Code 7.06</span><span style="--h:0.56" class="chip">Writing 7.38</span><span style="--h:0.42" class="chip">Operations 6.50</span><span style="--h:0.68" class="chip">Frontend 8.08</span></div>
       <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands (curl, wget, pip/npm install, npx, git clone, ssh) were denied by opencode permission rules, and the transcripts were audited (no network use). Session titles went to opencode&#39;s default small model (a few cents); later runs used the model under test.</p>
     </article><article class="card model">
-      <div class="rank">18</div>
-      <h3>GPT-6 Luna</h3><p class="muted mono">gpt-6-luna</p>
-      <p class="big">7.38<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 96 of 130 (13 tasks)</p>
-      <dl class="meta">
-        <dt>Effort</dt><dd>max</dd>
-        <dt>Time</dt><dd>~34 min</dd>
-        <dt>Cost</dt><dd>tokens only</dd>
-        <dt>Usage</dt><dd>3.48M input (3.05M cached), 220k output, 124k reasoning tokens; about 6% of the account&#39;s 5-hour quota and 1% of its weekly quota</dd>
-        <dt>Where</dt><dd>Codex CLI on the Mac, gand-business account</dd>
-      </dl>
-      <div class="groups"><span style="--h:0.58" class="chip">Code 7.50</span><span style="--h:0.58" class="chip">Writing 7.50</span><span style="--h:0.58" class="chip">Operations 7.50</span><span style="--h:0.50" class="chip">Frontend 7.00</span></div>
-      <p class="note">One codex exec per task, four at a time. The account&#39;s personal AGENTS.md was set aside for the run. Task 12 left an earlier draft of its files at the repository root.</p>
-    </article><article class="card model">
-      <div class="rank">19</div>
+      <div class="rank">18=</div>
       <h3>Gemini 4 Argon</h3><p class="muted mono">Gemini 4 Argon, Thinking level High (self-reported ID: gemini-3.1-pro-preview)</p>
-      <p class="big">7.23<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 94 of 130 (13 tasks)</p>
+      <p class="big">7.31<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 95 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>High (Thinking level)</dd>
         <dt>Time</dt><dd>~61 min of reply time, spread over ~20 h to fit the plan&#39;s 5-hour usage windows</dd>
@@ -643,13 +659,27 @@
         <dt>Usage</dt><dd>Not reported by the chat. 17% of the plan&#39;s weekly limit; about 18-34% of a 5-hour window per task</dd>
         <dt>Where</dt><dd>Gemini web chat (gemini.google.com, Google AI Pro account) in the Claude desktop app&#39;s browser, 2026-10-16/17</dd>
       </dl>
-      <div class="groups"><span style="--h:0.56" class="chip">Code 7.38</span><span style="--h:0.50" class="chip">Writing 7.00</span><span style="--h:0.52" class="chip">Operations 7.13</span><span style="--h:0.57" class="chip">Frontend 7.42</span></div>
+      <div class="groups"><span style="--h:0.51" class="chip">Code 7.06</span><span style="--h:0.57" class="chip">Writing 7.44</span><span style="--h:0.52" class="chip">Operations 7.13</span><span style="--h:0.60" class="chip">Frontend 7.58</span></div>
       <p class="note">No API access, so each task ran in a new temporary chat: the task&#39;s files were pasted into one message and the model returned whole files, copied into the repository verbatim and checked against the page with SHA-256. The model had no tools: it could not run code, tests or a browser. Tasks 07, 12 and 13 were re-run with the identical prompt after attempts lost to the orchestrator (07) or to chat resets (12, 13).</p>
     </article><article class="card model">
       <div class="rank">20</div>
+      <h3>GPT-6 Luna</h3><p class="muted mono">gpt-6-luna</p>
+      <p class="big">7.27<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 94.5 of 130 (13 tasks)</p>
+      <dl class="meta">
+        <dt>Effort</dt><dd>max</dd>
+        <dt>Time</dt><dd>~34 min</dd>
+        <dt>Cost</dt><dd>tokens only</dd>
+        <dt>Usage</dt><dd>3.48M input (3.05M cached), 220k output, 124k reasoning tokens; about 6% of the account&#39;s 5-hour quota and 1% of its weekly quota</dd>
+        <dt>Where</dt><dd>Codex CLI on the Mac, gand-business account</dd>
+      </dl>
+      <div class="groups"><span style="--h:0.59" class="chip">Code 7.56</span><span style="--h:0.54" class="chip">Writing 7.25</span><span style="--h:0.50" class="chip">Operations 7.00</span><span style="--h:0.51" class="chip">Frontend 7.08</span></div>
+      <p class="note">One codex exec per task, four at a time. The account&#39;s personal AGENTS.md was set aside for the run. Task 12 left an earlier draft of its files at the repository root.</p>
+    </article><article class="card model">
+      <div class="rank">21</div>
       <h3>Mistral Large 4</h3><p class="muted mono">mistralai/mistral-large-4-0 (OpenRouter)</p>
-      <p class="big">6.44<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 83.75 of 130 (13 tasks)</p>
+      <p class="big">6.54<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 85 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>high (reasoning effort, registered in the opencode config); task 12 at medium, task 13 at low</dd>
         <dt>Time</dt><dd>~24 min plus reduced-effort re-runs of 12 and 13</dd>
@@ -657,13 +687,13 @@
         <dt>Usage</dt><dd>1.13M input + 1.47M cache-read input, 98k output + 74k reasoning tokens; 183 tool calls</dd>
         <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11</dd>
       </dl>
-      <div class="groups"><span style="--h:0.57" class="chip">Code 7.44</span><span style="--h:0.24" class="chip">Writing 5.44</span><span style="--h:0.44" class="chip">Operations 6.63</span><span style="--h:0.39" class="chip">Frontend 6.33</span></div>
+      <div class="groups"><span style="--h:0.53" class="chip">Code 7.19</span><span style="--h:0.29" class="chip">Writing 5.75</span><span style="--h:0.46" class="chip">Operations 6.75</span><span style="--h:0.43" class="chip">Frontend 6.58</span></div>
       <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. Tasks 12 and 13 produced nothing at high, twice each (one response&#39;s reasoning hit opencode&#39;s 32k per-response cap). At the user&#39;s request they were re-run at reduced effort: 12 at medium, and 13 at low after medium also hit the cap. Graders were told.</p>
     </article><article class="card model">
-      <div class="rank">21</div>
+      <div class="rank">22</div>
       <h3>DeepSeek V4 Pro</h3><p class="muted mono">deepseek/deepseek-v4-pro-0813 (OpenRouter)</p>
-      <p class="big">6.13<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 79.75 of 130 (13 tasks)</p>
+      <p class="big">6.48<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 84.25 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>high (opencode variant)</dd>
         <dt>Time</dt><dd>~12 min</dd>
@@ -671,13 +701,13 @@
         <dt>Usage</dt><dd>251k input + 1.51M cache-read input, 72k output + 45k reasoning tokens; 137 tool calls</dd>
         <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-11</dd>
       </dl>
-      <div class="groups"><span style="--h:0.50" class="chip">Code 7.00</span><span style="--h:0.28" class="chip">Writing 5.69</span><span style="--h:0.21" class="chip">Operations 5.25</span><span style="--h:0.36" class="chip">Frontend 6.17</span></div>
+      <div class="groups"><span style="--h:0.49" class="chip">Code 6.94</span><span style="--h:0.38" class="chip">Writing 6.25</span><span style="--h:0.27" class="chip">Operations 5.63</span><span style="--h:0.46" class="chip">Frontend 6.75</span></div>
       <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands (curl, wget, pip/npm install, npx, git clone, ssh) were denied by opencode permission rules, and the transcripts were audited (no network use).</p>
     </article><article class="card model">
-      <div class="rank">22</div>
+      <div class="rank">23</div>
       <h3>Gemini 3.1 Pro</h3><p class="muted mono">gemini-3.1-pro-high</p>
-      <p class="big">6.12<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 79.5 of 130 (13 tasks)</p>
+      <p class="big">6.46<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 84 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>high (High variant + --effort high)</dd>
         <dt>Time</dt><dd>~27 min (17 min first pass + 10 min task 11 re-run)</dd>
@@ -685,13 +715,13 @@
         <dt>Usage</dt><dd>1.56M input + 7.45M cache-read input, 530k output (317k thinking) tokens; 196 tool calls (graded tasks; the cut-off task 11 attempt not counted)</dd>
         <dt>Where</dt><dd>Antigravity CLI (agy 1.3.3, headless) on cachyos, Google account, 2026-10-11</dd>
       </dl>
-      <div class="groups"><span style="--h:0.52" class="chip">Code 7.13</span><span style="--h:0.25" class="chip">Writing 5.50</span><span style="--h:0.29" class="chip">Operations 5.75</span><span style="--h:0.31" class="chip">Frontend 5.83</span></div>
+      <div class="groups"><span style="--h:0.54" class="chip">Code 7.25</span><span style="--h:0.35" class="chip">Writing 6.13</span><span style="--h:0.27" class="chip">Operations 5.63</span><span style="--h:0.40" class="chip">Frontend 6.42</span></div>
       <p class="note">One agy -p per task, four at a time, both Gemini models at once, each task with its own empty HOME (only the agy sign-in token and a settings file) in a fresh repository outside the home directory: no rules, memories, knowledge items, conversation history, user skills or MCP; terminal commands in agy&#39;s sandbox with no network, URL tools denied. Task 11&#39;s first attempt was ended by agy (an out-of-workspace read it can&#39;t prompt for in headless mode is auto-denied and ends the session) before RESPONSE.md was written; it was reset to the template and re-run alone with the identical command.</p>
     </article><article class="card model">
-      <div class="rank">23</div>
+      <div class="rank">24</div>
       <h3>Gemini 3.8 Flash</h3><p class="muted mono">gemini-3.8-flash-high</p>
-      <p class="big">5.96<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 77.5 of 130 (13 tasks)</p>
+      <p class="big">6.23<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 81 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>high (High variant + --effort high)</dd>
         <dt>Time</dt><dd>~22 min</dd>
@@ -699,13 +729,13 @@
         <dt>Usage</dt><dd>2.35M input + 16.07M cache-read input, 512k output (289k thinking) tokens; 314 tool calls</dd>
         <dt>Where</dt><dd>Antigravity CLI (agy 1.3.3, headless) on cachyos, Google account, 2026-10-11</dd>
       </dl>
-      <div class="groups"><span style="--h:0.55" class="chip">Code 7.31</span><span style="--h:0.33" class="chip">Writing 6.00</span><span style="--h:0.27" class="chip">Operations 5.63</span><span style="--h:0.06" class="chip">Frontend 4.33</span></div>
+      <div class="groups"><span style="--h:0.52" class="chip">Code 7.13</span><span style="--h:0.39" class="chip">Writing 6.31</span><span style="--h:0.31" class="chip">Operations 5.88</span><span style="--h:0.19" class="chip">Frontend 5.17</span></div>
       <p class="note">One agy -p per task, four at a time, both Gemini models at once, each task with its own empty HOME (only the agy sign-in token and a settings file) in a fresh repository outside the home directory: no rules, memories, knowledge items, conversation history, user skills or MCP; terminal commands in agy&#39;s sandbox with no network, URL tools denied. Task 11 took 15 of the 22 minutes.</p>
     </article><article class="card model">
-      <div class="rank">24</div>
+      <div class="rank">25</div>
       <h3>MiniMax M3</h3><p class="muted mono">minimax/MiniMax-M3</p>
-      <p class="big">5.94<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 77.25 of 130 (13 tasks)</p>
+      <p class="big">6.08<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 79 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>default (not selectable)</dd>
         <dt>Time</dt><dd>~9 min</dd>
@@ -713,13 +743,13 @@
         <dt>Usage</dt><dd>547k input + 4.78M cache-read input, 190k output tokens; 2% of the Token Plan&#39;s 5-hour window, weekly unchanged (1%)</dd>
         <dt>Where</dt><dd>mcode (MiniMax Code 0.6.2) on the Mac, 2026-10-04</dd>
       </dl>
-      <div class="groups"><span style="--h:0.35" class="chip">Code 6.13</span><span style="--h:0.26" class="chip">Writing 5.56</span><span style="--h:0.19" class="chip">Operations 5.13</span><span style="--h:0.46" class="chip">Frontend 6.75</span></div>
+      <div class="groups"><span style="--h:0.38" class="chip">Code 6.25</span><span style="--h:0.24" class="chip">Writing 5.44</span><span style="--h:0.31" class="chip">Operations 5.88</span><span style="--h:0.47" class="chip">Frontend 6.83</span></div>
       <p class="note">One mcode exec per task, four at a time, same protocol as MiniMax M3.1 Flash; mcode rejects --effort for M3, so it ran at its fixed default. Usage was polled every 2 minutes with a hold at 85%, never reached.</p>
     </article><article class="card model">
-      <div class="rank">25</div>
+      <div class="rank">26</div>
       <h3>Nemotron 3 Ultra</h3><p class="muted mono">nvidia/nemotron-3-ultra-550b-a55b (OpenRouter, paid endpoint)</p>
-      <p class="big">4.90<span class="muted"> / 10 per task</span></p>
-      <p class="muted">total 63.75 of 130 (13 tasks)</p>
+      <p class="big">4.88<span class="muted"> / 10 per task</span></p>
+      <p class="muted">total 63.5 of 130 (13 tasks)</p>
       <dl class="meta">
         <dt>Effort</dt><dd>high (opencode variant)</dd>
         <dt>Time</dt><dd>~8 min</dd>
@@ -727,15 +757,15 @@
         <dt>Usage</dt><dd>525k input + 1.66M cache-read input, 93k output + 11k reasoning tokens; 154 tool calls</dd>
         <dt>Where</dt><dd>opencode 1.18.30 (headless) on cachyos, OpenRouter, 2026-10-12</dd>
       </dl>
-      <div class="groups"><span style="--h:0.39" class="chip">Code 6.31</span><span style="--h:0.04" class="chip">Writing 4.25</span><span style="--h:0.08" class="chip">Operations 4.50</span><span style="--h:0.03" class="chip">Frontend 4.17</span></div>
+      <div class="groups"><span style="--h:0.35" class="chip">Code 6.13</span><span style="--h:0.01" class="chip">Writing 4.06</span><span style="--h:0.00" class="chip">Operations 4.00</span><span style="--h:0.15" class="chip">Frontend 4.92</span></div>
       <p class="note">One opencode run --pure per task, four at a time, each task with its own empty HOME (only an opencode config) in a fresh repository outside the home directory: no instruction files, skills, plugins, MCP or history. No OS sandbox: web tools, paths outside the repo and network commands were denied by opencode permission rules, and the transcripts were audited. Finished before the batch was interrupted. In task 04 it tried &#39;pip install&#39; twice; both were blocked (graders were told).</p>
     </article></section>
-    <section class="card"><h2>Scores by task</h2><div class="scroll"><table class="grid"><tr><th scope="col">Task</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Haiku 5.5</th><th scope="col">GPT-6 Astra</th><th scope="col">Grok 4.7</th><th scope="col">GPT-6.1 Sol</th><th scope="col">Qwen 3.8 Max</th><th scope="col">HY4 preview (CodeBuddy)</th><th scope="col">muse-wonder</th><th scope="col">Step-5 preview</th><th scope="col">HY4 preview</th><th scope="col">muse</th><th scope="col">GLM-5.3</th><th scope="col">MiniMax M3.1 Flash</th><th scope="col">mimo</th><th scope="col">Kimi K3</th><th scope="col">GPT-6 Luna</th><th scope="col">Gemini 4 Argon</th><th scope="col">Mistral Large 4</th><th scope="col">DeepSeek V4 Pro</th><th scope="col">Gemini 3.1 Pro</th><th scope="col">Gemini 3.8 Flash</th><th scope="col">MiniMax M3</th><th scope="col">Nemotron 3 Ultra</th></tr><tr><th scope="row"><a href="tasks/01-feature-building.html">01 Feature building</a></th><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.67">8</td></tr><tr><th scope="row"><a href="tasks/02-bug-fixing.html">02 Bug fixing</a></th><td class="num heat best" style="--h:1.00">10</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td></tr><tr><th scope="row"><a href="tasks/03-infra-management.html">03 Infra management</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.83">9</td><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.08">4.5</td><td class="num heat" style="--h:0.00">4</td></tr><tr><th scope="row"><a href="tasks/04-project-maintenance.html">04 Project maintenance</a></th><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat best" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.25">5.5</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.08">4.5</td><td class="num heat" style="--h:0.13">4.75</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.08">4.5</td></tr><tr><th scope="row"><a href="tasks/05-technical-writing.html">05 Technical writing</a></th><td class="num heat best" style="--h:0.88">9.25</td><td class="num heat best" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.04">4.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.13">4.75</td><td class="num heat" style="--h:0.08">4.5</td></tr><tr><th scope="row"><a href="tasks/06-product-planning.html">06 Product planning</a></th><td class="num heat best" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.25">5.5</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.08">4.5</td><td class="num heat" style="--h:0.25">5.5</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.04">4.25</td></tr><tr><th scope="row"><a href="tasks/07-creative-writing.html">07 Creative writing</a></th><td class="num heat" style="--h:0.88">9.25</td><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.08">4.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.00">3.5</td><td class="num heat" style="--h:0.04">4.25</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.04">4.25</td></tr><tr><th scope="row"><a href="tasks/08-social-media.html">08 Social media</a></th><td class="num heat" style="--h:0.88">9.25</td><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.13">4.75</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.25">5.5</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.00">4</td></tr><tr><th scope="row"><a href="tasks/09-incident-analysis.html">09 Incident analysis</a></th><td class="num heat best" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.13">4.75</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.13">4.75</td><td class="num heat" style="--h:0.04">4.25</td></tr><tr><th scope="row"><a href="tasks/10-general-operations.html">10 General operations</a></th><td class="num heat best" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat best" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.25">5.5</td><td class="num heat" style="--h:0.13">4.75</td></tr><tr><th scope="row"><a href="tasks/11-frontend-operations.html">11 Frontend operations</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.25">5.5</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.04">4.25</td></tr><tr><th scope="row"><a href="tasks/12-frontend-editorial.html">12 Frontend editorial</a></th><td class="num heat best" style="--h:0.83">9</td><td class="num heat best" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.13">4.75</td><td class="num heat" style="--h:0.00">4</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.17">5</td></tr><tr><th scope="row"><a href="tasks/13-frontend-playful.html">13 Frontend playful</a></th><td class="num heat" style="--h:0.88">9.25</td><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.00">2.25</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.00">3.25</td></tr><tr class="sub"><th scope="row">Code average</th><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.94">9.63</td><td class="num heat" style="--h:0.93">9.56</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.89">9.31</td><td class="num heat" style="--h:0.92">9.50</td><td class="num heat" style="--h:0.85">9.13</td><td class="num heat" style="--h:0.77">8.63</td><td class="num heat" style="--h:0.72">8.31</td><td class="num heat" style="--h:0.61">7.69</td><td class="num heat" style="--h:0.74">8.44</td><td class="num heat" style="--h:0.77">8.63</td><td class="num heat" style="--h:0.55">7.31</td><td class="num heat" style="--h:0.66">7.94</td><td class="num heat" style="--h:0.65">7.88</td><td class="num heat" style="--h:0.68">8.06</td><td class="num heat" style="--h:0.60">7.63</td><td class="num heat" style="--h:0.58">7.50</td><td class="num heat" style="--h:0.56">7.38</td><td class="num heat" style="--h:0.57">7.44</td><td class="num heat" style="--h:0.50">7.00</td><td class="num heat" style="--h:0.52">7.13</td><td class="num heat" style="--h:0.55">7.31</td><td class="num heat" style="--h:0.35">6.13</td><td class="num heat" style="--h:0.39">6.31</td></tr><tr class="sub"><th scope="row">Writing average</th><td class="num heat" style="--h:0.90">9.38</td><td class="num heat" style="--h:0.89">9.31</td><td class="num heat" style="--h:0.83">9.00</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.76">8.56</td><td class="num heat" style="--h:0.68">8.06</td><td class="num heat" style="--h:0.73">8.38</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.70">8.19</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.61">7.69</td><td class="num heat" style="--h:0.64">7.81</td><td class="num heat" style="--h:0.65">7.88</td><td class="num heat" style="--h:0.40">6.38</td><td class="num heat" style="--h:0.57">7.44</td><td class="num heat" style="--h:0.51">7.06</td><td class="num heat" style="--h:0.58">7.50</td><td class="num heat" style="--h:0.50">7.00</td><td class="num heat" style="--h:0.24">5.44</td><td class="num heat" style="--h:0.28">5.69</td><td class="num heat" style="--h:0.25">5.50</td><td class="num heat" style="--h:0.33">6.00</td><td class="num heat" style="--h:0.26">5.56</td><td class="num heat" style="--h:0.04">4.25</td></tr><tr class="sub"><th scope="row">Operations average</th><td class="num heat" style="--h:0.92">9.50</td><td class="num heat" style="--h:0.85">9.13</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.83">9.00</td><td class="num heat" style="--h:0.83">9.00</td><td class="num heat" style="--h:0.75">8.50</td><td class="num heat" style="--h:0.77">8.63</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.65">7.88</td><td class="num heat" style="--h:0.81">8.88</td><td class="num heat" style="--h:0.73">8.38</td><td class="num heat" style="--h:0.67">8.00</td><td class="num heat" style="--h:0.73">8.38</td><td class="num heat" style="--h:0.52">7.13</td><td class="num heat" style="--h:0.60">7.63</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.56">7.38</td><td class="num heat" style="--h:0.58">7.50</td><td class="num heat" style="--h:0.52">7.13</td><td class="num heat" style="--h:0.44">6.63</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.27">5.63</td><td class="num heat" style="--h:0.19">5.13</td><td class="num heat" style="--h:0.08">4.50</td></tr><tr class="sub"><th scope="row">Frontend average</th><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.86">9.17</td><td class="num heat" style="--h:0.82">8.92</td><td class="num heat" style="--h:0.76">8.58</td><td class="num heat" style="--h:0.65">7.92</td><td class="num heat" style="--h:0.78">8.67</td><td class="num heat" style="--h:0.72">8.33</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.64">7.83</td><td class="num heat" style="--h:0.67">8.00</td><td class="num heat" style="--h:0.67">8.00</td><td class="num heat" style="--h:0.50">7.00</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.56">7.33</td><td class="num heat" style="--h:0.76">8.58</td><td class="num heat" style="--h:0.51">7.08</td><td class="num heat" style="--h:0.64">7.83</td><td class="num heat" style="--h:0.50">7.00</td><td class="num heat" style="--h:0.57">7.42</td><td class="num heat" style="--h:0.39">6.33</td><td class="num heat" style="--h:0.36">6.17</td><td class="num heat" style="--h:0.31">5.83</td><td class="num heat" style="--h:0.06">4.33</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.03">4.17</td></tr><tr class="total"><th scope="row">Average per task</th><td class="num">9.48</td><td class="num">9.35</td><td class="num">9.19</td><td class="num">8.75</td><td class="num">8.71</td><td class="num">8.71</td><td class="num">8.63</td><td class="num">8.25</td><td class="num">8.12</td><td class="num">8.10</td><td class="num">7.96</td><td class="num">7.87</td><td class="num">7.85</td><td class="num">7.65</td><td class="num">7.54</td><td class="num">7.52</td><td class="num">7.46</td><td class="num">7.38</td><td class="num">7.23</td><td class="num">6.44</td><td class="num">6.13</td><td class="num">6.12</td><td class="num">5.96</td><td class="num">5.94</td><td class="num">4.90</td></tr><tr class="sub"><th scope="row">Total (tasks graded)</th><td class="num">123.25 (13)</td><td class="num">121.5 (13)</td><td class="num">119.5 (13)</td><td class="num">113.75 (13)</td><td class="num">113.25 (13)</td><td class="num">113.25 (13)</td><td class="num">112.25 (13)</td><td class="num">107.25 (13)</td><td class="num">105.5 (13)</td><td class="num">105.25 (13)</td><td class="num">103.5 (13)</td><td class="num">102.25 (13)</td><td class="num">102 (13)</td><td class="num">99.5 (13)</td><td class="num">98 (13)</td><td class="num">97.75 (13)</td><td class="num">97 (13)</td><td class="num">96 (13)</td><td class="num">94 (13)</td><td class="num">83.75 (13)</td><td class="num">79.75 (13)</td><td class="num">79.5 (13)</td><td class="num">77.5 (13)</td><td class="num">77.25 (13)</td><td class="num">63.75 (13)</td></tr></table></div>
+    <section class="card"><h2>Scores by task</h2><div class="scroll"><table class="grid"><tr><th scope="col">Task</th><th scope="col">Sonnet 5.5</th><th scope="col">Opus 5.5</th><th scope="col">Fable 5.1</th><th scope="col">Haiku 5.5</th><th scope="col">Grok 4.7</th><th scope="col">GPT-6 Astra</th><th scope="col">muse-wonder-full</th><th scope="col">GPT-6.1 Sol</th><th scope="col">HY4 preview</th><th scope="col">Qwen 3.8 Max</th><th scope="col">HY4 preview (CodeBuddy)</th><th scope="col">muse-wonder</th><th scope="col">MiniMax M3.1 Flash</th><th scope="col">Step-5 preview</th><th scope="col">GLM-5.3</th><th scope="col">mimo</th><th scope="col">muse</th><th scope="col">Kimi K3</th><th scope="col">Gemini 4 Argon</th><th scope="col">GPT-6 Luna</th><th scope="col">Mistral Large 4</th><th scope="col">DeepSeek V4 Pro</th><th scope="col">Gemini 3.1 Pro</th><th scope="col">Gemini 3.8 Flash</th><th scope="col">MiniMax M3</th><th scope="col">Nemotron 3 Ultra</th></tr><tr><th scope="row"><a href="tasks/01-feature-building.html">01 Feature building</a></th><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.63">7.75</td></tr><tr><th scope="row"><a href="tasks/02-bug-fixing.html">02 Bug fixing</a></th><td class="num heat best" style="--h:1.00">10</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat best" style="--h:1.00">10</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.83">9</td></tr><tr><th scope="row"><a href="tasks/03-infra-management.html">03 Infra management</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.00">4</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.00">3.5</td><td class="num heat" style="--h:0.00">3</td></tr><tr><th scope="row"><a href="tasks/04-project-maintenance.html">04 Project maintenance</a></th><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat best" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.25">5.5</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.13">4.75</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.13">4.75</td></tr><tr><th scope="row"><a href="tasks/05-technical-writing.html">05 Technical writing</a></th><td class="num heat" style="--h:0.83">9</td><td class="num heat best" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.13">4.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.08">4.5</td><td class="num heat" style="--h:0.13">4.75</td></tr><tr><th scope="row"><a href="tasks/06-product-planning.html">06 Product planning</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.25">5.5</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.00">3.75</td></tr><tr><th scope="row"><a href="tasks/07-creative-writing.html">07 Creative writing</a></th><td class="num heat" style="--h:0.83">9</td><td class="num heat best" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.00">4</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.00">3.5</td></tr><tr><th scope="row"><a href="tasks/08-social-media.html">08 Social media</a></th><td class="num heat" style="--h:0.88">9.25</td><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.04">4.25</td></tr><tr><th scope="row"><a href="tasks/09-incident-analysis.html">09 Incident analysis</a></th><td class="num heat best" style="--h:0.96">9.75</td><td class="num heat best" style="--h:0.96">9.75</td><td class="num heat" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.17">5</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.21">5.25</td><td class="num heat" style="--h:0.13">4.75</td><td class="num heat" style="--h:0.00">3.75</td></tr><tr><th scope="row"><a href="tasks/10-general-operations.html">10 General operations</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.04">4.25</td></tr><tr><th scope="row"><a href="tasks/11-frontend-operations.html">11 Frontend operations</a></th><td class="num heat best" style="--h:0.92">9.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.17">5</td></tr><tr><th scope="row"><a href="tasks/12-frontend-editorial.html">12 Frontend editorial</a></th><td class="num heat best" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.83">9</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.67">8</td><td class="num heat best" style="--h:0.88">9.25</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.29">5.75</td></tr><tr><th scope="row"><a href="tasks/13-frontend-playful.html">13 Frontend playful</a></th><td class="num heat" style="--h:0.79">8.75</td><td class="num heat best" style="--h:0.83">9</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.75">8.5</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.67">8</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.33">6</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.58">7.5</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.42">6.5</td><td class="num heat" style="--h:0.50">7</td><td class="num heat" style="--h:0.00">2.75</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.00">4</td></tr><tr class="sub"><th scope="row">Code average</th><td class="num heat" style="--h:0.94">9.63</td><td class="num heat" style="--h:0.94">9.63</td><td class="num heat" style="--h:0.93">9.56</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.90">9.38</td><td class="num heat" style="--h:0.91">9.44</td><td class="num heat" style="--h:0.77">8.63</td><td class="num heat" style="--h:0.86">9.19</td><td class="num heat" style="--h:0.83">9.00</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.70">8.19</td><td class="num heat" style="--h:0.61">7.69</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.68">8.06</td><td class="num heat" style="--h:0.61">7.69</td><td class="num heat" style="--h:0.75">8.50</td><td class="num heat" style="--h:0.52">7.13</td><td class="num heat" style="--h:0.51">7.06</td><td class="num heat" style="--h:0.51">7.06</td><td class="num heat" style="--h:0.59">7.56</td><td class="num heat" style="--h:0.53">7.19</td><td class="num heat" style="--h:0.49">6.94</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.52">7.13</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.35">6.13</td></tr><tr class="sub"><th scope="row">Writing average</th><td class="num heat" style="--h:0.86">9.19</td><td class="num heat" style="--h:0.89">9.31</td><td class="num heat" style="--h:0.85">9.13</td><td class="num heat" style="--h:0.80">8.81</td><td class="num heat" style="--h:0.66">7.94</td><td class="num heat" style="--h:0.73">8.38</td><td class="num heat" style="--h:0.80">8.81</td><td class="num heat" style="--h:0.70">8.19</td><td class="num heat" style="--h:0.66">7.94</td><td class="num heat" style="--h:0.69">8.13</td><td class="num heat" style="--h:0.70">8.19</td><td class="num heat" style="--h:0.73">8.38</td><td class="num heat" style="--h:0.50">7.00</td><td class="num heat" style="--h:0.53">7.19</td><td class="num heat" style="--h:0.69">8.13</td><td class="num heat" style="--h:0.58">7.50</td><td class="num heat" style="--h:0.58">7.50</td><td class="num heat" style="--h:0.56">7.38</td><td class="num heat" style="--h:0.57">7.44</td><td class="num heat" style="--h:0.54">7.25</td><td class="num heat" style="--h:0.29">5.75</td><td class="num heat" style="--h:0.38">6.25</td><td class="num heat" style="--h:0.35">6.13</td><td class="num heat" style="--h:0.39">6.31</td><td class="num heat" style="--h:0.24">5.44</td><td class="num heat" style="--h:0.01">4.06</td></tr><tr class="sub"><th scope="row">Operations average</th><td class="num heat" style="--h:0.94">9.63</td><td class="num heat" style="--h:0.90">9.38</td><td class="num heat" style="--h:0.90">9.38</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.81">8.88</td><td class="num heat" style="--h:0.73">8.38</td><td class="num heat" style="--h:0.75">8.50</td><td class="num heat" style="--h:0.69">8.13</td><td class="num heat" style="--h:0.73">8.38</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.65">7.88</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.63">7.75</td><td class="num heat" style="--h:0.60">7.63</td><td class="num heat" style="--h:0.48">6.88</td><td class="num heat" style="--h:0.50">7.00</td><td class="num heat" style="--h:0.65">7.88</td><td class="num heat" style="--h:0.42">6.50</td><td class="num heat" style="--h:0.52">7.13</td><td class="num heat" style="--h:0.50">7.00</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.27">5.63</td><td class="num heat" style="--h:0.27">5.63</td><td class="num heat" style="--h:0.31">5.88</td><td class="num heat" style="--h:0.31">5.88</td><td class="num heat" style="--h:0.00">4.00</td></tr><tr class="sub"><th scope="row">Frontend average</th><td class="num heat" style="--h:0.86">9.17</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.81">8.83</td><td class="num heat" style="--h:0.76">8.58</td><td class="num heat" style="--h:0.79">8.75</td><td class="num heat" style="--h:0.65">7.92</td><td class="num heat" style="--h:0.71">8.25</td><td class="num heat" style="--h:0.75">8.50</td><td class="num heat" style="--h:0.60">7.58</td><td class="num heat" style="--h:0.68">8.08</td><td class="num heat" style="--h:0.69">8.17</td><td class="num heat" style="--h:0.72">8.33</td><td class="num heat" style="--h:0.81">8.83</td><td class="num heat" style="--h:0.68">8.08</td><td class="num heat" style="--h:0.60">7.58</td><td class="num heat" style="--h:0.47">6.83</td><td class="num heat" style="--h:0.68">8.08</td><td class="num heat" style="--h:0.68">8.08</td><td class="num heat" style="--h:0.60">7.58</td><td class="num heat" style="--h:0.51">7.08</td><td class="num heat" style="--h:0.43">6.58</td><td class="num heat" style="--h:0.46">6.75</td><td class="num heat" style="--h:0.40">6.42</td><td class="num heat" style="--h:0.19">5.17</td><td class="num heat" style="--h:0.47">6.83</td><td class="num heat" style="--h:0.15">4.92</td></tr><tr class="total"><th scope="row">Average per task</th><td class="num">9.38</td><td class="num">9.29</td><td class="num">9.23</td><td class="num">8.73</td><td class="num">8.71</td><td class="num">8.60</td><td class="num">8.58</td><td class="num">8.56</td><td class="num">8.25</td><td class="num">8.17</td><td class="num">8.13</td><td class="num">8.13</td><td class="num">7.92</td><td class="num">7.73</td><td class="num">7.67</td><td class="num">7.58</td><td class="num">7.58</td><td class="num">7.31</td><td class="num">7.31</td><td class="num">7.27</td><td class="num">6.54</td><td class="num">6.48</td><td class="num">6.46</td><td class="num">6.23</td><td class="num">6.08</td><td class="num">4.88</td></tr><tr class="sub"><th scope="row">Total (tasks graded)</th><td class="num">122 (13)</td><td class="num">120.75 (13)</td><td class="num">120 (13)</td><td class="num">113.5 (13)</td><td class="num">113.25 (13)</td><td class="num">111.75 (13)</td><td class="num">111.5 (13)</td><td class="num">111.25 (13)</td><td class="num">107.25 (13)</td><td class="num">106.25 (13)</td><td class="num">105.75 (13)</td><td class="num">105.75 (13)</td><td class="num">103 (13)</td><td class="num">100.5 (13)</td><td class="num">99.75 (13)</td><td class="num">98.5 (13)</td><td class="num">98.5 (13)</td><td class="num">95 (13)</td><td class="num">95 (13)</td><td class="num">94.5 (13)</td><td class="num">85 (13)</td><td class="num">84.25 (13)</td><td class="num">84 (13)</td><td class="num">81 (13)</td><td class="num">79 (13)</td><td class="num">63.5 (13)</td></tr></table></div>
     <p class="muted">Highlighted cell: the best score on that task (ties all highlighted).</p></section>
     <section class="card prose"><h2>How this was scored</h2>
     <ul>
       <li><strong>Objective checks first.</strong> A hidden 11-test contract suite for tasks 01–02; each model's own tests; each model's tests run against every other model's code and against the original files; word, character and hashtag limits; and for tasks 11–13, a headless browser at 1440 px and 390 px checking horizontal scroll, console errors and network requests.</li>
-      <li><strong>Blind grading.</strong> For each task, one grader saw all submissions under random letters (a different mapping per task), with model names and paths removed. Scores come from the latest pass, which graded every model shown together; earlier passes (<code>scores-4way.json</code> through <code>scores-24way.json</code>) are kept as a repeatability check. Models are ranked by average per task, since Grok 4.7 has 12 graded tasks. It scored against <code>RUBRIC.md</code>, checking claims itself: rerunning tests, probing the code, counting limits, and clicking through the pages with Playwright.</li>
+      <li><strong>Blind grading.</strong> For each task, one grader saw all submissions under random letters (a different mapping per task), with model names and paths removed. Scores come from the latest pass, which graded every model shown together; earlier passes (<code>scores-4way.json</code> through <code>scores-25way.json</code>) are kept as a repeatability check. Models are ranked by average per task. It scored against <code>RUBRIC.md</code>, checking claims itself: rerunning tests, probing the code, counting limits, and clicking through the pages with Playwright.</li>
       <li><strong>Who graded.</strong> The graders were Claude Opus 5.5 subagents. Opus 5.5 is also one of the models graded, and Sonnet, Fable and Haiku share its family; blinding reduces but does not remove that bias.</li>
-      <li><strong>Not like-for-like.</strong> Sonnet 5.5 and Fable 5.1 ran on extra effort, Opus 5.5 on high, Haiku 5.5, GPT-6 Astra, GPT-6.1 Sol, Grok 4.7, MiniMax M3.1 Flash and muse-wonder on xhigh, Gemini 3.1 Pro, Gemini 3.8 Flash and the eight OpenRouter models on high, Gemini 4 Argon on the Gemini app's High thinking level (three OpenRouter frontend tasks at reduced effort after their high-effort attempts produced nothing), GPT-6 Luna and muse on max, mimo and MiniMax M3 on their defaults. Sonnet, Fable and Opus ran in Claude Code's cloud; Haiku in the Claude Code CLI, the Gemini models in the Antigravity CLI, Kimi, DeepSeek, GLM, Mistral, Qwen, Nemotron, Step-5 and HY4 in opencode through OpenRouter, and HY4 a second time in Tencent's CodeBuddy CLI, all on cachyos; the GPT models ran in Codex CLI, Grok in Grok CLI, the MiniMax models in mcode, muse through tincan and muse-wonder in Muse Code (clean HOME, outer sandbox) on the Mac; Gemini 4 Argon ran in the Gemini web chat with no tools (its files pasted into one message per task and its reply's files copied out), so unlike every other entry it could not run its code, tests or pages; where cost can't be measured in dollars, token usage is shown instead. Scores are comparative within each task and anchored to the brief.</li>
+      <li><strong>Not like-for-like.</strong> Sonnet 5.5 and Fable 5.1 ran on extra effort, Opus 5.5 on high, Haiku 5.5, GPT-6 Astra, GPT-6.1 Sol, Grok 4.7, MiniMax M3.1 Flash, muse-wonder and muse-wonder-full on xhigh, Gemini 3.1 Pro, Gemini 3.8 Flash and the eight OpenRouter models on high, Gemini 4 Argon on the Gemini app's High thinking level (three OpenRouter frontend tasks at reduced effort after their high-effort attempts produced nothing), GPT-6 Luna and muse on max, mimo and MiniMax M3 on their defaults. Sonnet, Fable and Opus ran in Claude Code's cloud; Haiku in the Claude Code CLI, the Gemini models in the Antigravity CLI, Kimi, DeepSeek, GLM, Mistral, Qwen, Nemotron, Step-5 and HY4 in opencode through OpenRouter, and HY4 a second time in Tencent's CodeBuddy CLI, all on cachyos; the GPT models ran in Codex CLI, Grok in Grok CLI, the MiniMax models in mcode, muse through tincan and muse-wonder in Muse Code (clean HOME, outer sandbox) on the Mac; muse-wonder-full in Muse Code on cachyos (clean HOME per task inside bubblewrap); Gemini 4 Argon ran in the Gemini web chat with no tools (its files pasted into one message per task and its reply's files copied out), so unlike every other entry it could not run its code, tests or pages; where cost can't be measured in dollars, token usage is shown instead. Scores are comparative within each task and anchored to the brief.</li>
     </ul><p class="muted">13 of 13 tasks graded.</p></section></main><script src="app.js"></script></body></html>

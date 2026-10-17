@@ -36,6 +36,7 @@ for each one is as Arda identified it.
 | HY4 preview via CodeBuddy (`hy4-preview`) | high | Tencent CodeBuddy Code on cachyos (user's plan) | 16:58:34 (2026-10-12) | 21:43:36 (re-runs after the rate-limit reset) | ~23 min + 12 min re-runs | n/a | n/a | $0 reported (plan usage) | 13 / 13 | local repository, merged under `runs/hy4-preview-codebuddy` |
 | muse-wonder (`muse-wonder-1.0`) | xhigh | Muse Code 1.4.6 on the Mac (user's Muse subscription) | 07:11:57 (2026-10-13) | 09:54:08 (tasks 10–13 after the quota reset) | 4 min 45 s + 7 min 15 s | n/a | n/a | subscription quota; see below | 13 / 13 | local repository, merged under `runs/muse-wonder` |
 | Gemini 4 Argon (Thinking: High) | High | Gemini web chat (Google AI Pro), in the Claude desktop app's browser | 17:38 (2026-10-16) | 13:17 (2026-10-17) | ~61 min of reply time over ~20 h (paused for the 5-hour usage windows) | n/a | n/a | 17% of the weekly limit; see below | 13 / 13 | local repository, merged under `runs/gemini-argon` |
+| muse-wonder-full (`muse-wonder-full-1.0`) | xhigh | Muse Code 1.4.10 on cachyos (user's Muse subscription) | 14:26:43 (2026-10-17) | 14:57:51 | 31 min 08 s (two at a time) | n/a | n/a | 33% of a 5-hour window, 11% of the week; see below | 13 / 13 | local repository, merged under `runs/muse-wonder-full` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -479,3 +480,37 @@ The chat reports no tokens or cost. Usage came from gemini.google.com/usage:
 A task took about 18–34% of a 5-hour window, roughly in proportion to its answer length. Lost attempts: 07's first
 reply (the orchestrator navigated the tab away before saving it), 12's first two (a chat reset with HTTP 429 errors,
 then a tab reload) and 13's first (a chat reset mid-reply). The failed attempts showed no usage.
+
+## muse-wonder-full (Muse Code on cachyos, 2026-10-17)
+
+Meta's `muse-wonder-full-1.0`, available after Arda upgraded the Muse subscription, in Muse Code 1.4.10-R6427.1 on xhigh.
+Same protocol and flags as the muse-wonder run, with the new model id: one fresh `muse exec` per task, `--reasoning-effort
+xhigh --trust-workspace --no-foreign-personal-context --max-model-steps 200 --disable-approval --disable-sandbox`, 2-hour limit
+per task, on a private repository holding only the thirteen tasks. Two tasks ran at a time from a shared queue. Scripts, timing,
+replies, quota readings, usage and a tool-call audit are in `run-logs/muse-wonder-full-orchestration/`.
+
+- **Blank slate.** Linux has no Seatbelt, so bubblewrap (`sandboxed`) replaced the Mac run's outer sandbox. Each task had its own
+  clean HOME, so no user skills, rules or earlier sessions, and no other task's sessions. /home, /tmp, /run/user, /mnt, /srv
+  and /var/tmp were empty tmpfs except for the run repository, the task's HOME, the pinned muse binary and Node. Only the repository
+  and the task's HOME were writable. The network was shared, since the Meta API needs HTTPS. Muse's own shell sandbox was off, as on
+  the Mac. The API key was piped on stdin. A muse-wonder-full session checked all this from inside before the run.
+- **Audit.** All 198 tool calls (58 shell commands) were listed (`audit.py`). None used the network or touched another task. Task 04 listed
+  `~/.local/share/mise/installs` looking for other Pythons (only Node is visible there in the sandbox). Tasks 12 and 13 wrote a
+  throwaway test script to the sandbox's empty `/tmp`.
+- **Helpers.** Each task also made two short status-line calls on `muse-spark-1.3` (Muse's reminder helpers); they are counted below.
+
+| Tasks | Time | Model steps | Input tokens | of which cached | Output tokens | Reasoning tokens |
+|---|---|---|---|---|---|---|
+| 13 / 13 | 31 min 08 s (55 min 01 s summed) | 210 (26 helper) | 7,133,448 | 6,245,794 | 198,239 | 76,869 |
+
+**Quota.** A watcher read both windows every two minutes (`usage-watch.sh`, `usage.log`, each reading one tiny model call) and
+would have held new tasks at 50% of the 5-hour window or 85% of the week. Neither was reached:
+
+| Time | 5-hour window | Weekly window |
+|---|---|---|
+| 14:26 (start) | 0% | 0% |
+| 14:35 (tasks 01-04 done) | 14% | 4% |
+| 14:46 (tasks 01-10 done) | 27% | 9% |
+| 14:58 (end) | 33% | 11% |
+
+That is about 2.5% of a 5-hour window and under 1% of the week per task, at two tasks in parallel.

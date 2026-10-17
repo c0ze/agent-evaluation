@@ -248,5 +248,15 @@
   "cost": null,
   "usage": "Not reported by the chat. 17% of the plan's weekly limit; about 18-34% of a 5-hour window per task",
   "notes": "No API access, so each task ran in a new temporary chat: the task's files were pasted into one message and the model returned whole files, copied into the repository verbatim and checked against the page with SHA-256. The model had no tools: it could not run code, tests or a browser. Tasks 07, 12 and 13 were re-run with the identical prompt after attempts lost to the orchestrator (07) or to chat resets (12, 13)."
+ },
+ "muse-wonder-full": {
+  "label": "muse-wonder-full",
+  "model": "muse-wonder-full-1.0",
+  "where": "Muse Code 1.4.10 (headless muse exec) on cachyos, user's Muse subscription, 2026-10-17",
+  "effort": "xhigh",
+  "duration": "31 min (two at a time; 55 min summed)",
+  "cost": null,
+  "usage": "7.13M input (6.25M cached), 198k output, 76.9k reasoning tokens; 210 model steps (26 short helper calls on muse-spark-1.3). 33% of a 5-hour window and 11% of the weekly quota",
+  "notes": "One muse exec per task, same flags as the muse-wonder run, each with its own clean HOME inside bubblewrap, which hid the home directory, /tmp, other run repositories and mounts; network shared for the Meta API. Fitted in one 5-hour window; a watcher would have held new tasks at 50% of it."
  }
 }
