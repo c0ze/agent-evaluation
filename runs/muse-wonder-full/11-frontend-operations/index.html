@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay — Operations</title>
+<meta name="description" content="Relay operations control room: throughput, service health, and incidents.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="shell">
+
+  <nav class="rail" aria-label="Primary">
+    <a class="rail__brand" href="#" aria-label="Relay home"><span aria-hidden="true">R</span></a>
+    <ul class="rail__list">
+      <li><a class="rail__link is-active" href="#" aria-current="page"><span class="rail__abbr" aria-hidden="true">Ov</span><span class="rail__label">Overview</span></a></li>
+      <li><a class="rail__link" href="#incidents"><span class="rail__abbr" aria-hidden="true">In</span><span class="rail__label">Incidents</span></a></li>
+      <li><a class="rail__link" href="#throughput"><span class="rail__abbr" aria-hidden="true">Th</span><span class="rail__label">Throughput</span></a></li>
+      <li><a class="rail__link" href="#metrics"><span class="rail__abbr" aria-hidden="true">Sv</span><span class="rail__label">Services</span></a></li>
+      <li><a class="rail__link" href="#"><span class="rail__abbr" aria-hidden="true">St</span><span class="rail__label">Settings</span></a></li>
+    </ul>
+    <p class="rail__foot"><span class="dot dot--ok" aria-hidden="true"></span> prod-eu</p>
+  </nav>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="topbar__title">
+        <h1>Relay <span class="topbar__sub">Operations</span></h1>
+        <p class="topbar__env">Production · EU + US</p>
+      </div>
+      <div class="topbar__status" role="status">
+        <span class="dot dot--crit" aria-hidden="true"></span>
+        <span><strong id="criticalCount">1 critical</strong> active</span>
+        <span class="topbar__sep" aria-hidden="true">·</span>
+        <span>Updated <time id="clock" datetime="">—</time></span>
+      </div>
+    </header>
+
+    <main id="main">
+      <section id="metrics" aria-labelledby="metrics-h">
+        <h2 id="metrics-h" class="visually-hidden">Summary metrics</h2>
+        <ul class="metrics" id="metricList"></ul>
+      </section>
+
+      <div class="grid">
+        <div class="grid__main">
+          <section class="panel" id="throughput" aria-labelledby="throughput-h">
+            <div class="panel__head">
+              <h2 id="throughput-h">Throughput — last 24 hours</h2>
+              <p class="panel__meta" id="chartMeta"></p>
+            </div>
+            <figure class="chart">
+              <div id="chartSvg"></div>
+              <figcaption id="chartCaption"></figcaption>
+            </figure>
+            <details class="chart__data">
+              <summary>Hourly values as a table</summary>
+              <div class="table-scroll">
+                <table id="chartTable">
+                  <caption class="visually-hidden">Throughput by hour, thousands of events per minute</caption>
+                  <thead><tr><th scope="col">Hour (UTC)</th><th scope="col" class="num">k events/min</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </details>
+          </section>
+
+          <section class="panel" id="incidents" aria-labelledby="incidents-h">
+            <div class="panel__head">
+              <h2 id="incidents-h">Incidents</h2>
+              <p class="panel__meta" id="resultCount" aria-live="polite"></p>
+            </div>
+
+            <form class="filters" id="filters" aria-label="Filter incidents">
+              <div class="field field--grow">
+                <label for="q">Search</label>
+                <input id="q" type="search" placeholder="ID, title, service, owner…" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="fSeverity">Severity</label>
+                <select id="fSeverity">
+                  <option value="">All severities</option>
+                  <option value="critical">Critical</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fStatus">Status</label>
+                <select id="fStatus">
+                  <option value="">All statuses</option>
+                  <option value="open">Open</option>
+                  <option value="investigating">Investigating</option>
+                  <option value="monitoring">Monitoring</option>
+                  <option value="acknowledged">Acknowledged</option>
+                </select>
+              </div>
+              <button class="btn btn--ghost" type="button" id="clearFilters">Clear filters</button>
+            </form>
+
+            <div class="table-scroll">
+              <table class="incidents" id="incidentTable">
+                <caption class="visually-hidden">Active incidents. Activate an incident ID to view it in the detail panel.</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Incident</th>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Service</th>
+                    <th scope="col" class="num">Age</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="incidentBody"></tbody>
+              </table>
+            </div>
+
+            <div class="empty" id="emptyState" hidden>
+              <h3>No incidents match these filters</h3>
+              <p>Try a different search term, or clear the filters to see every active incident.</p>
+              <button class="btn" type="button" id="emptyClear">Clear filters</button>
+            </div>
+          </section>
+        </div>
+
+        <aside class="panel detail" aria-labelledby="detail-h">
+          <div class="panel__head">
+            <h2 id="detail-h">Incident detail</h2>
+            <p class="panel__meta mono" id="detailId"></p>
+          </div>
+          <div id="detailBody"></div>
+          <p class="visually-hidden" id="ackLive" aria-live="polite"></p>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="foot">Relay · Local demo data seeded from DATA.json · No network requests</footer>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

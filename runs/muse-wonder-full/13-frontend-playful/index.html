@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Moss — a gentle household plant-care companion. Today's care queue, plant details, and weekly rhythm.">
+<title>Moss — Today's care queue</title>
+<link rel="stylesheet" href="styles.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#queue-heading">Skip to today's care queue</a>
+
+<div class="page">
+  <header class="topbar">
+    <p class="wordmark">
+      <svg class="wordmark-leaf" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false"><path d="M26 4C14 5 6 12 6 22c0 2 .5 4 .5 4S11 27 16 25c7-3 10-11 10-21Z" fill="#2e4a34"/><path d="M8 24C12 17 18 11 24 7" stroke="#f2e8d5" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      Moss
+    </p>
+    <p class="topbar-date" id="today-label">Today</p>
+  </header>
+
+  <div class="layout">
+    <div class="rail">
+      <section class="hello" aria-labelledby="hello-heading">
+        <p class="sticker sticker--overdue" id="overdue-sticker">1 overdue</p>
+        <h1 id="hello-heading">Good morning.<br>Three plants would like a word.</h1>
+        <p class="hello-sub" id="progress-text" role="status">0 of 4 settled today. Start with Frida — she's waited longest.</p>
+        <div class="progress" aria-hidden="true"><span class="progress-fill" id="progress-fill"></span></div>
+        <p class="hello-note">Small sips, often. Moss keeps the list so your leaves don't have to shout.</p>
+      </section>
+
+      <section class="rhythm" aria-labelledby="rhythm-heading">
+        <h2 id="rhythm-heading">Weekly rhythm</h2>
+        <p class="rhythm-sub">Care moments this week, Mon–Sun. Today is Friday.</p>
+        <div id="rhythm-chart"></div>
+        <p class="rhythm-caption" id="rhythm-caption">Busiest: Thursday (4). Quietest: Monday &amp; Saturday (1).</p>
+      </section>
+
+      <section class="tomorrow" aria-labelledby="tomorrow-heading">
+        <h2 id="tomorrow-heading">Tomorrow, gently</h2>
+        <ul class="tomorrow-list" id="tomorrow-list">
+          <li><strong>Drama</strong> (Calathea) · Mist · Bedroom</li>
+        </ul>
+        <p class="tomorrow-note">Anything you snooze today joins this list.</p>
+      </section>
+    </div>
+
+    <main class="maincol">
+      <section aria-labelledby="queue-heading">
+        <div class="queue-head">
+          <h2 id="queue-heading" tabindex="-1">Today's care queue</h2>
+          <p class="queue-order">Sorted by who needs you first — overdue at the top.</p>
+        </div>
+        <ol class="queue" id="queue"></ol>
+
+        <section class="all-done" id="all-done" hidden tabindex="-1" aria-labelledby="all-done-heading">
+          <svg viewBox="0 0 80 64" width="72" height="58" aria-hidden="true" focusable="false"><path d="M40 58V30" stroke="#2e4a34" stroke-width="4" stroke-linecap="round"/><path d="M40 34C28 34 18 26 16 12c14 1 22 8 24 22Z" fill="#5a8a5e"/><path d="M40 26c0-12 8-20 20-22 0 13-7 21-20 22Z" fill="#2e4a34"/><path d="M14 58h52" stroke="#c96f4a" stroke-width="5" stroke-linecap="round"/></svg>
+          <h3 id="all-done-heading">All done — everyone's settled.</h3>
+          <p id="all-done-copy">Nothing else needs you today. Kettle on. Plants: quietly photosynthesising.</p>
+          <p class="all-done-next" id="all-done-next"></p>
+        </section>
+      </section>
+
+      <section class="settled" aria-labelledby="settled-heading">
+        <h2 id="settled-heading">Settled &amp; snoozed</h2>
+        <p class="settled-sub">Done or deferred — undo any of these if you tapped too soon.</p>
+        <ul class="settled-list" id="settled-list"></ul>
+        <p class="settled-empty" id="settled-empty">Nothing here yet. Completed and snoozed care will collect here.</p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>Moss · A gentle plant-care companion · Works offline, no account, no guilt trips.</p>
+  </footer>
+</div>
+
+<div class="toast" id="toast" hidden>
+  <p class="toast-msg" id="toast-msg"></p>
+  <button type="button" class="btn btn--undo" id="toast-undo">Undo</button>
+  <button type="button" class="btn btn--dismiss" id="toast-dismiss" aria-label="Dismiss notification">✕</button>
+</div>
+<p class="visually-hidden" role="status" aria-live="polite" id="live-region"></p>
+
+<noscript>
+  <section style="padding:1rem;max-width:40rem">
+    <h2>Today's plants (enable JavaScript for Watered / Snooze actions)</h2>
+    <ul>
+      <li><strong>Frida</strong> — Boston fern, Bathroom. Water, 2 days overdue. Light: Low, indirect. History: Sep 19 · Misted; Sep 16 · Watered; Sep 12 · New frond.</li>
+      <li><strong>Orbit</strong> — Golden pothos, Bookshelf. Rotate, Today. Light: Medium, indirect. History: Sep 20 · Watered; Sep 14 · Rotated; Sep 10 · Wiped leaves.</li>
+      <li><strong>Dot</strong> — Bunny ears cactus, South window. Check soil, Today. Light: Bright, direct. History: Sep 08 · Watered; Sep 01 · New pad noted; Aug 22 · Rotated.</li>
+      <li><strong>Drama</strong> — Calathea orbifolia, Bedroom. Mist, Tomorrow. Light: Medium, filtered. History: Sep 21 · Misted; Sep 18 · Watered; Sep 15 · Brown edge noted.</li>
+    </ul>
+    <p>Weekly rhythm (Mon–Sun): 1, 3, 2, 4, 2, 1, 3 care moments.</p>
+  </section>
+</noscript>
+</body>
+</html>
