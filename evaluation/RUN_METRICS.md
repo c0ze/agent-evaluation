@@ -37,6 +37,8 @@ for each one is as Arda identified it.
 | muse-wonder (`muse-wonder-1.0`) | xhigh | Muse Code 1.4.6 on the Mac (user's Muse subscription) | 07:11:57 (2026-10-13) | 09:54:08 (tasks 10–13 after the quota reset) | 4 min 45 s + 7 min 15 s | n/a | n/a | subscription quota; see below | 13 / 13 | local repository, merged under `runs/muse-wonder` |
 | Gemini 4 Argon (Thinking: High) | High | Gemini web chat (Google AI Pro), in the Claude desktop app's browser | 17:38 (2026-10-16) | 13:17 (2026-10-17) | ~61 min of reply time over ~20 h (paused for the 5-hour usage windows) | n/a | n/a | 17% of the weekly limit; see below | 13 / 13 | local repository, merged under `runs/gemini-argon` |
 | muse-wonder-full (`muse-wonder-full-1.0`) | xhigh | Muse Code 1.4.10 on cachyos (user's Muse subscription) | 14:26:43 (2026-10-17) | 14:57:51 | 31 min 08 s (two at a time) | n/a | n/a | 33% of a 5-hour window, 11% of the week; see below | 13 / 13 | local repository, merged under `runs/muse-wonder-full` |
+| Gemini 4 Hydrogen (`gemini-4-hydrogen-xhigh`) | xhigh | Antigravity CLI 1.5.8 on the ThinkPad (Google account) | 06:05:43 (2026-11-14) | 06:34:55 | 29 min 12 s | n/a | n/a | not reported; see tokens | 13 / 13 | local repository, merged under `runs/gemini-hydrogen` |
+| Fable 5.2 (`claude-fable-5-2`) | high | Claude Code CLI 2.1.325 on the ThinkPad (claude.ai Team subscription) | 06:46:07 (2026-11-14) | 07:16:03 | 29 min 56 s | n/a | n/a | $33.66 API-equivalent; nothing charged | 13 / 13 | local repository, merged under `runs/fable-5.2` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -514,3 +516,29 @@ would have held new tasks at 50% of the 5-hour window or 85% of the week. Neithe
 | 14:58 (end) | 33% | 11% |
 
 That is about 2.5% of a 5-hour window and under 1% of the week per task, at two tasks in parallel.
+
+## Gemini 4 Hydrogen and Fable 5.2 (ThinkPad, 2026-11-14)
+
+The bench moved to the ThinkPad on 2026-11-14; both runs used it, each with the protocol of an earlier run.
+
+**Gemini 4 Hydrogen** (`gemini-4-hydrogen-xhigh`, `--effort xhigh`) ran through the Antigravity CLI 1.5.8 exactly as Gemini
+3.1 Pro and 3.8 Flash did: one `agy -p` per task, four at a time, 2-hour limit, each task with its own empty HOME holding only
+a settings file (terminal sandbox on, `proceed-in-sandbox`, read/write allowed in the repository, URL tools denied). agy 1.5
+reads its sign-in token from the system keyring, so DBus was passed through instead of linking a token file. A probe session
+confirmed no network, a hidden read-only home directory and no writes outside the workspace. Unlike agy 1.3, the sandbox now
+allows headless Firefox, and Hydrogen screenshotted its own pages on tasks 11-13. Scripts, replies and the audit are in
+`run-logs/gemini-hydrogen-orchestration/`.
+
+**Fable 5.2** (`claude-fable-5-2`, effort high) ran through the Claude Code CLI 2.1.325 exactly as Haiku 5.5 did: one
+`claude -p` per task, four at a time, from a repository outside the home directory, with project-only settings, no MCP servers
+and Claude Code's sandbox (network off, writes confined to the repository and temp). The earlier CLI (2.1.316) didn't know the
+model. Fable 5.1 ran in Claude Code's cloud on extra effort, so the two Fable entries differ in harness and effort. Scripts,
+replies and the audit are in `run-logs/fable-5.2-orchestration/`.
+
+| Model | Time | Tool calls | Input | Cache write / read | Output | Thinking | Cost |
+|---|---|---|---|---|---|---|---|
+| Gemini 4 Hydrogen | 29 min 12 s | 311 | 1,206,704 | — / 11,636,018 | 694,242 | 466,310 | not reported |
+| Fable 5.2 | 29 min 56 s | 246 | 352 | 727,574 / 12,357,644 | 488,692 | (in output) | $33.66 API-equivalent |
+
+Both audits (`audit.py`) found no network use and no access to another task's directory. The Claude Code sandbox left empty
+`.claude` folders in the Fable task directories (harness artefacts, not committed).

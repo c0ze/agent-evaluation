@@ -258,5 +258,25 @@
   "cost": null,
   "usage": "7.13M input (6.25M cached), 198k output, 76.9k reasoning tokens; 210 model steps (26 short helper calls on muse-spark-1.3). 33% of a 5-hour window and 11% of the weekly quota",
   "notes": "One muse exec per task, same flags as the muse-wonder run, each with its own clean HOME inside bubblewrap, which hid the home directory, /tmp, other run repositories and mounts; network shared for the Meta API. Fitted in one 5-hour window; a watcher would have held new tasks at 50% of it."
+ },
+ "gemini-hydrogen": {
+  "label": "Gemini 4 Hydrogen",
+  "model": "gemini-4-hydrogen-xhigh",
+  "where": "Antigravity CLI 1.5.8 (headless agy -p) on the ThinkPad, user's Google account, 2026-11-14",
+  "effort": "xhigh",
+  "duration": "29 min (four at a time)",
+  "cost": null,
+  "usage": "1.21M input + 11.6M cache-read, 694k output, 466k thinking tokens; 311 tool calls",
+  "notes": "One agy -p per task with its own empty HOME (only a settings file; the sign-in token comes from the system keyring over DBus) inside agy's terminal sandbox (no network, home hidden and read-only), URL tools denied. Same protocol as the Gemini 3.1 Pro / 3.8 Flash runs; this agy version lets the model take headless Firefox screenshots, which it did on tasks 11-13."
+ },
+ "fable-5.2": {
+  "label": "Fable 5.2",
+  "model": "claude-fable-5-2",
+  "where": "Claude Code CLI 2.1.325 (headless claude -p) on the ThinkPad, claude.ai Team subscription, 2026-11-14",
+  "effort": "high",
+  "duration": "30 min (four at a time)",
+  "cost": "$33.66 API-equivalent (subscription; nothing charged)",
+  "usage": "0.73M cache write, 12.4M cache read, 489k output tokens; 263 turns",
+  "notes": "Same protocol as Haiku 5.5: one claude -p per task from a repo outside the home directory, project-only settings, no MCP servers, Claude Code sandbox with network off and writes confined to the repo and temp. Fable 5.1 ran in Claude Code's cloud on extra effort, so 5.1 and 5.2 differ in harness and effort."
  }
 }
