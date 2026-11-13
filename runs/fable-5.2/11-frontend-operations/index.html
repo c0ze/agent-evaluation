@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Relay — Operations</title>
+  <script>
+    // Apply a saved theme before first paint. Falls back to the OS setting.
+    try {
+      var savedTheme = localStorage.getItem('relay-theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    } catch (e) { /* storage unavailable: follow the OS setting */ }
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Icon sprite: local, same-document, no requests. -->
+  <svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+    <symbol id="i-overview" viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx=".5"/><rect x="9" y="2.5" width="4.5" height="4.5" rx=".5"/><rect x="2.5" y="9" width="4.5" height="4.5" rx=".5"/><rect x="9" y="9" width="4.5" height="4.5" rx=".5"/></symbol>
+    <symbol id="i-throughput" viewBox="0 0 16 16"><path d="M2 11.5 5.5 7l3 2.5L14 3.5"/><path d="M2 14h12"/></symbol>
+    <symbol id="i-incidents" viewBox="0 0 16 16"><path d="M8 2.5 14 13H2Z"/><path d="M8 6.5v3"/><path d="M8 11.2v.1"/></symbol>
+    <symbol id="i-detail" viewBox="0 0 16 16"><rect x="2.5" y="3" width="11" height="10" rx="1"/><path d="M9.5 3v10"/></symbol>
+    <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.25"/><path d="m10.2 10.2 3.3 3.3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7"/></symbol>
+    <symbol id="i-up" viewBox="0 0 16 16"><path d="M8 12.5v-9"/><path d="m4 7.5 4-4 4 4"/></symbol>
+    <symbol id="i-down" viewBox="0 0 16 16"><path d="M8 3.5v9"/><path d="m4 8.5 4 4 4-4"/></symbol>
+    <symbol id="i-chev-up" viewBox="0 0 16 16"><path d="m4 10 4-4 4 4"/></symbol>
+    <symbol id="i-chev-down" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 16 16"><path d="M2.5 3.5h11L9.5 8.5v4l-3-1.5V8.5Z"/></symbol>
+    <symbol id="i-theme" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11Z" fill="currentColor"/></symbol>
+    <symbol id="i-relay" viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="8" r="2"/><path d="M5.5 8h5"/></symbol>
+  </svg>
+
+  <a class="skip" href="#incidents">Skip to incidents</a>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <svg class="icon brand-mark" aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><use href="#i-relay"/></svg>
+        <span class="brand-name">Relay</span>
+        <h1 class="brand-view">Operations</h1>
+      </div>
+
+      <div class="top-status" id="top-status" aria-label="System status">
+        <!-- Rendered by app.js: highest severity, active and unacknowledged counts. -->
+      </div>
+
+      <div class="top-meta">
+        <span class="snapshot" title="Values come from the bundled DATA.json seed and do not refresh">Static snapshot</span>
+        <span class="clock"><time id="clock" class="num">--:--:--</time> <abbr title="Coordinated Universal Time">UTC</abbr></span>
+        <button type="button" class="icon-btn" id="theme-btn" aria-label="Switch colour theme">
+          <svg class="icon" aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><use href="#i-theme"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="rail" aria-label="Sections">
+      <ul>
+        <li><a href="#overview" aria-current="true"><svg class="icon" aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><use href="#i-overview"/></svg><span>Overview</span></a></li>
+        <li><a href="#throughput"><svg class="icon" aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><use href="#i-throughput"/></svg><span>Throughput</span></a></li>
+        <li><a href="#incidents"><svg class="icon" aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><use href="#i-incidents"/></svg><span>Incidents</span><span class="rail-badge num" id="rail-badge" hidden></span></a></li>
+        <li><a href="#detail"><svg class="icon" aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><use href="#i-detail"/></svg><span>Detail</span></a></li>
+      </ul>
+    </nav>
+
+    <main class="main" id="main">
+      <noscript>
+        <p class="banner">Relay needs JavaScript to render the dashboard from its seed data.</p>
+      </noscript>
+      <p class="banner" id="load-error" role="alert" hidden></p>
+
+      <!-- Summary metrics -->
+      <section class="panel metrics" id="overview" aria-labelledby="h-overview">
+        <h2 class="vh" id="h-overview">Summary metrics</h2>
+        <ul class="metric-list" id="metric-list"></ul>
+      </section>
+
+      <div class="primary">
+      <!-- 24-hour throughput -->
+      <section class="panel" id="throughput" aria-labelledby="h-throughput">
+        <div class="panel-head">
+          <h2 id="h-throughput">Throughput</h2>
+          <span class="panel-sub">24 h · hourly</span>
+          <dl class="chart-stats" id="chart-stats"></dl>
+          <div class="seg" role="group" aria-label="Throughput view">
+            <button type="button" id="view-chart" aria-pressed="true">Chart</button>
+            <button type="button" id="view-table" aria-pressed="false">Table</button>
+          </div>
+        </div>
+        <div class="chart-wrap" id="chart-wrap">
+          <div class="chart" id="chart"></div>
+          <div class="chart-tip" id="chart-tip" hidden></div>
+        </div>
+        <div class="chart-table-wrap" id="chart-table-wrap" tabindex="0" role="region" aria-label="Throughput by hour, table" hidden>
+          <table class="data-table" id="chart-table">
+            <thead><tr><th scope="col">Hour</th><th scope="col" class="num">Throughput</th><th scope="col" class="num">Change vs previous hour</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Incident table -->
+      <section class="panel" id="incidents" aria-labelledby="h-incidents">
+        <div class="panel-head">
+          <h2 id="h-incidents">Incidents</h2>
+          <span class="panel-sub num" id="inc-count"></span>
+          <button type="button" class="btn btn-quiet head-action" id="f-clear" form="filters" hidden>Clear filters</button>
+        </div>
+
+        <form class="filters" id="filters" role="search" aria-label="Filter incidents">
+          <div class="field search">
+            <label class="vh" for="f-q">Search incidents</label>
+            <svg class="icon" aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><use href="#i-search"/></svg>
+            <input type="search" id="f-q" placeholder="ID, title, service, owner" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="chips" role="group" aria-label="Severity" id="f-sev"></div>
+          <div class="field">
+            <label class="vh" for="f-status">Status</label>
+            <select id="f-status"></select>
+          </div>
+          <label class="check"><input type="checkbox" id="f-unacked"><span>Unacknowledged only</span></label>
+        </form>
+
+        <div class="table-wrap">
+          <table class="inc-table" id="inc-table" role="table" aria-labelledby="h-incidents">
+            <thead role="rowgroup">
+              <tr role="row">
+                <th role="columnheader" scope="col">Severity</th>
+                <th role="columnheader" scope="col">Incident</th>
+                <th role="columnheader" scope="col">Service</th>
+                <th role="columnheader" scope="col" class="num">Age</th>
+                <th role="columnheader" scope="col">Owner</th>
+                <th role="columnheader" scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup" id="inc-body"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="inc-empty" hidden></div>
+      </section>
+      </div>
+
+      <!-- Selected incident -->
+      <aside class="panel detail" id="detail" aria-labelledby="h-detail">
+        <div class="panel-head">
+          <h2 id="h-detail">Incident detail</h2>
+          <div class="stepper" id="detail-stepper"></div>
+        </div>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="vh" id="live" role="status" aria-live="polite"></div>
+
+  <!-- Verbatim copy of DATA.json. Inlined so the page works when opened straight
+       from disk (file://) without issuing any request. -->
+  <script type="application/json" id="seed-data">
+{
+  "metrics": [
+    {"label":"Events / min","value":"18,420","change":"+8.2%","direction":"up"},
+    {"label":"P95 latency","value":"184 ms","change":"−12 ms","direction":"down"},
+    {"label":"Error rate","value":"0.37%","change":"+0.08 pp","direction":"up"},
+    {"label":"Queue depth","value":"2,841","change":"−19%","direction":"down"}
+  ],
+  "throughput": [31,28,24,22,20,23,34,48,62,71,76,73,68,72,80,84,79,75,82,88,77,63,52,41],
+  "incidents": [
+    {"id":"INC-2841","severity":"critical","service":"payments-api","age":"12m","owner":"M. Chen","status":"investigating","title":"Card authorization timeouts"},
+    {"id":"INC-2839","severity":"high","service":"event-router","age":"31m","owner":"Unassigned","status":"open","title":"EU retry queue growth"},
+    {"id":"INC-2837","severity":"medium","service":"search-index","age":"1h 08m","owner":"A. Silva","status":"monitoring","title":"Index freshness outside SLO"},
+    {"id":"INC-2832","severity":"low","service":"webhooks","age":"3h 42m","owner":"R. Patel","status":"open","title":"Elevated partner delivery lag"}
+  ]
+}
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
