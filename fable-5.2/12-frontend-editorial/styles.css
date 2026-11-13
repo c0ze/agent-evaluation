@@ -1,0 +1,1335 @@
+/* ==========================================================================
+   Margin — Issue 14, Low Water
+   Print editorial on the web. One motif: a staff gauge in the page margin and
+   a waterline that cuts the cover title.
+   No external fonts, images or requests.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Tokens
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Paper (default) */
+  --paper: #f0eadd;
+  --ink: #1b1813;
+  --ink-soft: #5a5346;
+  --hairline: #cbc2ad;
+  --tick: #8d8573;
+  --spot: #a83512;
+  --water: #c4d1c9;
+  --wet: #2a5753;
+  --field: #f8f4ea;
+
+  /* Type. System stacks only; the design is tested against the wide fallbacks. */
+  --display: "Didot", "Bodoni 72", "Bodoni MT", "Hoefler Text", "Baskerville",
+    "Big Caslon", "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    Palatino, "P052", Georgia, "Noto Serif", serif;
+  --text: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino,
+    "P052", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia,
+    "Noto Serif", serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono",
+    "Segoe UI Mono", "Roboto Mono", Menlo, Consolas, "Noto Sans Mono",
+    "DejaVu Sans Mono", "Liberation Mono", monospace;
+
+  /* Measure */
+  --margin: clamp(2.75rem, 8.5vw, 7.5rem);   /* the gauge column */
+  --pad: clamp(1rem, 3.5vw, 3rem);           /* right-hand page edge */
+  --gap: clamp(1rem, 2.2vw, 2rem);
+  --title: clamp(4.75rem, 26vw, 21rem);      /* cover title size */
+  --sunk: 0.38;                              /* share of “Water” below the line */
+
+  --read: 0;                                 /* scroll progress, set by app.js */
+
+  color-scheme: light;
+}
+
+/* Night: chosen in the reading-mode control… */
+:root[data-mode="night"] {
+  --paper: #15140f;
+  --ink: #ebe4d5;
+  --ink-soft: #aba391;
+  --hairline: #39352c;
+  --tick: #6f6858;
+  --spot: #ee7d4f;
+  --water: #1c2a2a;
+  --wet: #7fb0aa;
+  --field: #1d1b15;
+  color-scheme: dark;
+}
+
+/* …or inherited from the system when scripting is off and nothing was chosen. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode]) {
+    --paper: #15140f;
+    --ink: #ebe4d5;
+    --ink-soft: #aba391;
+    --hairline: #39352c;
+    --tick: #6f6858;
+    --spot: #ee7d4f;
+    --water: #1c2a2a;
+    --wet: #7fb0aa;
+    --field: #1d1b15;
+    color-scheme: dark;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  font-kerning: normal;
+  font-variant-numeric: oldstyle-nums;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+h1,
+h2,
+h3,
+p,
+ol,
+ul,
+dl,
+dd {
+  margin: 0;
+  padding: 0;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+}
+
+cite {
+  font-style: italic;
+}
+
+:focus-visible {
+  outline: 2px solid var(--spot);
+  outline-offset: 3px;
+}
+
+main:focus,
+.subscribe:focus {
+  outline: none;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.skip {
+  position: absolute;
+  left: var(--margin);
+  top: 0;
+  z-index: 10;
+  padding: 0.6rem 0.9rem;
+  background: var(--ink);
+  color: var(--paper);
+  font: 0.75rem/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(-110%);
+}
+
+.skip:focus {
+  transform: none;
+  outline-offset: -4px;
+  outline-color: var(--paper);
+}
+
+.page {
+  position: relative;
+  max-width: 100rem;
+  margin-inline: auto;
+  overflow-x: clip;
+}
+
+.wrap {
+  margin-left: var(--margin);
+  padding-right: var(--pad);
+}
+
+/* Small mono labels: the journal's marginalia voice. */
+.masthead__tag,
+.masthead__cta,
+.mode,
+.cover__issue,
+.marks,
+.cover__reading,
+.lead__kicker,
+.section-head,
+.story__no,
+.story__byline,
+.archive__no,
+.offer__unit,
+.ledger dt,
+.signup__label,
+.signup__button,
+.signup__reset,
+.colophon__top {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.link {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--spot);
+  transition: text-decoration-thickness 0.15s ease;
+}
+
+.link:hover {
+  text-decoration-thickness: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   The gauge — a river staff gauge drawn in the page margin
+   -------------------------------------------------------------------------- */
+
+.gauge {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--margin);
+  z-index: 3;
+  pointer-events: none;
+  /* minor ticks every 8px, a longer one every 40px, a full mark every 200px */
+  background:
+    repeating-linear-gradient(to bottom, var(--ink) 0 1px, transparent 1px 200px) left top / 1.375rem 100% no-repeat,
+    repeating-linear-gradient(to bottom, var(--tick) 0 1px, transparent 1px 40px) left top / 0.875rem 100% no-repeat,
+    repeating-linear-gradient(to bottom, var(--tick) 0 1px, transparent 1px 8px) left top / 0.4375rem 100% no-repeat;
+}
+
+/* The reading level: slides down the gauge as the page is read. */
+.gauge__level {
+  position: sticky;
+  display: block;
+  top: calc(var(--read) * (100vh - 0.75rem));
+  top: calc(var(--read) * (100dvh - 0.75rem));
+  width: 1.375rem;
+  height: 0.75rem;
+  background: var(--spot);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+/* --------------------------------------------------------------------------
+   Masthead
+   -------------------------------------------------------------------------- */
+
+.masthead {
+  border-bottom: 1px solid var(--ink);
+}
+
+.masthead__inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: var(--gap);
+  padding-top: 1.1rem;
+}
+
+.masthead__name {
+  font-family: var(--display);
+  font-size: 1.875rem;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.masthead__name a {
+  text-decoration: none;
+}
+
+.masthead__name a::after {
+  /* the margin rule: a short spot-colour stroke after the name */
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 0.8em;
+  margin-left: 0.3em;
+  background: var(--spot);
+  vertical-align: -0.05em;
+}
+
+.masthead__cta {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  padding: 0.75rem 0;
+  font-weight: 700;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  text-decoration-color: var(--spot);
+}
+
+.masthead__cta:hover {
+  text-decoration-thickness: 3px;
+}
+
+.masthead__tag {
+  grid-column: 1 / -1;
+  max-width: 28em;
+  padding: 0.35rem 0 0.9rem;
+  color: var(--ink-soft);
+}
+
+.mode {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 1.1rem;
+  margin-right: calc(var(--pad) * -1);
+  padding-right: var(--pad);
+  border-top: 1px solid var(--hairline);
+}
+
+.mode__label {
+  margin-right: auto;
+  color: var(--ink-soft);
+}
+
+.mode__option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  cursor: pointer;
+}
+
+.mode__option input {
+  /* visually replaced by the square marker below, still focusable and operable */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.mode__option span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.2rem 0;
+  border-bottom: 1px solid transparent;
+}
+
+.mode__option span::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  border: 1px solid var(--ink);
+}
+
+.mode__option input:checked + span {
+  border-bottom-color: var(--ink);
+  font-weight: 700;
+}
+
+.mode__option input:checked + span::before {
+  background: var(--spot);
+  border-color: var(--spot);
+}
+
+.mode__option:hover span {
+  border-bottom-color: var(--tick);
+}
+
+.mode__option input:focus-visible + span {
+  outline: 2px solid var(--spot);
+  outline-offset: 4px;
+}
+
+/* Without scripting the control can't do anything, so it isn't offered. */
+html:not(.js) .mode {
+  display: none;
+}
+
+html:not(.js) .masthead__tag {
+  padding-bottom: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Cover
+   -------------------------------------------------------------------------- */
+
+.cover__dry {
+  position: relative;
+  z-index: 2;
+  padding-top: clamp(1.5rem, 5vw, 4rem);
+}
+
+/* The waterline. It crosses the whole page, gauge included. */
+.cover__dry::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--title) * var(--sunk));
+  height: 2px;
+  background: var(--ink);
+  transform: translateY(50%);
+}
+
+.cover__issue {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.25em;
+  margin-bottom: clamp(1.25rem, 5vw, 2rem);
+}
+
+.cover__issue span:first-child {
+  font-weight: 700;
+}
+
+.cover__issue span + span {
+  color: var(--ink-soft);
+}
+
+.title {
+  font-family: var(--display);
+  font-size: var(--title);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-variant-numeric: normal;
+}
+
+.title__low {
+  display: block;
+  height: 0.84em;
+  margin-left: 0.56em;
+  line-height: 0.84;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+
+.title__water {
+  position: relative;
+  display: block;
+  height: 1em;
+  white-space: nowrap;
+}
+
+.title__above,
+.title__below {
+  display: block;
+  height: 1em;
+}
+
+/* Above the line: plain ink. */
+.title__above {
+  clip-path: inset(-0.3em -0.3em calc(var(--sunk) * 100%) -0.3em);
+}
+
+/* Below the line: the same word, hatched and nudged sideways the way a
+   stick looks bent where it enters water. Decorative duplicate (aria-hidden). */
+.title__below {
+  position: absolute;
+  inset: 0;
+  color: var(--wet);
+  clip-path: inset(calc((1 - var(--sunk)) * 100%) -0.3em -0.3em -0.3em);
+  transform: translateX(0.03em);
+  animation: refract 9s ease-in-out infinite alternate;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .title__below {
+    color: transparent;
+    background: repeating-linear-gradient(to bottom, var(--wet) 0 0.016em, transparent 0.016em 0.03em);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+@keyframes refract {
+  from { transform: translateX(0.018em); }
+  to   { transform: translateX(0.05em); }
+}
+
+/* Earlier issues, marked on the gauge as higher water. */
+.marks {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--title) * var(--sunk));
+  width: var(--margin);
+  color: var(--ink-soft);
+}
+
+.marks__item {
+  position: absolute;
+  left: 0;
+  width: calc(100% - 0.6rem);
+  padding: 0 0 0.15rem;
+  border-bottom: 1px solid var(--tick);
+  text-align: right;
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+}
+
+.marks__item span {
+  display: none;
+}
+
+.marks__item--13 { bottom: calc(var(--title) * 0.4); }
+.marks__item--12 { bottom: calc(var(--title) * 0.86); }
+.marks__item--11 { bottom: calc(var(--title) * 1.38); }
+
+.cover__wet {
+  position: relative;
+  margin-top: calc(var(--title) * var(--sunk) * -1);
+  padding-top: calc(var(--title) * var(--sunk));
+  background: var(--water);
+  transition: background-color 0.35s ease;
+}
+
+/* This issue's reading, sitting on the waterline. */
+.cover__reading {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: calc(var(--margin) - 0.6rem);
+  padding-bottom: 0.3rem;
+  transform: translateY(-100%);
+  color: var(--spot);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: right;
+}
+
+.cover__reading span {
+  display: none;
+}
+
+.lead {
+  padding: clamp(1.75rem, 5vw, 3.5rem) 0 clamp(4.5rem, 12vw, 8rem);
+}
+
+.lead__kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.25em;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.lead__kicker span {
+  font-weight: 400;
+}
+
+.lead__title {
+  max-width: 11em;
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 6.4vw, 5.25rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+.lead__byline {
+  margin-top: 0.9rem;
+  font-size: 1.25rem;
+  font-style: italic;
+}
+
+.lead__summary {
+  max-width: 31em;
+  margin-top: 1.4rem;
+  font-size: clamp(1.125rem, 1.5vw, 1.3125rem);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.lead__more {
+  margin-top: 1.5rem;
+}
+
+.lead__more .link {
+  display: inline-block;
+  padding: 0.6rem 0;
+  font-style: italic;
+  font-size: 1.125rem;
+}
+
+.lead__more .link::after {
+  content: "\00a0\2192";
+  font-style: normal;
+}
+
+.cover__bed {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: clamp(3rem, 9vw, 6rem);
+  color: var(--wet);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Section heads — a running head on a full-width rule
+   -------------------------------------------------------------------------- */
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+  padding: 0.85rem 0;
+}
+
+.section-head__title {
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: inherit;
+}
+
+.section-head__note {
+  color: var(--ink-soft);
+}
+
+/* --------------------------------------------------------------------------
+   Also in this issue
+   -------------------------------------------------------------------------- */
+
+.contents {
+  border-top: 1px solid var(--ink);
+  padding-bottom: clamp(4rem, 10vw, 8rem);
+}
+
+.stories {
+  display: grid;
+  gap: clamp(3rem, 12vw, 4.5rem);
+  margin-top: clamp(2rem, 6vw, 4rem);
+}
+
+.story {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 1.25rem;
+  align-items: start;
+  border-top: 1px solid var(--hairline);
+  padding-top: 0.8rem;
+}
+
+.story__no {
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--spot);
+  font-weight: 700;
+}
+
+.story__plate {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 4.75rem;
+  height: 4.75rem;
+  color: var(--ink);
+}
+
+.story__title {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  margin-top: 1.5rem;
+  font-family: var(--display);
+  font-size: clamp(1.75rem, 3.6vw, 2.875rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+}
+
+.story__byline {
+  grid-column: 1 / -1;
+  margin-top: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.story__summary {
+  grid-column: 1 / -1;
+  max-width: 30em;
+  margin-top: 0.7rem;
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+   Archive strip
+   -------------------------------------------------------------------------- */
+
+.archive {
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+.archive__inner {
+  padding-bottom: 0.4rem;
+}
+
+.archive__item {
+  display: grid;
+  grid-template-columns: 5.25rem 1fr;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.archive__no {
+  color: var(--ink-soft);
+}
+
+.archive__name {
+  font-family: var(--display);
+  font-size: 1.3125rem;
+  line-height: 1.2;
+}
+
+/* --------------------------------------------------------------------------
+   Subscribe
+   -------------------------------------------------------------------------- */
+
+.subscribe {
+  margin-top: clamp(4rem, 10vw, 8rem);
+  border-top: 3px solid var(--ink);
+  scroll-margin-top: 0;
+}
+
+.subscribe__inner {
+  padding-bottom: clamp(4rem, 10vw, 7rem);
+}
+
+.offer {
+  margin-top: clamp(1.5rem, 5vw, 3rem);
+}
+
+.offer__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.9rem;
+}
+
+.offer__amount {
+  font-family: var(--display);
+  font-size: clamp(4.25rem, 20vw, 10.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  font-variant-numeric: lining-nums;
+}
+
+.offer__unit {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.offer__line {
+  max-width: 17em;
+  margin-top: 1.1rem;
+  font-size: clamp(1.375rem, 2.6vw, 2rem);
+  line-height: 1.22;
+  font-style: italic;
+  text-wrap: balance;
+}
+
+.terms {
+  margin-top: 2.5rem;
+}
+
+.ledger {
+  border-bottom: 1px solid var(--ink);
+}
+
+.ledger__row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.ledger__row:first-child {
+  border-top-color: var(--ink);
+}
+
+.ledger dt {
+  color: var(--ink-soft);
+}
+
+/* dotted leader between the entry and its value, as in a ledger */
+.ledger__row::before {
+  content: "";
+  order: 1;
+  flex: 1;
+  min-width: 1rem;
+  border-bottom: 1px dotted var(--tick);
+  transform: translateY(-0.25em);
+}
+
+.ledger dd {
+  order: 2;
+  text-align: right;
+  font-variant-numeric: lining-nums;
+}
+
+.signup {
+  margin-top: 2rem;
+}
+
+html:not(.js) .signup {
+  display: none;
+}
+
+.signup__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.signup__row {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.signup__input {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: var(--field);
+  color: var(--ink);
+  font: 1.125rem/1.3 var(--text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.signup__input::placeholder {
+  color: var(--ink-soft);
+  opacity: 1;
+  font-style: italic;
+}
+
+.signup__input:focus-visible {
+  outline-offset: 2px;
+}
+
+.signup__input[aria-invalid="true"] {
+  border-color: var(--spot);
+  box-shadow: inset 0 -3px 0 var(--spot);
+}
+
+.signup__input[data-valid="true"] {
+  box-shadow: inset 0 -3px 0 var(--wet);
+}
+
+.signup__button,
+.signup__reset {
+  min-height: 3.25rem;
+  padding: 0.6rem 1.4rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.signup__button:hover,
+.signup__reset:hover {
+  background: var(--spot);
+  border-color: var(--spot);
+}
+
+.signup__error {
+  display: flex;
+  gap: 0.5em;
+  color: var(--spot);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.signup__error::before {
+  /* a text marker as well as colour, so the error isn't colour-only */
+  content: "\00d7";
+  font-family: var(--mono);
+}
+
+.signup__error[hidden],
+.signup__done[hidden],
+.signup__fields[hidden] {
+  display: none;
+}
+
+.signup__hint {
+  margin-top: 0.6rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.signup__done {
+  padding: 1.1rem 0 0;
+  border-top: 3px solid var(--wet);
+}
+
+.signup__done:focus {
+  outline: none;
+}
+
+.signup__done-title {
+  font-family: var(--display);
+  font-size: 1.625rem;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.signup__done-text {
+  margin-top: 0.6rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.signup__done-text span {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.signup__reset {
+  margin-top: 1rem;
+  min-height: 2.75rem;
+  background: transparent;
+  color: var(--ink);
+}
+
+.signup__reset:hover {
+  color: var(--paper);
+}
+
+/* --------------------------------------------------------------------------
+   Colophon
+   -------------------------------------------------------------------------- */
+
+.colophon {
+  border-top: 1px solid var(--ink);
+}
+
+.colophon__inner {
+  display: grid;
+  gap: 0.6rem;
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.colophon__name {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.colophon__text {
+  max-width: 34em;
+  font-size: 0.9375rem;
+}
+
+.colophon__text--small {
+  color: var(--ink-soft);
+}
+
+.colophon__top .link {
+  display: inline-block;
+  padding: 0.75rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   From tablet up: the page opens into a twelve-column spread
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 46rem) {
+  /* name … subscribe | reading mode, with the tagline on its own line */
+  .masthead__inner {
+    grid-template-columns: 1fr auto auto;
+    column-gap: clamp(1.25rem, 2.5vw, 2.5rem);
+    padding-top: 0.9rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .masthead__tag {
+    grid-row: 2;
+    max-width: none;
+    padding: 0.2rem 0 0;
+  }
+
+  .masthead__cta {
+    padding: 0.5rem 0;
+  }
+
+  .mode {
+    grid-column: 3;
+    grid-row: 1;
+    gap: 0 0.9rem;
+    margin-right: 0;
+    padding: 0 0 0 clamp(1.25rem, 2.5vw, 2.5rem);
+    border-top: 0;
+    border-left: 1px solid var(--hairline);
+  }
+
+  .mode__label {
+    margin-right: 0.2rem;
+  }
+
+  .mode__option {
+    min-height: 2.25rem;
+  }
+
+  /* Issue line moves into the white space left of “Low”. */
+  .cover__dry > .wrap {
+    position: relative;
+  }
+
+  .cover__issue {
+    position: absolute;
+    left: 0;
+    top: calc(var(--title) * 0.14);
+    display: grid;
+    gap: 0.15rem;
+    margin: 0;
+  }
+
+  .marks__item {
+    width: calc(100% - 1.25rem);
+  }
+
+  .cover__reading {
+    width: calc(var(--margin) - 1.25rem);
+  }
+
+
+  .lead {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    align-items: start;
+  }
+
+  .lead__kicker {
+    grid-column: 1 / span 3;
+    grid-row: 1;
+    display: grid;
+    gap: 0.15rem;
+    margin: 0.9rem 0 0;
+  }
+
+  .lead__title {
+    grid-column: 4 / span 9;
+    grid-row: 1 / span 2;
+  }
+
+  .lead__byline {
+    grid-column: 1 / span 3;
+    grid-row: 2;
+    align-self: start;
+    margin-top: 0.5rem;
+  }
+
+  .lead__summary {
+    grid-column: 4 / span 7;
+    grid-row: 3;
+    margin-top: 1.75rem;
+  }
+
+  .lead__more {
+    grid-column: 4 / span 7;
+    grid-row: 4;
+  }
+
+  /* A staggered spread rather than three equal cards. */
+  .stories {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: clamp(3rem, 6vw, 5rem);
+  }
+
+  .story {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .story__no {
+    grid-column: 1 / -1;
+    margin-bottom: 1.25rem;
+  }
+
+  .story__plate {
+    grid-column: 1;
+    grid-row: 2 / 5;
+    width: clamp(4.5rem, 8vw, 6.5rem);
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .story__title,
+  .story__byline,
+  .story__summary {
+    grid-column: 2;
+  }
+
+  .story__title {
+    grid-row: 2;
+    align-self: start;
+    margin-top: -0.08em;
+  }
+
+  .story--a {
+    grid-column: 1 / span 6;
+  }
+
+  .story--b {
+    grid-column: 7 / span 6;
+    margin-top: clamp(4rem, 9vw, 8rem);
+  }
+
+  .story--c {
+    grid-column: 4 / span 7;
+  }
+
+  /* Archive becomes a single ruled strip. */
+  .archive__inner {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    padding-bottom: 0;
+  }
+
+  .section-head--inline {
+    grid-column: 1 / span 3;
+    display: grid;
+    align-content: start;
+    gap: 0.15rem;
+    padding: 1.1rem 0;
+  }
+
+  .archive__list {
+    grid-column: 4 / span 9;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .archive__item {
+    display: block;
+    padding: 1.1rem var(--gap) 1.25rem 1rem;
+    border-top: 0;
+    border-left: 1px solid var(--hairline);
+  }
+
+  .archive__no {
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .archive__name {
+    font-size: clamp(1.25rem, 2vw, 1.625rem);
+  }
+
+  .subscribe__inner {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    align-items: start;
+  }
+
+  .subscribe__inner .section-head {
+    grid-column: 1 / -1;
+  }
+
+  .offer {
+    grid-column: 1 / span 7;
+  }
+
+  .terms {
+    grid-column: 8 / span 5;
+    margin-top: clamp(1.5rem, 5vw, 3rem);
+  }
+
+  .offer__amount {
+    font-size: clamp(5rem, 12.5vw, 10.5rem);
+  }
+
+  .colophon__inner {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    align-items: baseline;
+  }
+
+  .colophon__name {
+    grid-column: 1 / span 3;
+  }
+
+  .colophon__text {
+    grid-column: 4 / span 6;
+  }
+
+  .colophon__text--small {
+    grid-row: 2;
+  }
+
+  .colophon__top {
+    grid-column: 10 / span 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+}
+
+@media (min-width: 64rem) {
+  /* Masthead becomes a single line. */
+  .masthead__inner {
+    grid-template-columns: auto 1fr auto auto;
+    padding-bottom: 0.7rem;
+  }
+
+  .masthead__tag {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 0;
+  }
+
+  .masthead__cta {
+    grid-column: 3;
+  }
+
+  .mode {
+    grid-column: 4;
+  }
+
+  /* The margin is now wide enough to spell the gauge marks out. */
+  .marks__item span,
+  .cover__reading span {
+    display: inline;
+  }
+
+  .signup__row {
+    grid-template-columns: 1fr auto;
+    gap: 0;
+  }
+
+  /* the message drops below the joined field and button */
+  .signup__error {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: 0.6rem;
+  }
+
+  .signup__button {
+    border-left: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Preferences
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  /* Let the system palette draw the title once, whole. */
+  .title__above {
+    clip-path: none;
+  }
+
+  .title__below,
+  .cover__bed {
+    display: none;
+  }
+
+  .gauge {
+    background: none;
+  }
+
+  .gauge__level {
+    background: CanvasText;
+  }
+
+  .mode__option input:checked + span::before {
+    background: Highlight;
+  }
+}
+
+@media print {
+  :root {
+    --paper: #fff;
+    --ink: #000;
+    --ink-soft: #333;
+    --water: #e6e6e6;
+    --wet: #555;
+  }
+
+  .skip,
+  .mode,
+  .masthead__cta,
+  .signup,
+  .gauge__level,
+  .colophon__top {
+    display: none !important;
+  }
+
+  .story,
+  .lead,
+  .archive,
+  .offer {
+    break-inside: avoid;
+  }
+}
