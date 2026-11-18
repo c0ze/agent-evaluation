@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f9f8ef">
+  <meta http-equiv="Content-Security-Policy" content="connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Moss · Plant care</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23283f32'/%3E%3Cpath d='M25 38Q31 14 10 13q-2 15 15 18M25 28Q23 9 39 7q3 16-14 21' fill='%23dce9aa'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-sprout" viewBox="0 0 40 40"><path fill="currentColor" d="M18.5 28.1C10.2 28.6 5.3 23.3 4 15c8.8-1.9 15.2 2.7 16.3 9.9C19.9 13.9 26.2 6.2 36.5 4c2 12.1-3.5 20.9-14.3 23.1l-1.1 8.5-3.8.6 1.2-8.1Z"/><path d="m21 27 10.8-15.7m-12 16L8.9 18.6" stroke="#faf9f0" stroke-width="1.3" fill="none" stroke-linecap="round"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></symbol>
+  <symbol id="i-shelf" viewBox="0 0 24 24"><path d="M4 14h9l-1.3 7H5.4L4 14Zm11.5 2H21l-.7 5H16l-.5-5ZM8.5 14V9m9.4 7v-5M8 10C4.8 10 3 7 3 4c4.2.2 6 2.2 5 6Zm1-2c-.3-3 2.2-5.3 5-6 1 3.6-1.8 6.3-5 6Zm9 5c-.2-2.8 1.1-5 3.8-5.5.2 3.5-1.5 5.3-3.8 5.5Z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M7.5 3v4m9-4v4m-13 3h17M8 14h2m3 0h2"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2.8c-2.1 3.8-7 9-7 13a7 7 0 0 0 14 0c0-4-4.9-9.2-7-13Z"/><path d="M8 15.5a3.8 3.8 0 0 0 3 3.9"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 .6 6M4 4v6h6"/></symbol>
+  <symbol id="i-soil" viewBox="0 0 24 24"><path d="M7 19 17 5a2.2 2.2 0 0 0-3.4-2.5l-10 14L3 21l4-2Zm6-14 3.5 2.5M11 21h10"/></symbol>
+  <symbol id="i-mist" viewBox="0 0 24 24"><path d="m5 9 2-4h7v3h-4v4l3 3v6H4v-6l3-3V9m8-4 2-1m1 4h2m-4 2 2 1"/><circle cx="21" cy="3" r=".6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="i-snooze" viewBox="0 0 24 24"><path d="M12.7 4.4a8 8 0 1 0 7.1 8.8M10.7 8v5l3.2 1.8M16 3.8h4.5L16 8.3h4.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12.5 5 5L20 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-journal" viewBox="0 0 24 24"><path d="M4 5c3.4-1.1 5.5-.8 8 1.1 2.5-1.9 4.6-2.2 8-1.1v14c-3.2-.9-5.8-.4-8 1.1-2.2-1.5-4.8-2-8-1.1V5Zm8 1v14"/></symbol>
+  <symbol id="i-location" viewBox="0 0 24 24"><path d="M19 10c0 5.1-7 11-7 11S5 15.1 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+</svg>
+<a class="skip" href="#main">Skip to content</a>
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <a href="#today" class="brand" aria-label="Moss home"><svg aria-hidden="true"><use href="#i-sprout"/></svg><span>Moss</span></a>
+    <nav aria-label="Main navigation">
+      <a href="#today" id="nav-today" aria-current="page"><svg class="icon"><use href="#i-sun"/></svg>Today</a>
+      <a href="#plants" id="nav-plants"><svg class="icon"><use href="#i-shelf"/></svg>My plants</a>
+    </nav>
+  </div>
+</header>
+<main id="main" tabindex="-1" class="wrap">
+  <div id="today-view">
+    <section class="hero" aria-labelledby="today-title">
+      <div class="hero-copy">
+        <div class="eyebrow hero-date"><svg class="icon" aria-hidden="true"><use href="#i-cal"/></svg><time id="today-date"></time></div>
+        <h1 id="today-title">Time to <em>tend.</em></h1>
+        <p id="hero-summary">A little care for your indoor garden.</p>
+      </div>
+      <svg class="can-art" viewBox="0 0 480 234" fill="none" aria-hidden="true">
+        <defs>
+          <pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(22)"><path d="M1 0v5" stroke="#48513a" stroke-width=".8"/></pattern>
+          <pattern id="can-specks" width="11" height="8" patternUnits="userSpaceOnUse"><path d="m2 2 1 .3m6 4 .6-.1" stroke="#5c5c3a" stroke-width="1" opacity=".45"/></pattern>
+        </defs>
+        <g stroke="#364b36" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Small seedlings and loose marks on the soil. -->
+          <g stroke-width="1.8">
+            <path d="M34 204q27-5 51-2m8 1 11 1m-70 5 17-1m13 2 8-1" opacity=".55"/>
+            <path d="M61 200q2-13-6-24m6 23q5-24 17-34"/><path d="M59 188q-20-1-22-18 20 0 22 18Z" fill="#8aa06b"/><path d="M65 187q0-22 19-27-2 18-19 27Z" fill="#9aaf78"/><path d="m42 175 15 10m12-5 9-12" stroke-width="1"/>
+            <path d="M92 201q0-10 8-17m-8 15q-5-8-10-8m10 7q0-10-3-15"/>
+            <path d="M27 202q-2-6-7-8m7 8 1-9"/>
+          </g>
+          <g fill="#8ab3a3" stroke-width="1.45">
+            <path d="M97 112q-2 9-5 11-3 1-3-2 0-3 8-9Zm-14 16q-2 10-5 12-4 1-3-2 0-4 8-10Zm14 3q-1 9-4 12-4 1-4-2 1-4 8-10Zm-27 16q-1 9-4 12-4 1-4-2 0-3 8-10Z"/>
+          </g>
+          <g transform="rotate(-14 255 120)" stroke-width="2.5">
+            <!-- Rolled metal handle, a shaded spout and an enamel body. -->
+            <path d="M315 78q39-17 59 5c24 28-2 65-48 69l-3-12c36-3 57-32 42-49-10-12-27-8-44 .6Z" fill="#eebf68"/>
+            <path d="M320 80q34-14 51 6c18 22-1 53-43 62" stroke-width="1.05"/>
+            <path d="M218 141q-45-27-84-77l-13 7q30 73 92 107Z" fill="#f5cf7b"/>
+            <path d="M125 72q37 66 88 99l-1 6q-57-34-90-105Z" fill="url(#hatch)" stroke-width="1"/>
+            <path d="m116 47 22 16q4 8-7 16l-24-6Z" fill="#bf9e65"/>
+            <ellipse cx="110" cy="61" rx="7.8" ry="19" transform="rotate(23 110 61)" fill="#eed495"/>
+            <path d="m109 47-.5 1.5m3.3 1.5-.5 1.5m-5.2 3-.5 1.5m4.5-.3-.5 1.5m-6.1 3-.5 1.5m5.1.2-.5 1.5m-5.5 2.6-.5 1.5m4.5.3-.5 1.5" stroke-width="1.6"/>
+            <path d="M211 78q50-17 109-5l12 97q-50 28-128 13Z" fill="#f2c569"/>
+            <path d="M211 78q50-17 109-5l12 97q-50 28-128 13Z" fill="url(#can-specks)" stroke="none"/>
+            <path d="M209 98q7 1 12 0l-5 76-10 .3Z" fill="url(#hatch)" stroke="none"/>
+            <path d="M319 85q-2 46 7 78m-11-63 5 57" stroke-width="1.1" opacity=".8"/>
+            <path d="M203 180q59 10 129-12l1 7q-66 23-130 12Z" fill="#ddad5d"/>
+            <ellipse cx="265" cy="76" rx="56" ry="10" transform="rotate(-2 265 76)" fill="#f5d58d"/>
+            <ellipse cx="269" cy="75" rx="42" ry="5.2" transform="rotate(-2 269 75)" fill="#606748"/>
+            <path d="M226 75q11-6 38-6m-50 19q29 6 58 1" stroke-width="1.1"/>
+            <path d="M262 157q-3-21 13-40m-12 32q-9-18-21-20 1 15 21 20Zm1-10q-9-14-5-24 11 9 5 24Zm1 2q10-18 23-19-5 14-23 19Zm4-10q-1-17 10-23 2 14-10 23Z" fill="#708054" stroke-width="1.5"/>
+          </g>
+          <path d="m182 31 2-8m5 13 6-5M382 139l3-6 2 6 6 2-6 2-2 6-2-6-5-2 4-2ZM138 151l1.4-3.6 1.3 3.6 3.7 1.2-3.7 1.4-1.3 3.8-1.4-3.8-3.7-1.4Z" stroke-width="1.4"/>
+        </g>
+      </svg>
+    </section>
+    <div class="dashboard">
+      <section class="queue" aria-labelledby="queue-title">
+        <div class="section-head"><h2 id="queue-title">Care queue</h2><span class="queue-count" id="queue-count"></span></div>
+        <div id="queue-content"></div>
+      </section>
+      <aside class="side">
+        <section class="rhythm" aria-labelledby="rhythm-title">
+          <div class="rhythm-head"><div><h2 id="rhythm-title">Weekly rhythm</h2><p>Care tasks by day</p></div><svg class="rhythm-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><circle cx="20" cy="20" r="8"/><path d="m20 4 .3 5m-.3 22-.3 5M4 20l5 .3m22-.3 5-.3M8.7 8.8l4 3.5m14.9 15.1 3.8 3.8M8.7 31.2l3.9-3.5m15-15.2 3.7-3.7M14 4.8l1.8 5m9.4 20.6 1.4 4.7M4.8 26.2l4.5-2m21.4-9 4.4-1.7M5 14.1l4.7 1.8m20.4 9 5 1.5M14 35l2-4.7m8-20.9 2.1-4.4"/></g></svg></div>
+          <div id="week-chart"></div>
+        </section>
+        <section class="notes" aria-labelledby="notes-title">
+          <div class="notes-head"><svg class="icon" aria-hidden="true"><use href="#i-journal"/></svg><h2 id="notes-title" class="eyebrow">Field notes</h2></div>
+          <div id="note-content" aria-live="polite" aria-atomic="true"></div>
+          <div class="note-controls"><button class="icon-btn" id="prev-note" aria-label="Previous field note"><svg class="icon"><use href="#i-left"/></svg></button><button class="icon-btn" id="next-note" aria-label="Next field note"><svg class="icon"><use href="#i-right"/></svg></button></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+  <section id="plants-view" hidden aria-labelledby="shelf-title">
+    <div class="shelf-heading"><h1 id="shelf-title">My <em>plants.</em></h1><p>Four familiar faces in your indoor garden.</p></div>
+    <div class="plant-grid" id="plant-grid"></div>
+  </section>
+</main>
+<dialog id="detail" aria-labelledby="detail-name"><div id="detail-content"></div></dialog>
+<div class="toast" id="toast" hidden><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span id="toast-text"></span><button id="undo" type="button" aria-keyshortcuts="Control+Z Meta+Z">Undo</button></div>
+<div class="sr-only" role="status" id="announcement" aria-atomic="true"></div>
+</body>
+</html>

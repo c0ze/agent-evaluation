@@ -1,0 +1,1 @@
+Ada hears her future voice asking for a familiar sound and sets out to save it while the house is still standing. Finding her sister at the other end of that sound lets her feel, for a moment, what those childhood nights cost Kit. I wanted Ada's gratitude to come out sideways, as a small request that gives them a reason to call each other after they leave.
