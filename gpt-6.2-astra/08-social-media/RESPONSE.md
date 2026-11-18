@@ -1,0 +1,3 @@
+A single word like “however” can change how someone cites a study. I used that detail on LinkedIn to give researchers a reason to follow a source link. Bluesky gets the question and the click in the first two sentences. On Instagram, the margin note gives readers something to picture, and the difference between people and classrooms makes the example worth checking.
+
+The replies answer at the level of detail the commenter needs. A lab buyer gets a concrete invoicing question. The training reply explains what happens to the files during processing and identifies the policy question that still needs verification. For the person stuck indexing, the reply acknowledges the time lost and asks for two diagnostic details they can describe privately.

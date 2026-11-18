@@ -19,6 +19,7 @@ for each one is as Arda identified it.
 | GPT-6 Luna (`gpt-6-luna`) | max | Codex CLI, gand-business | 03:06:18 | 03:40:28 | 34 min 10 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-luna` |
 | GPT-6.1 Sol (`gpt-6.1-sol`) | xhigh | Codex CLI, gand-business | 04:06:46 | 04:54:38 | 47 min 52 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6.1-sol` |
 | GPT-6.2 Sol (`gpt-6.2-sol`) | xhigh | Codex CLI, ChatGPT Team | 16:14:24 (2026-11-18) | 17:06:47 | 52 min 23 s | n/a | n/a | quota, not recorded | 13 / 13 | local repository, merged into `runs/gpt-6.2-sol` |
+| GPT-6.2 Astra (`gpt-6.2-astra`) | xhigh | Codex CLI, ChatGPT Team | 23:00:16 (2026-11-18); task 11 re-run 00:23:24 (2026-11-19) | 00:35:36 | 46 min 08 s (33:56 + 12:12) | n/a | n/a | quota, not recorded | 13 / 13 | local repository, merged into `runs/gpt-6.2-astra` |
 | Grok 4.7 (`grok-4.7`) | xhigh | Grok CLI, grok.com | 04:22:45 | 05:43:00 (12 tasks); task 13 re-run 18:52:31–19:44:57 (2026-10-16) | 80 min 15 s for 12 tasks + 52 min 26 s task 13 re-run | n/a | n/a | **$12.01** ($6.74 + $5.27) | 13 / 13 (13 re-run on cachyos) | `run` in `c0ze/agent-eval-grok-4.7`; task 13 from a fresh local repository |
 | GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business then gmail-personal | 03:06:18 (01-09), 05:19:41 (10-13) | 05:39:03 | 34 min 54 s (15:32 + 19:22) | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-astra` |
 | MiniMax M3.1 Flash (`MiniMax-M3.1-Flash-Preview`) | xhigh | mcode on the Mac (managed MiniMax login) | 18:20:45 (2026-10-04) | 19:05:06 | 42 min 16 s (28:38 first pass + 13:38 task 11 re-run) | n/a | n/a | not measurable; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3.1-flash` |
@@ -562,3 +563,19 @@ on without them. The browsers the frontend tasks tried to start for visual check
 13; task 11 reports a local WebKit check. The audit (`audit-codex.py`) found no network use, no access to another task's
 directory and no writes outside each task's directory; its three flags were the models blocking network URLs in their own
 headless-browser checks.
+
+## GPT-6.2 Astra (Codex CLI on the Mac, 2026-11-18/19)
+
+GPT-6.2 Astra (`gpt-6.2-astra`, xhigh, the level GPT-6 Astra used) ran with the same protocol and isolation as GPT-6.2 Sol,
+started unattended by a one-time launchd job at 23:00 after the account's 5-hour window reset (`run-astra62.sh`).
+
+| Tasks | Wall-clock | Input tokens (cached) | Output tokens (reasoning) | 5-hour quota | Weekly quota |
+|---|---|---|---|---|---|
+| 13 / 13 | 46 min 08 s | 5,838,249 (5,403,776) | 148,377 (42,986) | not recorded | not recorded |
+
+The ChatGPT Team workspace ran out of credits at about 23:34 and cut off task 11 about 18 minutes in; every other task had
+finished. As with GPT-6 Astra's interruption, the task was reset to the template and re-run alone after the credits were
+refilled (`resume-astra62.sh`, 00:23:24–00:35:36); the cut-off attempt is kept in `interrupted/gpt-6.2-astra-11-attempt1/`.
+The scheduled script's final `wait` also waited on its own keep-awake process, so it only exited when released by hand at
+00:22; no task was affected, and the resume script avoids it. The audit (`audit-codex.py`) found no network use, no access
+to another task's directory and no writes outside each task's directory; its eight flags were false positives.
