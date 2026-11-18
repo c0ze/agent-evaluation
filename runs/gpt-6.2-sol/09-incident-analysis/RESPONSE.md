@@ -1,0 +1,6 @@
+# Confidence and next evidence
+
+**Confidence is moderate.** The flag disable closely preceded a change in job 319’s retry delay and recovery of the queue, making the flag-enabled retry path the leading explanation. The evidence is thinner on what produced the empty policy field, whether it caused the zero-delay retries, and how much the retries contributed to database saturation.
+
+1. **Worker policy-resolution records for representative affected and healthy jobs, including jobs 81 and 319 if available.** Request the stored tenant policy, worker version, flag decision, resolved policy, fallback reason, and scheduled delay. Compare the period before and after the flag disable to identify where the unexpected retry delay originated.
+2. **An aligned service and database time series from before deployment through recovery.** Request job arrivals, attempts, completions, queue age, and checkout latency by region and flag cohort where available, along with database connection occupancy and pool wait by client or pool. Compare onset, worker scale-up, API rollback, and flag disable to distinguish arrival pressure, retry amplification, and a database problem that may have started independently.
