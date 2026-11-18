@@ -18,6 +18,7 @@ for each one is as Arda identified it.
 | muse (muse-spark-1.3) | max | local (tincan on the Mac) | 02:12:21 | 02:32:49 | 20 min 28 s | n/a | n/a | not measurable; see tokens | 13 / 13 | `muse-run` in `c0ze/agent-eval-muse` |
 | GPT-6 Luna (`gpt-6-luna`) | max | Codex CLI, gand-business | 03:06:18 | 03:40:28 | 34 min 10 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-luna` |
 | GPT-6.1 Sol (`gpt-6.1-sol`) | xhigh | Codex CLI, gand-business | 04:06:46 | 04:54:38 | 47 min 52 s | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6.1-sol` |
+| GPT-6.2 Sol (`gpt-6.2-sol`) | xhigh | Codex CLI, ChatGPT Team | 16:14:24 (2026-11-18) | 17:06:47 | 52 min 23 s | n/a | n/a | quota, not recorded | 13 / 13 | local repository, merged into `runs/gpt-6.2-sol` |
 | Grok 4.7 (`grok-4.7`) | xhigh | Grok CLI, grok.com | 04:22:45 | 05:43:00 (12 tasks); task 13 re-run 18:52:31–19:44:57 (2026-10-16) | 80 min 15 s for 12 tasks + 52 min 26 s task 13 re-run | n/a | n/a | **$12.01** ($6.74 + $5.27) | 13 / 13 (13 re-run on cachyos) | `run` in `c0ze/agent-eval-grok-4.7`; task 13 from a fresh local repository |
 | GPT-6 Astra (`gpt-6-astra`) | xhigh | Codex CLI, gmail-business then gmail-personal | 03:06:18 (01-09), 05:19:41 (10-13) | 05:39:03 | 34 min 54 s (15:32 + 19:22) | n/a | n/a | quota, see below | 13 / 13 | `run` in `c0ze/agent-eval-gpt-6-astra` |
 | MiniMax M3.1 Flash (`MiniMax-M3.1-Flash-Preview`) | xhigh | mcode on the Mac (managed MiniMax login) | 18:20:45 (2026-10-04) | 19:05:06 | 42 min 16 s (28:38 first pass + 13:38 task 11 re-run) | n/a | n/a | not measurable; see tokens | 13 / 13 | `run` in `c0ze/agent-eval-mcode-m3.1-flash` |
@@ -542,3 +543,22 @@ replies and the audit are in `run-logs/fable-5.2-orchestration/`.
 
 Both audits (`audit.py`) found no network use and no access to another task's directory. The Claude Code sandbox left empty
 `.claude` folders in the Fable task directories (harness artefacts, not committed).
+
+## GPT-6.2 Sol (Codex CLI on the Mac, 2026-11-18)
+
+GPT-6.2 Sol (`gpt-6.2-sol`, xhigh) ran with the protocol of GPT-6.1 Sol (`run-sol.sh`): one `codex exec` per task, four at a
+time, the `workspace-write` sandbox (writes confined to the repository, no network), from a repository outside the home
+directory. Codex was updated to 0.170.0 for the run. It ran on a ChatGPT Team account rather than gand-business.
+Instead of setting a personal `AGENTS.md` aside, Codex ran with its own `HOME` and `CODEX_HOME` holding only the login, so no
+personal skills, plugins, `AGENTS.md` or config applied; a probe confirmed only Codex's four built-in skills were visible.
+Scripts are `run-sol62.sh`, `runlog62.py`, `sync-auth.py` and `audit-codex.py` in `run-logs/gpt-orchestration/`.
+
+| Tasks | Wall-clock | Input tokens (cached) | Output tokens (reasoning) | 5-hour quota | Weekly quota |
+|---|---|---|---|---|---|
+| 13 / 13 | 52 min 23 s | 5,842,013 (5,276,928) | 179,638 (66,970) | not recorded | not recorded |
+
+Codex 0.170.0 refused two of task 04's verification commands because they contained `rm -rf` cleanup traps; the model went
+on without them. The browsers the frontend tasks tried to start for visual checks failed inside the sandbox on tasks 12 and
+13; task 11 reports a local WebKit check. The audit (`audit-codex.py`) found no network use, no access to another task's
+directory and no writes outside each task's directory; its three flags were the models blocking network URLs in their own
+headless-browser checks.

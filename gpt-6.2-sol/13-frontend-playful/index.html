@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf7ef">
+  <meta name="description" content="Moss is a little care desk for your houseplants.">
+  <title>Moss · Plant care</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="art-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <symbol id="i-calendar" viewBox="0 0 24 24">
+        <rect x="3.5" y="5.5" width="17" height="15" rx="2.5"/>
+        <path d="M7.5 3v5m9-5v5m-13 2.5h17M8 15h2m4 0h2"/>
+      </symbol>
+      <symbol id="i-water" viewBox="0 0 24 24">
+        <path d="M12 3c2.4 3.9 6.5 7.5 6.5 11.3a6.5 6.5 0 0 1-13 0C5.5 10.5 9.6 6.9 12 3Z"/>
+        <path d="M8.7 14.5a3.3 3.3 0 0 0 2.6 3.2"/>
+      </symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="8.5"/>
+        <path d="M12 7.5v5l3 1.8"/>
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4m0-14.2-1.4 1.4M6.3 17.7l-1.4 1.4"/>
+      </symbol>
+      <symbol id="i-rotate" viewBox="0 0 24 24">
+        <path d="M19.6 10a7.8 7.8 0 1 0-1.1 7m1.1-12v5.2h-5.2"/>
+      </symbol>
+      <symbol id="i-soil" viewBox="0 0 24 24">
+        <path d="M3 15.5h18M4.5 19h15M12 15.5v-5.2M12 11C7.2 11 6 8.6 6 5.7c3.4 0 6 1.7 6 5.3Zm0 0c0-4.5 2.4-6.6 5.9-7 0 3.9-1.8 7-5.9 7Z"/>
+      </symbol>
+      <symbol id="i-mist" viewBox="0 0 24 24">
+        <path d="M4 7h3m4 0h3m4 0h2M6 12h3m4 0h3m4 0h1M4 17h3m4 0h3m4 0h2"/>
+      </symbol>
+      <symbol id="plant-fern" viewBox="0 0 68 68">
+        <path fill="#efd8a0" d="M6 40C3 25 12 9 28 6 46 2 62 16 62 35c1 18-12 29-29 28C18 63 9 55 6 40Z"/>
+        <g fill="none" stroke="#416044" stroke-linecap="round" stroke-width="1.4">
+          <path d="M34 48c-3-19-10-27-23-32m22 30c-4-17 4-30 13-35M34 48c6-15 13-18 23-17M30 46c-6-11-15-13-22-11"/>
+        </g>
+        <path fill="#537548" d="M16 18c-5 1-8-1-9-4 5-1 8 1 9 4Zm4 4c-6 3-9 0-11-2 4-1 8-1 11 2Zm3 3c-5 4-9 3-12 1 4-3 8-3 12-1Zm4 6c-4 3-8 3-11 1 4-3 8-3 11-1Zm-5-7c-4-2-6-6-4-10 4 3 5 6 4 10Zm4 5c-2-5-2-9 1-12 2 4 2 8-1 12Zm3 7c-2-5-1-8 1-10 3 4 3 8-1 10ZM41 15c-1-5 2-7 6-8-1 4-2 7-6 8Zm-4 6c-4-3-4-7-2-10 3 3 4 6 2 10Zm-3 7c-4-3-4-7-2-10 3 3 4 6 2 10Zm5-10c6-4 9-4 12-1-4 3-8 4-12 1Zm-3 7c5-5 10-5 13-3-3 4-8 6-13 3Zm-2 7c5-5 9-5 12-3-3 4-7 5-12 3Zm11 3c1-5 3-8 7-8 0 4-2 7-7 8Zm4-2c6-3 9-1 12 1-4 2-9 2-12-1Zm-7 5c5-2 10-1 12 2-5 1-9 1-12-2Zm-18 2c-4 4-7 4-11 2 3-3 7-5 11-2Z"/>
+        <path fill="#b75f46" d="M22 46h25l-3 11c-.5 4-17 4-18 0Z"/>
+        <path fill="#ce8161" d="M21 44c5-2 21-2 27 0v4c-6 2-22 2-27 0Z"/>
+        <path d="m31 52 1 4m6-4v4" stroke="#f3c49c" stroke-width="1" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="plant-pothos" viewBox="0 0 68 68">
+        <path fill="#e7e7c6" d="M7 45C1 32 7 15 19 9c14-8 33-3 40 10 9 17 4 35-14 41C30 65 14 60 7 45Z"/>
+        <path fill="none" stroke="#4e673d" stroke-width="1.5" stroke-linecap="round" d="M31 38c1-12-4-21-13-25m18 24c1-13 7-18 14-21M38 39c9-10 19-8 19 3 0 9-8 16-13 18"/>
+        <path fill="#526f45" d="M26 25c-8 1-16-4-17-10 0-4 5-4 8-2 5-5 12 2 9 12Z"/>
+        <path fill="#70874e" d="M35 31c-8-6-12-14-8-20 3-4 7-1 9 3 6-2 8 8-1 17Zm8-4c0-9 4-15 11-15 4 0 4 5 2 8 3 5-4 11-13 7Zm8 24c6-7 13-6 14-1 1 5-6 8-14 1Z"/>
+        <path fill="#526f45" d="M47 55c-7-4-8-10-4-12 4-3 8 3 4 12Z"/>
+        <path d="m15 16 9 7m7-7 4 11m18-10-8 8m9 27 7-2" fill="none" stroke="#b9c27b" stroke-width="1" stroke-linecap="round"/>
+        <path fill="#9e734d" d="M19 39h27l-3.5 13c-1 4-17 4-19 0Z"/>
+        <path fill="#bd945f" d="M18 36c4-2 24-2 29 0v5c-5 2-25 2-29 0Z"/>
+      </symbol>
+      <symbol id="plant-cactus" viewBox="0 0 68 68">
+        <path fill="#f0dfca" d="M9 21C13 8 30 3 43 7c16 5 23 18 20 33-3 17-18 24-35 21C10 58 1 43 9 21Z"/>
+        <path fill="#769256" d="M28 34C17 26 14 16 18 11c4-5 12 0 16 17Zm9-4c0-16 8-22 12-18 5 4 1 16-7 25Z"/>
+        <path fill="#557846" d="M27 47c-6-4-8-15-2-22 3-5 11-7 16-3 7 5 7 17 0 25Z"/>
+        <path fill="none" stroke="#e7d399" stroke-linecap="round" stroke-width="1.6" d="M22 15h.1m3 6h.1m20-5h.1m-2 5h.1M32 26h.1m6 4h.1m-11 3h.1m5 6h.1m8 1h.1m-5-6h.1"/>
+        <path fill="#b07052" d="M20 47h28l-5 11c-1 3-15 3-17 0Z"/>
+        <path fill="#c68a67" d="M18 44c5-2 27-2 32 0v5c-5 2-27 2-32 0Z"/>
+      </symbol>
+      <symbol id="plant-calathea" viewBox="0 0 68 68">
+        <path fill="#e8dfeb" d="M6 29C9 11 21 5 37 6c14 1 23 9 26 26 3 14-7 28-22 30C22 65 2 51 6 29Z"/>
+        <path d="m34 49-12-25m12 24 1-32m0 34 12-23" fill="none" stroke="#486745" stroke-linecap="round" stroke-width="1.3"/>
+        <path fill="#728f60" d="M27 34c-11-1-19-8-17-15 1-6 9-6 13-1 5 5 6 11 4 16Zm7-5c-8-6-8-14-4-20 4-4 9-3 11 1 3 6 0 15-7 19Zm7 9c0-12 7-20 14-18 6 2 7 8 2 13-4 4-9 5-16 5Z"/>
+        <path d="m16 20 11 14m-12-8 6 1m-2-7 2 7m13 1 2-16m-5 5 4 4m4-4-4 5m7 15 11-12m-8 3v6m5-2 6-1" stroke="#d9dcaa" stroke-linecap="round" fill="none" stroke-width="1.2"/>
+        <path fill="#997086" d="M21 47h27l-4 11c-1 3-17 3-19 0Z"/>
+        <path fill="#b38597" d="M19 44c6-2 25-2 31 0v5c-6 2-25 2-31 0Z"/>
+      </symbol>
+      <symbol id="resting-leaf" viewBox="0 0 92 87">
+        <path fill="#d8d8b6" d="M16 51C4 36 15 12 36 9c22-4 39 8 42 26 3 21-14 40-33 41-11 0-22-10-29-25Z"/>
+        <path d="M33 72c3-16 12-25 24-39" stroke="#3f5d43" fill="none" stroke-width="2" stroke-linecap="round"/>
+        <path fill="#668653" d="M39 59c-5-24 8-37 28-38-1 22-10 34-28 38Z"/>
+        <path d="M39 58c5-11 12-19 20-28m-14 18 12-1m-8-4v-9" stroke="#e3e5bc" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M75 5v14m-7-7h14M16 53v8m-4-4h8" stroke="#8a5930" stroke-linecap="round" stroke-width="1.5"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <a class="skip-link" href="#main">Skip to plant care</a>
+  <header class="masthead shell">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 38 38" aria-hidden="true">
+        <path d="M6 1C15-.3 27 0 34 3c4 5 5 24 1 31-6 4-24 5-31-.4C.5 28-.1 11 6 1Z" fill="#294535"/>
+        <path d="M13 28c2-8 6-13 12-17m-10 12c-5 0-7-3-6-8 5 0 7 3 6 8Zm3-5c0-7 4-9 10-9-1 6-5 10-10 9Z" stroke="#f1e4ad" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <circle cx="25" cy="25" r="1.6" fill="#f1e4ad"/>
+      </svg>
+      <span>moss<span class="brand-dot">.</span></span>
+    </div>
+    <div class="masthead-date">
+      <svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>
+      <time id="today-date"></time>
+    </div>
+  </header>
+
+  <main id="main" class="shell" tabindex="-1">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">The plant care desk</p>
+        <h1 id="hero-title">A good day<br><em>to grow.</em></h1>
+        <p class="hero-status" id="hero-status"></p>
+      </div>
+      <svg class="hero-art" viewBox="0 0 530 300" fill="none" aria-hidden="true">
+        <defs>
+          <g id="frond">
+            <path d="M0 0C-2-40 5-99 47-151" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round"/>
+            <path fill="currentColor" d="M0-19C-13-30-25-30-35-42c15 0 30 7 35 23Zm0-4c8-13 23-18 37-22C26-30 11-31 0-23Zm1-13c-14-9-24-13-31-28C-13-60-2-50 1-36Zm1-5c12-13 26-14 40-18C31-45 16-45 2-41Zm2-11c-13-11-23-17-28-32 16 6 25 19 28 32Zm2-5c14-10 29-10 42-15-11 15-27 13-42 15Zm3-10c-12-12-20-22-20-36 12 7 20 19 20 36Zm2-5c15-8 27-7 41-10-12 12-26 13-41 10Zm4-10c-9-12-16-23-13-36 11 10 15 23 13 36Zm2-4c13-6 25-5 38-7-11 11-25 10-38 7Zm5-9c-7-11-11-23-7-36 8 10 11 24 7 36Zm2-4c13-5 25-3 35-5-9 10-22 10-35 5Zm5-9c-4-11-5-22-1-32 7 12 6 23 1 32Zm3-4c11-5 18-3 29-6-7 10-18 11-29 6Zm5-8c-3-9 1-19 5-27 4 9 1 20-5 27Zm3-5c9-4 16-4 23-6-7 9-15 10-23 6Zm4-8c4-13 11-21 21-26-4 12-12 20-21 26Z"/>
+            <path d="M0-24c7-7 19-13 25-15M1-37c-7-9-15-15-22-20m24 15 29-13M4-53c-6-13-14-21-21-25m23 21 31-12M9-69c-4-12-10-23-15-27m18 24 27-8m-24-3c-2-12-5-21-10-28m14 25 28-6m-24-4c0-10-2-20-6-27m8 24 23-4m-18-6 1-21m3 17 18-4m-12-7 13-5" stroke="#f4e4ae" stroke-opacity=".45" stroke-width=".75" stroke-linecap="round"/>
+          </g>
+          <pattern id="pot-lines" width="13" height="15" patternUnits="userSpaceOnUse" patternTransform="rotate(-9)">
+            <path d="M4 3v7M10 10v3" stroke="#f4cda7" stroke-width="1" stroke-linecap="round" opacity=".54"/>
+          </pattern>
+        </defs>
+        <path d="M182 127c1-62 53-108 122-111 62-3 104 34 112 86 10 54-20 104-87 116-56 10-148-23-147-91Z" fill="#f8edc3"/>
+        <path d="M166 165c-22-56 19-116 70-143 48-26 129-22 173 19 42 38 48 103 14 150" stroke="#a27e46" stroke-width="1.1" stroke-dasharray="2 6" stroke-linecap="round" opacity=".7"/>
+        <path d="M102 262c110-16 241-13 382 2m-364 13c90-12 211-11 311-6" stroke="#ad894d" stroke-width="1.1" stroke-linecap="round" opacity=".65"/>
+        <path d="M125 117c1-14 4-18 16-20-12-2-15-7-16-20-2 13-6 18-18 20 12 2 16 6 18 20Zm338-48c1-9 4-12 11-13-8-1-10-4-11-13-1 9-4 12-12 13 8 1 11 4 12 13Zm-15 126c1-8 3-10 10-11-7-1-9-3-10-11-1 8-3 10-10 11 7 1 9 3 10 11Z" fill="#a95737"/>
+        <circle cx="154" cy="129" r="2" fill="#ad894d"/>
+        <circle cx="441" cy="82" r="2" fill="#ad894d"/>
+        <circle cx="478" cy="134" r="2" fill="#ad894d"/>
+        <ellipse cx="306" cy="274" rx="81" ry="9" fill="#a56541" opacity=".14"/>
+        <g stroke="#39583c" stroke-width="1.7" stroke-linecap="round">
+          <path d="M307 221c-15-22-43-35-62-63m61 63c-7-38-23-64-46-86m49 89c4-54 17-90 38-112m-40 110c12-32 31-52 59-68m-61 67c-28-10-51-16-73-9"/>
+        </g>
+        <use href="#frond" transform="translate(317 212) rotate(57) scale(.89)" color="#658151"/>
+        <use href="#frond" transform="translate(301 224) rotate(-74) scale(.75)" color="#496d46"/>
+        <use href="#frond" transform="translate(306 222) rotate(-39) scale(1.11 1.04)" color="#55794b"/>
+        <use href="#frond" transform="translate(310 217) rotate(18) scale(1.07 1.16)" color="#496940"/>
+        <use href="#frond" transform="translate(306 216) rotate(-5) scale(-.87 1.13)" color="#6f874d"/>
+        <use href="#frond" transform="translate(307 222) rotate(79) scale(.75 .70)" color="#3c623f"/>
+        <use href="#frond" transform="translate(300 218) rotate(-101) scale(.54 .59)" color="#7d8e52"/>
+        <path d="M255 216c3 19 11 42 17 54 4 9 60 12 68 1 7-10 11-32 15-55Z" fill="#b7644b"/>
+        <path d="M255 216c3 19 11 42 17 54 4 9 60 12 68 1 7-10 11-32 15-55Z" fill="url(#pot-lines)"/>
+        <path d="M252 210c10-5 92-5 105 0 4 4 3 11-1 15-9 5-91 6-103 0-4-4-4-11-1-15Z" fill="#ca7b5a"/>
+        <path d="M256 214c19 4 78 5 98-.5m-91 10c15 3 70 4 85 0m-76 41c12 6 53 6 64 0" stroke="#8e4935" stroke-width="1.1" stroke-opacity=".75" stroke-linecap="round"/>
+        <path d="M292 246c5 1 8-2 10-8 1 6 4 10 10 11-5 0-9 4-11 9 0-6-3-10-9-12Z" fill="#ebb68a"/>
+      </svg>
+    </section>
+
+    <div class="dashboard">
+      <section class="care" aria-labelledby="care-title">
+        <div class="section-heading">
+          <h2 id="care-title" tabindex="-1">Today’s care</h2>
+          <span class="queue-count" id="queue-count"></span>
+        </div>
+        <div class="toast" id="toast" hidden>
+          <svg class="icon toast-icon" aria-hidden="true"><use id="toast-icon" href="#i-check"/></svg>
+          <span id="toast-message"></span>
+          <button type="button" id="undo">Undo</button>
+        </div>
+        <div id="queue"></div>
+        <noscript><p>Turn on JavaScript to see your plants and record their care.</p></noscript>
+      </section>
+
+      <aside class="rhythm" aria-labelledby="rhythm-title">
+        <div class="rhythm-heading">
+          <svg class="rhythm-stamp" viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M23 3c-7 2-7 4-12 5-3 1-3 6-6 9-3 4 0 7 0 11s4 5 6 9c2 5 7 3 11 6 4 3 7-2 11-3 5 0 5-5 8-8 4-3 2-7 2-11 1-5-4-7-6-11-3-4-7-3-10-6-1-1-3-2-4-1Z" fill="#f6efcc"/>
+            <path d="M15 29c3-9 7-13 17-14-3 10-9 15-17 14Zm0 4c5-8 8-12 13-15" stroke="#416044" fill="none" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h2 id="rhythm-title">Weekly rhythm</h2>
+          <p>Typical care tasks by day</p>
+        </div>
+        <ol class="week" id="week" role="list" aria-label="Typical weekly care tasks"></ol>
+        <div class="rhythm-footer">
+          <span><span class="legend-dot" aria-hidden="true"></span> Today</span>
+          <span id="weekly-total"></span>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="announcement" class="sr-only" role="status" aria-atomic="true"></div>
+</body>
+</html>

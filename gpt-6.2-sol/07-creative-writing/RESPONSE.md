@@ -1,0 +1,1 @@
+I wanted Nell’s curiosity about the future voice to give way to the more painful hope that some part of the town might still be waiting for her. Mr. Venn’s wish to keep talking to June gives Nell another way to hear the message and, by the time she boards the launch, a little room for a life she has yet to put into words.
