@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Margin — an independent quarterly about overlooked places. Issue 14: Low Water, Autumn 2026.">
+  <title>Margin — Low Water, Issue 14</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="page" id="top">
+    <header class="site-header wrap">
+      <div class="running-head">
+        <p class="running-head__id">An independent quarterly about overlooked places</p>
+        <div class="running-head__tools">
+          <p class="running-head__folio">№ 14 · Autumn 2026</p>
+          <button class="rm-toggle" id="reading-toggle" type="button" aria-pressed="false">
+            <svg class="rm-toggle__icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <circle cx="10" cy="10" r="8" class="rm-toggle__ring"/>
+              <path d="M10 2 a8 8 0 0 1 0 16 Z" class="rm-toggle__half"/>
+            </svg>
+            <span>Reading mode</span>
+            <span class="rm-toggle__state" aria-hidden="true">Off</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="masthead">
+        <p class="wordmark">Margin<sup>14</sup></p>
+        <p class="masthead__note">Low Water<br><span>Issue Fourteen</span></p>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- COVER -->
+      <section class="cover wrap" aria-labelledby="cover-title">
+        <div class="cover__text">
+          <p class="kicker"><span class="kicker__mark" aria-hidden="true"></span> Cover / Issue 14 / Autumn 2026</p>
+          <h1 class="cover__title" id="cover-title">Low<br>Water<span class="cover__period">.</span></h1>
+          <p class="cover__deck">Four times a year we go looking for the places a map forgot. This time the water dropped, and left the record behind.</p>
+
+          <article class="cover-story">
+            <p class="cover-story__label">Cover story · Field essay</p>
+            <h2 class="cover-story__title">“The River Keeps Its Receipts”</h2>
+            <p class="cover-story__byline">by Imani Vale</p>
+            <p class="cover-story__summary">Along a drought-exposed riverbed, shop ledgers, bottle caps, and vanished street plans surface together. A field essay about civic memory and what infrastructure tries to forget.</p>
+          </article>
+
+          <a class="text-link" href="#subscribe">Subscribe, print + digital <span aria-hidden="true">↗</span></a>
+        </div>
+
+        <figure class="cover-figure">
+          <svg class="survey" viewBox="0 0 520 620" role="img" aria-labelledby="fig-title fig-desc">
+            <title id="fig-title">Survey of a riverbed at low water</title>
+            <desc id="fig-desc">A measured diagram. Two dashed lines mark former high-water levels in 1998 and 2011; a red line marks the low water of 2026. Beneath it, exposed sediment layers hold a shop ledger, bottle caps, and the faint grid of a vanished street plan.</desc>
+
+            <defs>
+              <pattern id="halftone" width="9" height="9" patternUnits="userSpaceOnUse">
+                <circle cx="1.6" cy="1.6" r="0.75" class="svg-dot"/>
+              </pattern>
+              <clipPath id="bed-clip">
+                <rect x="66" y="326" width="430" height="274"/>
+              </clipPath>
+            </defs>
+
+            <!-- plate frame + printer's crop marks -->
+            <rect class="svg-frame" x="0.5" y="0.5" width="519" height="619"/>
+            <path class="svg-crop" d="M14 4 V16 M4 14 H16 M506 4 V16 M516 14 H504 M14 604 V616 M4 606 H16 M506 604 V616 M516 606 H504"/>
+
+            <!-- the water column: halftone field -->
+            <rect x="66" y="20" width="430" height="302" fill="url(#halftone)"/>
+
+            <!-- left measuring gauge -->
+            <text class="svg-mono svg-mono--faint" x="66" y="34">DEPTH · m</text>
+            <path class="svg-gauge" d="M46 18 V602"/>
+            <path class="svg-ticks" d="M46 58 H55 M46 98 H55 M46 138 H55 M46 178 H55 M46 218 H55 M46 258 H55 M46 298 H55 M46 338 H55 M46 378 H55 M46 418 H55 M46 458 H55 M46 498 H55 M46 538 H55 M46 578 H55"/>
+            <path class="svg-ticks svg-ticks--major" d="M46 58 H64 M46 178 H64 M46 298 H64 M46 418 H64 M46 538 H64"/>
+            <text class="svg-mono svg-mono--faint svg-mono--end" x="40" y="62">0</text>
+            <text class="svg-mono svg-mono--faint svg-mono--end" x="40" y="182">1</text>
+            <text class="svg-mono svg-mono--faint svg-mono--end" x="40" y="302">2</text>
+            <text class="svg-mono svg-mono--faint svg-mono--end" x="40" y="422">3</text>
+            <text class="svg-mono svg-mono--faint svg-mono--end" x="40" y="542">4</text>
+
+            <!-- former high-water marks -->
+            <path class="svg-ghost" d="M66 118 H496 M66 212 H496"/>
+            <text class="svg-mono svg-mono--faint svg-mono--end" x="492" y="110">HWM · 1998</text>
+            <text class="svg-mono svg-mono--faint svg-mono--end" x="492" y="204">HWM · 2011</text>
+
+            <!-- current low-water line -->
+            <path class="svg-water" d="M66 322 C 160 314, 250 330, 340 322 S 440 314, 496 324"/>
+            <circle class="svg-water-dot" cx="46" cy="322" r="4.5"/>
+            <text class="svg-water-label" x="72" y="310">LOW WATER · 2026</text>
+
+            <!-- exposed bed -->
+            <g clip-path="url(#bed-clip)">
+              <path class="svg-strata" d="M66 358 C 150 346, 240 370, 330 358 S 440 348, 500 362"/>
+              <path class="svg-strata" d="M66 400 C 150 412, 240 388, 330 400 S 440 412, 500 398"/>
+              <path class="svg-strata" d="M66 442 C 150 430, 240 454, 330 442 S 440 432, 500 446"/>
+              <path class="svg-strata" d="M66 484 C 150 496, 240 472, 330 484 S 440 496, 500 482"/>
+              <path class="svg-strata" d="M66 526 C 150 514, 240 538, 330 526 S 440 516, 500 530"/>
+              <path class="svg-strata" d="M66 568 C 150 580, 240 556, 330 568 S 440 580, 500 566"/>
+
+              <!-- core-sample hatching -->
+              <path class="svg-hatch" d="M196 360 V398 M202 360 V398 M208 360 V398 M392 484 V524 M398 484 V524"/>
+
+              <!-- vanished street plan -->
+              <g class="svg-plan">
+                <path d="M330 392 H470 M330 412 H470 M330 432 H470 M352 372 V442 M392 372 V442 M432 372 V442 M462 372 V442"/>
+                <path class="svg-plan-road" d="M330 440 L470 376"/>
+              </g>
+
+              <!-- shop ledger -->
+              <g class="svg-artifact" transform="translate(104 462) rotate(-9)">
+                <rect x="0" y="0" width="78" height="52" rx="2"/>
+                <path d="M9 0 V52 M16 13 H68 M16 24 H68 M16 35 H54"/>
+                <rect class="svg-artifact-accent" x="60" y="38" width="9" height="9"/>
+              </g>
+
+              <!-- bottle caps -->
+              <g class="svg-artifact" transform="translate(272 420)">
+                <circle r="11"/><circle r="5.5"/>
+                <path d="M0 -11 V-14 M0 11 V14 M-11 0 H-14 M11 0 H14"/>
+              </g>
+              <g class="svg-artifact" transform="translate(414 502) rotate(18)">
+                <circle r="10"/><circle r="5"/>
+                <path d="M-7 -7 L-9 -9 M7 -7 L9 -9 M-7 7 L-9 9 M7 7 L9 9"/>
+              </g>
+              <g class="svg-artifact" transform="translate(214 548) rotate(-24)">
+                <circle r="8"/><circle r="4"/>
+                <path d="M0 -8 V-11 M0 8 V11 M-8 0 H-11 M8 0 H11"/>
+              </g>
+
+              <!-- loose debris -->
+              <g class="svg-debris">
+                <circle cx="158" cy="430" r="2"/><circle cx="176" cy="512" r="1.6"/>
+                <circle cx="246" cy="486" r="2.2"/><circle cx="300" cy="566" r="1.8"/>
+                <circle cx="352" cy="512" r="2"/><circle cx="462" cy="466" r="1.8"/>
+                <circle cx="120" cy="556" r="1.6"/><circle cx="482" cy="548" r="2"/>
+              </g>
+            </g>
+
+            <!-- scale bar -->
+            <path class="svg-gauge" d="M400 594 H480 M400 590 V598 M440 592 V596 M480 590 V598"/>
+            <text class="svg-mono svg-mono--faint" x="400" y="584">10 m</text>
+          </svg>
+          <figcaption>Fig. 1 — Survey of the exposed bed at low water, with former high-water marks and objects recovered. Drawn for <cite>Margin</cite>; not to scale.</figcaption>
+        </figure>
+      </section>
+
+      <!-- IN THIS ISSUE -->
+      <section class="section wrap" aria-labelledby="issue-head">
+        <header class="section-head">
+          <span class="section-head__no">01</span>
+          <h2 class="section-head__title" id="issue-head">In this issue</h2>
+          <span class="section-head__rule" aria-hidden="true"></span>
+          <span class="section-head__meta">Three more dispatches</span>
+        </header>
+
+        <div class="stories">
+          <article class="story story--lead">
+            <div class="story__head">
+              <span class="story__no">01</span>
+              <span class="story__cat">Atlas</span>
+            </div>
+            <h3 class="story__title">Night Bus Atlas</h3>
+            <p class="story__deck">The unofficial geography drawn by cleaners, nurses, bakers, and drivers while a city's daytime map is asleep.</p>
+            <p class="story__byline">Tomás Iriarte</p>
+          </article>
+
+          <article class="story story--2">
+            <div class="story__head">
+              <span class="story__no">02</span>
+              <span class="story__cat">Report</span>
+            </div>
+            <h3 class="story__title">Concrete Orchards</h3>
+            <p class="story__deck">Residents tend fruit trees in the unfinished floors of a financial district, negotiating shade, ownership, and the patience of roots.</p>
+            <p class="story__byline">Meera Das</p>
+          </article>
+
+          <article class="story story--3">
+            <div class="story__head">
+              <span class="story__no">03</span>
+              <span class="story__cat">Portfolio</span>
+            </div>
+            <h3 class="story__title">A Language for Empty Pools</h3>
+            <p class="story__deck">Photographs and short notes from public baths retired after the last swimmer, where tile patterns keep directing bodies that no longer arrive.</p>
+            <p class="story__byline">Hana Mori</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ARCHIVE -->
+      <section class="archive" aria-labelledby="archive-head">
+        <div class="wrap">
+          <header class="section-head section-head--inverse">
+            <span class="section-head__no">02</span>
+            <h2 class="section-head__title" id="archive-head">From the archive</h2>
+            <span class="section-head__rule" aria-hidden="true"></span>
+            <span class="section-head__meta">Recent issues</span>
+          </header>
+
+          <ol class="archive__list">
+            <li class="archive__item">
+              <span class="archive__no">13</span>
+              <div class="archive__body">
+                <p class="archive__label">Issue 13</p>
+                <p class="archive__title">After the Last Train</p>
+              </div>
+            </li>
+            <li class="archive__item">
+              <span class="archive__no">12</span>
+              <div class="archive__body">
+                <p class="archive__label">Issue 12</p>
+                <p class="archive__title">Borrowed Ground</p>
+              </div>
+            </li>
+            <li class="archive__item">
+              <span class="archive__no">11</span>
+              <div class="archive__body">
+                <p class="archive__label">Issue 11</p>
+                <p class="archive__title">The Weather Indoors</p>
+              </div>
+            </li>
+          </ol>
+
+          <p class="archive__note">Back issues are kept for subscribers. <a href="#subscribe">See the subscription <span aria-hidden="true">↗</span></a></p>
+        </div>
+      </section>
+
+      <!-- SUBSCRIBE -->
+      <section class="section subscribe wrap" id="subscribe" aria-labelledby="sub-head">
+        <header class="section-head">
+          <span class="section-head__no">03</span>
+          <h2 class="section-head__title" id="sub-head">Subscribe</h2>
+          <span class="section-head__rule" aria-hidden="true"></span>
+          <span class="section-head__meta">Print + digital</span>
+        </header>
+
+        <div class="subscribe__grid">
+          <div class="subscribe__pitch">
+            <h3 class="subscribe__statement">Print + digital.<br>One issue at a time.</h3>
+            <p class="subscribe__price"><span class="subscribe__amount">¥2,400</span> per issue · cancel anytime</p>
+            <p class="subscribe__detail">Four numbered editions a year, each with a digital companion. No bundles, no lock-in — leave whenever you like.</p>
+          </div>
+
+          <form class="signup" id="signup-form" novalidate>
+            <p class="signup__heading">Reserve the next issue</p>
+            <label class="signup__label" for="email">Email address</label>
+            <div class="signup__row">
+              <input class="signup__input" id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" aria-describedby="email-hint email-status" required>
+              <button class="signup__button" type="submit">Request an issue <span aria-hidden="true">↗</span></button>
+            </div>
+            <p class="signup__hint" id="email-hint">Preview only — nothing is sent or stored.</p>
+            <p class="signup__status" id="email-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer wrap">
+      <div class="site-footer__grid">
+        <div class="colophon">
+          <p><strong>Margin</strong> is an independent quarterly about overlooked places.</p>
+          <p>Set in the system serif, drawn in CSS and inline SVG. No trackers, no third parties, no network requests.</p>
+        </div>
+        <div class="site-footer__meta">
+          <p>© 2026 Margin</p>
+          <a href="#top">Back to top <span aria-hidden="true">↑</span></a>
+        </div>
+      </div>
+      <div class="footer-line" aria-hidden="true"><span>End of Issue 14 · Low Water</span></div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
