@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0e12">
+  <meta name="description" content="Relay — a high-density operations control room for incident response and telemetry.">
+  <title>Relay — Operations control room</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="i-grid" viewBox="0 0 24 24">
+      <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1"></rect>
+      <rect x="14" y="3.5" width="6.5" height="6.5" rx="1"></rect>
+      <rect x="3.5" y="14" width="6.5" height="6.5" rx="1"></rect>
+      <rect x="14" y="14" width="6.5" height="6.5" rx="1"></rect>
+    </symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24">
+      <path d="M12 3.8 21 20.2H3L12 3.8Z"></path>
+      <path d="M12 9.5v4.4"></path>
+      <path d="M12 17.2h.01"></path>
+    </symbol>
+    <symbol id="i-server" viewBox="0 0 24 24">
+      <rect x="3.5" y="4" width="17" height="6.4" rx="1"></rect>
+      <rect x="3.5" y="13.6" width="17" height="6.4" rx="1"></rect>
+      <path d="M7 7.2h.01M7 16.8h.01M10.5 7.2h.01M10.5 16.8h.01"></path>
+    </symbol>
+    <symbol id="i-deploy" viewBox="0 0 24 24">
+      <path d="M12 15.5V4"></path>
+      <path d="m7.5 8.5 4.5-4.5 4.5 4.5"></path>
+      <path d="M4.5 14.5v4a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-4"></path>
+    </symbol>
+    <symbol id="i-users" viewBox="0 0 24 24">
+      <circle cx="9" cy="8.2" r="3.2"></circle>
+      <path d="M3.3 20c.4-3.2 2.7-5 5.7-5s5.3 1.8 5.7 5"></path>
+      <path d="M15.6 5.4a3.2 3.2 0 0 1 0 5.9"></path>
+      <path d="M17.4 15.3c2 .5 3.2 2.1 3.4 4.7"></path>
+    </symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24">
+      <path d="M2.8 12h4.1l2.4-6.4 4.2 12.8 2.3-6.4h5.4"></path>
+    </symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24">
+      <path d="M4 7h9M17 7h3M4 17h3M11 17h9"></path>
+      <circle cx="15" cy="7" r="2.2"></circle>
+      <circle cx="9" cy="17" r="2.2"></circle>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="10.8" cy="10.8" r="6.3"></circle>
+      <path d="m15.5 15.5 4.2 4.2"></path>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="M6 6l12 12M18 6 6 18"></path>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="m4.5 12.5 5 5L19.5 6.5"></path>
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24">
+      <path d="M20 11.5A8 8 0 1 0 18.2 17"></path>
+      <path d="M20 4.5v7h-7"></path>
+    </symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24">
+      <path d="m7 9.5 5 5 5-5"></path>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.5"></circle>
+      <path d="M12 7.2V12l3.2 2"></path>
+    </symbol>
+    <symbol id="i-up" viewBox="0 0 24 24">
+      <path d="M12 19V5"></path>
+      <path d="m6.5 10.5 5.5-5.5 5.5 5.5"></path>
+    </symbol>
+    <symbol id="i-down" viewBox="0 0 24 24">
+      <path d="M12 5v14"></path>
+      <path d="m6.5 13.5 5.5 5.5 5.5-5.5"></path>
+    </symbol>
+    <symbol id="i-cursor" viewBox="0 0 24 24">
+      <path d="M5 4l14 7-6.2 1.6L10 19 5 4Z"></path>
+    </symbol>
+  </svg>
+
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#main" aria-label="Relay home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-name">Relay</span>
+        <span class="brand-tag">OPS</span>
+      </a>
+
+      <div class="environment" aria-label="Environment: production, us-east-1">
+        <span class="env-status"><span class="env-dot" aria-hidden="true"></span>prod</span>
+        <span class="env-slash" aria-hidden="true">/</span>
+        <span class="env-region">us-east-1</span>
+      </div>
+
+      <div class="topbar-right">
+        <button class="global-status" id="globalStatus" type="button" aria-label="System status: degraded, 1 critical incident. Jump to incidents.">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="global-status-label" id="globalStatusLabel">Degraded</span>
+          <span class="global-status-detail" id="globalStatusDetail">1 critical</span>
+        </button>
+        <div class="clock" aria-label="Coordinated Universal Time">
+          <time id="clock">--:--:--</time>
+          <span class="clock-zone">UTC</span>
+        </div>
+        <div class="operator" title="Signed in as D. Okafor, primary on-call">
+          <span class="avatar avatar--operator" aria-hidden="true">DO</span>
+          <span class="operator-name">D. Okafor</span>
+        </div>
+      </div>
+    </header>
+
+    <nav class="rail" aria-label="Primary">
+      <div class="rail-scroll">
+        <p class="rail-label">Operate</p>
+        <button class="rail-item is-active" type="button" data-nav="overview" aria-current="page">
+          <svg class="icon" aria-hidden="true"><use href="#i-grid"></use></svg>
+          <span class="rail-text">Overview</span>
+        </button>
+        <button class="rail-item" type="button" data-nav="incidents">
+          <svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg>
+          <span class="rail-text">Incidents</span>
+          <span class="rail-badge" id="navBadge" aria-label="8 active incidents">8</span>
+        </button>
+        <button class="rail-item" type="button" data-nav="services">
+          <svg class="icon" aria-hidden="true"><use href="#i-server"></use></svg>
+          <span class="rail-text">Services</span>
+        </button>
+        <button class="rail-item" type="button" data-nav="deploys">
+          <svg class="icon" aria-hidden="true"><use href="#i-deploy"></use></svg>
+          <span class="rail-text">Deploys</span>
+        </button>
+        <button class="rail-item" type="button" data-nav="oncall">
+          <svg class="icon" aria-hidden="true"><use href="#i-users"></use></svg>
+          <span class="rail-text">On-call</span>
+        </button>
+
+        <div class="rail-group-system">
+          <p class="rail-label">System</p>
+          <button class="rail-item" type="button" data-nav="status">
+            <svg class="icon" aria-hidden="true"><use href="#i-activity"></use></svg>
+            <span class="rail-text">Status</span>
+          </button>
+          <button class="rail-item" type="button" data-nav="settings">
+            <svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg>
+            <span class="rail-text">Settings</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="rail-foot">
+        <span class="avatar avatar--small" aria-hidden="true">DO</span>
+        <span class="rail-foot-text">
+          <span class="rail-foot-name">D. Okafor</span>
+          <span class="rail-foot-role">Primary on-call</span>
+        </span>
+      </div>
+    </nav>
+
+    <main id="main" tabindex="-1">
+      <header class="page-head">
+        <div class="page-heading">
+          <p class="eyebrow">Control room</p>
+          <div class="title-row">
+            <h1>Overview</h1>
+            <span class="scope-tag">prod / us-east-1</span>
+          </div>
+        </div>
+        <div class="page-tools">
+          <span class="live-chip"><span class="live-dot" aria-hidden="true"></span>Live<span class="live-since" id="lastUpdated">updated just now</span></span>
+          <span class="window-chip"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-clock"></use></svg>Last 24 hours</span>
+          <button class="btn btn-quiet" id="refreshBtn" type="button">
+            <svg class="icon icon--sm" aria-hidden="true"><use href="#i-refresh"></use></svg>
+            <span class="btn-label">Refresh</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="panel metrics" id="metrics" aria-labelledby="metricsTitle">
+        <h2 class="visually-hidden" id="metricsTitle">Key metrics</h2>
+        <div class="metric-grid" id="metricGrid"></div>
+      </section>
+
+      <section class="panel throughput" aria-labelledby="throughputTitle">
+        <header class="panel-head chart-head">
+          <div class="panel-heading">
+            <h2 id="throughputTitle">Throughput</h2>
+            <p class="panel-sub">Ingest load · normalized 0–100 · 24 hourly buckets</p>
+          </div>
+          <dl class="chart-stats">
+            <div class="chart-stat"><dt>Peak</dt><dd id="statPeak">—</dd><span class="chart-stat-note" id="statPeakAt">—</span></div>
+            <div class="chart-stat"><dt>24h avg</dt><dd id="statAvg">—</dd><span class="chart-stat-note">load index</span></div>
+            <div class="chart-stat"><dt>Now</dt><dd id="statNow">—</dd><span class="chart-stat-note" id="statNowAt">—</span></div>
+          </dl>
+        </header>
+        <div class="chart-body">
+          <div class="chart" id="throughputChart">
+            <div class="chart-y" id="chartY" aria-hidden="true"></div>
+            <div class="chart-plot" id="chartPlot">
+              <div class="chart-grid" id="chartGrid" aria-hidden="true"></div>
+              <div class="capacity-line" aria-hidden="true"><span>Saturation 80</span></div>
+              <div class="chart-bars" id="chartBars" role="group" aria-describedby="chartDesc"></div>
+            </div>
+            <div class="chart-x" id="chartX" aria-hidden="true"></div>
+          </div>
+          <p class="visually-hidden" id="chartDesc">Bar chart showing hourly ingest load over the last 24 hours on a 0 to 100 index. The saturation threshold is 80. Use the left and right arrow keys while focused on the chart to inspect each hour.</p>
+          <footer class="chart-foot">
+            <div class="legend">
+              <span><i class="swatch swatch--load" aria-hidden="true"></i>Load</span>
+              <span><i class="swatch swatch--cap" aria-hidden="true"></i>Above saturation</span>
+            </div>
+            <span class="chart-hint"><kbd>←</kbd><kbd>→</kbd> inspect hours</span>
+          </footer>
+          <div class="visually-hidden" id="chartStatus" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <section class="panel incidents" id="incidents" aria-labelledby="incidentsTitle">
+          <header class="panel-head incidents-head">
+            <div class="panel-heading">
+              <div class="title-with-count">
+                <h2 id="incidentsTitle">Incidents</h2>
+                <span class="micro-count" id="incidentCount">—</span>
+              </div>
+              <p class="panel-sub">Active queue · severity, ownership, and response state</p>
+            </div>
+            <div class="severity-tally" id="severityTally" aria-hidden="true"></div>
+          </header>
+
+          <div class="table-tools" role="search" aria-label="Filter incidents">
+            <div class="search-field">
+              <svg class="icon icon--sm" aria-hidden="true"><use href="#i-search"></use></svg>
+              <input type="search" id="searchInput" placeholder="Search incidents, services, owners" aria-label="Search incidents" autocomplete="off" spellcheck="false">
+              <kbd class="search-key" aria-hidden="true">/</kbd>
+            </div>
+            <div class="select-wrap">
+              <label class="visually-hidden" for="severityFilter">Filter by severity</label>
+              <select id="severityFilter"></select>
+              <svg class="icon icon--xs" aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </div>
+            <div class="select-wrap">
+              <label class="visually-hidden" for="statusFilter">Filter by status</label>
+              <select id="statusFilter"></select>
+              <svg class="icon icon--xs" aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </div>
+            <div class="select-wrap">
+              <label class="visually-hidden" for="serviceFilter">Filter by service</label>
+              <select id="serviceFilter"></select>
+              <svg class="icon icon--xs" aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </div>
+            <button class="clear-btn" id="clearFilters" type="button" disabled>Clear</button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="incident-table" id="incidentTable">
+              <caption class="visually-hidden">Incidents matching the current filters. Select an incident to view its detail and acknowledge it.</caption>
+              <colgroup>
+                <col class="col-severity">
+                <col>
+                <col class="col-service">
+                <col class="col-age">
+                <col class="col-owner">
+                <col class="col-status">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col" aria-sort="ascending">
+                    <button class="sort-btn" type="button" data-sort="severity">Severity<span class="sort-ind" aria-hidden="true"></span></button>
+                  </th>
+                  <th scope="col">
+                    <button class="sort-btn" type="button" data-sort="id">Incident<span class="sort-ind" aria-hidden="true"></span></button>
+                  </th>
+                  <th scope="col">
+                    <button class="sort-btn" type="button" data-sort="service">Service<span class="sort-ind" aria-hidden="true"></span></button>
+                  </th>
+                  <th scope="col" class="th-right">
+                    <button class="sort-btn" type="button" data-sort="age">Age<span class="sort-ind" aria-hidden="true"></span></button>
+                  </th>
+                  <th scope="col">
+                    <button class="sort-btn" type="button" data-sort="owner">Owner<span class="sort-ind" aria-hidden="true"></span></button>
+                  </th>
+                  <th scope="col">
+                    <button class="sort-btn" type="button" data-sort="status">Status<span class="sort-ind" aria-hidden="true"></span></button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="incidentRows"></tbody>
+            </table>
+
+            <div class="table-empty" id="tableEmpty" hidden>
+              <div class="empty-icon" aria-hidden="true">
+                <svg class="icon"><use href="#i-search"></use></svg>
+              </div>
+              <h3>No incidents match</h3>
+              <p>Nothing in the queue matches this combination of filters. Widen the search or reset the filters.</p>
+              <button class="btn btn-secondary" id="emptyClear" type="button">Clear all filters</button>
+            </div>
+          </div>
+
+          <footer class="table-foot">
+            <span class="result-count" id="resultCount" aria-live="polite">—</span>
+            <span class="key-hints" aria-hidden="true">
+              <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+              <span><kbd>/</kbd> search</span>
+              <span><kbd>A</kbd> acknowledge</span>
+            </span>
+            <span class="touch-hint">Tap an incident to open detail</span>
+          </footer>
+        </section>
+
+        <aside class="panel detail" id="detailPanel" aria-label="Incident detail">
+          <div class="detail-empty" id="detailEmpty">
+            <div class="empty-icon" aria-hidden="true">
+              <svg class="icon"><use href="#i-cursor"></use></svg>
+            </div>
+            <h2>No incident selected</h2>
+            <p>Select a row to inspect impact, ownership, and the response timeline.</p>
+            <p class="empty-kbd"><kbd>↑</kbd><kbd>↓</kbd> to move through the queue</p>
+          </div>
+
+          <div class="detail-content" id="detailContent" hidden>
+            <header class="detail-head">
+              <div class="detail-topline">
+                <span class="sev-badge" id="detailSeverity"><span class="sev-dot" aria-hidden="true"></span><span id="detailSeverityText">—</span></span>
+                <span class="detail-id" id="detailId">—</span>
+                <button class="icon-btn detail-close" id="closeDetail" type="button" aria-label="Close incident detail">
+                  <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg>
+                </button>
+              </div>
+              <h2 class="detail-title" id="detailTitle" tabindex="-1">—</h2>
+              <div class="detail-state">
+                <span class="status-pill" id="detailStatus"><span class="status-dot" aria-hidden="true"></span><span id="detailStatusText">—</span></span>
+                <span class="detail-age" id="detailAge">—</span>
+              </div>
+            </header>
+
+            <div class="detail-actions">
+              <button class="btn btn-primary" id="ackBtn" type="button">
+                <svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"></use></svg>
+                <span id="ackLabel">Acknowledge</span>
+              </button>
+              <button class="btn btn-secondary" id="assignBtn" type="button">Assign to me</button>
+            </div>
+            <p class="ack-note" id="ackNote">Acknowledging stops auto-escalation and records you as the responder.</p>
+
+            <dl class="meta-grid">
+              <div><dt>Service</dt><dd id="metaService">—</dd></div>
+              <div><dt>Region</dt><dd id="metaRegion">—</dd></div>
+              <div><dt>Owner</dt><dd id="metaOwner">—</dd></div>
+              <div><dt>Detected</dt><dd id="metaDetected">—</dd></div>
+            </dl>
+
+            <div class="impact-row">
+              <div class="impact-cell">
+                <span class="impact-label">Impact</span>
+                <span class="impact-value" id="detailImpact">—</span>
+              </div>
+              <div class="impact-cell">
+                <span class="impact-label">Error budget burn</span>
+                <span class="impact-value" id="detailBurn">—</span>
+              </div>
+            </div>
+
+            <section class="timeline" aria-labelledby="timelineTitle">
+              <div class="timeline-head">
+                <h3 id="timelineTitle">Response timeline</h3>
+                <span class="timeline-count" id="timelineCount">—</span>
+              </div>
+              <ol class="timeline-list" id="timelineList"></ol>
+            </section>
+          </div>
+        </aside>
+      </div>
+
+      <p class="main-foot">Relay control plane · telemetry lag 2.1s · incident data retained 30 days</p>
+    </main>
+  </div>
+
+  <div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">
+    <span class="toast-icon" aria-hidden="true"><svg class="icon icon--sm"><use href="#i-check"></use></svg></span>
+    <span id="toastText"></span>
+  </div>
+
+  <div class="visually-hidden" id="selectionStatus" role="status" aria-live="polite"></div>
+</body>
+</html>
