@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f6f0e2">
+<title>Moss — today's tending</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+  <!-- ============ masthead ============ -->
+  <header class="masthead">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" focusable="false">
+          <path d="M24 3C35 3 44 11 44 23c0 13-9 22-20 22S4 36 4 23C4 11 13 3 24 3Z" fill="#4f7a4a"/>
+          <path d="M24 36c0-9 1-15 0-21" stroke="#f6f0e2" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <path d="M24 23c-8 0-11-5-11-10 7 0 11 4 11 10Z" fill="#cfe0a9"/>
+          <path d="M24 18c0-7 5-10 11-10 0 7-5 10-11 10Z" fill="#e8b84b"/>
+        </svg>
+      </span>
+      <span class="brand__name">moss<span class="brand__dot">.</span></span>
+    </div>
+    <p class="masthead__tag">a small stewardship</p>
+    <div class="masthead__day">
+      <span class="day-dot" aria-hidden="true"></span>
+      <span>Thursday &middot; tending day</span>
+    </div>
+  </header>
+
+  <!-- ============ main layout ============ -->
+  <main class="layout">
+
+    <section class="queue" aria-labelledby="queueTitle">
+      <div class="queue__head">
+        <div>
+          <p class="eyebrow">Your little jungle</p>
+          <h1 id="queueTitle">Today&rsquo;s tending</h1>
+          <p class="queue__sub" id="queueSub">Let&rsquo;s see who needs you.</p>
+        </div>
+        <div class="count-badge" id="countBadge" aria-hidden="true">
+          <span class="count-badge__num" id="countNum">4</span>
+          <span class="count-badge__label">to<br>tend</span>
+        </div>
+      </div>
+
+      <div id="queueList" class="queue__list" role="list" aria-label="Plants to care for today"></div>
+
+      <div id="allDone" class="all-done" hidden></div>
+    </section>
+
+    <aside class="side" aria-label="Rhythm and notes">
+
+      <section class="rhythm" aria-labelledby="rhythmTitle">
+        <div class="rhythm__head">
+          <p class="eyebrow">The quiet pattern</p>
+          <h2 id="rhythmTitle">This week&rsquo;s rhythm</h2>
+          <p class="rhythm__sub">A little more attention on Thursday.</p>
+        </div>
+        <div id="rhythmChart" class="rhythm__chart"></div>
+        <p class="rhythm__legend"><span class="rhythm__legend-bud" aria-hidden="true"></span> each bud is a small act of care</p>
+      </section>
+
+      <section class="note" aria-labelledby="noteTitle">
+        <span class="note__pin" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a4 4 0 0 1 2.6 7l-1.1 3.2 3.8 3.1-5.3 5.9-5.3-5.9 3.8-3.1L9.4 9 8.3 5.8A4 4 0 0 1 12 2Z" fill="#d2704a"/><circle cx="12" cy="6" r="1.3" fill="#f6f0e2"/></svg>
+        </span>
+        <p class="note__label" id="noteTitle">A note to self</p>
+        <p class="note__body">Small sips, often. Frida&rsquo;s fronds would rather have a soft mist than a soak.</p>
+        <svg class="note__squiggle" viewBox="0 0 120 12" aria-hidden="true" focusable="false"><path d="M2 6q8-7 16 0t16 0 16 0 16 0 16 0 16 0 16 0" fill="none" stroke="#c9a24a" stroke-width="2" stroke-linecap="round"/></svg>
+      </section>
+
+    </aside>
+  </main>
+</div>
+
+<!-- ============ undo toast ============ -->
+<div id="toast" class="toast" role="status" aria-live="polite" hidden>
+  <span class="toast__sprout" aria-hidden="true">
+    <svg viewBox="0 0 24 24" focusable="false"><path d="M12 21v-9" stroke="#f6f0e2" stroke-width="2" stroke-linecap="round"/><path d="M12 13C7 13 5 10 5 6c5 0 7 3 7 7Z" fill="#cfe0a9"/><path d="M12 11c0-4 3-6 7-6 0 4-3 6-7 6Z" fill="#e8b84b"/></svg>
+  </span>
+  <span id="toastMsg" class="toast__msg">Done.</span>
+  <button id="undoBtn" class="toast__undo" type="button">Undo</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
