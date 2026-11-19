@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Relay — Operations Control Room</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="app-shell">
+    <!-- Navigation rail -->
+    <nav class="rail" aria-label="Primary">
+      <div class="rail-brand" aria-label="Relay home">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 7h9a4 4 0 0 1 0 8h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="4" cy="7" r="2.2" fill="currentColor"/>
+          <circle cx="11" cy="15" r="2.2" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <ul class="rail-nav">
+        <li>
+          <a class="rail-link is-active" href="#" aria-current="page" title="Overview">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z"/></svg>
+            <span>Overview</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail-link" href="#incidents" title="Incidents">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3 2.5 20h19L12 3Zm0 5 .9 6.5h-1.8L12 8Zm0 8.2a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></svg>
+            <span>Incidents</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail-link" href="#" title="Services">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z"/></svg>
+            <span>Services</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail-link" href="#" title="Logs">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14v16H5V4Zm2 3v2h10V7H7Zm0 4v2h10v-2H7Zm0 4v2h7v-2H7Z"/></svg>
+            <span>Logs</span>
+          </a>
+        </li>
+        <li>
+          <a class="rail-link" href="#" title="Alerts">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 0 0-6 6v4l-2 3v1h16v-1l-2-3V9a6 6 0 0 0-6-6Zm0 16a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 19Z"/></svg>
+            <span>Alerts</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="rail-foot">
+        <a class="rail-link" href="#" title="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm9 4-2.1-.6a7 7 0 0 0-.6-1.5l1-1.9-1.8-1.8-1.9 1a7 7 0 0 0-1.5-.6L14 4h-4l-.6 2.6a7 7 0 0 0-1.5.6l-1.9-1-1.8 1.8 1 1.9a7 7 0 0 0-.6 1.5L3 12l2.1.6a7 7 0 0 0 .6 1.5l-1 1.9 1.8 1.8 1.9-1a7 7 0 0 0 1.5.6l.6 2.6h4l.6-2.6a7 7 0 0 0 1.5-.6l1.9 1 1.8-1.8-1-1.9a7 7 0 0 0 .6-1.5L21 12Z"/></svg>
+          <span>Settings</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main column -->
+    <div class="main-column">
+      <!-- Top status bar -->
+      <header class="statusbar">
+        <div class="statusbar-left">
+          <span class="status-indicator"><span class="status-dot is-live"></span> LIVE TELEMETRY</span>
+          <span class="status-sep" aria-hidden="true"></span>
+          <span class="status-item">Region <strong>us-east-1</strong></span>
+          <span class="status-sep" aria-hidden="true"></span>
+          <span class="status-item">Ingest <strong>nominal</strong></span>
+        </div>
+        <div class="statusbar-right">
+          <span class="status-clock" id="clock" aria-label="Current time">--:--:-- UTC</span>
+          <span class="operator" title="Signed in as M. Chen">
+            <span class="operator-avatar" aria-hidden="true">MC</span>
+            <span class="operator-name">M. Chen</span>
+          </span>
+        </div>
+      </header>
+
+      <main id="main" class="main" tabindex="-1">
+        <!-- Page heading -->
+        <div class="page-head">
+          <div>
+            <h1>Operations overview</h1>
+            <p class="page-sub">Live health across production services · last 24 hours</p>
+          </div>
+          <div class="head-actions">
+            <span class="refresh-note"><span class="status-dot is-live"></span> auto-refresh 30s</span>
+            <button type="button" class="btn btn-ghost" id="refresh-btn">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.6 6.4A8 8 0 1 0 20 12h-2a6 6 0 1 1-1.8-4.2L13 11h8V3l-3.4 3.4Z"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        <div class="dashboard">
+          <!-- Summary metrics -->
+          <section class="metrics" aria-label="Summary metrics" id="metrics"></section>
+
+          <!-- Throughput chart -->
+          <section class="panel chart-panel" aria-labelledby="chart-title">
+            <div class="panel-head">
+              <div>
+                <h2 id="chart-title">Throughput</h2>
+                <p class="panel-sub">Requests processed per hour (thousands)</p>
+              </div>
+              <div class="chart-stats" id="chart-stats"></div>
+            </div>
+            <figure class="chart-figure" id="chart-figure"></figure>
+          </section>
+
+          <!-- Incident table -->
+          <section class="panel incidents-panel" id="incidents" aria-labelledby="incidents-title">
+            <div class="panel-head">
+              <div>
+                <h2 id="incidents-title">Incidents</h2>
+                <p class="panel-sub" id="incident-count">—</p>
+              </div>
+            </div>
+
+            <div class="filters" role="group" aria-label="Filter incidents">
+              <div class="search-wrap">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 4a6 6 0 1 0 3.9 10.6l4.8 4.8 1.4-1.4-4.8-4.8A6 6 0 0 0 10 4Zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/></svg>
+                <input type="search" id="filter-search" placeholder="Search id, title, service, owner" aria-label="Search incidents" autocomplete="off">
+              </div>
+              <label class="select-wrap">
+                <span class="sr-only">Filter by severity</span>
+                <select id="filter-severity" aria-label="Filter by severity">
+                  <option value="all">All severities</option>
+                  <option value="critical">Critical</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </label>
+              <label class="select-wrap">
+                <span class="sr-only">Filter by status</span>
+                <select id="filter-status" aria-label="Filter by status">
+                  <option value="all">All statuses</option>
+                  <option value="open">Open</option>
+                  <option value="investigating">Investigating</option>
+                  <option value="monitoring">Monitoring</option>
+                  <option value="acknowledged">Acknowledged</option>
+                </select>
+              </label>
+              <button type="button" class="btn btn-ghost btn-clear" id="clear-filters">Clear</button>
+            </div>
+
+            <div class="table-scroll">
+              <table class="incident-table" id="incident-table">
+                <caption class="sr-only">Active incidents. Select a row to view details.</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Incident</th>
+                    <th scope="col">Service</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="incident-body"></tbody>
+              </table>
+              <div class="empty-state" id="empty-state" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 4a6 6 0 1 0 3.9 10.6l4.8 4.8 1.4-1.4-4.8-4.8A6 6 0 0 0 10 4Zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/></svg>
+                <p class="empty-title">No incidents match these filters</p>
+                <p class="empty-sub">Try broadening your search or clearing filters.</p>
+                <button type="button" class="btn btn-ghost" id="empty-clear">Clear filters</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Detail panel -->
+          <section class="panel detail-panel" id="detail-panel" aria-labelledby="detail-title">
+            <div class="panel-head">
+              <h2 id="detail-title">Incident detail</h2>
+            </div>
+            <div id="detail-content"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="sr-only" role="status" aria-live="polite" id="live-region"></div>
+</body>
+</html>

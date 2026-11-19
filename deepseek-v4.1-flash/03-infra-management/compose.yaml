@@ -1,0 +1,207 @@
+# Deployment for a small Python API behind nginx, with Postgres and Redis.
+#
+#   cp .env.example .env    # fill in the secrets, chmod 600 .env
+#   docker compose up -d --build
+#
+# Only the proxy publishes a port. The API, Postgres and Redis are reachable
+# only on the internal compose networks: there is no host port for 5000,
+# 5432 or 6379.
+#
+# Compose is not an orchestrator: restart policies, healthchecks and resource
+# limits are best-effort on a single host. See RUNBOOK.md.
+
+name: app
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-hardening: &default-hardening
+  security_opt:
+    - no-new-privileges:true
+
+services:
+  proxy:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      # Bound to the host; set HTTP_BIND=127.0.0.1 to keep it on loopback.
+      - "${HTTP_BIND:-0.0.0.0}:${HTTP_PORT:-80}:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    # The image's nginx user is uid/gid 101. Running unprivileged means the
+    # container never needs NET_BIND_SERVICE, and 8080 is used inside.
+    user: "101:101"
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:rw,noexec,nosuid,size=64m
+      - /var/run:rw,noexec,nosuid,size=8m
+      - /tmp:rw,noexec,nosuid,size=8m
+    healthcheck:
+      # Proxied check: proves nginx is up *and* that the API behind it answers.
+      test: ["CMD-SHELL", "wget -q -T 3 -O /dev/null http://127.0.0.1:8080/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    <<: *default-hardening
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
+        reservations:
+          cpus: "0.05"
+          memory: 32M
+    networks:
+      - frontend
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: app-api:local
+    restart: unless-stopped
+    init: true
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    environment:
+      # Credentials come from .env (never committed, never baked into the
+      # image). The `:?` form aborts `docker compose up` if a value is unset
+      # instead of silently starting with an empty password.
+      DATABASE_URL: "postgresql://${POSTGRES_USER:?set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?set POSTGRES_DB in .env}"
+      REDIS_URL: "redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@cache:6379/0"
+      APP_MODULE: "${APP_MODULE:-app:app}"
+      GUNICORN_WORKERS: "${GUNICORN_WORKERS:-2}"
+      GUNICORN_THREADS: "${GUNICORN_THREADS:-4}"
+      GUNICORN_LOGLEVEL: "${LOG_LEVEL:-info}"
+      ENVIRONMENT: "${ENVIRONMENT:-production}"
+      # Trust X-Forwarded-* from the proxy hop only.
+      GUNICORN_FORWARDED_ALLOW_IPS: "*"
+    # Not published. Reachable from the proxy on `frontend` and from the data
+    # services on `backend`.
+    expose:
+      - "8000"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    cap_drop:
+      - ALL
+    <<: *default-hardening
+    healthcheck:
+      # Liveness: gunicorn answers. Dependency readiness is /readyz, checked by
+      # the proxy/operator rather than driving container restarts.
+      test: ["CMD", "python", "-c", "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    stop_grace_period: 35s
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.10"
+          memory: 128M
+    networks:
+      - frontend
+      - backend
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:?set POSTGRES_USER in .env}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}"
+      POSTGRES_DB: "${POSTGRES_DB:?set POSTGRES_DB in .env}"
+      # Keep the cluster in a subdirectory so the mounted volume root stays
+      # clean and permissions are predictable.
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # -h 127.0.0.1 checks the TCP listener the API uses, not just the local
+      # socket (pg_isready reports readiness, not credentials).
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+    # Large sorts/hashes use shared memory; the 64 MB container default is
+    # too small for anything but the tiniest database.
+    shm_size: 256mb
+    # Give Postgres time to checkpoint on shutdown instead of SIGKILL.
+    stop_grace_period: 60s
+    <<: *default-hardening
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1g
+    networks:
+      - backend
+
+  cache:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command:
+      - sh
+      - -c
+      - >-
+        exec redis-server
+        --requirepass "$$REDIS_PASSWORD"
+        --save ""
+        --appendonly no
+        --maxmemory 256mb
+        --maxmemory-policy allkeys-lru
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}"
+    # Pure cache: no volume, persistence explicitly disabled, so a restart
+    # loses cache contents (and nothing else).
+    read_only: true
+    tmpfs:
+      - /data:rw,noexec,nosuid,size=64m
+      - /tmp:rw,noexec,nosuid,size=16m
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli --no-auth-warning ping | grep -q PONG"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    <<: *default-hardening
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 384M
+    networks:
+      - backend
+
+volumes:
+  pgdata:
+    # Named volume: survives `docker compose down` and image rebuilds.
+    # `docker compose down -v` deletes it -- see RUNBOOK.md for backups.
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    # No route to the outside world: the database and cache cannot phone home
+    # even if the host has a default route. The API bridges both networks.
+    internal: true
