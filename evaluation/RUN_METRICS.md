@@ -41,6 +41,10 @@ for each one is as Arda identified it.
 | muse-wonder-full (`muse-wonder-full-1.0`) | xhigh | Muse Code 1.4.10 on cachyos (user's Muse subscription) | 14:26:43 (2026-10-17) | 14:57:51 | 31 min 08 s (two at a time) | n/a | n/a | 33% of a 5-hour window, 11% of the week; see below | 13 / 13 | local repository, merged under `runs/muse-wonder-full` |
 | Gemini 4 Hydrogen (`gemini-4-hydrogen-xhigh`) | xhigh | Antigravity CLI 1.5.8 on the ThinkPad (Google account) | 06:05:43 (2026-11-14) | 06:34:55 | 29 min 12 s | n/a | n/a | not reported; see tokens | 13 / 13 | local repository, merged under `runs/gemini-hydrogen` |
 | Fable 5.2 (`claude-fable-5-2`) | high | Claude Code CLI 2.1.325 on the ThinkPad (claude.ai Team subscription) | 06:46:07 (2026-11-14) | 07:16:03 | 29 min 56 s | n/a | n/a | $33.66 API-equivalent; nothing charged | 13 / 13 | local repository, merged under `runs/fable-5.2` |
+| Gemini 4 Neon (`gemini-4-neon-high`) | high | Antigravity CLI 1.5.12 on the ThinkPad (Google account) | 15:19:44 (2026-11-19) | 15:49:35 | 29 min 51 s | n/a | n/a | not reported; see tokens | 13 / 13 | local repository, merged under `runs/gemini-neon` |
+| HY4 (`hy4`) | high | Tencent CodeBuddy Code 2.185 on the ThinkPad (TokenHub plan) | 15:22:24 (2026-11-19) | 21:30:46 (re-runs after gateway errors) | 124 min 53 s of successful sessions, one task at a time | n/a | n/a | $0 reported (plan usage) | 13 / 13 | local repository, merged under `runs/hy4` |
+| HY4 Flash (`hy4-flash`) | high | Tencent CodeBuddy Code 2.185 on the ThinkPad (TokenHub plan) | 17:06:31 (2026-11-19) | 20:00:05 (re-runs after gateway errors) | 41 min 42 s of successful sessions, one task at a time | n/a | n/a | $0 reported (plan usage) | 13 / 13 | local repository, merged under `runs/hy4-flash` |
+| DeepSeek V4.1 Flash (`deepseek/deepseek-flash`) | high | Tencent CodeBuddy Code 2.185 on the ThinkPad (TokenHub plan) | 17:35:57 (2026-11-19) | 20:57:51 (re-runs after gateway errors) | 84 min 31 s of successful sessions, one task at a time | n/a | n/a | $0 reported (plan usage) | 13 / 13 | local repository, merged under `runs/deepseek-v4.1-flash` |
 
 Durations are as Arda timed them. The push times agree with them.
 
@@ -579,3 +583,42 @@ refilled (`resume-astra62.sh`, 00:23:24–00:35:36); the cut-off attempt is kept
 The scheduled script's final `wait` also waited on its own keep-awake process, so it only exited when released by hand at
 00:22; no task was affected, and the resume script avoids it. The audit (`audit-codex.py`) found no network use, no access
 to another task's directory and no writes outside each task's directory; its eight flags were false positives.
+
+## Gemini 4 Neon, HY4, HY4 Flash and DeepSeek V4.1 Flash (ThinkPad, 2026-11-19)
+
+**Gemini 4 Neon** (`gemini-4-neon-high`, `--effort high`) ran through the Antigravity CLI 1.5.12 with Gemini 4 Hydrogen's
+protocol and isolation: one `agy -p` per task, four at a time, each task with its own empty HOME holding only a settings file
+(terminal sandbox on, URL tools denied), DBus passed through for the keyring sign-in. The agy binary was copied into the
+orchestration folder to pin the version (it updates itself). Scripts, replies and the audit are in
+`run-logs/gemini-neon-orchestration/`.
+
+**HY4, HY4 Flash and DeepSeek V4.1 Flash** ran through Tencent's CodeBuddy Code 2.185 with the protocol and isolation of the
+HY4 preview CodeBuddy run (`codebuddy -p`, project-only settings, no MCP, no session persistence or auto-memory, permission
+rules denying network commands and web tools), on the user's Tencent Cloud TokenHub plan as CodeBuddy custom models
+(`custom-local:hy4`, `custom-local:hy4-flash`, `custom-local:deepseek/deepseek-flash`). DeepSeek V4.1 Flash is a new entry;
+DeepSeek V4 Pro was already evaluated through OpenRouter and was not run again. At the user's request the CodeBuddy runs went
+one task at a time and one model after another (HY4, HY4 Flash, DeepSeek V4.1 Flash) instead of four at a time; a first,
+parallel start of HY4 was stopped about a minute in, before any file was written, and HY4 restarted from a fresh repository.
+The plan's quota can't be read from this machine (no Tencent Cloud API credentials here), so token counts come from each
+session's result event and a guard would have stopped the sequence on a rate-limit message; none appeared.
+
+Twelve sessions ended on the TokenHub gateway's `400 The request is invalid: read body failed` (code 400001), in two windows
+(16:31–17:16 and 18:02–18:41): HY4 tasks 11–13, HY4 Flash tasks 01–05 and DeepSeek V4.1 Flash tasks 10–13. It is a
+provider-side error: one HY4 Flash session hit it on its second turn with no tokens used, and every session between the two
+windows succeeded. Each failed attempt was archived, its task directory reset to the template and the task re-run with the
+identical command, one at a time. HY4 tasks 11 and 13 hit the error once more and succeeded on the second re-run. Failed
+attempts are kept under `run-logs/codebuddy-2026-11-19-orchestration/interrupted/`; they used about 1 h 50 min of session time
+and 512k output tokens, not counted below.
+
+| Model | Session time (successful attempts) | Tool calls | Turns | Input (of which cache reads) | Output | Thinking | Cost |
+|---|---|---|---|---|---|---|---|
+| Gemini 4 Neon | 29 min 51 s wall-clock, four at a time | 234 | n/a | 6,701,788 (5,796,187) | 446,670 | 221,362 | not reported |
+| HY4 | 124 min 53 s | 324 | 963 | 10,341,300 (9,804,544) | 614,226 | (not reported) | $0 reported |
+| HY4 Flash | 41 min 42 s | 277 | 825 | 8,567,683 (7,995,136) | 251,554 | (not reported) | $0 reported |
+| DeepSeek V4.1 Flash | 84 min 31 s | 513 | 1,453 | 47,777,974 (46,886,400) | 649,037 | (not reported) | $0 reported |
+
+The audits found no network use, no permission denials and no access to another task's directory. Outside the repository,
+HY4 and HY4 Flash (task 04) ran an installed Android NDK Python 3.11 to compare against `distutils.LooseVersion`, HY4 read one
+setuptools source file from an installed gcloud SDK, and DeepSeek V4.1 Flash (tasks 11 and 13) searched the home directory for
+a Playwright install and drove the cached Chromium over its local DevTools port; several frontend sessions kept screenshots in
+`/tmp`. Two headless Chrome processes that HY4 Flash's task 12 started, and a `python3 -m http.server` from HY4's first (failed) task-11 attempt, were still running after the batch and were stopped.

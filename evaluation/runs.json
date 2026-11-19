@@ -298,5 +298,45 @@
   "cost": null,
   "usage": "5.84M input (5.40M cached), 148k output, 43k reasoning tokens; quota not recorded",
   "notes": "One codex exec per task, four at a time, Codex CLI 0.170.0, dedicated HOME and CODEX_HOME holding only the login. The workspace ran out of credits during task 11, which was reset to the template and re-run alone after the credits were refilled."
+ },
+ "gemini-neon": {
+  "label": "Gemini 4 Neon",
+  "model": "gemini-4-neon-high",
+  "where": "Antigravity CLI 1.5.12 (headless agy -p) on the ThinkPad, user's Google account, 2026-11-19",
+  "effort": "high",
+  "duration": "30 min (four at a time)",
+  "cost": null,
+  "usage": "906k input + 5.80M cache-read, 447k output, 221k thinking tokens; 234 tool calls",
+  "notes": "One agy -p per task with its own empty HOME (only a settings file; the sign-in token comes from the system keyring over DBus) inside agy's terminal sandbox (no network, home hidden and read-only), URL tools denied. Same protocol as Gemini 4 Hydrogen; it took headless Firefox screenshots of its pages on tasks 11-13."
+ },
+ "hy4": {
+  "label": "HY4",
+  "model": "hy4 (Tencent CodeBuddy, TokenHub plan)",
+  "where": "Tencent CodeBuddy Code 2.185.0 (headless) on the ThinkPad, user's Tencent Cloud TokenHub plan, 2026-11-19",
+  "effort": "high",
+  "duration": "~125 session-minutes, one task at a time",
+  "cost": "$0 reported (plan usage)",
+  "usage": "10.34M input (of which 9.80M cache reads), 614k output tokens; 963 turns, 324 tool calls",
+  "notes": "One codebuddy -p per task, one task at a time and one model after another (HY4, HY4 Flash, DeepSeek V4.1 Flash), in a fresh repository outside the home directory; the sign-in is tied to the real HOME, so user settings, MCP, session persistence and auto-memory were turned off instead. Permission rules denied network commands and web tools (CodeBuddy ignores sandbox settings), and the transcripts were audited. Tasks 11-13 ended on the TokenHub gateway's '400 read body failed' error and were re-run from the template with the identical command (11 and 13 twice). The release successor of 'HY4 preview'."
+ },
+ "hy4-flash": {
+  "label": "HY4 Flash",
+  "model": "hy4-flash (Tencent CodeBuddy, TokenHub plan)",
+  "where": "Tencent CodeBuddy Code 2.185.0 (headless) on the ThinkPad, user's Tencent Cloud TokenHub plan, 2026-11-19",
+  "effort": "high",
+  "duration": "~42 session-minutes, one task at a time",
+  "cost": "$0 reported (plan usage)",
+  "usage": "8.57M input (of which 8.00M cache reads), 252k output tokens; 825 turns, 277 tool calls",
+  "notes": "One codebuddy -p per task, one task at a time and one model after another (HY4, HY4 Flash, DeepSeek V4.1 Flash), in a fresh repository outside the home directory; the sign-in is tied to the real HOME, so user settings, MCP, session persistence and auto-memory were turned off instead. Permission rules denied network commands and web tools (CodeBuddy ignores sandbox settings), and the transcripts were audited. Tasks 01-05 ended on the TokenHub gateway's '400 read body failed' error and were re-run from the template with the identical command."
+ },
+ "deepseek-v4.1-flash": {
+  "label": "DeepSeek V4.1 Flash",
+  "model": "deepseek/deepseek-flash (Tencent CodeBuddy, TokenHub plan)",
+  "where": "Tencent CodeBuddy Code 2.185.0 (headless) on the ThinkPad, user's Tencent Cloud TokenHub plan, 2026-11-19",
+  "effort": "high",
+  "duration": "~85 session-minutes, one task at a time",
+  "cost": "$0 reported (plan usage)",
+  "usage": "47.8M input (of which 46.9M cache reads), 649k output tokens; 1,453 turns, 513 tool calls",
+  "notes": "One codebuddy -p per task, one task at a time and one model after another (HY4, HY4 Flash, DeepSeek V4.1 Flash), in a fresh repository outside the home directory; the sign-in is tied to the real HOME, so user settings, MCP, session persistence and auto-memory were turned off instead. Permission rules denied network commands and web tools (CodeBuddy ignores sandbox settings), and the transcripts were audited. Tasks 10-13 ended on the TokenHub gateway's '400 read body failed' error and were re-run from the template with the identical command. Not the same harness as DeepSeek V4 Pro (opencode via OpenRouter)."
  }
 }
